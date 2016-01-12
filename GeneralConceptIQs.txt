@@ -1,0 +1,175 @@
+1. Merge Sort vs Quick Sort
+http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quick-sort-for-sorting-linked-lists?rq=1
+    "Merge sort is very efficient for immutable datastructures like linked lists"
+    "Quick sort is typically faster than merge sort when the data is stored in memory.
+     However, when the data set is huge and is stored on external devices such as a hard
+     drive, merge sort is the clear winner in terms of speed. It minimizes the expensive
+     reads of the external drive"
+    "when operating on linked lists, merge sort only requires a small constant amount of
+     auxiliary storage"
+
+     Quick Sort: 
+     - Best when able to index into an array or similar structure.
+       When that's possible, it's hard to beat Quicksort.
+     - Quicksort is fast when the data fits into memory and can be addressed directly.
+
+     IMP:
+     - Array of equal elements.
+       while (a[i] < pivot) {i++;}
+       while (pivot < a[j] ) {j--;}
+       if (i < j) swap (a[i], a[j]);
+
+       If we have an array of equal elements, the second code will never increment i or decrement j
+     http://faculty.simpson.edu/lydia.sinapova/www/cmsc250/LN250_Tremblay/L06-QuickSort.htm
+
+        VERY IMP:
+        CHECK IF "i <= j"
+        After doing a SWAP, decrement j and increment i.
+        This is get over duplicate elements.
+        http://www.algolist.net/Algorithms/Sorting/Quicksort
+
+    3 way partition:
+        Nice explanation of the algorithm:
+        http://algs4.cs.princeton.edu/lectures/23DemoPartitioning.pdf
+
+    Dutch National Flag Problem:
+        http://stackoverflow.com/questions/11214089/understanding-dutch-national-flag-program
+
+     Merge Sort:
+     - Faster when reading from Disk and not everything can be in memory
+     - Mergesort is faster when data won't fit into memory or when it's expensive to get to an item.
+
+
+2. But I heard that char a[] was identical to char *a.
+   http://c-faq.com/aryptr/aryptr2.html
+   - The array declaration char a[6] requests that space for six characters be set aside, to be known by the name ``a''.
+     That is, there is a location named ``a'' at which six characters can sit
+   - The pointer declaration char *p, on the other hand, requests a place which holds a pointer, to be known by the name ``p''.
+   - VERY IMP: ``pointer arithmetic and array indexing [that] are equivalent in C, pointers and arrays are different.'')
+
+3. If they're so different, then why are array and pointer declarations interchangeable as function formal parameters? 
+   - Since arrays decay immediately into pointers, an array is never actually passed to a function.
+
+4. Characters and String
+   http://c-faq.com/charstring/index.html
+
+5. Null termination of strings:
+   http://stackoverflow.com/questions/12019947/null-termination-of-char-array
+
+   We can store only one character less
+
+
+6. Median of Medians:
+    http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
+        Think of the following set of numbers: 
+        5 2 6 3 1
+
+        The median of these numbers is 3. Now if you have a number n, if n > 3, then it is bigger than at least half of the numbers above. If n < 3, then it is smaller than at least half of the numbers above.
+
+        So that is the idea. That is, for each set of 5 numbers, you get their median. Now you have n / 5 numbers. This is obvious.
+
+        Now if you get the median of those numbers (call it m), it is bigger than half of them and smaller than the other half (by definition of median!). In other words, m is bigger than n / 10 numbers (which themselves were medians of small 5 element groups) and bigger than another n / 10 numbers (which again were medians of small 5 element groups).
+
+        In the example above, we saw that if the median is k and you have m > k, then m is also bigger than 2 other numbers (that were themselves smaller than k). This means that for each of those smaller 5 element groups where m was bigger than its medium, m is bigger also than two other numbers. This makes it at least 3 numbers (2 numbers + the median itself) in each of those n / 10 small 5 element groups, that are smaller than m. Hence, m is at least bigger than 3n/10 numbers.
+
+        Similar logic for the number of elements m is bigger than.
+
+
+    http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm 
+        // L is the array on which median of medians needs to be found.
+        // k is the expected median position. E.g. first select call might look like:
+        // select (array, N/2), where 'array' is an array of numbers of length N
+
+        select(L,k)
+        {
+
+            if (L has 5 or fewer elements) {
+                sort L
+                return the element in the kth position
+            }
+
+            partition L into subsets S[i] of five elements each
+                (there will be n/5 subsets total).
+
+            for (i = 1 to n/5) do
+                x[i] = select(S[i],3)
+
+            M = select({x[i]}, n/10)
+
+            // The code to follow ensures that even if M turns out to be the
+            // smallest/largest value in the array, we'll get the kth smallest
+            // element in the array
+
+            // Partition array into three groups based on their value as
+            // compared to median M
+
+            partition L into L1<M, L2=M, L3>M
+
+            // Compare the expected median position k with length of first array L1
+            // Run recursive select over the array L1 if k is less than length
+            // of array L1
+            if (k <= length(L1))
+                return select(L1,k)
+
+            // Check if k falls in L3 array. Recurse accordingly
+            else if (k > length(L1)+length(L2))
+                return select(L3,k-length(L1)-length(L2))
+
+            // Simply return M since k falls in L2
+            else return M
+        }
+
+7. Bit twiddling Stanford material
+    http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable
+
+8. String Search:
+    Bayer More:
+        http://www.geeksforgeeks.org/pattern-searching-set-7-boyer-moore-algorithm-bad-character-heuristic/
+
+9. given 2 sorted arrays of integers, find the nth largest number in sublinear time
+    http://stackoverflow.com/questions/4686823/given-2-sorted-arrays-of-integers-find-the-nth-largest-number-in-sublinear-time
+
+    I think this is two concurrent binary searches on the subarrays A[0..n-1] and B[0..n-1], which is O(log n).
+
+        Given sorted arrays, you know that the nth largest will appear somewhere before or at A[n-1] if it is in array A, or B[n-1] if it is in array B
+        Consider item at index a in A and item at index b in B.
+        Perform binary search as follows (pretty rough pseudocode, not taking in account 'one-off' problems):
+            If a + b > n, then reduce the search set
+                if A[a] > B[b] then b = b / 2, else a = a / 2
+            If a + b < n, then increase the search set
+                if A[a] > B[b] then b = 3/2 * b, else a = 3/2 * a (halfway between a and previous a)
+            If a + b = n then the nth largest is max(A[a], B[b])
+
+    I believe worst case O(ln n), but in any case definitely sublinear.
+
+10. k'th smallest in Union of Two arrays:
+    http://articles.leetcode.com/2011/01/find-k-th-smallest-element-in-union-of.html
+
+11. K’th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
+    http://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array-set-3-worst-case-linear-time/
+    http://www.programcreek.com/2014/05/leetcode-kth-largest-element-in-an-array-java/
+
+12. GCD of two numbers:
+    GCD(a,b) = GCD(b,a-b)
+    GCD(a,b) = GCD(b,a%b)
+    NICE IMP Proof:
+        https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
+
+13. STOCK PROBLEMS:
+    http://stackoverflow.com/questions/9514191/maximizing-profit-for-given-stock-quotes
+    Traverse Backwards
+
+    http://stackoverflow.com/questions/1663545/find-buy-sell-prices-in-array-of-stock-values-to-maximize-positive-difference
+    http://stackoverflow.com/questions/7086464/maximum-single-sell-profit
+
+
+14. C++ Auto Pointers, Shared Pointers and Unique Pointers
+    auto_ptr, unique_ptr and shared_ptr
+    
+15. C++ Iterators:
+    See LearnCpp\Vector.cpp file
+    Vector.at() is SLOWER than vector[]
+    http://stackoverflow.com/questions/9376049/vectorat-vs-vectoroperator
+
+    IMP: Use vector.at() when INDEX is not in your control.
+

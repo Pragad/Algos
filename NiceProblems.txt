@@ -1,0 +1,19 @@
+http://stackoverflow.com/questions/11214089/understanding-dutch-national-flag-program
+
+Stock Related Problems:
+http://stackoverflow.com/questions/9514191/maximizing-profit-for-given-stock-quotes
+http://stackoverflow.com/questions/7086464/maximum-single-sell-profit
+http://stackoverflow.com/questions/1663545/find-buy-sell-prices-in-array-of-stock-values-to-maximize-positive-difference
+http://www.geeksforgeeks.org/stock-buy-sell/
+    http://gohired.in/2015/04/stock-buy-sell-to-maximize-profit/
+    http://www.careercup.com/question?id=15856707
+    https://www.quora.com/Is-there-an-O-nlogn-algorithm-for-maximum-profit-from-buying-and-selling-stocks
+http://articles.leetcode.com/2010/11/best-time-to-buy-and-sell-stock.html
+
+http://stackoverflow.com/questions/7153659/find-an-integer-not-among-four-billion-given-ones?rq=1
+
+http://stackoverflow.com/questions/14415881/pair-socks-from-a-pile-efficiently?rq=1
+
+Two Sum:
+Using Radix Sort:
+http://stackoverflow.com/questions/9656789/find-2-numbers-in-an-unsorted-array-equal-to-a-given-sum
