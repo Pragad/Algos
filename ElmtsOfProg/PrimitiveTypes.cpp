@@ -1,6 +1,9 @@
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 using namespace std;
 
+/*
 #ifdef _WIN32
 typedef char 	                int8_t;
 typedef unsigned char 	        uint8_t;
@@ -10,6 +13,7 @@ typedef unsigned long long int 	uint64_t;
 #else
 #include <stdint.h>
 #endif
+*/
 
 
 // Q: 5.1 Compute the Parity of a number
@@ -103,6 +107,73 @@ uint32_t numDivisionOpt(int numerator, int denominator)
 // Q: 5.2b Find REMAINDER without using % operator.
 // http://stackoverflow.com/questions/5189631/how-can-i-take-mod-of-a-number-in-assembly-in-motorola-m6800/5189800#5189800
 
+// Q 5.3 ConvertBase
+string convertBase(string origNumber, unsigned int srcBase, unsigned int targBase)
+{
+    string targBaseString;
+    string deciBaseString;
+    int decimalNumber;
+
+    if (srcBase == targBase)
+    {
+        return origNumber;
+    }
+
+    // Part 1: Convert the origNumber to decimal
+    int temp = 0;
+    if (srcBase < 10)
+    {
+        for (int i = 0; i < origNumber.length(); i++)
+        {
+            temp += (origNumber[i] - '0') * (pow(srcBase, (origNumber.length() - 1) - i));
+        }
+    }
+    else
+    {
+        for (int i = 0; i < origNumber.length(); i++)
+        {
+            if (origNumber[i] >= 'A' && origNumber[i] <= 'Z')
+            {
+                temp += (origNumber[i] - 'A' + 10) * (pow(srcBase, (origNumber.length() - 1) - i));
+            }
+            else
+            {
+                temp += (origNumber[i] - '0') * (pow(srcBase, (origNumber.length() - 1) - i));
+            }
+
+        }
+    }
+
+    decimalNumber = temp;
+    deciBaseString = to_string(temp);
+
+    // Part 2: Convert Decimal Number to Required base type.
+    vector<char> vecTmpStr;
+    int i = 0;
+    while (temp != 0)
+    {
+        // If base is more than 9 then the number is Alpha Numeric
+        int remainder = (temp % targBase);
+        if (remainder > 9)
+        {
+            vecTmpStr.push_back(remainder + 'A' - 10);
+        }
+        else
+        {
+            vecTmpStr.push_back(remainder + '0');
+        }
+
+        temp = temp / targBase;
+        i++;
+    }
+    
+    // Reverse the String and store it back
+    reverse(vecTmpStr.begin(), vecTmpStr.end());
+    string tmp(vecTmpStr.begin(), vecTmpStr.end());
+    targBaseString = tmp;
+
+    return targBaseString;
+}
 
 int main()
 {
@@ -115,8 +186,9 @@ int main()
     cout << "Divide Opt: " << numDivision(16, 3) << endl;
     cout << "Divide Opt: " << numDivision(18, 3) << endl;
 
-
+    cout << "Conver Base: " << convertBase("FE12D", 16, 8) << endl;
     cout << endl;
     return 0;
 }
+
 

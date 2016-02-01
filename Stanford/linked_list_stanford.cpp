@@ -391,6 +391,79 @@ node* shuffleMerge(node* a, node* b)
 
     return srcMerged;
 }
+
+// Helper routine to move first node from node b to node a
+// This rountine when called on a linked list will reverse the complete list.
+void moveNode2(struct node*& a, struct node*& b)
+{
+    if (b != NULL)
+    {
+        struct node* temp = a;
+        a = b;
+        b = b->next;
+        a->next = temp;
+    }
+}
+
+// Bloomberg Coding Prep 2.
+// Problem 1: 
+//      Given the root node to a singly linked list, reverse the last 5
+//      nodes in the list. For a list with 5 or less nodes, reverse the whole list.
+// Algorithm:
+//      Have first node pointing to head and second node pointing to the node 5 steps
+//      ahead.
+//
+//      Then traverse both head and the other node till the other node reaches NULL.
+//      Now we will have head pointing to last but 5 nodes.
+//
+// Complexity: O(N)
+void reverseLast5Node(struct node*& head)
+{
+    // We will never move the position of head.
+    struct node* tmpHead = head;   // A temporary node storing head's position. We will never mo
+    struct node* headFive = head;   // A temp node that points five nodes ahead.
+    struct node* result = NULL;     // A temporary node to store the reversed list.
+    unsigned int count = 0;
+
+    while (headFive != NULL &&
+           count < 5)
+    {
+        headFive = headFive->next;
+        count++;
+    }
+
+    // If count is five and tmpHead is not null, then we have more atleast five nodes
+    if (count == 5 && headFive != NULL)
+    {
+        // Now "tmpHead" is 5 steps behind. So move both tmpHead and headFive till headFive
+        // reaches NULL. Then tmpHead will be pointing to the last five nodes.
+        while(headFive->next != NULL)
+        {
+            tmpHead = tmpHead->next;
+            headFive = headFive->next;
+        }
+
+        // Reverse the last five nodes of the linked list.
+        while(tmpHead->next != NULL)
+        {
+            moveNode2(result, tmpHead->next);
+        }
+
+        // Set the next pointer to point to the reversed list.
+        tmpHead->next = result;
+    }
+    else
+    {
+        // This takes care of reversing the linked list if it has 5 or lesser nodes.
+        while(head != NULL)
+        {
+            moveNode2(result, head);
+        }
+
+        head = result;
+    }
+}
+
 // Main Function
 int main()
 {
@@ -400,17 +473,33 @@ int main()
     node* head = new node();
     head = NULL;
 
-    node* head2 = new node();
-    head2 = NULL;
+//    node* head2 = new node();
+    node* head2 = NULL;
 
+    /*
     Push(head2, 1);
     Push(head2, 2);
     Push(head2, 3);
+    */
 
     Push(head, 1);
     Push(head, 2);
     Push(head, 3);
+    Push(head, 4);
+    Push(head, 5);
+    Push(head, 6);
+    Push(head, 7);
+    Push(head, 8);
 
+    //moveNode2(head2, head);
+
+    printList(head);
+    reverseLast5Node(head);
+    printList(head);
+
+    //reverseLast5Node(head2);
+    //printList(head2);
+    /*
     cout << "Get Nth Element: " << endl;
     cout << getNth(head, 0) << endl;
     cout << getNth(head, 1) << endl;
@@ -435,13 +524,11 @@ int main()
  //   insertNth(head, 3, 16);
  //   insertNth(head, 2, 3);
 
-    /*
-    insertNth(head, 0, 5);
-    insertNth(head, 0, 2);
-    insertNth(head, 0, 1);
-    insertNth(head, 3, 6);
-    insertNth(head, 2, 3);
-    */
+    //insertNth(head, 0, 5);
+    //insertNth(head, 0, 2);
+    //insertNth(head, 0, 1);
+    //insertNth(head, 3, 6);
+    //insertNth(head, 2, 3);
 
     cout << endl << "Insert Nth" << endl;
     printList(head);
@@ -496,6 +583,9 @@ int main()
     cout << endl << "Shuffle Merge" << endl;
     merged = shuffleMerge(aRef, bRef);
     printList(merged);
+    */
+
+    cout << endl;
     return 0;
 }
 

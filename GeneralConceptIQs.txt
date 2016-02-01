@@ -173,3 +173,20 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
 
     IMP: Use vector.at() when INDEX is not in your control.
 
+16. Sorted Rotated Array:
+    In a rotated sorted array, only one of A and B can be guaranteed to be sorted. If the element lies within a part which is sorted, then the solution is simple:
+        just perform the search as if you were doing a normal binary search. If, however, you must search an unsorted part,
+        then just recursively call your search function on the non-sorted part.
+
+    This ends up giving on a time complexity of O(lg n).
+
+17. Find all subsets of a set
+    http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
+    http://www.geeksforgeeks.org/power-set/
+
+    http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-fastest-way
+    for (int i = 0; i < A.length(); i++) {
+        for (int j = i+1; j <= A.length(); j++) {
+            System.out.println(A.substring(i,j));
+        }
+    }
