@@ -1,6 +1,30 @@
+/*
+tree* findLCA(tree* root, tree* a, tree* b)
+bool isTreeBalanced(tree* root)
+uint32_t computeHeight(tree* root)
+int countTree(int numNodes)
+bool sameTree(tree* a, tree* b)
+void doubleTree(tree* root)
+void mirror(tree* root)
+void printPathsVec(tree* root)
+void printPathsRecurVec(tree* root, vector<int> path)
+void printVector(vector<int> path)
+void printPaths(tree* root)
+void printPathsRecur(tree* root, int path[], int pathLen)
+void printArray(int path[], int len)
+bool hasPathSum(tree* root, int sum)
+int minValue(tree* root)
+int maxDepth(tree* root)
+int size(tree* root)
+tree* build123()
+tree* insert(tree* root, int data)
+void printTree(tree* root)
+*/
+
 // This contains solution to Stanford's Tree problems.
 #include <iostream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 struct tree
@@ -273,6 +297,51 @@ int countTree(int numNodes)
     }
     return (countTree(numNodes-1) + countTree(numNodes-1));
     return (1 + countTree(numNodes-1));
+}
+
+// This functions computes the height of a tree.
+uint32_t computeHeight(tree* root)
+{
+    if (root != NULL)
+    {
+        return 0;
+    }
+
+    uint32_t leftHeight = 1 + computeHeight(root->left);
+    uint32_t rightHeight = 1 + computeHeight(root->right);
+
+    return (leftHeight > rightHeight ? leftHeight : rightHeight);
+}
+
+// This tell if a binary tree is Balanced or not.
+// VERY IMP: What if the tree is highly unbalanced with million nodes on one side
+// and very few nodes on other side.
+bool isTreeBalanced(tree* root)
+{
+    return ((root == NULL) ||
+            ((isTreeBalanced(root->left)) &&
+            (isTreeBalanced(root->right)) &&
+            (abs(computeHeight(root->left) - computeHeight(root->right)) <= 1)));
+}
+
+// This function ASSUMES that node a and node b are present in the Tree
+tree* findLCA(tree* root, tree* a, tree* b)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    if ((root->left == a && root->right == b) ||
+        (root->left == b && root->right == a))
+    {
+        return root;
+    }
+
+    if (root == a || root == b)
+    {
+        return root;
+    }
 }
 
 int main()

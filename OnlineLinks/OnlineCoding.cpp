@@ -126,20 +126,18 @@ int main()
   // This will generate all permutations that is lesser than giving string.
   // So for "abc" we get only till "abb"
   // However for "cba" we get till "cac"
-  //genperms(permutations, "", 0, s, alphabet);
+  genperms(permutations, "", 0, s, alphabet);
   
-  cout << s << endl;
+  cout << "Original String: " << s << endl;
     
   //Print elements in permutations
-  /*
   for (auto str : permutations)
   {
     cout << str << ", ";    
   }
   cout << endl;
-  */  
     
-  cout << permutations.size() << endl;
+  cout << "Permutations Length: " << permutations.size() << endl;
   
   return 0;
 }

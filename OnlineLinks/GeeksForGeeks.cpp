@@ -13,8 +13,13 @@ void printArray(int arr[], int num)
     cout << endl;
 }
 
-// Given an array arr[], find the maximum j & i such that arr[j] > arr[i]
+// Given an array arr[], find the maximum j - i such that arr[j] > arr[i]
 // http://www.geeksforgeeks.org/given-an-array-arr-find-the-maximum-j-i-such-that-arrj-arri/
+//
+// Algorithm: Have two pointers "i" and "j". Check the following
+//      a[i] < a[j]     : return i and j
+//      a[i+1] < a[j]   : return i + 1 and j
+//      a[i] < a[j-1]   : return i and j -1
 int maxIndexDiff(int arr[], int num)
 {
     for (int i = 0, j = num - 1; i < j;)

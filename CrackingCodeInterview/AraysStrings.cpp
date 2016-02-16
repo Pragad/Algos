@@ -198,13 +198,14 @@ void setZeroMatrix(int (&matrix)[rows][cols])
 
 int main()
 {
-    cout << hasUniqueChars("hello", 5);
-    cout << endl;
-
-    cout << hasUniqueChars("helo", 4);
-    cout << endl;
-
     char* asdf = "hello";
+    char* qewr = "helo";
+    cout << hasUniqueChars(asdf, 5);
+    cout << endl;
+
+    cout << hasUniqueChars(qewr, 4);
+    cout << endl;
+
     // IMP: The below line will cause a segmentation fault.
     // http://stackoverflow.com/questions/1011455/is-it-possible-to-modify-a-string-of-char-in-c
     //asdf[0] = 'b';

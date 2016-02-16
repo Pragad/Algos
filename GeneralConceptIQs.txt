@@ -39,6 +39,46 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
      - Faster when reading from Disk and not everything can be in memory
      - Mergesort is faster when data won't fit into memory or when it's expensive to get to an item.
 
+1b. Bubble Sort vs Selection Sort vs Insertion Sort
+    http://www.sorting-algorithms.com/selection-sort
+    Bubble Sort:
+        - Check pair of elements and swap them so that the largest gets bubbled to the end.
+        PROS:
+            If array is almost sorted OR once we have the array sorted, we can STOP there.
+
+        Bubble sort has many of the same properties as insertion sort, but has slightly higher overhead.
+        In the case of nearly sorted data, bubble sort takes O(n) time, but requires at least 2 passes through the data (whereas insertion sort requires something more like 1 pass). 
+
+    Insertion Sort:
+        - What we have at any given time is sorted.
+        PROS:
+            Online Sorting
+            Can you binary search for inserting into a position
+
+        Although it is one of the elementary sorting algorithms with O(n2) worst-case time,
+        insertion sort is the algorithm of choice either when the data is nearly sorted (because it is adaptive) or when the problem size is small (because it has low overhead).
+
+        For these reasons, and because it is also stable, insertion sort is often used as the recursive base case
+        (when the problem size is small) for higher overhead divide-and-conquer sorting algorithms, such as merge sort or quick sort. 
+
+
+    BUBBLE SORT vs INSERTION SORT
+        Bubble sort always takes one more pass over array to determine if it's sorted.
+        On the other hand, insertion sort not need this -- once last element inserted, algorithm guarantees that array is sorted.
+
+        Bubble sort does n comparisons on every pass.
+        Insertion sort does less than n comparisons -- once algorith finds position where to insert current element it stops making comparisons and takes next element.
+
+    Selection Sort:
+        Select Minimum element each time and put it at the front.
+        PROS:
+            - Never have to do MORE THAN "n" swaps.
+
+        From the comparions presented here, one might conclude that selection sort should never be used.
+        It does not adapt to the data in any way (notice that the four animations above run in lock step), so its runtime is always quadratic.
+
+        However, selection sort has the property of minimizing the number of swaps.
+        In applications where the cost of swapping items is high, selection sort very well may be the algorithm of choice.
 
 2. But I heard that char a[] was identical to char *a.
    http://c-faq.com/aryptr/aryptr2.html
@@ -190,3 +230,5 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
             System.out.println(A.substring(i,j));
         }
     }
+
+

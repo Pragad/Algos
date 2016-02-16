@@ -182,7 +182,7 @@ int findAllOtherProducts(int array[], int num)
     {
         if (array[i] != 0)
         {
-            prod *= arr[i];
+            prod *= array[i];
         }
     }
 
@@ -265,7 +265,6 @@ void productAllOtherIndex(int array[], int num)
     }
 }
 
-/*
 //----------------------------------------------------------------------------------------------
 // Problem 4: Closest 2 numbers that add up to 100.
 // Algorithm: Find list of all numbers that add up to 100
@@ -273,7 +272,7 @@ void productAllOtherIndex(int array[], int num)
 //
 // Cons: Extra space complexity and Extra variables
 
-void closestSum(int arr[], unsigned int num, int targSum)
+void closestSumOld(int arr[], unsigned int num, int targSum)
 {
     unordered_map<int, int> diffHash;
     vector<int> firstIndex;
@@ -311,7 +310,6 @@ void closestSum(int arr[], unsigned int num, int targSum)
     
     cout << resIndex1 << " : " << resIndex2 << endl;
 }
-*/
 
 //----------------------------------------------------------------------------------------------
 // Problem 4b: Closest 2 numbers that add up to 100.
@@ -406,6 +404,7 @@ bool isLoopPresent(struct node* head)
 // using binary search.
 bool numExistsInArray(int array[], int startIdx, int endIdx, int num)
 {
+    // VERY IMP:
     // If we have just one element in the array, check if element is present
     if (startIdx == endIdx)
     {
