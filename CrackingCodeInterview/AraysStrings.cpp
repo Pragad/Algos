@@ -1,20 +1,8 @@
 // Chapter: Arrays and Strings
 #include <iostream>
 #include <stdlib.h>
+#include <bitset>
 using namespace std;
-
-#ifdef _WIN32
-typedef signed char 	        int8_t;
-typedef unsigned char 	        uint8_t;
-typedef signed short int 	    int16_t;
-typedef unsigned short int 	    uint16_t;
-typedef signed long int 	    int32_t;
-typedef unsigned long int 	    uint32_t;
-typedef signed long long int 	int64_t;
-typedef unsigned long long int 	uint64_t;
-#else
-#include <stdint.h>
-#endif
 
 // Arrays and Strings
 
@@ -39,6 +27,29 @@ bool hasUniqueChars(char* str, unsigned int strSize)
     return true;
 }
 
+// 1.1 Unique characters in a string using Bit Vector
+bool hasUniqueCharsBitSet(string str)
+{
+    // Total no. of Unicode characters can be 2^21.
+    // http://stackoverflow.com/questions/19212306/whats-the-difference-between-ascii-and-unicode
+    // 2^21 = 2097152 characters. It can be represented using 2097152 bits = 256KB
+    std::bitset<512> uniqChar;
+
+    for (char c : str)
+    {
+        if (uniqChar[c])
+        {
+            return false;
+        }
+        else
+        {
+            uniqChar[c] = 1;
+        }
+    }
+
+    return true;
+}
+
 // 1.2 Write code to reverse a C-Style String  (C-String means that “abcd” is represented as
 // five characters, including the null character )
 char* stringReverse(char* str, unsigned int strSize)
@@ -55,6 +66,44 @@ char* stringReverse(char* str, unsigned int strSize)
         str[j] = temp;
     }
     return str;
+}
+
+// 1.2b Reverse a String using "string" instead of "char*"
+string stringReverseStr(string str)
+{
+    char temp;
+
+    // IMP: have another variable to come backwards from strSize
+    // IMP: for loop requires only one "UNSIGNED INT"
+    for (unsigned int i = 0, j = str.size()-1; i < j; i++, j--)
+    {
+        str[i] = str[i] ^ str[j];
+        str[j] = str[i] ^ str[j];
+        str[i] = str[i] ^ str[j];
+
+        /*
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        */
+    }
+
+    return str;
+}
+
+// 1.2c String Reverse Recursive
+void stringReverseRec(string& str, uint32_t l, uint32_t r)
+{
+    if (l >= r)
+    {
+        return;
+    }
+    
+    char c = str[l];
+    str[l] = str[r];
+    str[r] = c;
+
+    stringReverseRec(str, l+1, r-1);
 }
 
 // 1.3 Remove duplicate characters in a string
@@ -198,45 +247,63 @@ void setZeroMatrix(int (&matrix)[rows][cols])
 
 int main()
 {
-    char* asdf = "hello";
-    char* qewr = "helo";
-    cout << hasUniqueChars(asdf, 5);
-    cout << endl;
+    // 1. Check if a string has all unique characters.
+    {
+        char asdf[] = "hello";
+        char qewr[] = "helo";
+        cout << "Unique 1: " << hasUniqueChars(asdf, 5);
+        cout << endl;
 
-    cout << hasUniqueChars(qewr, 4);
-    cout << endl;
+        cout << "Unique 2: " << hasUniqueChars(qewr, 4);
+        cout << endl;
+
+        string str = "hello";
+        cout << "Unique 3: " << hasUniqueCharsBitSet(str) << endl;
+    }
 
     // IMP: The below line will cause a segmentation fault.
     // http://stackoverflow.com/questions/1011455/is-it-possible-to-modify-a-string-of-char-in-c
     //asdf[0] = 'b';
+    {
+        char qwer[] = "mala";
+        string str = "mala";
+        cout << "String Rev 1: " << stringReverse(qwer, 4) << endl;
+        cout << "String Rev 2: " << stringReverseStr(str) << endl;
+        stringReverseRec(str, 0, str.length()-1);
+        cout << "String Rev 3: " << str << endl;
+        cout << endl;
+    }
 
-    char qwer[] = "mala";
-    cout << stringReverse(qwer, 4);
-    cout << endl;
+    {
+        char qwer[] = "mala";
+        cout << removeDuplicates(qwer, 4);
+        cout << endl;
 
-    cout << removeDuplicates(qwer, 4);
-    cout << endl;
+        char qwer1[] = "malaa";
+        cout << removeDuplicates(qwer1, 5);
+        cout << endl;
 
-    char qwer1[] = "malaa";
-    cout << removeDuplicates(qwer1, 5);
-    cout << endl;
+        char qwer2[] = "maaa";
+        cout << removeDuplicates(qwer2, 4);
+        cout << endl;
+    }
 
-    char qwer2[] = "maaa";
-    cout << removeDuplicates(qwer2, 4);
-    cout << endl;
-
-    char qwer3[] = "a b c";
-    cout << replaceSpace(qwer3, 5);
-    cout << endl;
+    {
+        char qwer3[] = "a b c";
+        cout << replaceSpace(qwer3, 5);
+        cout << endl;
+    }
 
 
-    int mat[4][3] = {{1,2,3}, {0,5,6}, {7,8,0}, {10,11,12}};
-    printMatrix(mat);
-    cout << endl;
+    {
+        int mat[4][3] = {{1,2,3}, {0,5,6}, {7,8,0}, {10,11,12}};
+        printMatrix(mat);
+        cout << endl;
 
-    setZeroMatrix(mat);
-    printMatrix(mat);
-    cout << endl;
+        setZeroMatrix(mat);
+        printMatrix(mat);
+        cout << endl;
+    }
 
 
     cout << endl;

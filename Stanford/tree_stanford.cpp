@@ -83,9 +83,9 @@ tree* build123()
 {
     struct tree* root = NULL;
 
+    root = insert(root, 4);
     root = insert(root, 5);
     root = insert(root, 3);
-    root = insert(root, 4);
     root = insert(root, 7);
     root = insert(root, 6);
 
@@ -327,21 +327,58 @@ bool isTreeBalanced(tree* root)
 // This function ASSUMES that node a and node b are present in the Tree
 tree* findLCA(tree* root, tree* a, tree* b)
 {
+    cout << "0. Root: " << root << " ; a: " << a << " ; b: " << b << endl;
     if (root == NULL)
     {
+        //cout << "1. " << endl;
         return NULL;
     }
 
+    // IMP: This doesnot cover the following edge case.
+    // When either is the direct child of other. 
+    /*
     if ((root->left == a && root->right == b) ||
         (root->left == b && root->right == a))
     {
         return root;
     }
+    */
 
+    // Fix for the above problem
     if (root == a || root == b)
     {
+        //cout << "2. " << endl;
         return root;
     }
+
+    tree* la = findLCA(root->left, a, b);
+    tree* ra = findLCA(root->right, a, b);
+
+    if (la != NULL && ra != NULL)
+    {
+        //cout << "3. " << endl;
+        return root;
+    }
+
+    else if (la != NULL)
+    {
+        //cout << "4. " << endl;
+        return la;
+    }
+    else
+    {
+        //cout << "5. " << endl;
+        return ra;
+    }
+}
+
+int findLCANum(tree* root)
+{
+    tree* result = new tree();
+
+    result = findLCA(root, root, root);
+    //result = findLCA(root, root->right->right->left, root->left);
+    return result->data;
 }
 
 int main()
@@ -367,6 +404,7 @@ int main()
 
     cout << "Mirror of a Node" << endl;
     printTree(root);
+    /*
     cout << endl;
     mirror(root);
     printTree(root);
@@ -375,6 +413,11 @@ int main()
     cout << "Doubling a tree" << endl;
     doubleTree(root);
     printTree(root);
+    */
+
+    cout << endl << "LCA" << endl;
+    cout << findLCANum(root) << endl;
     cout << endl;
+
     return 0;
 }

@@ -3,6 +3,9 @@
 #include <unordered_map>
 using namespace std;
 
+// ------------------------------------------------------------------------------------------------
+// Problem 1: Fibonacci of a number
+// ------------------------------------------------------------------------------------------------
 unsigned int fibonacci(int n)
 {
     // VERY IMP: // If N is less than 2, return n
@@ -62,11 +65,13 @@ unsigned int fibonacciDynamic2(int n)
     return result;
 }
 
-// Problem 1: Ladder Problem
+// ------------------------------------------------------------------------------------------------
+// Problem 2: Ladder Problem
 // Algorithm: Used Dynamic Programming to get the result.
 // So Complexity is O(N).
 // I store the "n-1" and "n-2" lader positions. Then I append
 // '1' to 'n-1' positions and '2' to all 'n-2' positions.
+// ------------------------------------------------------------------------------------------------
 
 // Utility function to print a Vector of Vector
 void printVecOfVec(vector< vector<unsigned int> > vecOfVec)
@@ -188,17 +193,196 @@ void ladderRec(unsigned int number)
     delete[] strPath;
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 3: Longest Common Subsequence
+// ------------------------------------------------------------------------------------------------
+uint32_t longestIncreasingSubSequence(int arr[], int num)
+{
+    if (num < 2)
+    {
+        return 1;
+    }
 
+    uint32_t maxSoFar;
+    uint32_t endIdx;
+    int DP[num];
+    DP[0] = 1;
+    
+    for (uint32_t i = 1; i < num; i++)
+    {
+        DP[i] = 1;
+        for (int32_t j = i-1; j >=0; j--)
+        {
+            if ((DP[j] + 1 > DP[i]) && (arr[j] < arr[i]))
+            {
+                DP[i] = DP[j] + 1;
+            }
+        }
+
+        if (DP[i] > maxSoFar)
+        {
+            maxSoFar = DP[i];
+            endIdx = i;
+        }
+    }
+
+    return maxSoFar;
+}
+
+uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
+{
+    if (nums.size() < 2)
+    {
+        return 1;
+    }
+
+    // VERY IMP
+    // maxSoFar should be initialized
+    uint32_t maxSoFar = 0;
+    uint32_t endIdx;
+    int DP[nums.size()];
+    DP[0] = 1;
+    
+    for (uint32_t i = 1; i < nums.size(); i++)
+    {
+        DP[i] = 1;
+        for (int32_t j = i-1; j >=0; j--)
+        {
+            if ((DP[j] + 1 > DP[i]) && (nums[j] < nums[i]))
+            {
+                DP[i] = DP[j] + 1;
+            }
+        }
+
+        if (DP[i] > maxSoFar)
+        {
+            maxSoFar = DP[i];
+            endIdx = i;
+        }
+    }
+
+    return maxSoFar;
+}
+
+// O(n log(n)) dynamic programming approach
+// VERY IMP:
+// Should find the FIRST NUMBER that is large or EQUAL.
+uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
+{
+    uint32_t low = 0;
+    uint32_t high = longIncSeq.size()-1;
+
+    if (longIncSeq.size() < 1)
+    {
+        return 0;
+    }
+
+    if (num < longIncSeq[0])
+    {
+        return 0;
+    }
+
+    if (num > longIncSeq[longIncSeq.size()-1])
+    {
+        return longIncSeq.size();
+    }
+
+    while (low < high)
+    {
+        uint32_t middle = (low + high) / 2;
+
+        // VERY IMP ">=" NOT ">"
+        if (longIncSeq[middle] >= num)
+        {
+            // Check if the previous element is lesser than the middle. That means
+            // middle is the first element greater.
+            if ((middle - 1) >= 0 && longIncSeq[middle - 1] <= num)
+            {
+                return middle;
+            }
+            high = middle - 1;
+        }
+        else
+        {
+            // Check if the next element is greater than the middle. That means
+            // middle element is the first element smaller.
+            if ((middle + 1) < longIncSeq.size() && longIncSeq[middle + 1] > num)
+            {
+                return middle + 1;
+            }
+            low = middle + 1;
+        }
+    }
+}
+
+uint32_t longestIncreasingSubseq(vector<int> nums)
+{
+    if (nums.size() < 2)
+    {
+        return nums.size();
+    }
+ 
+    vector<int> longIncSeq;
+    uint32_t maxLisLen = 1;
+    longIncSeq.push_back(nums[0]);
+
+    for (uint32_t i = 1; i < nums.size(); i++)
+    {
+        // Check if the number is greater than the LAST number in the DP array
+        // If so add it to our LIS list.
+        if (nums[i] > longIncSeq[longIncSeq.size()-1])
+        {
+            longIncSeq.push_back(nums[i]);
+            maxLisLen++;
+        }
+
+        // VERY IMP: Less OR EQUAL
+        else if (nums[i] <= longIncSeq[0])
+        {
+            // If the new element is less than the first element, put in in the first
+            // position and start from beginning
+            longIncSeq[0] = nums[i];
+        }
+
+        else
+        {
+            // Find the First element that is greater than the current element
+            // and insert the new element there
+            uint32_t index = findFirstLargerElement(longIncSeq, nums[i]);
+            longIncSeq[index] = nums[i];
+        }
+    }
+
+    return maxLisLen;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Main Function
+// ------------------------------------------------------------------------------------------------
 int main()
 {
-    int n = 10;
-    cout << "1. " << fibonacci(n) << endl;
-    cout << "2. " << fibonacciDynamic(n) << endl;
+    {
+        int n = 10;
+        cout << "1. " << fibonacci(n) << endl;
+        cout << "2. " << fibonacciDynamic(n) << endl;
 
-    cout << "3. " << fibonacciDynamic2(n) << endl;
-    //ladderDynamic(6);
+        cout << "3. " << fibonacciDynamic2(n) << endl;
+    }
 
-    ladderRec(3);
+    // Problem 2. Ladder Problem
+    {
+        ladderRec(3);
+    }
+
+    // Problem 3. Longest Increasing Subsequence
+    {
+        int arr[] = {10,9,2,5,3,7,101,18};
+        vector<int> vec5 = {3,5,6,2,5,4,19,5,6,7,12};
+
+        cout << "LIS 1: " << longestIncreasingSubSequenceVec(vec5) << endl;
+        cout << "LIS 2: " << longestIncreasingSubseq(vec5) << endl << endl;
+    }
+
     cout << endl;
     return 0;
 }
