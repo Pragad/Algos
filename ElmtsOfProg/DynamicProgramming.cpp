@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <algorithm> // fill_n
+#include <cstring>
 using namespace std;
 
 // ------------------------------------------------------------------------------------------------
@@ -160,7 +162,7 @@ void ladderRec(unsigned int number)
 // Problem 1: Print paths down a ladder
 // Algorithm: Use recursion to print the paths
 //            One call to the function is made for every single path entry.
-
+// http://www.geeksforgeeks.org/count-ways-reach-nth-stair/
 void ladderPathsRec(char* strPath, unsigned int num, unsigned int recLevel)
 {
     if (num == 0)
@@ -194,16 +196,16 @@ void ladderRec(unsigned int number)
 }
 
 // ------------------------------------------------------------------------------------------------
-// Problem 3: Longest Common Subsequence
+// Problem 3: Longest Increasing Subsequence
 // ------------------------------------------------------------------------------------------------
 uint32_t longestIncreasingSubSequence(int arr[], int num)
 {
     if (num < 2)
     {
-        return 1;
+        return num;
     }
 
-    uint32_t maxSoFar;
+    uint32_t maxSoFar = 0;
     uint32_t endIdx;
     int DP[num];
     DP[0] = 1;
@@ -233,7 +235,7 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
 {
     if (nums.size() < 2)
     {
-        return 1;
+        return nums.size();
     }
 
     // VERY IMP
@@ -264,9 +266,9 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
     return maxSoFar;
 }
 
+// Utility function to calculate LIS
 // O(n log(n)) dynamic programming approach
 // VERY IMP:
-// Should find the FIRST NUMBER that is large or EQUAL.
 uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
 {
     uint32_t low = 0;
@@ -315,6 +317,8 @@ uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
     }
 }
 
+// Better Algorithm than Previous DP solution
+// Complexity is O(N log N). Uses binary search
 uint32_t longestIncreasingSubseq(vector<int> nums)
 {
     if (nums.size() < 2)
@@ -357,6 +361,108 @@ uint32_t longestIncreasingSubseq(vector<int> nums)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 4: Longest Increasing Subsequence
+//            Using Recursion
+// ------------------------------------------------------------------------------------------------
+uint32_t longestCommonSubSequenceRec(string str1, string str2)
+{
+    // Even if one string is 0, then we don't have to go further
+    if (str1.length() == 0 || str2.length() == 0)
+    {
+        return 0;
+    }
+
+    if (str1[str1.length()-1] == str2[str2.length()-1])
+    {
+        return 1 + longestCommonSubSequenceRec(str1.substr(0, str1.length()-1),
+                                               str2.substr(0, str2.length()-1));
+    }
+    else
+    {
+        return max(longestCommonSubSequenceRec(str1.substr(0, str1.length()-1), str2),
+                   longestCommonSubSequenceRec(str1, str2.substr(0, str2.length()-1)));
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 4: Longest Increasing Subsequence
+//            Using DP
+// ------------------------------------------------------------------------------------------------
+uint32_t longestCommonSubSequenceDP(string str1, string str2)
+{
+    // Even if one string is 0, then we don't have to go further
+    if (str1.length() == 0 || str2.length() == 0)
+    {
+        return 0;
+    }
+    
+    // VERY IMP. To initialize a 2D array to 0.
+    uint32_t subSeqDP[str1.length()+1][str2.length()+1] = {{0}};
+    
+    // STD:FILL NOT WORKING
+    //std::fill_n(subSeqDP, ((str1.length()+1) * (str2.length()+1)), 0);
+    //std::fill_n(subSeqDP, (sizeof subSeqDP / sizeof **subSeqDP), 0);
+    memset(subSeqDP, 0, sizeof(subSeqDP));
+
+    for(uint32_t i = 1; i <= str1.length(); i++)
+    {
+        for(uint32_t j = 1; j <= str2.length(); j++)
+        {
+            if (str1[i-1] == str2[j-1])
+            {
+                subSeqDP[i][j] = 1 + subSeqDP[i-1][j-1];
+            }
+            else
+            {
+                subSeqDP[i][j] = max(subSeqDP[i-1][j], subSeqDP[i][j-1]);
+            }
+        }
+    }
+
+
+    cout << endl;
+    for (uint32_t i = 0; i <= str1.length(); i++)
+    {
+        for (uint32_t j = 0; j <= str2.length(); j++)
+        {
+            cout << subSeqDP[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // To print out the LCS
+    string strLcs;
+    // VeRY IMP: Start from Length
+    for (int i = str1.length(), j = str2.length(); i > 0 && j > 0;)
+    {
+        cout << str1[i] << " " << str2[j] << endl;
+
+        // VERY IMP: Should compare i-1 and j-1
+        if (str1[i-1] == str2[j-1])
+        {
+            strLcs += str1[i-1];
+            i--;
+            j--;
+        }
+        else
+        {
+            if (subSeqDP[i-1][j] > subSeqDP[i][j-1])
+            {
+                i--;
+            }
+            else
+            {
+                j--;
+            }
+        }
+    }
+
+    reverse(strLcs.begin(), strLcs.end());
+    cout << "LCS String: " << strLcs << endl;
+    return subSeqDP[str1.length()][str2.length()];
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -381,6 +487,24 @@ int main()
 
         cout << "LIS 1: " << longestIncreasingSubSequenceVec(vec5) << endl;
         cout << "LIS 2: " << longestIncreasingSubseq(vec5) << endl << endl;
+    }
+
+    // Problem 4. Longest Common Subsequence
+    {
+        string str1 = "ABCDGH";
+        string str2 = "AEDFHR";
+        string str3 = "MZJAWXU";
+        string str4 = "XMJYAUZ";
+        cout << "LCS 1: " << longestCommonSubSequenceRec(str1, str2) << endl;
+        cout << "LCS 2: " << longestCommonSubSequenceDP(str3, str4) << endl;
+
+        char X[] = "MZJAWXU";
+        char Y[] = "XMJYAUZ";
+          
+        int m = strlen(X);
+        int n = strlen(Y);
+          
+        lcs(X, Y, m, n);
     }
 
     cout << endl;

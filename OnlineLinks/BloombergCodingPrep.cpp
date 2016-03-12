@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
+#include <algorithm> // std::fill_n
 using namespace std;
 
 struct node
@@ -92,6 +93,49 @@ void ladderDynamic(int number)
     printVecOfVec(vecResult);
 }
 
+
+//----------------------------------------------------------------------------------------------
+// Problem 1b: Fibonacci of a number
+//----------------------------------------------------------------------------------------------
+uint32_t fibonacciOfNumber(uint32_t num)
+{
+    if (num <= 1)
+    {
+        return num;
+    }
+    return fibonacciOfNumber(num - 1) + fibonacciOfNumber(num - 2);
+}
+
+uint32_t fibonacciOfNumberDP(uint32_t num)
+{
+    uint32_t fib[num];
+    std:fill_n(fib, num, 0);
+    fib[0] = 0;
+    fib[1] = 1;
+
+    for (uint32_t i = 2; i <= num; i++)
+    {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+
+    return fib[num];
+}
+
+uint32_t fibonacciOfNumberDPOpt(uint32_t num)
+{
+    uint32_t prev = 0;
+    uint32_t cur = 1;
+    uint32_t next;
+
+    for (uint32_t i = 2; i <= num; i++)
+    {
+        next = cur + prev;
+        prev = cur;
+        cur = next;
+    }
+
+    return next;
+}
 
 //----------------------------------------------------------------------------------------------
 // Problem 2: Square root of a number
@@ -249,7 +293,8 @@ void productAllOtherIndex(int array[], int num)
     {
         unsigned int zeroIndex = findZeroIndexInArray(array, num);
 
-        // As we have two elements as zero, set all the values to 0.
+        // As we have one elements as zero, set all the values to 0.
+        // And then set the remaining one digit
         std::fill(array, array + num, 0);
         
         array[zeroIndex] = findAllOtherProducts(array, num);
@@ -376,6 +421,7 @@ bool isLoopPresent(struct node* head)
     {
         head = head->next;
 
+        // VERY IMP: Should check for FAST PTR next and NOT head->next
         if (fastPtr->next != NULL)
         {
             fastPtr = fastPtr->next->next;
@@ -441,6 +487,34 @@ bool numExists(int array[], int array_len, int num)
     }
 }
 
+bool numExistsNew(int array[], uint32_t arrayLen, int num)
+{
+    if (arrayLen < 1)
+    {
+        return false;
+    }
+
+    if (arrayLen == 1)
+    {
+        return array[0] == num;
+    }
+
+    uint32_t midPos = arrayLen / 2;
+
+    if (array[midPos] == num)
+    {
+        return true;
+    }
+    else if (array[midPos] > num)
+    {
+        return numExistsNew(array, midPos, num);
+    }
+    else
+    {
+        return numExistsNew(array + midPos + 1, num - (midPos + 1), num);
+    }
+}
+
 //----------------------------------------------------------------------------------------------
 int main()
 {
@@ -448,5 +522,17 @@ int main()
     int arr[] = {1, 3, 4, 2, 3, 8};
     closestSum(arr, sizeof(arr) / sizeof(int), 6);
     //ladderDynamic(6);
+
+    {
+        cout << fibonacciOfNumber(6) << endl;
+        cout << fibonacciOfNumberDP(6) << endl;
+        cout << fibonacciOfNumberDPOpt(6) << endl;
+    }
+
+    {
+        int arr[] = {1, 3, 4, 6, 7, 8};
+        cout << "IsPresent: " << numExistsNew(arr, sizeof(arr) / sizeof(arr[0]), 9) << endl;
+    }
+
     return 0;
 }

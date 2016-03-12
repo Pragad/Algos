@@ -67,7 +67,7 @@ void insertionSortOptimized(int arr[] uint32_t num)
 {
     for (uint32_t i = 1; i < num; i++)
     {
-        for (uint32_t j = i; j < 0 && arr[j - 1] > arr[j]; j--)
+        for (uint32_t j = i; j > 0 && arr[j - 1] > arr[j]; j--)
         {
             swapInt(arr[j-1], arr[j]);
         }

@@ -3,19 +3,6 @@
 #include <cmath>
 using namespace std;
 
-/*
-#ifdef _WIN32
-typedef char 	                int8_t;
-typedef unsigned char 	        uint8_t;
-typedef unsigned short int 	    uint16_t;
-typedef unsigned int 	        uint32_t;
-typedef unsigned long long int 	uint64_t;
-#else
-#include <stdint.h>
-#endif
-*/
-
-
 // Q: 5.1 Compute the Parity of a number
 bool computeParity(uint64_t number)
 {
@@ -190,5 +177,3 @@ int main()
     cout << endl;
     return 0;
 }
-
-

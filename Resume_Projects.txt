@@ -1,0 +1,270 @@
+2016/02/02
+
+1. Locality based Mobile Search
+    A. Problem:
+        Search results for a user who is on the move should consider their location.
+
+    B. How you solved it:
+        - Used vector of travel history to compute the FUTURE LOCATION of the user.
+        - True vector is calculated by SUMMING UP all the previous vectors in our history.
+        - Difference in LAT and LONG is divided by the difference in TIME to normalize the vectors w.r.t time
+        - Find the FUTURE position by Defaulting TIME to 120 seconds from the current position.
+
+        - GOOGLE PLACES API is used as our search engine.
+        - IT provides the ability to perform a location based search using an ARBITRARY LOCATION
+        - LIMITATION - 1000 user queries each day
+        - WE give HTTP request as INPUT and get JSON as OUTPUT
+
+        SAVE ENERGY:
+        - Query repeatedly until we get a consistency in user's movement. After that exponentially backoff the querying
+        - If change of direction happens then frequent querying
+
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+        - Signal LOSS and GPS fluctuation:
+            - Found the average speed of the user and do an approximation
+        - Drastic change of direction
+            - Using vector summation and LOWERING the window of history
+
+        - IMPOSSIBLE FUTURE LOCATION:
+            - For the current speed future location showed in the ocean
+            - Used REVERSE GEO-CODING to overcome it.
+
+        - Impossible speed
+            - Speed can go as high as 100mph which is impossible.
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2. Filesystem
+    A. Problem:
+        - Given a 50K block create a hierarchial file system.
+        - Create Files and Directories.
+        - A file can have max of 504 bytes
+        - A directory can have max of 10 entries inside it.
+
+    B. How you solved it:
+        - A linked list to track all available blocks
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+In a 50k memory, designed directory and file structure in such a way that each file or directory takes 512 bytes(considered to be sector size).
+User functionalities are to create or delete a directory, open, close, read, write or seek to the file content. 
+
+1. To provide the user with no restriction in the size of file or directory (to deploy flat structure), I added dynamic creation of files and directories to the parent node when the size limit exceeds. In this way, the user will not be affected by the 512 bytes size restriction for a file or directory.
+
+2. If the system's free block is not handled properly, there will be external fragmentation. Hence to solve that I created a linked list of blocks which is always in sorted order so that whenever there is file or directory deletion the blocks are inserted. Similarly when a file or directory is created, first available block from the linked list wil be used.
+
+I would first test the project with basic test cases and verify if the core of my design works without any issues. As a second step, I will test with corner cases and add exception handling. Then, I will improve the performance of the project. I will also try to make my project reusable by splitting my code into smaller modules.
+
+Later I will extend my project by adding nice to have features (like adding back or delete shortcut to above project). If I have more time I would concentrate on including support for GUI various fancy formats, different design and patterns which can improve user experience.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3. RFP Software Match
+    A. Problem:
+        - Allows user to upload RFP files for software the user is looking for. 
+        - Searches the Civic Commons repository for applications mathcing to the user's RFP
+        - Gets a list of mathcing software for the uploaded RFP
+
+        - Log in through the user's Twitter id
+
+    B. How you solved it:
+        - 3 data stores
+            - 1. To store the CIVIC Commons repository.
+                - Periodically run the SCRAPER WIKI script and update the repository
+
+            - 1. Apptype:  <ID, AppName, AppDescription, AppURL>
+
+            - 2. RFPCollectionType: <ID, UserName, RFPName, RFPBody>
+
+        - Lucene indexer is used to match the description of APPLICATIONS got from RFP with with description
+          got from CIVIC commons repo.
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4. Instant Indoor Localization
+    A. Problem:
+        - When a stranger is inside a building they don't know their current position and the way out
+        - WiFi is not available in ALL AREAS
+        - GPS is useful only outdoor
+
+    B. How you solved it:
+        - Use Bluetooth + Accousitics + Accelerometer to find the current position on a floor map
+        - Bluetooth find approximate position
+        - Accoustics give if INDOOR or OUTDOOR
+        - Accelerometer to find the behavior of a person
+        - Compass is used to eliminate unreachable co-ordinates
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5. Animats
+    A. Problem:
+
+    B. How you solved it:
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6. Haplotype
+    A. Problem:
+
+    B. How you solved it:
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7. Sentiment based review system
+    A. Problem:
+        - Evaluate individual features of a product instead of a overall product
+        - Subjective nature of a user review
+
+    B. How you solved it:
+        - Extract FEATURES and find SENTIMENT for the features.
+        1. Did PART OF SPEECH tagging on a sentence. 
+            - This will tell the NOUNS and the ADJECTIVES
+        2. Used APRIORI algorithm to extract features.
+            http://nikhilvithlani.blogspot.com/2012/03/apriori-algorithm-for-data-mining-made.html
+        3. Used SENTIMENT ANALYSIS to find about the feature
+            - Identified the polarity to remove ambiguous sentiment values.
+        - Used BIGRAMS to overcome words like "battery life"
+        - Used a BAG of ADJECTIVES
+
+    C. Interesting Stuffs:
+        - From ANALYSIS found that running APRIORI on smaller data sets give precise results.
+
+    D. Challenges and How you fixed it:
+        - phrases like "blocks the lens"
+
+    E. Additional Notes:
+        - should use SVMs a better classifier.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8. MIMO Antenna Power Allocation
+    A. Problem:
+
+    B. How you solved it:
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9. Directory Usage Statistics
+    A. Problem:
+
+    B. How you solved it:
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10. Parallel Processing using Threads
+    A. Problem:
+        - Several image operations and parallel programming for performance improvement.
+
+    B. How you solved it:
+        - Used Open MP's to achieve parallel processing
+        - #pragma directive to paralallize the for loops
+
+        Scaling
+        Rotation
+            - Rotate by irregular angles was a challenge.
+            - filled white spaces by averaging the colors
+            - calculated new height of the image.
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+11. Final Paper - quorum based geo location service
+    A. Problem:
+
+    B. How you solved it:
+
+    C. Interesting Stuffs:
+
+    D. Challenges and How you fixed it:
+
+    E. Additional Notes:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+VMware
+Developed a model to estimate the space consumption of Virtual Machine images during VMotion.
+Involved estimating the space savings due to Deduplication in the storage array.
+Applied Bloom filters, hash comparison and sampling technique to compare our model with SDFS and LessFS volumes.
+
+RFP Software Matcher
+Worked on developing a web application that proposes already existing software solution based on uploaded RFPs (Request for Proposal).
+Used ScraperWiki to crawl Civic Commons website and extract all software information.
+This is a part of the Code-for-America initiative.
+Won a GitHub Bronze award from Cloud-foundry organization.
+Technologies and Languages used: Spring MVC, Python, ScraperWiki, HTML5, CSS3, JS, jQuery
+
+Animats - Imitation Learning and Reinforcement Learning
+Developed an animat learning environment where a cub learns hunting behavior from Lion.
+Single feed forward neural network is used to implement imitation and reinforcement learning.
+Made use of Java Repast library to creat the predator-prey scenrio in which the predator learns to hunt the prey.
+
+
+Mobile Search
+Developed an android application with improved location based searching for highly mobile users.
+Predict future location based on user's vector of travel using Google Maps and Google Places API
+Improving energy efficieny by calculating the consistency in the user's vector of travel
+
+Haplotype Assembly
+The Project aims to reassemble the haplotypes by linking the reads together.
+Align the reads to a reference genome to find out the SNP (Single Nucleotide Polymorphism) positions.
+Build a greedy algorithm for haplotype phasing from sequence reads, allowing for sequencing errors.
+
+Image Processing - Open MP Parallel Programming 
+
+
+
+
+Chord P2P Protocol
+
+
+--------------------
+•	Instant Indoor localization
+•	Mobile Search
+	Animats - Imitation Learning and Reinforcement Learning
+	RFP Matcher
+•	Sentiment-based Review System for Product features:
+	Hapltotype Assembly
+•	Antenna Power Allocation for Energy Save in MIMO 802.11n Networks
+	Chord P2P Protocol
+•	Image Processing - Open MP Parallel Programming 
+	Directory Usage Statistics:

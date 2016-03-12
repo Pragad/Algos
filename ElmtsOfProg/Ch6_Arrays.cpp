@@ -58,11 +58,6 @@ void threeWayQuickSort(int arr[], int num)
 
     for (int i = 0; i <= endIdx; i++)
     {
-        cout << endl << "Iteration: " << i << endl;
-        printArray(arr, num);
-        cout << "0. i: " << i << "; eqIdx: " << eqIdx << "; endIdx: " << endIdx \
-             << "; endFlag: "<< endFlag << endl;
-
         // Traverse from End till you find an element that
         // is less than or equal to pivot.
         while (endIdx > i &&
@@ -71,8 +66,6 @@ void threeWayQuickSort(int arr[], int num)
         {
             endIdx--;
         }
-        cout << "1. i: " << i << "; eqIdx: " << eqIdx << "; endIdx: " << endIdx \
-             << "; endFlag: "<< endFlag << endl;
 
         if (arr[i] > pivot)
         {
@@ -84,10 +77,6 @@ void threeWayQuickSort(int arr[], int num)
             i--;
             endIdx--;
             endFlag = true;
-
-            cout << "2. i: " << i << "; eqIdx: " << eqIdx << "; endIdx: " << endIdx \
-                 << "; endFlag: "<< endFlag << endl;
-
         }
         else if (arr[i] < pivot)
         {
@@ -96,9 +85,6 @@ void threeWayQuickSort(int arr[], int num)
             arr[i] = arr[eqIdx];
             arr[eqIdx] = temp;
             eqIdx++;
-
-            cout << "3. i: " << i << "; eqIdx: " << eqIdx << "; endIdx: " << endIdx \
-                 << "; endFlag: "<< endFlag << endl;
         }
         else
         {
@@ -150,11 +136,10 @@ int numBitsPresent(int num)
     return (log2(num) + 1);
 }
 
-// 6.10 Find all subsets of an array
+// 6.3 Find all subsets of an array
 void printAllSubset(int arr[], int num)
 {
     int powerSetSize = pow(2, num);
-    cout << powerSetSize << endl;
 
     for (int i = 0; i < powerSetSize; i++)
     {
@@ -206,9 +191,7 @@ void printAllSubSring(int arr[], int num)
     }
 }
 
-vector < vector <int> > subsetVec;
-
-void copyVectorToItself()
+void copyVectorToItself(vector < vector <int> >& subsetVec)
 {
     int vecSize = subsetVec.size();
     for (int i = 0; i < vecSize; i++)
@@ -217,7 +200,7 @@ void copyVectorToItself()
     }
 }
 
-void printVectorOfVectors()
+void printVectorOfVectors(vector < vector <int> > subsetVec)
 {
     for (int i = 0; i < subsetVec.size(); i++)
     {
@@ -231,7 +214,7 @@ void printVectorOfVectors()
 
 // http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
 // 6.10b Recrusive way to find all substrings
-void printAllSubsetRec(int arr[], int sI, int eI)
+void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subsetVec)
 {
 
     if (eI == sI)
@@ -241,10 +224,10 @@ void printAllSubsetRec(int arr[], int sI, int eI)
     }
     else
     {
-        printAllSubsetRec(arr, sI, eI - 1);
+        printAllSubsetRec(arr, sI, eI - 1, subsetVec);
 
         int prevSize = subsetVec.size();
-        copyVectorToItself();
+        copyVectorToItself(subsetVec);
 
         for (int i = prevSize; i < subsetVec.size(); i++)
         {
@@ -276,8 +259,8 @@ int main()
     printArray(arr, sizeof(arr) / sizeof(int));
 
     cout << "Three Way Quick Sort" << endl;
-    // threeWayQuickSort(arr, sizeof(arr) / sizeof(int));
-    //printArray(arr, sizeof(arr) / sizeof(int));
+    threeWayQuickSort(arr, sizeof(arr) / sizeof(int));
+    printArray(arr, sizeof(arr) / sizeof(int));
 
 
     //int arr2[] = {7, 9, 5, 6, 3, 2}; 
@@ -289,12 +272,14 @@ int main()
     int arr3[] = {1, 2, 3, 4};
     printAllSubset(arr3, sizeof(arr3) / sizeof(int));
     cout << endl;
+    cout << "Print All Substring" << endl;
     printAllSubSring(arr3, sizeof(arr3) / sizeof(int));
     cout << endl;
 
     int arr4[] = {1, 2, 3, 4};
     cout << "Print All Subsets Using Recursion" << endl;
-    printAllSubsetRec(arr4, 0, sizeof(arr4) / sizeof(int) - 1);
-    printVectorOfVectors();
+    vector < vector <int> > subsetVec;
+    printAllSubsetRec(arr4, 0, sizeof(arr4) / sizeof(int) - 1, subsetVec);
+    printVectorOfVectors(subsetVec);
     cout << endl;
 }

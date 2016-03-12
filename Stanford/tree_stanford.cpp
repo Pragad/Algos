@@ -58,6 +58,20 @@ void printTree(tree* root)
     }
 }
 
+void printTreeInorder(tree* root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    else
+    {
+        printTreeInorder(root->left);
+        cout << root->data << "  ";
+        printTreeInorder(root->right);
+    }
+}
+
 tree* insert(tree* root, int data)
 {
     if (root == NULL)
@@ -92,6 +106,10 @@ tree* build123()
     return root;
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 1.
+//      Compute the Number of nodes in the tree
+// ------------------------------------------------------------------------------------------------
 int size(tree* root)
 {
     if (root == NULL)
@@ -104,6 +122,10 @@ int size(tree* root)
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 2.
+//      Compute the max depth in the tree
+// ------------------------------------------------------------------------------------------------
 int maxDepth(tree* root)
 {
     if (root == NULL)
@@ -118,6 +140,10 @@ int maxDepth(tree* root)
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 3.
+//      Compute the minimum value
+// ------------------------------------------------------------------------------------------------
 int minValue(tree* root)
 {
     while (root != NULL)
@@ -130,6 +156,10 @@ int minValue(tree* root)
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 4.
+//      Compute if there is path that matches the sum
+// ------------------------------------------------------------------------------------------------
 bool hasPathSum(tree* root, int sum)
 {
     if (root == NULL)
@@ -151,6 +181,10 @@ bool hasPathSum(tree* root, int sum)
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 5.
+//      Compute the Paths recursively
+// ------------------------------------------------------------------------------------------------
 void printArray(int path[], int len)
 {
     for (int i = 0; i < len; i++)
@@ -187,6 +221,10 @@ void printPaths(tree* root)
     printPathsRecur(root, path, 0);
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 6.
+//      Compute the paths using vector
+// ------------------------------------------------------------------------------------------------
 // Using Vectors to print the path
 void printVector(vector<int> path)
 {
@@ -225,6 +263,10 @@ void printPathsVec(tree* root)
     printPathsRecurVec(root, vPath);
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 7.
+//      Compute the mirror of a tree
+// ------------------------------------------------------------------------------------------------
 void mirror(tree* root)
 {
     if (root == NULL)
@@ -240,6 +282,10 @@ void mirror(tree* root)
     root->right = temp;
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 8.
+//      Compute the double of a tree
+// ------------------------------------------------------------------------------------------------
 void doubleTree(tree* root)
 {
     if (root == NULL)
@@ -263,6 +309,10 @@ void doubleTree(tree* root)
     doubleTree(tmpR);
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 9.
+//      Compute if two trees are same
+// ------------------------------------------------------------------------------------------------
 bool sameTree(tree* a, tree* b)
 {
     if (a == NULL && b == NULL)
@@ -289,6 +339,10 @@ bool sameTree(tree* a, tree* b)
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 10.
+//      Count the number of possible trees
+// ------------------------------------------------------------------------------------------------
 int countTree(int numNodes)
 {
     if (numNodes == 0 || numNodes == 1)
@@ -299,6 +353,10 @@ int countTree(int numNodes)
     return (1 + countTree(numNodes-1));
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 11.
+//      Compute the max height of a tree
+// ------------------------------------------------------------------------------------------------
 // This functions computes the height of a tree.
 uint32_t computeHeight(tree* root)
 {
@@ -313,9 +371,12 @@ uint32_t computeHeight(tree* root)
     return (leftHeight > rightHeight ? leftHeight : rightHeight);
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 12.
 // This tell if a binary tree is Balanced or not.
 // VERY IMP: What if the tree is highly unbalanced with million nodes on one side
 // and very few nodes on other side.
+// ------------------------------------------------------------------------------------------------
 bool isTreeBalanced(tree* root)
 {
     return ((root == NULL) ||
@@ -324,7 +385,11 @@ bool isTreeBalanced(tree* root)
             (abs(computeHeight(root->left) - computeHeight(root->right)) <= 1)));
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 13.
+//      Compute the LCA of a tree
 // This function ASSUMES that node a and node b are present in the Tree
+// ------------------------------------------------------------------------------------------------
 tree* findLCA(tree* root, tree* a, tree* b)
 {
     cout << "0. Root: " << root << " ; a: " << a << " ; b: " << b << endl;
@@ -381,6 +446,226 @@ int findLCANum(tree* root)
     return result->data;
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 14
+// http://www.geeksforgeeks.org/find-the-maximum-sum-path-in-a-binary-tree/
+//
+//  Given a Binary Tree, find the maximum sum path from a leaf to root.
+//  For example, in the following tree, there are three leaf to root paths 8->-2->10, -4->-2->10 and 7->10.
+//  The sums of these three paths are 16, 4 and 17 respectively.
+//  The maximum of them is 17 and the path for maximum is 7->10.
+// ------------------------------------------------------------------------------------------------
+void maxSumLeafToRootPath(tree* root, int& curSum, int& maxSum)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        curSum += root->data;
+        if (curSum > maxSum)
+        {
+            maxSum = curSum;
+        }
+
+        // IMP: Reset Current sum to Previous value
+        curSum -= root->data;
+
+        return;
+    }
+
+    // http://stackoverflow.com/questions/16767345/invalid-initialization-of-non-const-reference-of-type-int-from-a-temporary-of
+    // VERY IMP: Can't pass a VALUE directly to a reference. It should be put in a 
+    // variable before doing so.
+    int temp = root->data + curSum;
+    maxSumLeafToRootPath(root->left, temp, maxSum);
+    maxSumLeafToRootPath(root->right, temp, maxSum);
+}
+
+int maxSumLeafToRoot(tree* root)
+{
+    int maxSum = 0;
+    int curSum = 0;
+    maxSumLeafToRootPath(root, curSum, maxSum);
+
+    return maxSum;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 15
+// http://www.geeksforgeeks.org/find-maximum-path-sum-two-leaves-binary-tree/
+//
+//  Given a Binary Tree, find the maximum sum path from a leaf to leaf.
+//  maxLeafToLeaf - Store the max leaf to leaf value- Max Sum stored between two leaves.
+//  returValue - Return the max value from that node to its leaves.
+//
+//  IMP:
+//  We are interested in TWO MAIN thins.
+//  1. Given a Root, what is the sum of ROOT + LEFT CHILD + RIGHT CHILD
+//  2. ROOT + MAX (LEFT CHILD, RIGHT CHILD)
+//  3. If ROOT is one sided return INTMIN
+//
+//  (1) Will give if root, left, right hold the MAX sum
+//  (2) Will give if ROOT + (LEFT OR RIGHT) is a part of the MAX sum
+// ------------------------------------------------------------------------------------------------
+int maxSumLeafToLeafRec(tree* root, int& maxLeafToLeaf)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        return root->data;
+    }
+
+    int leftMaxSum = maxSumLeafToLeafRec(root->left, maxLeafToLeaf);
+    int rightMaxSum = maxSumLeafToLeafRec(root->right, maxLeafToLeaf);
+
+    if (root->left != NULL && root->right != NULL)
+    {
+        maxLeafToLeaf = max(maxLeafToLeaf, leftMaxSum + rightMaxSum + root->data);
+
+        // Return the max value from current node to its leaves
+        return (max(leftMaxSum, rightMaxSum) + root->data);
+    }
+
+    if (root->left != NULL)
+    {
+
+        return leftMaxSum + root->data;
+    }
+    else
+    {
+        return rightMaxSum + root->data;
+    }
+}
+
+int maxSumLeafToLeaf(tree* root)
+{
+    int maxSum = INT_MIN;
+
+    // We don't need the return value here
+    maxSumLeafToLeafRec(root, maxSum);
+    return maxSum;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 16
+// http://www.geeksforgeeks.org/find-maximum-path-sum-in-a-binary-tree/
+//
+//  Given a Binary Tree, find the maximum sum path from a ANY NODE to ANY NODE
+//  maxSum - Contains the max sum found till now
+//  returValue - Return the max value from that node to its leaves.
+//
+//  MaxSum can either of the following
+//      a. root->data
+//      b. root->data + leftSum
+//      c. root->data + rightSum
+//      d. root->data + leftSum + rightSum
+//
+//  IMP:
+//  We are interested in TWO MAIN things.
+//  1. We should return MAX found along LEFT OR RIGHT side
+//  2. MaxSum will store the actual Max got from LEFT OR RIGHT OR BOTH
+// ------------------------------------------------------------------------------------------------
+int maxSumNodeToNodeRec(tree* root, int& maxSum)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        return root->data;
+    }
+
+    int leftMaxSum = maxSumNodeToNodeRec(root->left, maxSum);
+    int rightMaxSum = maxSumNodeToNodeRec(root->right, maxSum);
+
+    // We will RETURN the Max value that will belong to either side.
+    //      root + leftMax OR root + rightMax OR root
+    //      This values gets returned so that OTHER nodes can use this info.
+    //
+    // We compute the Total Max and store it in MAX SUM.
+    int tmp1 = max(root->data, max(leftMaxSum, rightMaxSum) + root->data);
+    maxSum = max(maxSum, max(tmp1, leftMaxSum + root->data + rightMaxSum));
+    
+    return tmp1;
+}
+
+int maxSumNodeToNode(tree* root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    int maxSum = 0;
+
+    // We don't need the return value here
+    maxSumNodeToNodeRec(root, maxSum);
+    return maxSum;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 17
+// http://stackoverflow.com/questions/17703952/print-the-longest-leaf-to-leaf-path-in-a-binary-tree-and-its-length
+//
+// Imagine a tree like below
+//              a
+//            b  
+//          c   f
+//        d       g
+//      e          
+//
+// That is why there is another wrapper function to determine if the final max is 
+// MaxPathLen OR the returned value which is MaxAlongOneSide
+// ------------------------------------------------------------------------------------------------
+uint32_t longestPathLengthRec(tree* root, uint32_t& maxPathLen)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        return 1;
+    }
+
+    uint32_t leftPathLen = longestPathLengthRec(root->left, maxPathLen);
+    uint32_t rightPathLen = longestPathLengthRec(root->right, maxPathLen);
+
+    uint32_t maxAlongOneSide = 1 + max(leftPathLen, rightPathLen);
+
+    // This is the total max path len by considering both sides as well
+    maxPathLen = max(maxPathLen, max(maxAlongOneSide, 1 + leftPathLen + rightPathLen));
+
+    return maxAlongOneSide;
+}
+
+uint32_t longPathLength(tree* root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    uint32_t maxPathLen = 0;
+    uint32_t maxAlongOneSide = longestPathLengthRec(root, maxPathLen);
+
+    return max(maxPathLen, maxAlongOneSide);
+
+}
+
+// ------------------------------------------------------------------------------------------------
+// Main Function
+// ------------------------------------------------------------------------------------------------
 int main()
 {
     cout << "TREE" << endl;
@@ -415,8 +700,62 @@ int main()
     printTree(root);
     */
 
-    cout << endl << "LCA" << endl;
-    cout << findLCANum(root) << endl;
+    // Find LCA
+    {
+        cout << endl << "LCA" << endl;
+        cout << findLCANum(root) << endl;
+    }
+
+    // Find Max root to leaf path
+    {
+        struct tree* root = newNode(-15);
+        root->left = newNode(5);
+        root->right = newNode(6);
+        root->left->left = newNode(-8);
+        root->left->right = newNode(1);
+        root->left->left->left = newNode(2);
+        root->left->left->right = newNode(6);
+        root->right->left = newNode(3);
+        root->right->right = newNode(9);
+        root->right->right->right= newNode(0);
+        root->right->right->right->left= newNode(4);
+        root->right->right->right->right= newNode(-1);
+        root->right->right->right->right->left= newNode(10);
+
+        struct tree *root1 = newNode(10);
+        root1->left	 = newNode(2);
+        root1->right	 = newNode(10);
+        root1->left->left = newNode(-20);
+        root1->left->right = newNode(-1);
+        root1->right->right = newNode(-25);
+        root1->right->right->left = newNode(3);
+        root1->right->right->right = newNode(4);
+
+        printTree(root);
+        cout << endl;
+
+        printTreeInorder(root);
+        cout << endl;
+
+        cout << "Max Root to Leaf: " << maxSumLeafToRoot(root1) << endl;
+
+        cout << "Max Leaf to Leaf: " << maxSumLeafToLeaf(root1) << endl;
+
+        cout << "Max Node to Node: " << maxSumNodeToNode(root1) << endl;
+    }
+
+    {
+        struct tree* root = newNode(1);
+        root->left = newNode(2);
+        root->left->left = newNode(3);
+        root->left->right = newNode(4);
+        root->left->left->left = newNode(5);
+        root->left->right->right = newNode(6);
+        root->left->left->left->left = newNode(7);
+
+        cout << "Max Length of Path: " << longPathLength(root) << endl;
+    }
+
     cout << endl;
 
     return 0;

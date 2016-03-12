@@ -115,6 +115,32 @@ void rearrangeXsYs(char arr[], unsigned int num)
     }
 }
 
+//----------------------------------------------------------------------------------------------
+// Problem 5. atoi
+//----------------------------------------------------------------------------------------------
+bool myAtoI(string str, int& num)
+{
+    num = 0;
+
+    for (int i = str.length() - 1, j = 0; i >= 0; i--, j++)
+    {
+        if (str[i] - '0' > 9 || str[i] < 0)
+        {
+            return false;
+        }
+        else
+        {
+            num += (str[i] - '0') * pow(10, j);
+        }
+    }
+
+    return true;
+}
+
+
+//----------------------------------------------------------------------------------------------
+// Main Routine
+//----------------------------------------------------------------------------------------------
 int main()
 {
     //char arr[5] = {'X', 'Y', 'Y', 'X', 'Y'};
@@ -126,6 +152,12 @@ int main()
     // Linkedlist Problems
     struct node* head;
 
+    {
+        string strNum = "123";
+        int num = 0;
+        myAtoI(strNum, num);
+        cout << num << endl;
+    }
     cout << endl;
     return 0;
 }

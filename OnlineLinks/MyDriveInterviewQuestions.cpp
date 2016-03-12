@@ -4,6 +4,7 @@
 #include <algorithm>        // std::fill_n
 #include <queue>            // Priority Queue
 #include <typeinfo>         // typeid
+#include <vector>
 using namespace std;
 
 /*
@@ -41,6 +42,13 @@ using namespace std;
  * unint32_t equilibriumIndex(vector<int> nums)
  *
  */
+
+// Structure to define a x-axis y-axis point
+struct Point
+{
+    int x;
+    int y;
+};
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 1. Given two strings, find the first non matching character
@@ -288,6 +296,12 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
         }
     }
 
+    // Free up visited array
+    for (uint32_t i = 0; i < rows; i++)
+    {
+        delete visited[i];
+    }
+    delete[] visited;
     return numIslands;
 }
 
@@ -390,13 +404,15 @@ int medianOfStreams(int numbers[], uint32_t size)
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 5. Find the max sub array sum
+// PROBLEM 5. Find the maximum sum that you can get from a contiguous sub array
 //            -2 -3 4 -1 -2 1 5 -3
 //            Ans: 7
 // ------------------------------------------------------------------------------------------------
-int maxSubArraySum(int arr[], int num)
+int maxSumSubArray(int arr[], int num)
 {
+    // This can be Zero as we always do curSum + arr[i] Before comparing with max
     int curSum = 0;
+
     // VERY IMP. Else it will fail when just {-1} is passed.
     int maxSum = INT_MIN;
 
@@ -410,11 +426,11 @@ int maxSubArraySum(int arr[], int num)
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 5b. Find the max sub array product
+// PROBLEM 5b. Find the maximum product that you can get from a sub array
 //            -2 -3 4 -1 -2 1 5 -3
 //            Ans: 360
 // ------------------------------------------------------------------------------------------------
-int maxProduct(vector<int>& nums)
+int maxProduct(vector<int> nums)
 {
     // Array can have a single negative number
     int maxPosProd = nums[0];
@@ -444,11 +460,152 @@ int maxProduct(vector<int>& nums)
 }
 
 // ------------------------------------------------------------------------------------------------
+// PROBLEM 5c. Find the SUB ARRAY that will give you a sum
+// http://www.geeksforgeeks.org/find-subarray-with-given-sum/
+//             IMP:
+//             a. ALL NUMBERS ARE POSITIVE.
+//                IF we have +ve and -ve then can't find all subarray without using extra space
+//             a. This does not give the maximum length sub array. This just gives first
+//                such sub array
+//
+//             Returns false if no such array is present
+// ------------------------------------------------------------------------------------------------
+bool subArrayWithSum(int arr[], uint32_t num, int sum)
+{
+    uint32_t startIdx = 0;
+    int curSum = 0;
+    bool isSubArrayPresent = false;
+
+    for (uint32_t i = 0; i < num; i++)
+    {
+        curSum += arr[i];
+
+        // Say Sum = 25, Arr = 5, 5, 5, 25.
+        // when i has 25, we have to remove all the previous entries. 
+        while (curSum > sum && startIdx < i)
+        {
+            curSum -= arr[startIdx];
+            startIdx++;
+        }
+
+        if (curSum == sum)
+        {
+            cout << "Elmt1: " << arr[startIdx] << "; Idx2 : " << arr[i] << endl;
+            isSubArrayPresent = true;
+
+            // Commenting the below line will print all sub arrays
+            //return true;
+        }
+    }
+
+    return isSubArrayPresent;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 5d. Find ALL SUB ARRAYS that will give you a sum
+// http://stackoverflow.com/questions/14948258/given-an-input-array-find-all-subarrays-with-given-sum-k
+// http://stackoverflow.com/questions/30480506/find-widest-subarray-with-given-sum-array-slicing
+// http://www.geeksforgeeks.org/find-the-largest-subarray-with-0-sum/
+//             IMP: This does not give the maximum length sub array.
+//             This just gives all the such sub array
+//
+//             Returns false if no such array is present
+//             Sum      : 3
+//             Index    : 0, 1,  2, 3, 4,  5
+//             Arr      : 4, 1, -3, 2, 6 , -5
+//             Map      : 4, 5,  2, 4, 10,  5
+//             Map Find : 1, 2, -1, 1,  7,  2
+//             Check if each element in Map Find is present in the MAP.
+//             We can see that "2" is present in the map at index 2. 
+//             Now we are at Index 5, with a Sum of 5. This denotes that after Index 2 where
+//             our Sum was 2. We have gotnumber in the middle which would contribute to a
+//             Sum of 3.
+//
+//              
+//             Sum      : 4
+//             Map Find : -1, 0, -3, -1, 5 0
+// ------------------------------------------------------------------------------------------------
+bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
+{
+    // Map will have Sums and Indices where the SUM has occurred.
+    unordered_map<int, vector<int> > sumMap;
+    int curSum = 0;
+    bool isSubArrayPresent = false;
+
+    // Add 0 to the map. This will help in finding if EXACT_SUM is present in the
+    // array. 
+    // Let the Value of 0 be -1. If the first element is Sum, we can find it.
+    sumMap[0] = vector<int> {-1};
+
+    for (int i = 0; i < num; i++)
+    {
+        curSum += arr[i];
+
+        auto itr = sumMap.find(curSum - sum);
+
+        if (itr != sumMap.end())
+        {
+            // We could have list of indices where SUM - curSum is present.
+            for (int x : itr->second)
+            {
+                // Very IMP: Start Index will be x + 1
+                cout << "Elmt1 Idx: " << x + 1 << "; Elmt2 Idx: " << i << endl;
+            }
+        }
+
+        // Even if we have found, we should still go ahead and insert this sum to our Map
+        auto itr2 = sumMap.find(curSum);
+        
+        if (itr2 != sumMap.end())
+        {
+            itr2->second.push_back(i);
+        }
+        else
+        {
+            sumMap[curSum] = vector<int> {i};
+        }
+    }
+
+    return isSubArrayPresent;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 5e. Find the max sum such that no two elements are adjacent
+// http://stackoverflow.com/questions/4487438/maximum-sum-of-non-consecutive-elements
+// http://www.geeksforgeeks.org/maximum-sum-such-that-no-two-elements-are-adjacent/
+//
+//            5,  5, 10, 40, 50, 35
+//            Ans: 80; 5, 40, 35
+//            Returns false if no such array is present
+// ------------------------------------------------------------------------------------------------
+bool maxLengthSubArraySum(vector<int> nums, int& maxNonConSum)
+{
+    if (nums.size() == 0)
+    {
+        return false;
+    }
+
+    vector<int> dpMaxSum;
+    dpMaxSum[0] = 0;
+    dpMaxSum[1] = nums[0];
+
+    for (uint32_t i = 1; i < nums.size() - 1; i++)
+    {
+        dpMaxSum[i+1] = max(dpMaxSum[i], nums[i] + dpMaxSum[i-1]);
+    }
+
+    maxNonConSum = dpMaxSum[num.length()-1];
+    return true;
+}
+
+// ------------------------------------------------------------------------------------------------
 // PROBLEM 6. Coin change problem
 //            coins[] = {25, 10, 5}, V = 30
 //            Ans: 2
 // ------------------------------------------------------------------------------------------------
 //uint32_t minCoinChangeRec(vector<int> coins)
+// http://algorithms.tutorialhorizon.com/dynamic-programming-coin-change-problem/
+// Time Complexity 2^n
 uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
 {
     if (val == 0)
@@ -523,43 +680,25 @@ int32_t minCoinChangeWrapper(uint32_t coins[], uint32_t num, uint32_t val)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 7. Print Matrix Diagonally
+// http://stackoverflow.com/questions/28433572/print-2d-array-diagonally-from-bottom-to-top
+// http://stackoverflow.com/questions/20420065/loop-diagonally-through-two-dimensional-array
 // ------------------------------------------------------------------------------------------------
 template <int rows, int cols>
 void printMatrixDiagonally(int (&twoDMatrix)[rows][cols])
 //void printMatrixDiagonally(int (&twoDMatrix)[rows][cols])
 //void printMatrixDiagonally(int twoDMatrix[3][3], int rows, int cols)
 {
-    int prevCol = 0;
-    int prevRow = -1;
-    int r = -1;
-    int c = 0;
-    int l = 0;
-
-    // Total number of lines.
-    for (; l < rows + cols - 1; l++)
+    for(uint32_t k = 0 ; k < rows + cols ; k++ )
     {
-        if (prevRow < rows - 1)
+        for(uint32_t j = 0 ; j <= k ; j++ )
         {
-            prevRow++;
-            r = prevRow;
+            int i = k - j;
 
-            c = 0;
+            if(i < rows && j < cols)
+            {
+                cout << twoDMatrix[i][j] << " ";
+            }
         }
-        else
-        {
-            r = prevRow;
-
-            prevCol++;
-            c = prevCol;
-        }
-
-        while (r >= 0 && c < cols)
-        {
-            cout << twoDMatrix[r][c] << " ";
-            r--;
-            c++;
-        }
-
         cout << endl;
     }
 }
@@ -707,6 +846,210 @@ int32_t equilibriumIndex(vector<int> nums)
 }
 
 // ------------------------------------------------------------------------------------------------
+// PROBLEM 11. Generalized Abbrevation
+//            word
+//
+//            Ans: word, 1ord, w1rd, wo1d, wor1, 2rd, w2d, wo2, 1o1d, 1or1, w1r1, 1o2, 2r1, 3d, w3, 4
+// ------------------------------------------------------------------------------------------------
+void generalizedAbbrevation(string word)
+{
+    for (uint32_t i = 1; i <= word.length(); i++)
+    {
+        // Check j + i-1 steps after each iteration
+        for (uint32_t j = 0; (j + (i-1)) < word.length(); j++)
+        {
+            // Replace first char by j
+            string temp = word;
+            temp[j] = i + '0';
+
+            // Should erase from the next character
+            temp.erase(j+1, i-1);
+            cout << temp << " ";
+        }
+
+        cout << endl;
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 12. Find if two rectangles overlap
+// http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+// ------------------------------------------------------------------------------------------------
+// Points should be such that
+//      a1.x < a2.x &&
+//      a1.y > a2.y &&
+//      Left Top and Right bottom
+bool isRectanglesOverlap(Point a1, Point a2, Point b1, Point b2)
+{
+    return (a1.x < b2.x &&
+            a2.x > b1.x &&
+            a1.y > b2.y &&
+            a2.y < b1.y);
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 13. Find Largest Subarray with equal number of 0s and 1s
+// http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+// ------------------------------------------------------------------------------------------------
+void printLargestSubArrayZeroOne(int arr[], uint32_t num)
+{
+    if (num == 0)
+    {
+        return;
+    }
+
+    uint32_t countZero = 0;
+    uint32_t countOne = 0;
+
+    for(uint32_t i = 0; i < num; i++)
+    {
+        if (arr[i] == 1)
+        {
+            countOne++;
+        }
+        else if (arr[i] == 0)
+        {
+            countZero++;
+        }
+    }
+
+    // If either is zero then no sub array
+    if (countOne == 0 || countZero == 0)
+    {
+        cout << "None" << endl;
+        return;
+    }
+
+    for(uint32_t i = 0, j = num-1; i < j;)
+    {
+        if (countOne == countZero)
+        {
+            cout << "Idx 1: " << i << "; Idx 2: " << j << endl;
+            return;
+        }
+        else if (countOne > countZero)
+        {
+            // One count is more
+            if (arr[i] == 1)
+            {
+                i++;
+            }
+            else if (arr[j] == 1)
+            {
+                j--;
+            }
+        }
+        else
+        {
+            // ZeroCount is more
+            if (arr[i] == 0)
+            {
+                i++;
+            }
+            else if (arr[j] == 0)
+            {
+                j--;
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 14. 3 number sum closest
+// http://www.geeksforgeeks.org/find-a-triplet-that-sum-to-a-given-value/
+//             This problem can be solved only by sorting the array. So consider  the array
+//             is sorted.
+// ------------------------------------------------------------------------------------------------
+void printThreeNumSum(int arr[], uint32_t num, int sum)
+{
+    if (num < 3)
+    {
+        return;
+    }
+
+    uint32_t i = 0;
+
+    // Keep three pointers.
+    // i - goes from 0 to n
+    // j - starts at i + 1
+    // k - starts at n-1
+    //
+    // For each 'i', move j & k such that we converge towards the sum
+    for (; i < num; i++)
+    {
+        uint32_t j = i + 1;
+        uint32_t k = num - 1;
+
+        while (j < k)
+        {
+            if (arr[i] + arr[j] + arr[k] == sum)
+            {
+                cout << arr[i] << " " << arr[j] << " " << arr[k] << endl;
+                return;
+            }
+            else if (arr[i] + arr[j] + arr[k] > sum)
+            {
+                k--;
+            }
+            else
+            {
+                j++;
+            }
+        }
+    }
+}
+
+void printThreeNumClosestSum(int arr[], uint32_t num, int sum)
+{
+    if (num < 3)
+    {
+        return;
+    }
+
+    uint32_t i = 0;
+
+    int closestSum = INT_MAX;
+    int tmpClosest = INT_MAX;
+    uint32_t x, y, z;
+
+    for (; i < num; i++)
+    {
+        uint32_t j = i + 1;
+        uint32_t k = num - 1;
+
+        while (j < k)
+        {
+            tmpClosest = abs(sum - (arr[i] + arr[j] + arr[k]));
+            if (tmpClosest < closestSum)
+            {
+                closestSum = tmpClosest;
+                x = i;
+                y = j;
+                z = k;
+            }
+
+            if (arr[i] + arr[j] + arr[k] == sum)
+            {
+                cout << arr[i] << " " << arr[j] << " " << arr[k] << endl;
+                return;
+            }
+
+            else if (arr[i] + arr[j] + arr[k] > sum)
+            {
+                k--;
+            }
+            else
+            {
+                j++;
+            }
+        }
+    }
+
+
+    cout << "Closest Sum: " << arr[x] << " " << arr[y] << " " << arr[z] << endl;
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -773,6 +1116,23 @@ int main()
         cout << medianOfStreams(a, sizeof(a) / sizeof(int)) << endl;
     }
 
+    // Problem 5: Subarrays and Sum
+    {
+        //int arr1[] = {-2,-3,4,-1,-2,1,5,-3};
+        int arr1[] = {-2,-3,-4,-1,-2,-1,-5,-3};
+        int arr2[] = {15, 2, 4, 8, 9, 5, 10, 13, 23};
+        int arr3[] = {5, 6, 1, -2, -4, 3, 1, 5};
+        int arr4[] = {4, 1, -3, 2, 6 , -5};
+
+
+        cout << "Max Sum: " << maxSumSubArray(arr1, sizeof(arr1) / sizeof(arr1[0])) << endl;
+        cout << "Max Prod: " << maxProduct(std::vector<int> (arr1, arr1 + sizeof arr1 / sizeof arr1[0])) << endl;
+
+        subArrayWithSum(arr2, sizeof(arr2) / sizeof(arr2[0]), 23);
+
+        allSubArraysWithSum(arr4, sizeof(arr4) / sizeof(arr4[0]), 5);
+    }
+
     // Problem 6: Coin Change Problem
     {
         uint32_t coins[] = {10, 5};
@@ -806,11 +1166,13 @@ int main()
     // Problem 9: Remove duplicate int from a number
     {
         cout << largestNumByRemovingDup(122334) << endl;
+        /*
         cout << largestNumByRemovingDup(433221) << endl << endl;
         cout << largestNumByRemovingDup(122334) << endl;
         cout << largestNumByRemovingDup(43332221) << endl << endl;
         cout << largestNumByRemovingDup(122334) << endl;
         cout << largestNumByRemovingDup(4333222) << endl;
+        */
     }
 
     // Problem 10. Find equilibrium Index
@@ -818,6 +1180,35 @@ int main()
         vector<int> nums = {-7, 1, 5, 2, -4, 3, 0};
         cout << "Eq Idx: " << equilibriumIndex(nums) << endl;
     }
+
+    // Problem 11. Generalized abbreviation
+    {
+        string word = "word";
+        generalizedAbbrevation(word);
+    }
+
+    // Problem 12. If two rectangles overlap
+    {
+        Point a1 = {0, 10};
+        Point a2 = {10, 0};
+        Point b1 = {15, 5};
+        Point b2 = {25, 0};
+
+        cout << isRectanglesOverlap(a1, a2, b1, b2) << endl;
+    }
+
+    // Problem 13. Largest Subarray with equal number of 0s and 1s
+    {
+
+    }
+
+    // Problem 14. 3 number sum closest
+    {
+        int arr[] = {1, 4, 6, 8, 10, 45};
+        printThreeNumSum(arr, sizeof(arr)/sizeof(arr[0]), 22);
+        printThreeNumClosestSum(arr, sizeof(arr)/sizeof(arr[0]), 21);
+    }
+
     cout << endl;
     return 0;
 }
