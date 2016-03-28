@@ -664,6 +664,39 @@ uint32_t longPathLength(tree* root)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 18
+//      Find the nearest element that is lesser than the given key
+// ------------------------------------------------------------------------------------------------
+int nearestLesserElmt(tree* root, int key, int& minElmt)
+{
+    if (root == NULL)
+    {
+        return INT_MAX;
+    }
+
+    if (root->data == key)
+    {
+        if (root->left != NULL)
+        {
+            // If both are present return the number that is JUST smaller than key.
+            // So larger of the two minimum numbers
+            return max(minElmt, root->left->data);
+        }
+        return minElmt;
+    }
+
+    if (key > root->data)
+    {
+        minElmt = root->data;
+        return nearestLesserElmt(root->right, key, minElmt);
+    }
+    else
+    {
+        return nearestLesserElmt(root->left, key, minElmt);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -744,6 +777,7 @@ int main()
         cout << "Max Node to Node: " << maxSumNodeToNode(root1) << endl;
     }
 
+    // Max Length of Path
     {
         struct tree* root = newNode(1);
         root->left = newNode(2);
@@ -754,6 +788,20 @@ int main()
         root->left->left->left->left = newNode(7);
 
         cout << "Max Length of Path: " << longPathLength(root) << endl;
+    }
+
+    // Find element that is lesser and closest to a given key
+    {
+        int minElement = INT_MIN;
+
+        printTree(root);
+        cout << endl;
+
+        printTreeInorder(root);
+        cout << endl;
+
+
+        cout << "Nearest Lower Element: " << nearestLesserElmt(root, 4, minElement) << endl;
     }
 
     cout << endl;

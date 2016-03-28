@@ -5,6 +5,7 @@
 #include <queue>            // Priority Queue
 #include <typeinfo>         // typeid
 #include <vector>
+#include <cmath>            // ciel
 using namespace std;
 
 /*
@@ -41,6 +42,36 @@ using namespace std;
  * PROBLEM 10. Find Equilibrium Index of an array. Sum of left elements = Sum of Right elements
  * unint32_t equilibriumIndex(vector<int> nums)
  *
+ * PROBLEM 11. Generalized Abbrevation
+ * void generalizedAbbrevation(string word)
+ *
+ * PROBLEM 12. Find if two rectangles overlap
+ * bool isRectanglesOverlap(Point a1, Point a2, Point b1, Point b2)
+ *
+ * PROBLEM 13. Find Largest Subarray with equal number of 0s and 1s
+ * void printLargestSubArrayZeroOne(int arr[], uint32_t num)
+ *
+ * PROBLEM 14. 3 number sum AND closest sum
+ * void printThreeNumSum(int arr[], uint32_t num, int sum)
+ * void printThreeNumClosestSum(int arr[], uint32_t num, int sum)
+ *
+ * PROBLEM 15. 1 Missing and 1 Duplicate
+ * void findMissingAndDuplicate(vector<int> nums)
+ *
+ * PROBLEM 16. 2 missing numbers
+ * void findTwoMissing(vector<int> nums, uint32_t totalNums)
+ *
+ * PROBLEM 17. Find minimum number of conference room required
+ * uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
+ *
+ * PROBLEM 18. Find median of two sorted arrays of same size
+ * int medianTwoSortedSameSizeArrays(int arr1[], uint32_t num1, int arr2[], uint32_t num2);
+ *
+ * PROBLEM 18b. Find median of two sorted arrays of same size
+ * int medianTwoSortedDiffSizeArrays(int arr1[], uint32_t num1, int arr2[], uint32_t num2);
+ *
+ * PROBLEM 19. Find Kth smallest element in Union of two sorted arrays
+ * int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2);
  */
 
 // Structure to define a x-axis y-axis point
@@ -580,6 +611,7 @@ bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
 // ------------------------------------------------------------------------------------------------
 bool maxLengthSubArraySum(vector<int> nums, int& maxNonConSum)
 {
+    /*
     if (nums.size() == 0)
     {
         return false;
@@ -594,8 +626,9 @@ bool maxLengthSubArraySum(vector<int> nums, int& maxNonConSum)
         dpMaxSum[i+1] = max(dpMaxSum[i], nums[i] + dpMaxSum[i-1]);
     }
 
-    maxNonConSum = dpMaxSum[num.length()-1];
+    maxNonConSum = dpMaxSum[nums.length()-1];
     return true;
+    */
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1050,6 +1083,567 @@ void printThreeNumClosestSum(int arr[], uint32_t num, int sum)
 }
 
 // ------------------------------------------------------------------------------------------------
+// PROBLEM 15. 1 Missing and 1 Duplicate
+// http://www.geeksforgeeks.org/find-a-repeating-and-a-missing-number/
+//             Given an unsorted array of size n.
+//             One number from set {1, 2, n} is missing and one number occurs twice in array
+//             is sorted.
+// ------------------------------------------------------------------------------------------------
+void findMissingAndDuplicate(vector<int> nums)
+{
+    int fullXor = 0;
+    int numsWithRightSetBit = 0;
+    int numsWithoutRightSetBit = 0;
+    int rightSetBit;
+
+    // XOR will all numbers from 1 to n
+    for (int i = 1; i <= nums.size(); i++)
+    {
+        fullXor ^= i;
+    }
+
+    // XOR with all array elements
+    // After this fullXor will be having just the XOR of missing and duplicate number
+    for (int n : nums)
+    {
+        fullXor ^= n;
+    }
+    
+    // Find the right most set bit in fullXor
+    rightSetBit = fullXor & (fullXor - 1);
+
+    // Now divide the numbers into two sets. Set one will have rightSetBit ON and Set two
+    // will have rightSetBit OFF
+    
+    for (int n : nums)
+    {
+        if (rightSetBit & n)
+        {
+            numsWithRightSetBit ^= n;
+        }
+        else
+        {
+            numsWithoutRightSetBit ^= n;
+        }
+    }
+
+    // Both sets should be XORed with the BOTH arrays to get the numbers.
+    // Right set bit is just used to Partition into two arrays
+    // Eg 1, 2, 2, 3
+    //    1, 2, 3, 4
+    //    XOR: 2 ^ 4 = 110
+    //    Set1: 1       ; 1, 4 - XOR will give 4
+    //    Set2: 2, 2, 3 ; 2, 3 - XOR will give 2
+    for (int i = 1; i <= nums.size(); i++)
+    {
+        if (rightSetBit & i)
+        {
+            numsWithRightSetBit ^= i;
+        }
+        else
+        {
+            numsWithoutRightSetBit ^= i;
+        }
+    }
+
+    cout << "Num1: " << numsWithRightSetBit << "; Num2: " << numsWithoutRightSetBit << endl;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 16. 2 missing numbers
+// http://stackoverflow.com/questions/20026243/find-2-missing-numbers-in-an-array-of-integers-with-two-missing-values
+//
+//             {3,1,2,5,7,8}
+//             Ans: 4, 6
+// ------------------------------------------------------------------------------------------------
+void findTwoMissing(vector<int> nums, uint32_t totalNums)
+{
+    int fullXor = 0;
+    int numsWithRightSetBit = 0;
+    int numsWithoutRightSetBit = 0;
+    int rightSetBit;
+
+    // XOR will all numbers from 1 to n
+    for (int i = 1; i <= totalNums; i++)
+    {
+        fullXor ^= i;
+    }
+
+    // XOR with all array elements
+    // After this fullXor will be having just the XOR of missing and duplicate number
+    for (int n : nums)
+    {
+        fullXor ^= n;
+    }
+    
+    // Find the right most set bit in fullXor
+    // IMP: if fullXor = 010, then rightSetBit will be 0.
+    if ((fullXor & (fullXor - 1)) != 0)
+    {
+        rightSetBit = fullXor & (fullXor - 1);
+    }
+    else
+    {
+        rightSetBit = fullXor;
+    }
+
+    // Now divide the numbers into two sets. Set one will have rightSetBit ON and Set two
+    // will have rightSetBit OFF
+    
+    // 100 & 011 will result in 0. So we have use 100 itself
+    for (int n : nums)
+    {
+        if (rightSetBit & n)
+        {
+            numsWithRightSetBit ^= n;
+        }
+        else
+        {
+            numsWithoutRightSetBit ^= n;
+        }
+    }
+
+    // Both sets should be XORed with the BOTH arrays to get the numbers.
+    // Right set bit is just used to Partition into two arrays
+    // Eg 1, 2, 3, 5, 7, 8
+    //    1, 2, 3, 5, 7, 8, 4, 6
+    //    
+    //    XOR: 6 ^ 4 = 010
+    //    Set1: 2, 3, 7 ; 2, 3, 7, 6- XOR will give 6
+    //    Set2: 1, 5, 8 ; 1, 5, 8, 4- XOR will give 4
+    for (int i = 1; i <= totalNums; i++)
+    {
+        if (rightSetBit & i)
+        {
+            numsWithRightSetBit ^= i;
+        }
+        else
+        {
+            numsWithoutRightSetBit ^= i;
+        }
+    }
+
+    cout << "Num1: " << numsWithRightSetBit << "; Num2: " << numsWithoutRightSetBit << endl;
+}
+
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 17. Find minimum number of conference room required
+// ------------------------------------------------------------------------------------------------
+static const double EPSILON = 0.000001;
+
+bool areDoubleSame(double a, double b)
+{
+    return fabs(a - b) < EPSILON;
+}
+
+bool areDoubleGreater(double a, double b)
+{
+    if ((a - b) > EPSILON)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+struct MeetingTime
+{
+    int startTime;
+    int endTime;
+
+    MeetingTime(double sT, double eT) : startTime(sT),
+                                        endTime(eT) { }
+
+    /*
+    bool operator < (const MeetingTime& meetTime) const
+    {
+        return (startTime < meetTime.startTime);
+    }
+
+    bool operator > (const MeetingTime& meetTime) const
+    {
+        return (areDoubleGreater(endTime, meetTime.endTime));
+    }
+    */
+
+    bool operator < (const MeetingTime& meetTime) const
+    {
+        return (startTime < meetTime.startTime);
+    }
+
+    bool operator > (const MeetingTime& meetTime) const
+    {
+        return (endTime > meetTime.endTime);
+    }
+};
+
+void printMeetingVector(vector<MeetingTime> meetings)
+{
+    cout << "List of Meetings: " << endl;
+    for (auto meeting : meetings)
+    {
+        cout << meeting.startTime << "-" << meeting.endTime << endl;
+    }
+    cout << endl;
+}
+
+
+
+/*
+struct MyMeetStrtEndComp
+{
+    bool operator()( const MeetingTime& lx, const MeetingTime& rx ) const {
+        return lx.startTime < rx.endTime;
+    }
+};
+*/
+
+uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
+{
+    uint32_t minRoomReqd = 0;
+    // Sort by ascending order of start Time
+    sort(meetingsList.begin(), meetingsList.end());
+
+    vector<struct MeetingTime> meetingsEndTimeSort;
+
+    for (auto meeting : meetingsList)
+    {
+        // If vector is empty OR first element's End time is greater than your start time,
+        // push into it.
+        if (meetingsEndTimeSort.empty() ||
+            meetingsEndTimeSort[meetingsEndTimeSort.size()-1].endTime > meeting.startTime)
+        {
+            meetingsEndTimeSort.push_back(meeting);
+            sort(meetingsEndTimeSort.begin(), meetingsEndTimeSort.end(), greater<MeetingTime>());
+        }
+        else
+        {
+            uint32_t i = 0;
+            // Find first element with end time greater than current start time.
+            // Come one step back and make sure the end time if before the current start time
+            // Remove the entry and push the new entry
+            // 
+            // Lineraly traverse END TIME VECTOR to find the first one which has end time
+            // greater than current start time
+            for (i = 0; i < meetingsEndTimeSort.size(); i++)
+            {
+                // Eg: Start Time: 11am
+                //     End Times : 8, 9, 10, 11, 12.
+                //     Remove the meeting that ends and 11 and insert this new entry.
+                if (meeting.startTime >= meetingsEndTimeSort[i].endTime)
+                {
+                    break;
+                }
+            }
+
+            if (i < meetingsEndTimeSort.size())
+            {
+                meetingsEndTimeSort.erase(meetingsEndTimeSort.begin() + i);
+            }
+
+            meetingsEndTimeSort.push_back(meeting);
+            sort(meetingsEndTimeSort.begin(), meetingsEndTimeSort.end(), greater<MeetingTime>());
+        }
+    }
+
+    return meetingsEndTimeSort.size();
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 18. Find median of two sorted arrays of same size
+// http://www.geeksforgeeks.org/median-of-two-sorted-arrays/
+//
+//             {1, 12, 15, 26, 38} 
+//             {2, 13, 17, 30, 45}
+//
+//             Ans: 
+// ------------------------------------------------------------------------------------------------
+double medianTwoSortedSameSizeArrays(int arr1[], int arr2[], uint32_t num)
+{
+    double medArr1;
+    double medArr2;
+    if (num <= 0)
+    {
+        cout << "Invalid" << endl;
+        return 0;
+    }
+
+    if (num == 1)
+    {
+        // Return the average of the two numbers
+        return (arr1[num] + arr2[num]) / 2.0;
+    }
+
+    if (num == 2)
+    {
+        return (max(arr1[0], arr2[0]) + min(arr1[1], arr2[1])) / 2.0;
+    }
+
+    if (num % 2 == 0)
+    {
+        medArr1 = (arr1[num/2] + arr1[num/2 - 1]) / 2.0;
+        medArr2 = (arr2[num/2] + arr2[num/2 - 1]) / 2.0;
+    }
+    else
+    {
+        medArr1 = arr1[num/2];
+        medArr2 = arr2[num/2];
+    }
+
+    cout << "Med1: " << medArr1 << "; Med2: " << medArr2 << endl;
+    if (medArr1 == medArr2)
+    {
+        return medArr1;
+    }
+    else if (medArr1 > medArr2)
+    {
+        return medianTwoSortedSameSizeArrays(arr1,
+                                             arr2 + (int)ceil(num/2),
+                                             num - (ceil(num/2)));
+    }
+    else
+    {
+        return medianTwoSortedSameSizeArrays(arr1 + (int)ceil(num/2),
+                                             arr2,
+                                             num - (ceil(num/2)));
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 18b. Find median of two sorted arrays of same size
+// http://www.geeksforgeeks.org/median-of-two-sorted-arrays-of-different-sizes/
+// http://articles.leetcode.com/median-of-two-sorted-arrays
+//
+//             {900} and {5, 8, 10, 20}
+//             {1, 2, 4, 8, 9, 10} and { 3, 5, 6, 7 }
+//
+//             Ans: 
+// ------------------------------------------------------------------------------------------------
+double findMedian( int A[], int B[], int l, int r, int nA, int nB )
+{
+    if (l > r)
+    {
+        return findMedian(B, A, max(0, (nA+nB)/2-nA), min(nB, (nA+nB)/2), nB, nA);
+    }
+
+    int i = (l + r) / 2;
+    int j = (nA+nB)/2 - i - 1;
+
+    if (j >= 0 && A[i] < B[j]) 
+    {
+        return findMedian(A, B, i+1, r, nA, nB);
+    }
+    else if (j < nB-1 && A[i] > B[j+1])
+    {
+        return findMedian(A, B, l, i-1, nA, nB);
+    }
+    else
+    {
+        if ((nA + nB) % 2 == 1) 
+        {
+            return A[i];
+        }
+        else if (i > 0)
+        {
+            return (A[i]+max(B[j], A[i-1]))/2.0;
+        }
+        else 
+        {
+            return (A[i]+B[j])/2.0;
+        }
+    }
+}
+
+double medianTwoSortedDiffSizeArrays(int A[], int n, int B[], int m)
+{
+    if (n<m)
+    {
+        return findMedian(A, B, 0, n-1, n, m);
+    }
+    else
+    {
+        return findMedian(B, A, 0, m-1, m, n);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 19. Find Kth smallest element in Union of two sorted arrays
+// http://stackoverflow.com/questions/4607945/how-to-find-the-kth-smallest-element-in-the-union-of-two-sorted-arrays
+//
+//             int A[] = {1, 2, 6, 8};
+//             int B[] = {3, 5};
+//
+//             Ans: 4th Smallest is 5
+//
+// IMP: First array should be bigger than the second array
+// ------------------------------------------------------------------------------------------------
+int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
+{
+    if (k > num1 + num2)
+    {
+        cout << "Error" << endl;
+        return -1;
+    }
+
+    uint32_t index1 = 0;
+    uint32_t index2 = 0;
+    uint32_t step = 0;
+
+    while (index1 + index2 < k - 1)
+    {
+        step = (k - index1 - index2) / 2;    
+        uint32_t step1 = index1 + step;
+        uint32_t step2 = index2 + step;
+
+        if (num1 > step1 - 1 &&
+            (num2 <= step2 - 1 ||
+             arr1[step1 - 1] < arr2[step2 - 1]))
+        {
+            index1 = step1;
+        }
+        else
+        {
+            index2 = step2;
+        }
+    }
+
+    // Now idx1 + idx2 will be k-1
+    cout << "Idx 1: " << index1 << "; Index 2: " << index2 << endl;
+    if (num1 > index1 &&
+        (num2 <= index2 || arr1[index1] < arr2[index2]))
+    {
+        return arr1[index1];
+    }
+    else
+    {
+        return arr2[index2];
+    }
+}
+
+// Kth Smallest Element Iterative method 2
+int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
+{
+    if (k > num1 + num2)
+    {
+        cout << "Error" << endl;
+        return -1;
+    }
+
+    // Index 1 + Index 2 will always be k
+    uint32_t idx1 = k/2;
+    uint32_t idx2 = k - idx1;
+
+    // VERY IMP: SIGNED INT
+    int32_t step = k/4;
+
+    while (step > 0)
+    {
+        //cout << "0. Idx 1: " << idx1 << "; Idx 2: " << idx2 << endl;
+        if (arr1[idx1 - 1] > arr2[idx2 - 1])
+        {
+            idx1 -= step;
+            idx2 += step;
+        }
+        else
+        {
+            idx1 += step;
+            idx2 -= step;
+        }
+        step = step / 2;
+    }
+
+    cout << "1. Idx 1: " << idx1 << "; Idx 2: " << idx2 << endl;
+    if (arr1[idx1 - 1] > arr2[idx2 - 1])
+    {
+        return arr1[idx1 - 1];
+    }
+    else
+    {
+        return arr2[idx2 - 1];
+    }
+}
+
+
+// Recurisve Algorithm to find the k'th smallest
+int kthSmallestElementRec(int arr1[], uint32_t index1, uint32_t num1,
+                          int arr2[], uint32_t index2, uint32_t num2,
+                          uint32_t k)
+{
+    if (index1 + index2  == k - 1)
+    {
+        if (num1 > index1 &&
+            (num2 <= index2 || arr1[index1] < arr2[index2]))
+        {
+            return arr1[index1];
+        }
+        else
+        {
+            return arr2[index2];
+        }
+    }
+
+    uint32_t step = (k - index1  - index2) / 2;
+
+    uint32_t step1 = index1 + step;
+    uint32_t step2 = index2 + step;
+
+    if (num1 > step1 - 1 &&
+        (num2 <= step2 - 1 ||
+         arr1[step1 - 1] < arr2[step2 - 1]))
+    {
+        index1 = step1; // commit to element at index = step1 - 1
+    }
+    else
+    {
+        index2 = step2;
+    }
+
+    kthSmallestElementRec(arr1, index1, num1, arr2, index2, num2, k);
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 20. Find Kth smallest element in an Unsorted array
+//
+//             int A[] = {3,5,2,1,8,4,6};
+//
+//             Ans: 4th Smallest is 4
+//
+// ------------------------------------------------------------------------------------------------
+int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
+{
+    if (k > num)
+    {
+        cout << "Invalid k" << endl;
+        return -1;
+    }
+
+    // Default sorting is in descending order
+    priority_queue<int> kSmallNos;
+
+    // Now the heap will contain the first k numbers
+    for(uint32_t i = 0; i < k; i++)
+    {
+        kSmallNos.push(arr[i]);
+    }
+
+    cout << kSmallNos.top() << endl;
+
+    for(uint32_t i = k; i < num; i++)
+    {
+        if (arr[i] < kSmallNos.top())
+        {
+            kSmallNos.pop();
+            kSmallNos.push(arr[i]);
+        }
+    }
+
+    return kSmallNos.top();
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -1207,6 +1801,73 @@ int main()
         int arr[] = {1, 4, 6, 8, 10, 45};
         printThreeNumSum(arr, sizeof(arr)/sizeof(arr[0]), 22);
         printThreeNumClosestSum(arr, sizeof(arr)/sizeof(arr[0]), 21);
+    }
+
+    // Problem 15. 1 Element Missing and 1 element Duplicate
+    {
+        vector<int> v1 = {1, 2, 2, 3};
+        findMissingAndDuplicate(v1);
+    }
+
+    // Problem 16. Two numbers missing
+    {
+        vector<int> v1 = {3,1,2,5,7,8};
+        findTwoMissing(v1, v1.size() + 2);
+    }
+
+    // Minimum number of conference rooms
+    {
+        vector<struct MeetingTime> meetings = {{9, 10}, {14, 16}, {8, 12},  {12, 16},  {10, 12}};
+        cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings) << endl;
+    }
+
+    // Median of two equal size sorted arrays
+    {
+        int arr1[] = {1, 2, 3};
+        int arr2[] = {4, 6, 8};
+        cout << endl << "Median 1: " << medianTwoSortedSameSizeArrays(arr1, arr2, sizeof(arr1) / sizeof(arr1[0])) << endl;
+    }
+
+    // Median of two sorted UNEQUAL arrays
+    {
+        //int A[] = {900};
+        //int B[] = {5, 8, 10, 20};
+	
+        //int A[] = {1, 2, 4, 8, 9, 10};
+        //int B[] = {3, 5, 6, 7};
+        int A[] = {1, 2, 4, 8};
+        int B[] = {3, 5, 6};
+
+        int N = sizeof(A) / sizeof(A[0]);
+        int M = sizeof(B) / sizeof(B[0]);
+
+        cout << "Median 2: " << medianTwoSortedDiffSizeArrays(A, N, B, M) << endl;
+    }
+
+    // Kth smallest Element
+    {
+        //int A[] = {1, 2, 6, 8};
+        //int B[] = {3, 5};
+        int A[] = {1, 2, 6, 8, 9, 15, 20};
+        int B[] = {3, 7, 10, 11, 12};
+
+        int N = sizeof(A) / sizeof(A[0]);
+        int M = sizeof(B) / sizeof(B[0]);
+
+        cout << "Kth Smallest: " << kthSmallestElement(A, N, B, M, 8) << endl;
+
+        uint32_t index1 = 0;
+        uint32_t index2 = 0;
+        cout << "Kth Smallest Rec: " << kthSmallestElementRec(A, index1, N, B, index2, M, 4) << endl;
+
+        cout << "Kth Smallest Two: " << kthSmallestElementTwo(A, N, B, M, 4) << endl;
+
+    }
+
+    // Kth Smallest Element in Unsorted Array
+    {
+        int arr[] = {3, 5, 2, 1, 8, 4, 6};
+        cout << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
     }
 
     cout << endl;

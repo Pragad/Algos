@@ -128,37 +128,6 @@ void ladderDynamic(int number)
     printVecOfVec(vecResult);
 }
 
-/*
-void ladderPathsRec(char* strPath, unsigned int num, unsigned int recLevel)
-{
-    if (num == 0)
-    {
-        strPath[recLevel] = '\0';
-        cout << strPath << endl;
-    }
-
-    if (num >= 1)
-    {
-        strPath[recLevel] = '1';
-        //cout << "1. " << strPath << endl;
-        ladderPathsRec(strPath, num - 1, recLevel + 1);
-    }
-
-    if (num >= 2)
-    {
-        strPath[recLevel] = '2';
-        //cout << "2. " << strPath << endl;
-        ladderPathsRec(strPath, num - 2, recLevel + 1);
-    }
-}
-
-void ladderRec(unsigned int number)
-{
-    char* strPath = new char[number + 1];
-    ladderPathsRec(strPath, number, 0);
-}
-*/
-
 // Problem 1: Print paths down a ladder
 // Algorithm: Use recursion to print the paths
 //            One call to the function is made for every single path entry.
@@ -197,7 +166,39 @@ void ladderRec(unsigned int number)
 
 // ------------------------------------------------------------------------------------------------
 // Problem 3: Longest Increasing Subsequence
+// http://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming
 // ------------------------------------------------------------------------------------------------
+uint32_t longestIncreasingSubSequenceRecUtil(int arr[], uint32_t num, uint32_t& maxVal)
+{
+    if (num == 1)
+    {
+        return 1;
+    }
+
+    uint32_t tmpMax;
+    uint32_t maxTillHere = 1;
+    for (uint32_t i = 1; i < num; i++)
+    {
+        tmpMax = longestIncreasingSubSequenceRecUtil(arr, i, maxVal);
+        if (arr[i - 1] < arr[num - 1] &&
+            (tmpMax + 1) > maxTillHere)
+        {
+            maxTillHere = tmpMax + 1;
+        }
+    }
+
+    maxVal = max(maxVal, maxTillHere);
+
+    return maxTillHere;
+}
+
+uint32_t longestIncreasingSubSequenceRec(int arr[], uint32_t num)
+{
+    uint32_t maxVal = 1;
+    (void) longestIncreasingSubSequenceRecUtil(arr, num, maxVal); 
+    return maxVal;
+}
+
 uint32_t longestIncreasingSubSequence(int arr[], int num)
 {
     if (num < 2)
@@ -307,7 +308,7 @@ uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
         else
         {
             // Check if the next element is greater than the middle. That means
-            // middle element is the first element smaller.
+            // middle element is the last element smaller.
             if ((middle + 1) < longIncSeq.size() && longIncSeq[middle + 1] > num)
             {
                 return middle + 1;
@@ -361,7 +362,7 @@ uint32_t longestIncreasingSubseq(vector<int> nums)
 }
 
 // ------------------------------------------------------------------------------------------------
-// Problem 4: Longest Increasing Subsequence
+// Problem 4: Longest Common Subsequence
 //            Using Recursion
 // ------------------------------------------------------------------------------------------------
 uint32_t longestCommonSubSequenceRec(string str1, string str2)
@@ -385,7 +386,7 @@ uint32_t longestCommonSubSequenceRec(string str1, string str2)
 }
 
 // ------------------------------------------------------------------------------------------------
-// Problem 4: Longest Increasing Subsequence
+// Problem 4: Longest Common Subsequence
 //            Using DP
 // ------------------------------------------------------------------------------------------------
 uint32_t longestCommonSubSequenceDP(string str1, string str2)
@@ -398,6 +399,8 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
     
     // VERY IMP. To initialize a 2D array to 0.
     uint32_t subSeqDP[str1.length()+1][str2.length()+1] = {{0}};
+
+    //vector< vector<int> > myTwoDVec(rows, vector<int> (cols, 5));
     
     // STD:FILL NOT WORKING
     //std::fill_n(subSeqDP, ((str1.length()+1) * (str2.length()+1)), 0);
@@ -420,6 +423,7 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
     }
 
 
+    /*
     cout << endl;
     for (uint32_t i = 0; i <= str1.length(); i++)
     {
@@ -429,14 +433,13 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
         }
         cout << endl;
     }
+    */
 
     // To print out the LCS
     string strLcs;
     // VeRY IMP: Start from Length
     for (int i = str1.length(), j = str2.length(); i > 0 && j > 0;)
     {
-        cout << str1[i] << " " << str2[j] << endl;
-
         // VERY IMP: Should compare i-1 and j-1
         if (str1[i-1] == str2[j-1])
         {
@@ -483,8 +486,10 @@ int main()
     // Problem 3. Longest Increasing Subsequence
     {
         int arr[] = {10,9,2,5,3,7,101,18};
+        int arr2[] = {3,5,6,2,5,4,19,5,6,7,12};
         vector<int> vec5 = {3,5,6,2,5,4,19,5,6,7,12};
 
+        cout << "LIS 0: " << longestIncreasingSubSequenceRec(arr2, sizeof(arr2) / sizeof(arr2[0])) << endl;
         cout << "LIS 1: " << longestIncreasingSubSequenceVec(vec5) << endl;
         cout << "LIS 2: " << longestIncreasingSubseq(vec5) << endl << endl;
     }
@@ -498,13 +503,6 @@ int main()
         cout << "LCS 1: " << longestCommonSubSequenceRec(str1, str2) << endl;
         cout << "LCS 2: " << longestCommonSubSequenceDP(str3, str4) << endl;
 
-        char X[] = "MZJAWXU";
-        char Y[] = "XMJYAUZ";
-          
-        int m = strlen(X);
-        int n = strlen(Y);
-          
-        lcs(X, Y, m, n);
     }
 
     cout << endl;

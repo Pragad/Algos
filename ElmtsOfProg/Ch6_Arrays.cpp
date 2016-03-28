@@ -21,10 +21,10 @@ using namespace std;
 // Helper function to convert Int array to string.
 //string convertIntArrToString(int arr[], int num)
 
-// 6.3a Find all substrings of an array using SUBSTING function.
+// 6.3b Find all substrings of an array using SUBSTING function.
 //void printAllSubSring(int arr[], int num)
 
-// 6.3b Recrusive way to find all substrings
+// 6.3c Recrusive way to find all substrings
 //void printAllSubsetRec(int arr[], int num)
 
 // 6.4 Find all permutations of an array
@@ -33,11 +33,8 @@ using namespace std;
 // 6.4b Recrusive way to find all permutations
 //void printAllPermutationsRec(int arr[], int num)
 
-// Helper function to convert Int array to string.
-//string convertIntArrToString(int arr[], int num)
-
-// 6.3a Find all substrings of an array using SUBSTING function.
-//void printAllSubset2(int arr[], int num)
+// 6.5 Print all possible strings of length k that can be formed from a set of n characters
+//void printAllKLengthStrings(string str, uint32_t k)
 
 void printArray(int arr[], int num)
 {
@@ -45,6 +42,25 @@ void printArray(int arr[], int num)
     {
         cout << arr[i] << " ";
     }
+    cout << endl;
+}
+
+void printArrayEndIdx(int arr[], uint32_t endIdx)
+{
+    for (int i = 0; i <= endIdx; i++)
+    {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+void printVectorInt(vector<int> nums, uint32_t eI)
+{
+    for (uint32_t i = 0; i <= eI; i++)
+    {
+        cout << nums[i] << " ";
+    }
+
     cout << endl;
 }
 
@@ -173,12 +189,11 @@ string convertIntArrToString(int arr[], int num)
 
 }
 
-// 6.10 Find all substrings of an array using SUBSTING function.
+// 6.3b Find all substrings of an array using SUBSTING function.
 // http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-fastest-way
 void printAllSubSring(int arr[], int num)
 {
     string tmpStr = convertIntArrToString(arr, num);
-    cout << endl << "TmpStr: " << tmpStr << endl;
     
     for (int i = 0; i < num; i++)
     {
@@ -213,7 +228,7 @@ void printVectorOfVectors(vector < vector <int> > subsetVec)
 }
 
 // http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
-// 6.10b Recrusive way to find all substrings
+// 6.3c Recrusive way to find all substrings
 void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subsetVec)
 {
 
@@ -239,47 +254,180 @@ void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subse
     }
 }
 
-// 6.11 Find all permutations of an array
-void printAllPermutations(int arr[], int num)
+// 6.3c2 Recrusive way to find all substrings
+// VERY IMP:
+//      1. USe separate index for result
+//      2. sI can go bigger than eI
+void printAllSubSetRecVer2(int arr[], uint32_t sI, uint32_t eI, int result[], uint32_t resIdx)
 {
+    if (sI > eI)
+    {
+        return;
+    }
+
+    if (sI == eI)
+    {
+        result[resIdx] = arr[sI];
+        printArrayEndIdx(result, resIdx);
+        return;
+    }
+
+    for (uint32_t i = sI; i <= eI; i++)
+    {
+        result[resIdx] = arr[i];
+        printArrayEndIdx(result, resIdx);
+
+        printAllSubSetRecVer2(arr, i+1, eI, result, resIdx + 1);
+    }
+}
+
+void printAllSubSetVer2(int arr[], uint32_t num)
+{
+    int* result = new int[num];
+    printAllSubSetRecVer2(arr, 0, num - 1, result, 0);
+    delete[] result;
+}
+
+// 6.4 Find all permutations of an array
+// Replace start index with Current index. All other elements except current index should be added.
+void printAllPermutationsRecUtil(int arr[], uint32_t cI, uint32_t eI, int result[], uint32_t resIdx)
+{
+    if (cI > eI)
+    {
+        return;
+    }
+
+    if (cI == eI)
+    {
+        result[resIdx] = arr[cI];
+        printArrayEndIdx(result, resIdx);
+        return;
+    }
+
+    for (uint32_t i = 0; i <= eI; i++)
+    {
+        result[resIdx] = arr[i];
+        printArrayEndIdx(result, resIdx);
+
+        printAllPermutationsRecUtil(arr, i+1, eI, result, resIdx + 1);
+    }
+}
+
+
+
+void printAllPermutationsRec(int arr[], int num)
+{
+    int* result = new int[num];
+    printAllPermutationsRecUtil(arr, 0, num - 1, result, 0);
+    delete[] result;
 
 }
 
-// 6.11b Recrusive way to find all permutations
-void printAllPermutationsRec(int arr[], int num)
+// 6.4b Recrusive way to find all permutations
+// Using Char array
+void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, char res[])
 {
+    if (curNum == tarNum)
+    {
+        res[curNum] = 0;
+        cout << res << endl;
+        return;
+    }
 
+    for (char c : str)
+    {
+        // VERY IMP: ONE FOR LOOP IS ENOUGH
+        //for (uint32_t i = curNum; i < tarNum; i++)
+        if (curNum < tarNum)
+        {
+            res[curNum] = c;
+            printAllKLengthStringsRec(str, tarNum, curNum + 1, res);
+        }
+        //res.pop_back();
+    }
+
+}
+
+// Using Strings
+void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, string res)
+{
+    if (curNum == tarNum)
+    {
+        cout << res << endl;
+        return;
+    }
+
+    for (char c : str)
+    {
+        res += c;
+        printAllKLengthStringsRec(str, tarNum, curNum + 1, res);
+        res.pop_back();
+    }
+
+}
+
+void printAllKLengthStrings(string str, uint32_t k)
+{
+    string result;
+   // char res[3];
+    char c;
+    printAllKLengthStringsRec(str, k, 0,  result);
+    //printAllKLengthStringsRec(str, k, 0,  res);
 }
 
 
 int main()
 {
-    int arr[] = {4, 1, 6, 4, 4, 7, 8, 2, 3, 1, 4, 4};
+    // 3 way quick sort
+    {
+        int arr[] = {4, 1, 6, 4, 4, 7, 8, 2, 3, 1, 4, 4};
 
-    printArray(arr, sizeof(arr) / sizeof(int));
+        printArray(arr, sizeof(arr) / sizeof(int));
 
-    cout << "Three Way Quick Sort" << endl;
-    threeWayQuickSort(arr, sizeof(arr) / sizeof(int));
-    printArray(arr, sizeof(arr) / sizeof(int));
+        cout << "Three Way Quick Sort" << endl;
+        threeWayQuickSort(arr, sizeof(arr) / sizeof(int));
+        printArray(arr, sizeof(arr) / sizeof(int));
+    }
+
+    // Max difference in an array
+    {
+        //int arr2[] = {7, 9, 5, 6, 3, 2}; 
+        //int arr2[] =  { 3, 2, 6, 9, 5 }; 
+        int arr2[] =  { 10, 1, 12, 3, 4, 28, 1 }; 
+        
+        //maxDifference(arr2, sizeof(arr2) / sizeof(int));
+    }
+
+    // Print all subsets
+    {
+        int arr3[] = {1, 2, 3, 4};
+        printAllSubset(arr3, sizeof(arr3) / sizeof(int));
+        cout << endl;
+        cout << "Print All Substring" << endl;
+        printAllSubSring(arr3, sizeof(arr3) / sizeof(int));
+        cout << endl;
+
+        // Version 2
+        cout << "Print All Subsets Version 2" << endl;
+        vector<int> nums(arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
+        printAllSubSetVer2(arr3, sizeof(arr3) / sizeof(arr3[0]));
+    }
+
+    // Print all Subsets using recursion
+    {
+        int arr4[] = {1, 2, 3, 4};
+        cout << "Print All Subsets Using Recursion" << endl;
+        vector < vector <int> > subsetVec;
+        printAllSubsetRec(arr4, 0, sizeof(arr4) / sizeof(int) - 1, subsetVec);
+        printVectorOfVectors(subsetVec);
+        cout << endl;
+    }
 
 
-    //int arr2[] = {7, 9, 5, 6, 3, 2}; 
-    //int arr2[] =  { 3, 2, 6, 9, 5 }; 
-    int arr2[] =  { 10, 1, 12, 3, 4, 28, 1 }; 
-    
-    //maxDifference(arr2, sizeof(arr2) / sizeof(int));
-
-    int arr3[] = {1, 2, 3, 4};
-    printAllSubset(arr3, sizeof(arr3) / sizeof(int));
-    cout << endl;
-    cout << "Print All Substring" << endl;
-    printAllSubSring(arr3, sizeof(arr3) / sizeof(int));
-    cout << endl;
-
-    int arr4[] = {1, 2, 3, 4};
-    cout << "Print All Subsets Using Recursion" << endl;
-    vector < vector <int> > subsetVec;
-    printAllSubsetRec(arr4, 0, sizeof(arr4) / sizeof(int) - 1, subsetVec);
-    printVectorOfVectors(subsetVec);
-    cout << endl;
+    // Print all possible strings of length k that can be formed from a set of n characters 
+    {
+        cout << "All Possible strings of Length k" << endl;
+        string s = "abc";
+        printAllKLengthStrings(s, 2);
+    }
 }

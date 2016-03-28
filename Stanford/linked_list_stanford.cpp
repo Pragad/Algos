@@ -464,6 +464,27 @@ void reverseLast5Node(struct node*& head)
     }
 }
 
+// Minimum node in a linked list
+void minimumNode(node* head)
+{
+    struct node* minNode = new node();
+    minNode->data = INT_MAX;
+    minNode->next = NULL;
+
+    while (head != NULL)
+    {
+        // If the minimum element is M and we have N elements greater than M which are
+        // ahead of M, then the if block will be executed N times.
+        if (minNode->data > head->data)
+        {
+            minNode->data = head->data;
+        }
+        head = head->next;
+    }
+
+    cout << minNode->data << endl;
+}
+
 // Main Function
 int main()
 {
@@ -476,115 +497,152 @@ int main()
 //    node* head2 = new node();
     node* head2 = NULL;
 
-    /*
-    Push(head2, 1);
-    Push(head2, 2);
-    Push(head2, 3);
-    */
+    // Fill in values
+    {
+        /*
+        Push(head2, 1);
+        Push(head2, 2);
+        Push(head2, 3);
+        */
 
-    Push(head, 1);
-    Push(head, 2);
-    Push(head, 3);
-    Push(head, 4);
-    Push(head, 5);
-    Push(head, 6);
-    Push(head, 7);
-    Push(head, 8);
+        Push(head, 1);
+        Push(head, 2);
+        Push(head, 3);
+        Push(head, 4);
+        Push(head, 5);
+        Push(head, 6);
+        Push(head, 7);
+        Push(head, 8);
+    }
 
-    //moveNode2(head2, head);
+    // Reversing the List
+    {
+        //moveNode2(head2, head);
 
-    printList(head);
-    reverseLast5Node(head);
-    printList(head);
+        printList(head);
+        reverseLast5Node(head);
+        printList(head);
 
-    //reverseLast5Node(head2);
-    //printList(head2);
-    /*
-    cout << "Get Nth Element: " << endl;
-    cout << getNth(head, 0) << endl;
-    cout << getNth(head, 1) << endl;
-    cout << getNth(head, 2) << endl;
+        //reverseLast5Node(head2);
+        //printList(head2);
+    }
+
+    // Get Nth Element
+    {
+        cout << "Get Nth Element: " << endl;
+        cout << getNth(head, 0) << endl;
+        cout << getNth(head, 1) << endl;
+        cout << getNth(head, 2) << endl;
+    }
 
     //deleteList(head);
     printList(head);
 
-    cout << "Pop: " << endl;
-    cout << pop(head) << endl;
-    cout << pop(head) << endl;
-    cout << pop(head) << endl;
-    cout << pop(head) << endl;
+    // Pop
+    {
+        cout << "Pop: " << endl;
+        cout << pop(head) << endl;
+        cout << pop(head) << endl;
+        cout << pop(head) << endl;
+        cout << pop(head) << endl;
+    }
 
     // InsertNth
-    head = NULL;
-    insertNth(head, 0, 5);
-    insertNth(head, 0, 10);
-    insertNth(head, 0, 10);
-    insertNth(head, 0, 10);
-    insertNth(head, 0, 10);
- //   insertNth(head, 3, 16);
- //   insertNth(head, 2, 3);
+    {
+        head = NULL;
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 10);
+        insertNth(head, 0, 10);
+        insertNth(head, 0, 10);
+        insertNth(head, 0, 10);
+        insertNth(head, 3, 16);
+        insertNth(head, 2, 3);
 
-    //insertNth(head, 0, 5);
-    //insertNth(head, 0, 2);
-    //insertNth(head, 0, 1);
-    //insertNth(head, 3, 6);
-    //insertNth(head, 2, 3);
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 2);
+        insertNth(head, 0, 1);
+        insertNth(head, 3, 6);
+        insertNth(head, 2, 3);
 
-    cout << endl << "Insert Nth" << endl;
-    printList(head);
+        cout << endl << "Insert Nth" << endl;
+        printList(head);
+    }
+
     // Sorted Insert
-    node* temp2 = new node();
-    temp2->next = NULL;
-    temp2->data = 0;
+    {
+        node* temp2 = new node();
+        temp2->next = NULL;
+        temp2->data = 0;
 
-    node* temp3 = new node();
-    temp3->next = NULL;
-    temp3->data = 0;
+        node* temp3 = new node();
+        temp3->next = NULL;
+        temp3->data = 0;
 
-    node* temp4 = new node();
-    temp4->next = NULL;
-    //temp4->data = 17;
-    temp4->data = 5;
+        node* temp4 = new node();
+        temp4->next = NULL;
+        //temp4->data = 17;
+        temp4->data = 5;
 
-    sortedInsert(head, temp2);
-    sortedInsert(head, temp3);
-    sortedInsert(head, temp4);
-    //printList(head);
+        sortedInsert(head, temp2);
+        sortedInsert(head, temp3);
+        sortedInsert(head, temp4);
+        //printList(head);
+    }
+
     // Insertion Sort
-    cout << endl <<  "Insertion Sort" << endl;
-    insertionSort(head);
-    printList(head);
+    {
+        cout << endl <<  "Insertion Sort" << endl;
+        insertionSort(head);
+        printList(head);
+    }
 
-    cout << endl <<  "Remove Duplicates" << endl;
-    removeDuplicates(head);
-    printList(head);
+    // Remove Duplicates
+    {
+        cout << endl <<  "Remove Duplicates" << endl;
+        removeDuplicates(head);
+        printList(head);
+    }
 
     cout << "Another List" << endl;
     printList(head2);
 
-    cout << endl <<  "Move Node" << endl;
-    moveNode(head, head2);
-    printList(head);
-    printList(head2);
-    cout << "Move Node again" << endl;
-    moveNode(head, head2);
-    moveNode(head, head2);
-    printList(head);
-    printList(head2);
+    // Move Node
+    {
+        cout << endl <<  "Move Node" << endl;
+        moveNode(head, head2);
+        printList(head);
+        printList(head2);
+        cout << "Move Node again" << endl;
+        moveNode(head, head2);
+        moveNode(head, head2);
+        printList(head);
+        printList(head2);
+    }
 
-    cout << endl << "Alternating Split" << endl;
+    // Alternating Split
     node* aRef = NULL;
     node* bRef = NULL;
-    alternatingSplit(head, aRef, bRef);
-    printList(aRef);
-    printList(bRef);
+    {
+        cout << endl << "Alternating Split" << endl;
+        alternatingSplit(head, aRef, bRef);
+        printList(aRef);
+        printList(bRef);
+    }
 
+    // Shuffle Merge
     node* merged = NULL;
-    cout << endl << "Shuffle Merge" << endl;
-    merged = shuffleMerge(aRef, bRef);
-    printList(merged);
-    */
+    {
+        cout << endl << "Shuffle Merge" << endl;
+        merged = shuffleMerge(aRef, bRef);
+        printList(merged);
+    }
 
+    // Minimum Node in the list
+    {
+        cout << endl << "Minimum Node" << endl;
+        printList(merged);
+        minimumNode(merged);
+    }
     cout << endl;
     return 0;
 }

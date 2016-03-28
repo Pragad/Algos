@@ -116,8 +116,8 @@ int main()
     unsigned int num_elmts = sizeof(unsorted) / sizeof(unsorted[0]);
 
     cout << "Merge Sort" << endl;
-    int b1[] = {1,6,7,8};    
-    int b2[] = {2,6,6,10}; 
+    int b1[] = {1,6,7,80};    
+    int b2[] = {2,6,6,10,12, 13, 15, 16}; 
     unsigned int b1_size =  sizeof(b1)/sizeof(b1[0]);
     unsigned int b2_size =  sizeof(b2)/sizeof(b2[0]);
     int *c = new int [b1_size + b2_size];
