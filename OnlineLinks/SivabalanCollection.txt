@@ -1,0 +1,202 @@
+Q8.
+Iterative Preorder:
+    - Simple.
+
+Iterative Inorder:
+    - Use a current pointer and a stack.
+    - Go till left most node can be found and push everything to stack
+
+Iterative Postorder:
+    - Use two stacks
+    - Stack 2 should hold the reverse post order form
+
+Q9.
+BFS traversal
+    - Use Queue
+
+Q10.
+Find whether a number is power of 2 or not ?    
+    - num & (num - 1)
+
+Q11.
+Find whether a number is power of 5 or not ?    
+    log a base b = log a base c * log c base b
+
+Q12.
+Input bit stream of 0's and 1's find if the number formed is divisible by 3
+    http://stackoverflow.com/questions/19978572/binary-string-remainder-3
+    https://www.careercup.com/question?id=13146691
+
+        Note that if you append 0 at the end of a binary number, you double it's value.
+        If you append 1 at the end, you double it and add 1.
+
+        I think the key point here is that the stream is of *infinite* length.
+
+        Any solution that keeps track of all bits or their summation or in any other form would cause overflow problems.
+
+        The solution needs some number theory to prevent keeping info of all incoming bits. The right way to do this is to only keep the REMAINDER.
+
+        Notice the truth that X%3 and X have the same remainder, when divided by 3. So having X%3 is enough to decide whether X is divisible by 3.
+
+        When new bit comes, multiply the remainder by 2 (if bit is 0) or *2+1 (if bit is 1). Then repeat the procedures of keeping remainders.
+
+    Solution 2.
+        Number of 1s at even position is SAME AS number of 1s at odd position
+        Eg: 11, 110, 1001, 1100
+
+    DFA:
+    http://www.geeksforgeeks.org/dfa-based-division/
+
+Q16.
+Merge k sorted linked list
+    http://www.programcreek.com/2013/02/leetcode-merge-k-sorted-lists-java/
+    https://www.careercup.com/question?id=2261
+
+Q17.
+Merge k sorted arrays
+http://www.geeksforgeeks.org/merge-k-sorted-arrays/
+    We can merge arrays in O(nk*Logk) time using Min Heap. Following is detailed algorithm.
+
+    1. Create an output array of size n*k.
+    2. Create a min heap of size k and insert 1st element in all the arrays into a the heap
+    3. Repeat following steps n*k times.
+         a) Get minimum element from heap (minimum is always at root) and store it in output array.
+         b) Replace heap root with next element from the array from which the element is extracted. If the array doesn’t have any more elements, then replace root with infinite. After replacing the root, heapify the tree.
+
+Q18.
+Check if linked list is palindrome
+
+
+Q24.
+Number of trailing 0s in factorial of a number
+    http://stackoverflow.com/questions/23977727/the-number-of-trailing-zeros-in-a-factorial-of-a-given-number-ruby
+
+Q28.
+Binary tree to doubly linked list
+
+
+{
+    // Producer Consumer using array of 10
+}
+
+{
+    // Long integer multiplication
+    {
+
+        // Case 1. Plain multiplication
+        void longMultiply(string s1, string s2)
+        {
+            // Copy them into a vector for easier manipulation
+            vector<char> vec1(s1.begin(), s1.end());
+            vector<char> vec2(s2.begin(), s2.end());
+
+            // S1 and S2 will hold the integer values
+            vector<uint32_t> vecS1;
+            vector<uint32_t> vecS2;
+
+            // Convert each character into a number and store it for easier manipulation
+            convertCharToString(vec1, vecS1);
+            convertCharToString(vec2, vecS2);
+
+            vector<uint32_t> vecMul;
+            vector<uint32_t> vecResult;
+
+            // Take each character in vecS2 and multiple with all chars of vecS1 and put the result in a vector of chars
+            uint32_t carry = 0;
+            uint32_t count = 0;
+            for(char c2 : vecS2)
+            {
+
+                // Insert so many zeroes at the beginning
+                // This vector stores in the reversed order
+                for (uint32_t i = 0; i < count; i++)
+                {
+                    vecMul.push_back(0);
+                }
+
+                carry = 0;
+                // Multiply and add all the elements to a vector
+                for (uint32_t c1 : vecS1)
+                {
+                    temp = carry + (c2 * c1);
+                    rem = temp % 10;
+                    carry = temp / 10;
+                    
+                    vecMul.push_back(rem);
+                }
+
+                // Now add the carry to the vector
+                if (carry != 0)
+                {
+                    vecMul.push_back(carry)
+                }
+
+                // Now add the Mul and Result vector. Finally reverse it to get the final output
+                uint32_t c2 = 0;
+                for (uint32_t i = 0; i < vecMul.size() && i < vecResult.size(); i++)
+                {
+                    temp2 = c2 + vecMul[i] + vecResult[i];
+                    rem2 = temp2 % 10;
+                    c2 = temp2 / 10;
+                    vecResult[i] = rem2;
+                }
+
+                if (vecResult.size() == 0)
+                {
+                    vecResult = vecMul;
+                }
+
+                for (; i < vecMul.size(); i++)
+                {
+                    // Carry should be added
+                    vecResult.push_back(c2 + vecMul[i]);
+                }
+
+                count++;
+            }
+
+            reverse(vecResult.begin(), vecResult.end());
+        }
+
+        // Case 2. Converting to 0s and 1s
+        {
+            convertStringToBinary(s1, s2);
+
+            // Copy them into a vector for easier manipulation
+            vector<char> vecS1(s1.begin(), s1.end());
+            vector<char> vecS2(s2.begin(), s2.end());
+
+        }
+
+
+    }
+}
+
+{
+    // Merge two string
+}
+
+{
+    // Producer consumer problem using array of 10
+    vector<int> arr(10);
+    uint32_t numElmts = 0;
+
+    void produce()
+    {
+        while (numElmts < 10)
+        {
+            temp = produceItem();
+            arr.push_back(temp);
+            numElmts++;
+        }
+    }
+
+    void consume()
+    {
+        while(numElmts >= 0)
+        {
+            arr.erase(arr.begin());
+            numElmts--;
+        }
+    }
+}

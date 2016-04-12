@@ -90,6 +90,12 @@ Later I will extend my project by adding nice to have features (like adding back
     D. Challenges and How you fixed it:
 
     E. Additional Notes:
+        Worked on developing a web application that proposes already existing software solution based on uploaded RFPs (Request for Proposal).
+        Used ScraperWiki to crawl Civic Commons website and extract all software information.
+        This is a part of the Code-for-America initiative.
+        Won a GitHub Bronze award from Cloud-foundry organization.
+Technologies and Languages used: Spring MVC, Python, ScraperWiki, HTML5, CSS3, JS, jQuery
+
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4. Instant Indoor Localization
@@ -122,6 +128,10 @@ Later I will extend my project by adding nice to have features (like adding back
     D. Challenges and How you fixed it:
 
     E. Additional Notes:
+        Developed an animat learning environment where a cub learns hunting behavior from Lion.
+        Single feed forward neural network is used to implement imitation and reinforcement learning.
+        Made use of Java Repast library to creat the predator-prey scenrio in which the predator learns to hunt the prey.
+
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 6. Haplotype
@@ -134,6 +144,10 @@ Later I will extend my project by adding nice to have features (like adding back
     D. Challenges and How you fixed it:
 
     E. Additional Notes:
+        The Project aims to reassemble the haplotypes by linking the reads together.
+        Align the reads to a reference genome to find out the SNP (Single Nucleotide Polymorphism) positions.
+        Build a greedy algorithm for haplotype phasing from sequence reads, allowing for sequencing errors.
+
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 7. Sentiment based review system
@@ -211,60 +225,87 @@ Later I will extend my project by adding nice to have features (like adding back
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 11. Final Paper - quorum based geo location service
     A. Problem:
+       Efficient way to send data to nodes in a VSN.
+       Eg: Sensors are deployed on the road to monitor road conditions.
+           Information needs to be sent to any vehicle that would need the information
+
+       3. Conditions for Geographic routing
+          a. A node should know its location - Using GPS
+          b. A node should know its negithbors - Beacon signals to one hop neighbors
+          c. Source to know location of destination - This paper solves it
+
+        Location Services:
+            1. Flooding Based
+               Any source in the network will be provided with the destination info
+                a. Full network flooding
+                b. Local network flooding
+
+            2. Rendezvous Based
+               Location Updates will be stored and Location queries will be looked up.
+                a. Hash Based
+                    - Overhead for building and maintaining the hash table
+                    
+                b. Quorum Based
+                    - Destination sends Location update via N-S direction
+                    - Source sends Location query via E-W direction
 
     B. How you solved it:
+        Sensors are Source Nodes
+        Emergency vehicle in Destination Node
+        Imagine Sensors are deployed on the road.
+
+
+        Say we have a Vehicle, 
+        - it will register itself with the closest sensor.
+        - The closest sensor will store the List of vehicles close by; This help to directly send
+          a message to the vehicle
+        - The closest sensor will SEND the PACKET (its own location and Vechicle info) in TWO
+          OPPOSITE directions. One towards the center and another away from it.
+
+        - One packet is sent to the Center Intersection Point - that we know already
+        - Another packet is sent to the farthest node from CIP
+
+        Location Query:
+            - Sensor node that needs to send the info to a vehicle
+            - It can find its position w.r.t CIP
+            - Chooses a farthest node and sends LQ packets using Horizontal First Verical Next
+            - Once LQ reaches the target, the target sensor sends the LQ back to Source
+              using the same Horizontal First Vertical Next.
+            - this create a Quadrangular path
+
+        Location Reply:
+            - LU is made between CIP and Network Boundary sensor
+            - LQ is made by having CIP on the inside
 
     C. Interesting Stuffs:
+        Moving Vehicle:
+            - After LU, vehicle can move from the registered sensor
+            Solution:
+            - After moving register with the nearest sensor. Also tell the previous sensor
+              with which it was registered.
+            - The new sensor will take care of updating the previous sensor
 
     D. Challenges and How you fixed it:
 
     E. Additional Notes:
-
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VMware
 Developed a model to estimate the space consumption of Virtual Machine images during VMotion.
 Involved estimating the space savings due to Deduplication in the storage array.
 Applied Bloom filters, hash comparison and sampling technique to compare our model with SDFS and LessFS volumes.
 
-RFP Software Matcher
-Worked on developing a web application that proposes already existing software solution based on uploaded RFPs (Request for Proposal).
-Used ScraperWiki to crawl Civic Commons website and extract all software information.
-This is a part of the Code-for-America initiative.
-Won a GitHub Bronze award from Cloud-foundry organization.
-Technologies and Languages used: Spring MVC, Python, ScraperWiki, HTML5, CSS3, JS, jQuery
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+EMC:
 
-Animats - Imitation Learning and Reinforcement Learning
-Developed an animat learning environment where a cub learns hunting behavior from Lion.
-Single feed forward neural network is used to implement imitation and reinforcement learning.
-Made use of Java Repast library to creat the predator-prey scenrio in which the predator learns to hunt the prey.
+VDS:
+    - Introduced in Win2K3
+    DISKRAID:
+        - View and Manage underlying physical disk in a LUN
 
+    Why VDS:
+        - Each company makes their own Storage Devices.
+        - From any Windows Client we should be able to connect to the Storage Device
 
-Mobile Search
-Developed an android application with improved location based searching for highly mobile users.
-Predict future location based on user's vector of travel using Google Maps and Google Places API
-Improving energy efficieny by calculating the consistency in the user's vector of travel
-
-Haplotype Assembly
-The Project aims to reassemble the haplotypes by linking the reads together.
-Align the reads to a reference genome to find out the SNP (Single Nucleotide Polymorphism) positions.
-Build a greedy algorithm for haplotype phasing from sequence reads, allowing for sequencing errors.
-
-Image Processing - Open MP Parallel Programming 
-
-
-
-
-Chord P2P Protocol
-
-
---------------------
-•	Instant Indoor localization
-•	Mobile Search
-	Animats - Imitation Learning and Reinforcement Learning
-	RFP Matcher
-•	Sentiment-based Review System for Product features:
-	Hapltotype Assembly
-•	Antenna Power Allocation for Energy Save in MIMO 802.11n Networks
-	Chord P2P Protocol
-•	Image Processing - Open MP Parallel Programming 
-	Directory Usage Statistics:
+        - Used to manage LUNs
+        - manage disks
+        - manage end to end storage

@@ -1,4 +1,5 @@
-1. Merge Sort vs Quick Sort
+1.
+Merge Sort vs Quick Sort
 http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quick-sort-for-sorting-linked-lists?rq=1
     "Merge sort is very efficient for immutable datastructures like linked lists"
     "Quick sort is typically faster than merge sort when the data is stored in memory.
@@ -39,7 +40,8 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
      - Faster when reading from Disk and not everything can be in memory
      - Mergesort is faster when data won't fit into memory or when it's expensive to get to an item.
 
-1b. Bubble Sort vs Selection Sort vs Insertion Sort
+2.
+Bubble Sort vs Selection Sort vs Insertion Sort
     http://www.sorting-algorithms.com/selection-sort
     Bubble Sort:
         - Check pair of elements and swap them so that the largest gets bubbled to the end.
@@ -80,26 +82,8 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
         However, selection sort has the property of minimizing the number of swaps.
         In applications where the cost of swapping items is high, selection sort very well may be the algorithm of choice.
 
-2. But I heard that char a[] was identical to char *a.
-   http://c-faq.com/aryptr/aryptr2.html
-   - The array declaration char a[6] requests that space for six characters be set aside, to be known by the name ``a''.
-     That is, there is a location named ``a'' at which six characters can sit
-   - The pointer declaration char *p, on the other hand, requests a place which holds a pointer, to be known by the name ``p''.
-   - VERY IMP: ``pointer arithmetic and array indexing [that] are equivalent in C, pointers and arrays are different.'')
-
-3. If they're so different, then why are array and pointer declarations interchangeable as function formal parameters? 
-   - Since arrays decay immediately into pointers, an array is never actually passed to a function.
-
-4. Characters and String
-   http://c-faq.com/charstring/index.html
-
-5. Null termination of strings:
-   http://stackoverflow.com/questions/12019947/null-termination-of-char-array
-
-   We can store only one character less
-
-
-6. Median of Medians:
+3.
+Median of Medians:
     http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
         Think of the following set of numbers: 
         5 2 6 3 1
@@ -159,15 +143,18 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
             else return M
         }
 
-7. Bit twiddling Stanford material
-    http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable
+4.
+Bit twiddling Stanford material
+http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable
 
-8. String Search:
+5.
+String Search:
     Bayer More:
-        http://www.geeksforgeeks.org/pattern-searching-set-7-boyer-moore-algorithm-bad-character-heuristic/
+    http://www.geeksforgeeks.org/pattern-searching-set-7-boyer-moore-algorithm-bad-character-heuristic/
 
-9. given 2 sorted arrays of integers, find the nth largest number in sublinear time
-    http://stackoverflow.com/questions/4686823/given-2-sorted-arrays-of-integers-find-the-nth-largest-number-in-sublinear-time
+6.
+given 2 sorted arrays of integers, find the nth largest number in sublinear time
+http://stackoverflow.com/questions/4686823/given-2-sorted-arrays-of-integers-find-the-nth-largest-number-in-sublinear-time
 
     I think this is two concurrent binary searches on the subarrays A[0..n-1] and B[0..n-1], which is O(log n).
 
@@ -182,20 +169,24 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
 
     I believe worst case O(ln n), but in any case definitely sublinear.
 
-10. k'th smallest in Union of Two arrays:
-    http://articles.leetcode.com/2011/01/find-k-th-smallest-element-in-union-of.html
+7.
+k'th smallest in Union of Two arrays:
+http://articles.leetcode.com/2011/01/find-k-th-smallest-element-in-union-of.html
 
-11. K’th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
-    http://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array-set-3-worst-case-linear-time/
-    http://www.programcreek.com/2014/05/leetcode-kth-largest-element-in-an-array-java/
+8.
+K’th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
+http://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array-set-3-worst-case-linear-time/
+http://www.programcreek.com/2014/05/leetcode-kth-largest-element-in-an-array-java/
 
-12. GCD of two numbers:
+9.
+GCD of two numbers:
     GCD(a,b) = GCD(b,a-b)
     GCD(a,b) = GCD(b,a%b)
     NICE IMP Proof:
         https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 
-13. STOCK PROBLEMS:
+10.
+STOCK PROBLEMS:
     http://stackoverflow.com/questions/9514191/maximizing-profit-for-given-stock-quotes
     Traverse Backwards
 
@@ -203,24 +194,16 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
     http://stackoverflow.com/questions/7086464/maximum-single-sell-profit
 
 
-14. C++ Auto Pointers, Shared Pointers and Unique Pointers
-    auto_ptr, unique_ptr and shared_ptr
-    
-15. C++ Iterators:
-    See LearnCpp\Vector.cpp file
-    Vector.at() is SLOWER than vector[]
-    http://stackoverflow.com/questions/9376049/vectorat-vs-vectoroperator
-
-    IMP: Use vector.at() when INDEX is not in your control.
-
-16. Sorted Rotated Array:
+11.
+Sorted Rotated Array:
     In a rotated sorted array, only one of A and B can be guaranteed to be sorted. If the element lies within a part which is sorted, then the solution is simple:
         just perform the search as if you were doing a normal binary search. If, however, you must search an unsorted part,
         then just recursively call your search function on the non-sorted part.
 
     This ends up giving on a time complexity of O(lg n).
 
-17. Find all subsets of a set
+12.
+Find all subsets of a set
     http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
     http://www.geeksforgeeks.org/power-set/
 
@@ -231,4 +214,83 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
         }
     }
 
+13.
+Multiplication of two numers
+http://stackoverflow.com/questions/28888068/time-complexity-of-russian-peasant-multiplication-algorithm
+    Use bit shifting AKA 
 
+    https://en.wikipedia.org/wiki/Multiplication_algorithm#Peasant_or_binary_multiplication
+
+    Decimal:     Binary:
+    11           3       1011  11
+    5            6       101  110
+    2            12       10  1100
+    1            24       1  11000
+                 --         ------
+                 33         100001
+
+    The method works because multiplication is distributive, so:
+
+        3 * 11 & = 3 * (1 * 2^0 + 1 * 2^1 + 0 * 2^2 + 1 * 2^3)
+                 = 3 * (1 + 2 + 8)
+                 = 3 + 6 + 24
+                 = 33
+
+    IMP:
+    1. Time complexity depends on the NUMBER that we are using for doing the shift
+       log (a) or log(b) based on which we select as A
+    2. In the above example say 11 = A and 3 = B
+       - Select A such that it has lesser number of bits.
+       - We are repeating the multiplication till A REACHES 1.
+       - So select A as the number that has least number of bits set.
+
+14.
+Spiral Level Order traversal of a tree
+http://www.geeksforgeeks.org/level-order-traversal-in-spiral-form/
+http://stackoverflow.com/questions/17485773/print-level-order-traversal-of-binary-tree-in-zigzag-manner
+
+    You have to use two stacks
+
+        1. first stack for printing from left to right
+        2. second stack for printing from right to left.
+
+    Start from the root node.
+    Store it's children in one stack.
+    In every iteration, you have nodes of one level in one of the stacks.
+    Print the nodes, and push nodes of next level in other stack.
+    Repeat until your reach the final level.
+
+    Time Complexity O(n) and space complexity O(h).
+
+15.
+Space Complexity for Tree Traversal.
+    O(h) where h is the height of the tree.
+
+    At any time in the stack we will have ones in that depth level
+    So space complexity is height of tree.
+
+    BFS:
+    Time complexity is O(|V|) where |V| is the number of nodes,you need to traverse all nodes.
+    Space complecity is O(|V|) as well - since at worst case you need to hold all vertices in the queue.
+
+    DFS:
+    Time complexity is again O(|V|), you need to traverse all nodes.
+    Space complexity - depends on the implementation, a recursive implementation can have a O(h) space complexity [worst case], where h is the maximal depth of your tree.
+    Using an iterative solution with a stack is actually the same as BFS, just using a stack instead of a queue - so you get both O(|V|) time and space complexity.
+            a
+       b         e
+     c   d     f   g
+
+    a
+    |
+    |--> b
+    |    |
+    |    |--> c
+    |    |
+    |    |--> d
+    |
+    |--> e
+         |
+         |--> f
+         |
+         |--> g

@@ -6,6 +6,7 @@
 #include <typeinfo>         // typeid
 #include <vector>
 #include <cmath>            // ciel
+#include <cstring>          // memset
 using namespace std;
 
 /*
@@ -302,10 +303,15 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
     // Initialize a Visited bool array
     for (uint32_t i = 0; i < rows; i++)
     {
-        visited[i] = new bool[cols];
+        // VERY IMP: Use "()" to set default value to 0
+        visited[i] = new bool[cols]();
     }
 
     // Set all values of bool array to false;
+    int abc[100][100];
+    std::fill_n(abc, 100 * 100, 0);
+    //std::fill_n(visited, rows * cols, false);
+    /*
     for (uint32_t i = 0; i < rows; i++)
     {
         for (uint32_t j = 0; j < cols; j++)
@@ -313,6 +319,7 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
             visited[i][j] = false;
         }
     }
+    */
 
     for (int x = 0; x < rows; x++)
     {
@@ -1290,8 +1297,6 @@ void printMeetingVector(vector<MeetingTime> meetings)
     cout << endl;
 }
 
-
-
 /*
 struct MyMeetStrtEndComp
 {
@@ -1870,6 +1875,9 @@ int main()
         cout << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
     }
 
+    // 
+    {
+    }
     cout << endl;
     return 0;
 }

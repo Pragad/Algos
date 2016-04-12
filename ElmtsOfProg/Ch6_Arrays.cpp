@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <sstream>      // For ostringstream
+#include <unordered_map>
 using namespace std;
 
 // 6.1 Dutch National Flag Proble / 3 way quick sort
@@ -33,7 +34,10 @@ using namespace std;
 // 6.4b Recrusive way to find all permutations
 //void printAllPermutationsRec(int arr[], int num)
 
-// 6.5 Print all possible strings of length k that can be formed from a set of n characters
+// 6.5 Print all anagrams of a string
+//void printAllAnagrams(string str)
+
+// 6.6 Print all possible strings of length k that can be formed from a set of n characters
 //void printAllKLengthStrings(string str, uint32_t k)
 
 void printArray(int arr[], int num)
@@ -59,6 +63,16 @@ void printVectorInt(vector<int> nums, uint32_t eI)
     for (uint32_t i = 0; i <= eI; i++)
     {
         cout << nums[i] << " ";
+    }
+
+    cout << endl;
+}
+
+void printVectorChar(vector<char> vecChar)
+{
+    for (char c : vecChar)
+    {
+        cout << c << " ";
     }
 
     cout << endl;
@@ -323,6 +337,110 @@ void printAllPermutationsRec(int arr[], int num)
 
 }
 
+// 6.5 Print all anagrams of a string
+void printAnagramsUtils(vector<char> vecStr, char result[], uint32_t curLen, uint32_t tarLen)
+{
+    if (curLen == tarLen)
+    {
+        result[curLen] = 0;
+        cout << result << endl;
+        return;
+    }
+
+    for (uint32_t i = 0; i < vecStr.size(); i++)
+    {
+        // VERY IMP: Use temp array. It is needed to re insert the element back to the vector
+        char temp = vecStr[i];
+        result[curLen] = temp;
+        vecStr.erase(find(vecStr.begin(), vecStr.end(), temp));
+        printAnagramsUtils(vecStr, result, curLen + 1, tarLen);
+        vecStr.insert(vecStr.begin(), temp);
+    }
+}
+
+void printAllAnagrams(string str)
+{
+    char result[str.size() + 1];
+
+    vector<char> vecStr(str.begin(), str.end());
+
+    printVectorChar(vecStr);
+    printAnagramsUtils(vecStr, result, 0, str.size());
+}
+
+void printAnagramsUtilsStr(vector<char> vecStr, string result, uint32_t curLen, uint32_t tarLen)
+{
+    if (curLen == tarLen)
+    {
+        cout << result << endl;
+        return;
+    }
+
+    for (uint32_t i = 0; i < vecStr.size(); i++)
+    {
+        // VERY IMP: Use temp array. It is needed to re insert the element back to the vector
+        char temp = vecStr[i];
+        result += temp;
+        vecStr.erase(find(vecStr.begin(), vecStr.end(), temp));
+        printAnagramsUtilsStr(vecStr, result, curLen + 1, tarLen);
+        vecStr.insert(vecStr.begin(), temp);
+        result.erase(result.find(temp));
+    }
+}
+
+void printAllAnagramsStr(string str)
+{
+    string result = "";
+    vector<char> vecStr(str.begin(), str.end());
+
+    printVectorChar(vecStr);
+    printAnagramsUtilsStr(vecStr, result, 0, str.size());
+}
+
+// Problem 6.7
+// http://stackoverflow.com/questions/12477339/finding-anagrams-for-a-given-word
+void printAllAnagramsUsingDict(string str)
+{
+    // Part 1. Update the dictionary contents into a hash table
+    vector<string> dict = {"hello", "world"};
+    unordered_map<string, vector<string> > dictHash;
+
+    for (uint32_t i = 0; i < dict.size(); ++i)
+    {
+        string temp = dict[i];
+        sort(temp.begin(), temp.end());
+
+        auto itr = dictHash.find(temp);
+        if (itr != dictHash.end())
+        {
+            itr->second.push_back(dict[i]);
+        }
+        else
+        {
+            // VERY IMP: '{' and '}'
+            dictHash[temp] = vector<string> {dict[i]};
+        }
+    }
+
+    // Part 2: For a given string print all the anagrams
+    string sortStr = str;
+    sort(sortStr.begin(), sortStr.end());
+    auto it2 = dictHash.find(sortStr);
+    if (it2 != dictHash.end())
+    {
+        vector<string> vecAnagram = it2->second;
+        for (string s : vecAnagram)
+        {
+            cout << s << ", ";
+        }
+        cout << endl;
+    }
+    else
+    {
+        cout << "Dictionary doesn't contain the word" << endl;
+    }
+}
+
 // 6.4b Recrusive way to find all permutations
 // Using Char array
 void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, char res[])
@@ -423,6 +541,24 @@ int main()
         cout << endl;
     }
 
+    // Print All Permutation of an array
+    {
+        int arr[] = {1, 2, 3};
+        // Goes on infinite loop
+        //printAllPermutationsRec(arr, sizeof(arr)/sizeof(arr[0]));
+    }
+
+    // Print all permutations of a String
+    // Print all anagrams of a string
+    {
+        cout << "Print All Anagrams Recursion" << endl;
+        string str = "abc";
+        printAllAnagrams(str);
+
+        cout << "Print All Anagrams Recursion" << endl;
+        string str2 = "abc";
+        printAllAnagramsStr(str2);
+    }
 
     // Print all possible strings of length k that can be formed from a set of n characters 
     {

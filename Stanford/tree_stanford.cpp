@@ -373,6 +373,7 @@ uint32_t computeHeight(tree* root)
 
 // ------------------------------------------------------------------------------------------------
 // Problem 12.
+// http://stackoverflow.com/questions/742844/how-to-determine-if-binary-tree-is-balanced
 // This tell if a binary tree is Balanced or not.
 // VERY IMP: What if the tree is highly unbalanced with million nodes on one side
 // and very few nodes on other side.
