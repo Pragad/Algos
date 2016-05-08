@@ -5,6 +5,34 @@
 #include <cstring>
 using namespace std;
 
+/*
+ * Problem 1. Fibonacci
+ * unsigned int fibonacci(int n)
+ * unsigned int fibonacciDynamic2(int n)
+ *
+ * Problem 2. Ladder Problem
+ * void ladderPathsRec(char* strPath, unsigned int num, unsigned int recLevel)
+ * void ladderDynamic(int number)
+ *
+ * Problem 3. Longest Increasing Subsequence
+ * uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
+ * uint32_t longestIncreasingSubseq(vector<int> nums)
+ *
+ * Problem 4. Longest Common Subsequence
+ * uint32_t longestCommonSubSequenceRec(string str1, string str2)
+ * uint32_t longestCommonSubSequenceDP(string str1, string str2)
+ *
+ * PROBLEM 5. Coin change problem
+ * uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
+ * uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
+ *
+ * PROBLEM 6. Longest Increasing Subsequence in a 2D Matrix
+ * uint32_t longestIncSubSeqTwoDMat(int** twoDMat, uint32_t rows, uint32_t cols)
+ *
+ * PROBLEM 7. 
+ *
+ */
+
 // ------------------------------------------------------------------------------------------------
 // Problem 1: Fibonacci of a number
 // ------------------------------------------------------------------------------------------------
@@ -128,7 +156,7 @@ void ladderDynamic(int number)
     printVecOfVec(vecResult);
 }
 
-// Problem 1: Print paths down a ladder
+// Problem 2: Print paths down a ladder
 // Algorithm: Use recursion to print the paths
 //            One call to the function is made for every single path entry.
 // http://www.geeksforgeeks.org/count-ways-reach-nth-stair/
@@ -422,19 +450,6 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
         }
     }
 
-
-    /*
-    cout << endl;
-    for (uint32_t i = 0; i <= str1.length(); i++)
-    {
-        for (uint32_t j = 0; j <= str2.length(); j++)
-        {
-            cout << subSeqDP[i][j] << " ";
-        }
-        cout << endl;
-    }
-    */
-
     // To print out the LCS
     string strLcs;
     // VeRY IMP: Start from Length
@@ -464,6 +479,183 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
     cout << "LCS String: " << strLcs << endl;
     return subSeqDP[str1.length()][str2.length()];
 }
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 5. Coin change problem
+//            coins[] = {25, 10, 5}, V = 30
+//            Ans: 2
+// ------------------------------------------------------------------------------------------------
+//uint32_t minCoinChangeRec(vector<int> coins)
+// http://algorithms.tutorialhorizon.com/dynamic-programming-coin-change-problem/
+// Time Complexity 2^n
+uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
+{
+    if (val == 0)
+    {
+        return 0;
+    }
+
+    else
+    {
+        uint32_t minCoin = UINT_MAX;
+        for (uint32_t i = 0; i < num; i++)
+        {
+            if (val >= coins[i])
+            {
+                // IMP: We have UNLIMITED supply of coins. So comment out the below line
+                //int tempMinCoin = 1 + minCoinChangeRec(coins + 1 , num - 1, val - coins[i]);
+                uint32_t tempMinCoin = minCoinChangeRec(coins + i , num - i, val - coins[i]);
+
+                if (tempMinCoin != UINT_MAX)
+                {
+                    minCoin = min(1 + tempMinCoin, minCoin);
+                }
+            }
+        }
+        return minCoin;
+    }
+}
+
+// http://www.geeksforgeeks.org/find-minimum-number-of-coins-that-make-a-change/
+uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
+{
+    // We will store values till dpTable of VAL. So need space from 0 to Val + 1.
+    // To store dpTable[5], we need an array of size 6.
+    uint32_t dpTable[val+1];
+    uint32_t tmpResult = UINT_MAX;
+    std::fill_n(dpTable, val+1, UINT_MAX);
+
+    dpTable[0] = 0;
+
+    // Motto is to fill the DP table from 1 to Target Value
+    // For each entry in the dp table, see if we can get that using an entry we have saved before.
+    for(uint32_t i = 1; i <= val; i++)
+    {
+        for (uint32_t j = 0; j < num; j++)
+        {
+            // Only if the dp table entry is >= current coin proceed
+            if (coins[j] <= i)
+            {
+                tmpResult = dpTable[i - coins[j]];
+                if ((tmpResult != UINT_MAX) &&
+                    (tmpResult + 1 < dpTable[i]))
+                {
+                    dpTable[i] = tmpResult + 1;
+                }
+            }
+        }
+    }
+
+    return dpTable[val];
+}
+
+// Wrapper function to return -1 when we can't give out the Coin Change
+int32_t minCoinChangeWrapper(uint32_t coins[], uint32_t num, uint32_t val)
+{
+    // Following is the recursive function
+    //uint32_t minCoins = minCoinChangeRec(coins, num, val);
+
+    // Following is the dynamic programming approach function
+    uint32_t minCoins = minCoinChangeDP(coins, num, val);
+
+    return (minCoins == UINT_MAX ? -1 : minCoins);
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 6. Longest Increasing Subsequence in a 2D Matrix 
+// {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
+// {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
+// {89, 36, 98, 75, 91, 46, 95, 53, 37, 99},
+// {25, 45, 26, 17, 15, 82, 80, 73, 96, 17},
+// {75, 22, 63, 96, 96, 36, 64, 31, 99, 86},
+// {12, 80, 42, 74, 54, 14, 93, 17, 14, 55},
+// {14, 15, 20, 71, 34, 50, 22, 60, 32, 41},
+// {90, 69, 44, 52, 54, 73, 20, 12, 55, 52},
+// {39, 33, 25, 31, 76, 45, 44, 84, 90, 52},
+// {94, 35, 55, 24, 41, 63, 87, 93, 79, 24}}
+
+// ------------------------------------------------------------------------------------------------
+template <typename T>
+void printTwoDPtrToPtr(T** array, uint32_t rows, uint32_t cols)
+{
+    for (uint32_t i = 0; i < rows; i++)
+    {
+        for (uint32_t j = 0; j < cols; j++)
+        {
+            cout << array[i][j] << ", ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+template <size_t rows, size_t cols>
+uint32_t getLongestSeq(int32_t (&twoDMat)[rows][cols], uint32_t x, uint32_t y, uint32_t** &longestSeq)
+{
+    uint32_t maxVal = 0;
+    if (longestSeq[x][y] == 0)
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (!(i == 0 && j == 0) &&
+                    (x + i >= 0 && x + i < rows) &&
+                    (y + j >= 0 && y + j < cols) &&
+                    (twoDMat[x+i][y+j] > twoDMat[x][y]))
+                {
+                    uint32_t longVal = getLongestSeq(twoDMat, x + i, y  + j, longestSeq);
+                    maxVal = max(longVal, maxVal);
+                }
+            }
+        }
+        longestSeq[x][y] = 1 + maxVal;
+    }
+
+    return longestSeq[x][y];
+}
+
+template <uint32_t rows, uint32_t cols>
+uint32_t longestIncSubSeqTwoDMat(int (&twoDMat)[rows][cols])
+{
+    uint32_t maxSeq = 0;
+    uint32_t** longestSeq = new uint32_t*[rows];
+    for (uint32_t i = 0; i < rows; i++)
+    {
+        longestSeq[i] = new uint32_t[cols];
+        std::fill_n(longestSeq[i], cols, 0);
+    }
+
+    for (uint32_t i = 0; i < rows; i++)
+    {
+        for (uint32_t j = 0; j < cols; j++)
+        {
+            uint32_t tmpMax = getLongestSeq(twoDMat, i, j, longestSeq);
+            if (tmpMax > maxSeq)
+            {
+                maxSeq = tmpMax;
+            }
+        }
+    }
+
+    for (uint32_t i = 0; i < rows; i++)
+    {
+        delete[] longestSeq[i];
+    }
+    delete[] longestSeq;
+    return maxSeq;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 7. 
+// 
+// ------------------------------------------------------------------------------------------------
+/*
+void printLargestSubArrayZeroOne(int arr[], uint32_t num)
+{
+
+}
+*/
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -505,6 +697,34 @@ int main()
 
     }
 
-    cout << endl;
-    return 0;
+    // Problem 5: Coin Change Problem
+    {
+        uint32_t coins[] = {10, 5};
+        cout << "Min Coins: ";
+        cout << minCoinChangeWrapper(coins, sizeof(coins)/sizeof(uint32_t), 20) << endl;
+    }
+
+    // Problem 6: 
+    {
+        cout << endl << "Longest Increasing Sequence in 2D" << endl;
+        int arr[1][1] = {{1}};
+        int arr0[2][2] = {{3, 6},
+                         {4, 4}};
+        int arr1[3][3] = {{1, 8, 3},
+                         {6, 4, 2},
+                         {3, 2, 1}};
+        int arr2[10][10] = {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
+                        {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
+                        {89, 36, 98, 75, 91, 46, 95, 53, 37, 99},
+                        {25, 45, 26, 17, 15, 82, 80, 73, 96, 17},
+                        {75, 22, 63, 96, 96, 36, 64, 31, 99, 86},
+                        {12, 80, 42, 74, 54, 14, 93, 17, 14, 55},
+                        {14, 15, 20, 71, 34, 50, 22, 60, 32, 41},
+                        {90, 69, 44, 52, 54, 73, 20, 12, 55, 52},
+                        {39, 33, 25, 31, 76, 45, 44, 84, 90, 52},
+                        {94, 35, 55, 24, 41, 63, 87, 93, 79, 24}};
+
+        cout << longestIncSubSeqTwoDMat(arr2) << endl;
+    }
+
 }

@@ -25,6 +25,9 @@ void printTree(tree* root)
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <queue>
+#include <map>
+#include <unordered_map>
 using namespace std;
 
 struct tree
@@ -698,6 +701,178 @@ int nearestLesserElmt(tree* root, int key, int& minElmt)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 19
+//      Print Tree in Level Order
+// ------------------------------------------------------------------------------------------------
+void printTreeLevelOrder(tree* root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    queue<tree*> lvlQueue;
+    lvlQueue.push(root);
+    uint32_t levelCount = 1;
+    uint32_t nextLvlCnt = 0;
+
+    while(!lvlQueue.empty())
+    {
+        tree* temp = lvlQueue.front();
+        lvlQueue.pop();
+        levelCount--;
+        cout << temp->data << " ";
+
+        if (temp->left != NULL)
+        {
+            lvlQueue.push(temp->left);
+            nextLvlCnt++;
+        }
+
+        if (temp->right != NULL)
+        {
+            lvlQueue.push(temp->right);
+            nextLvlCnt++;
+        }
+
+        if (levelCount == 0)
+        {
+            cout << endl;
+            levelCount = nextLvlCnt;
+            nextLvlCnt = 0;
+        }
+    }
+}
+
+
+// ------------------------------------------------------------------------------------------------
+// Problem 20
+//      Print Tree in Spiral Order
+// ------------------------------------------------------------------------------------------------
+void printSpiralOrder(tree* root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root -> left == NULL && root -> right == NULL)
+    {
+        cout << root->data << endl;
+        return;
+    }
+
+    vector<tree*> leftStack;
+    vector<tree*> rightStack;
+
+    // To Start with put the first level in the stack
+    cout << root->data << endl;
+    if (root->left != NULL)
+    {
+        rightStack.push_back(root->left);
+    }
+
+    if (root->right != NULL)
+    {
+        rightStack.push_back(root->right);
+    }
+
+    while (!leftStack.empty() || !rightStack.empty())
+    {
+        while (!rightStack.empty())
+        {
+            tree* temp = rightStack.back();
+            cout << temp->data << " ";
+
+            if (temp->right != NULL)
+            {
+                leftStack.push_back(temp->right);
+            }
+
+            if (temp->left != NULL)
+            {
+                leftStack.push_back(temp->left);
+            }
+
+            rightStack.pop_back();
+        }
+        cout << endl;
+
+        while (!leftStack.empty())
+        {
+            tree* temp = leftStack.back();
+            cout << temp->data << " ";
+
+            if (temp->left != NULL)
+            {
+                rightStack.push_back(temp->left);
+            }
+
+            if (temp->right != NULL)
+            {
+                rightStack.push_back(temp->right);
+            }
+            leftStack.pop_back();
+        }
+        cout << endl;
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 21
+//      Print Tree in Vertical Order
+// http://stackoverflow.com/questions/14485255/vertical-sum-in-a-given-binary-tree?lq=1
+// http://stackoverflow.com/questions/20521098/print-a-tree-vertically
+// ------------------------------------------------------------------------------------------------
+void fillHorizontalDistanceMap(tree* root, unordered_map<int, vector<int> >& horiDistMap, int horiDist)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    auto itr = horiDistMap.find(horiDist);
+    if (itr != horiDistMap.end())
+    {
+        itr->second.push_back(root->data);
+    }
+    else
+    {
+        horiDistMap[horiDist] = vector<int> {root->data};
+    }
+
+    fillHorizontalDistanceMap(root->left, horiDistMap, horiDist - 1);
+    fillHorizontalDistanceMap(root->right, horiDistMap, horiDist + 1);
+}
+
+void printVerticalOrder(tree* root)
+{
+    // This map should be finally sorted by KEYS and the printed
+    unordered_map<int, vector<int> > horiDistMap;
+
+    // Use a Map to store all Nodes's corresponding to a horizontal distance
+    fillHorizontalDistanceMap(root, horiDistMap, 0);
+
+    // Sort the Undered Map. This needs an extra data structure
+    std::map<int, vector<int> > orderedDistMap(horiDistMap.begin(), horiDistMap.end());
+
+    // Print the Map in Order
+    // Get each element of the map
+    // If we use for each, can't use itr->second. So using iterator to traverse.
+    for (auto itr = orderedDistMap.begin(); itr != orderedDistMap.end(); itr++)
+    {
+        // Each element of the map is a vector of values corresponding to an horizontal
+        // distance.
+        cout << itr->first << ": ";
+        for (auto data : itr->second)
+        {
+            cout << data << ", ";
+        }
+        cout << endl;
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -803,6 +978,56 @@ int main()
 
 
         cout << "Nearest Lower Element: " << nearestLesserElmt(root, 4, minElement) << endl;
+    }
+
+    // Problem 19,20 Print Tree in Level and Spiral Order
+    {
+        struct tree* root = newNode(1);
+        root->left = newNode(10);
+        root->right = newNode(11);
+
+        root->left->left = newNode(100);
+        root->left->right = newNode(101);
+        root->right->left = newNode(102);
+        root->right->right = newNode(103);
+
+
+        root->left->left->left = newNode(200);
+        root->left->left->right = newNode(201);
+        root->left->right->left = newNode(202);
+        root->left->right->right = newNode(203);
+        root->right->left->left = newNode(204);
+        root->right->left->right = newNode(205);
+        root->right->right->left = newNode(206);
+        root->right->right->right = newNode(207);
+
+        root->left->left->left->left = newNode(300);
+        root->left->left->left->right = newNode(301);
+        root->left->left->right->left = newNode(302);
+        root->left->left->right->right = newNode(303);
+
+
+        cout << "Tree in Level Order" << endl;
+        printTreeLevelOrder(root);
+        cout << endl;
+
+        cout << "Tree in Spiral Order" << endl;
+        printSpiralOrder(root);
+    }
+
+    // Problem 21 Vertical Order of a Binary Tree
+    {
+        cout << endl << "Print Tree in Vertical Order" << endl;
+        struct tree* root = newNode(1);
+        root->left = newNode(10);
+        root->right = newNode(11);
+
+        root->left->left = newNode(100);
+        root->left->right = newNode(101);
+        root->right->left = newNode(102);
+        root->right->right = newNode(103);
+
+        printVerticalOrder(root);
     }
 
     cout << endl;

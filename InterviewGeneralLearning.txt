@@ -1,0 +1,989 @@
+Genral Programming / OOPS Concepts
+0. What is Abstraction:
+1. What is Encapsulation:
+2. What is Polymorphism:
+3. Encapsulation vs Abstraction:
+3b. Polymorphism vs Overriding vs Overloading:
+3c. Why do you need Polymorphism:
+4. Overriding:
+5. Overloading:
+6. What is Inheritence:
+7. Is-A vs Has-A
+8. Inheritence Vs Polymorphism:
+9. Friend Function vs Static Function
+10. External Linkage vs Internal Linkage
+11. Early binding vs Late Binding
+12. Segmentation Fault:
+13. Interrupts vs Exception
+14. Callback Functions:
+15. Asynchronous Programming:
+16. Allocating in Stack vs Heap:
+17. Boxing and Unboxing
+18. Shadowing and Overriding
+19. Agile Model
+20. Types of Polymorphism
+-----------------------------------------------
+UML / DESIGN Questions
+1. PArking lot  
+2. Coffee Maker
+3. Deck of Cards
+4. What is Cardinality
+5. What are mock Objects
+6. UML Diagrams
+7. Factory Pattern vs Singleton Pattern
+8. MVC PAttern
+-----------------------------------------------
+OS NOTES
+0. Differentiate Threads and Processes
+1. What is a Race Condition
+2. Mutex vs Semaphores:
+3. Spin Locks vs Mutex:
+3a. Lock Monitor Mutex and Semaphore
+3b. Monitor vs Semaphore
+3c. Monitor vs Mutex
+4. Multi-threaded programming in C++
+4b. Thread Join vs Detach
+5. What is an Inode ?
+-----------------------------------------------
+NETWORKS
+1. How TCP/IP Network works.
+2. Why is MAC address required    
+3. Switch vs Hub vs Router:
+4. How NTLM Authentication Works
+5. How Kerberos Authentication Works
+6. What happens when I click the Stop button on the browser
+7. what happens when you type in a URL in browser
+
+
+-------------------------------------------------------------------------------------------
+GENRAL PROGRAMMING / OOPS Concepts
+0. What is Abstraction:
+    - Abstraction is the concept of ignoring unnecessary details.
+    - Or other words, describing something in a simpler way by not concentrating on the intricate details and focusing only on necessary details.
+    - It can be thought as generalization.
+    - Say when you are meeting a random person, you would say that you are the guy in Black Shirt and Blue Jean.
+    - We can consider Interfaces as Abstraction.
+
+1. What is Encapsulation:
+    - Encapsulation is something like group similar things in a box.
+    - So someone else won't have access to the inside of the box. They can just use the box to do what they want.
+    - Changing the contents of the box won't affect the outsider. They will still be able to use the box.
+
+2. What is Polymorphism:
+    - Polymorphism is the ability to an object to decide what it should.
+   - Simple example would be to consider "Shapes" class. And the class has methods like Area and Cirumferance.
+    - We can have subclasses like Square, Rectangle.
+    - To find the area of all the shapes, we can just give Shapes.area(). Based on what shape it is, we will get the respective Area.
+
+3. Encapsulation vs Abstraction:
+VERY IMP:
+    Though every method is an encapsulation, it is also an abstraction, because every time you put some things together and give it a name you create a new (abstract) concept. Encapsulation without abstraction is useless.
+
+    http://stackoverflow.com/questions/742341/difference-between-abstraction-and-encapsulation
+        Encapsulation puts some things in a box and gives you a peephole; this keeps you from mucking with the gears.
+
+        Abstraction flat-out ignores the details that don't matter, like whether the things have gears, ratchets, flywheels, or nuclear cores; they just "go"
+
+        Abstraction is hiding the implementation details by providing a layer over the basic functionality.
+
+        Information Hiding is hiding the data which is being affected by that implementation. Use of private and public comes under this. For example, hiding the variables of the classes.
+
+        Encapsulation is just grouping all similar data and functions into a group e.g Class in programming; Packet in networking.
+
+        Putting data and behavior together is what I understand from encapsulation. Hiding complexity is abstraction. Information should remain unseen is what information hiding is. Very famous three sentences. To understand the above statements better, lets take some examples:
+
+        Encapsulation:
+        ATM (Automated Teller Machine), in which the data is money and the behavior is how it will be processed. That is how data will behave in different scenarios. If user asks for the balance in his account, ATM machine will behave differently with that data, it will just tell the balance. If user asks for paying bill, it will pay bill and will tell the user the updated balance and many other behaviors. That was all encapsulation because ATM is encapsulating the money and the behavior or the functions performed on that money together.
+
+        Abstraction on other hand is hiding complexity that what behind the scenes is ATM functioning with the money and I don't want to care about that (if nothing wrong happened and my account balance stays fine.. :P ).
+        In this example, funny part is for information hiding. You hide the important information which is money by locking the ATM. That was something not good, although money will be safe until someone breaks it :D. ATM connects to your account by some mechanism and downloads your data which is very important and is available to you and to you only. But the functionality which does that is hidden from the world so nobody can just access it.
+        That was the easiest example I could thought of.
+        For all these, there are many real life example. You take your mind. Your information is hidden in your mind. That is information hiding. Some stranger cant know you until you tell him who are you.
+
+    http://stackoverflow.com/questions/742341/difference-between-abstraction-and-encapsulation
+        A priori, they've got nothing in common.
+
+        Most answers here focus on OOP but encapsulation begins much earlier; every method is an encapsulation:
+
+        point x = { 1, 4 };
+        point y = { 23, 42 };
+
+        int d = distance(x, y);
+
+        Here, distance encapsulates the calculation of the (euclidean) distance between two points in a plane: it hides implementation details. This is encapsulation, pure and simple.
+
+        Abstraction is the process of generalization: taking a concrete implementation and making it applicable to different, albeit somewhat related, types of data. The classical example of abstraction is C's qsort function which sorts data.
+
+        The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
+ 
+3b. Polymorphism vs Overriding vs Overloading:
+    http://stackoverflow.com/questions/154577/polymorphism-vs-overriding-vs-overloading
+
+    The clearest way to express polymorphism is via an abstract base class (or interface)
+
+    public abstract class Human{
+       ...
+       public abstract void goPee();
+    }
+
+    This class is abstract because the goPee() method is not definable for Humans. It is only definable for the subclasses Male and Female. Also, Human is an abstract concept — You cannot create a human that is neither Male nor Female. It’s got to be one or the other.
+
+    So we defer the implementation by using the abstract class.
+
+3c. Why do you need Polymorphism:
+    Say you have MS Company. It creates a Function.
+
+    Google, FB, etc are derived classes whose object will be passed to the function that MS has.
+    It will of the form,
+    MS ob1 = new Google();
+    MS ob2 = new FB();
+
+    MS can just execute it by doing ob.exec();
+
+4. Overriding:
+    - Concept of adding more details to a function in the derived class.
+    - It replaces the function in the base class.
+
+5. Overloading:
+    - It is concept of defining multiple methods based on the parameters passed.
+
+6. What is Inheritence:
+    - It is concept where a new class is derived from an existing class.
+    - This happens when we want to have a new Class that will make use of an existing class with some added details to it.
+    - Eg we have a Vehicle / Shapes class and we want to add Car / Square class.
+    - Inheritence should only be used if the sub class is BEHAVIORIALLY equal to the superclass.
+
+7. Is-A vs Has-A
+    A House is a Building (inheritance);
+    A House has a Room (composition);
+    A House has an occupant (aggregation).
+    http://stackoverflow.com/questions/49002/prefer-composition-over-inheritance
+        
+        Does TypeB want to expose the complete interface (all public methods no less) of TypeA such that TypeB can be used where TypeA is expected? Indicates Inheritance.
+        e.g. A Cessna biplane will expose the complete interface of an airplane, if not more. So that makes it fit to derive from Airplane.
+
+        Does TypeB only want only some/part of the behavior exposed by TypeA? Indicates need for Composition.
+        e.g. A Bird may need only the fly behavior of an Airplane. In this case, it makes sense to extract it out as an interface / class / both and make it a member of both classes.
+
+    http://enoshtechdiary.blogspot.com/2012/04/composition-vs-aggregation.html
+
+    Usage of Inheritence and Aggregation
+    - If we have used inheritance but we only use part of the interface, or we are forced to override a lot of functionality to keep the correlation logical.
+      Then we have a big nasty smell that indicates that we had to use aggregation.
+    - If we have used aggregation (or we plan to use it) but we find out we need to copy almost all of the functionality. Then we have a smell that points in the direction of inheritance.
+
+    HAS-A - ASSOCIATION
+    1. Composition:
+        - REPRESENTED using FILLED DIAMOND in a CLASS DIAGRAM
+        - Composition is an association in which one class CANNOT exisit without other.
+        - EG: CAR has-a Engine.
+        - When we destroy CAR, we destroy Object as well.
+        - CAR manages the lifetime of the Engine.
+
+        - OUR TREE STURUCTURE has FILES.
+        - When we destroy Trees, we destroy Files.
+
+    2. AGGREGATION
+        - REPRESENTED using EMPTY DIAMOND in a CLASS DIAGRAM
+        - Aggregation is a Composition in which one class belongs to a Collection.
+        - However it CAN exist without the WHOLE.
+        - EG: CAR has a DRIVER.
+
+        - Multichannel Sessions that can exist even if the Connection goes away.
+
+8. Inheritence Vs Polymorphism:
+    http://stackoverflow.com/questions/6308178/what-is-the-main-difference-between-inheritance-and-polymorphism
+    http://www.tutorialspoint.com/cplusplus/cpp_inheritance.htm
+
+    // Base class
+    class Shape 
+    {
+       public:
+          void setWidth(int w)
+          {
+             width = w;
+          }
+          void setHeight(int h)
+          {
+             height = h;
+          }
+       protected:
+          int width;
+          int height;
+    };
+
+    // Derived class
+    class Rectangle: public Shape
+    {
+       public:
+          int getArea()
+          { 
+             return (width * height); 
+          }
+    };
+
+    int main(void)
+    {
+       Rectangle Rect;
+     
+       Rect.setWidth(5);
+       Rect.setHeight(7);
+
+       // Print the area of the object.
+       cout << "Total area: " << Rect.getArea() << endl;
+
+       return 0;
+    }
+
+9. Friend Function vs Static Function
+http://stackoverflow.com/questions/4723143/static-member-functions
+http://stackoverflow.com/questions/2315166/where-would-you-use-a-friend-function-vs-a-static-member-function
+http://stackoverflow.com/questions/4921150/when-to-use-static-member-function?lq=1
+
+    Static Variable:
+        Lifetime is throughout the program. It will hold valid for all instances of the Class.
+    Static Function:
+        PRotected static function.
+        Good uses of static member functions:
+
+            Meta-programming. Real-world example is template std::char_traits. All member functions are static
+            Making it a static member function gives it access to private members of the class, although a friend would suffice here too
+            A protected static member function thus is accessible only to the class and classes derived from it.
+
+    Friend function:
+        It has access to private members of the class.
+
+http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
+    Friend CLASS:
+        The 'friend' specifier allows the designated class access to protected data or functionality within the class making the friend statement.
+        For example in the below code anyone may ask a child for their name, but only the mother and the child may change the name.
+
+        You can take this simple example further by considering a more complex class such as a Window. Quite likely a Window will have many function/data elements that should not be publicly accessible, but ARE needed by a related class such as a WindowManager.
+
+        class Child
+        {
+        friend class Mother;
+
+        public:
+
+          string name( void );
+
+        protected:
+
+          void setName( string newName );
+        };
+
+10. External Linkage vs Internal Linkage
+    TIC++
+    - Internal linkage means that storage is created to represent the identifier only for the file being compiled.
+    - Internal linkage is specified by the keyword static in C and C++
+
+
+    - External linkage means that a single piece of storage is created to represent the identifier for all files being compiled.
+    - The storage is created once, and the linker must resolve all other references to that storage.
+    - Global variables and function names have external linkage.
+    - These are accessed from other files by declaring them with the keyword extern.
+
+11. Early binding vs Late Binding
+    a. Early Binding:
+       Compiler generates a call to a specific function
+       Runtime system resolves this call to aboslute address of the code
+
+    b. Late Binding:
+       Compiler just ensures that the method exists and performs type checking on args and return value
+       Compiler DOES NOT know the exact code to execute
+       - Address of the method is calculated USING the information stored in the object.
+
+12. Segmentation Fault:
+    http://stackoverflow.com/questions/2346806/what-is-segmentation-fault
+
+    - generates SIGSEGV event
+    - Segmentation fault is a specific kind of error caused by accessing memory that “does not belong to you.
+    int *p = NULL;
+    *p = 1;
+
+    It would be worth noting that segmentation fault isn't caused by directly accessing another process memory, as it is simply not possible.
+    With virtual memory every process has its own virtual address space and there is no way to access another one using any value of pointer.
+    Exception to this can be shared libraries which are same physical address space mapped to (possibly) different virtual addresses and kernel memory which is even mapped in the same way in every process (to avoid TLB flushing on syscall, I think).  - these are what I count as 'indirect' access.
+    One can, however, check that they are usually located long way from process code and we are usually able to access them (this is why they are there, nevertheless accessing them in a improper way will produce segmentation fault).
+
+    Still, segmentation fault can occur in case of accessing our own (process) memory in improper way (for instance trying to write to non-writable space).
+    But the most common reason for it is the access to the part of the virtual address space that is not mapped to physical one at all.
+
+13. Interrupts vs Exception
+    http://stackoverflow.com/questions/125394/interrupts-and-exceptions
+
+14. Callback Functions:
+    http://stackoverflow.com/questions/9596276/how-to-explain-callbacks-in-plain-english-how-are-they-different-from-calling-o
+        Imagine this scenario: You are expecting a package in a couple of days. The package is a gift for your neighbor. Therefore, once you get the package, you want it brought over to the neighbors. You are out of town, and so you leave instructions for your spouse.
+
+        You could tell them to get the package and bring it to the neighbors. If your spouse was as stupid as a computer, they would sit at the door and wait for the package until it came (NOT DOING ANYTHING ELSE) and then once it came they would bring it over to the neighbors. But there's a better way. Tell your spouse that ONCE they receive the package, they should bring it over the neighbors. Then, they can go about life normally UNTIL she receives the package.
+
+        In our example, the receiving of the package is the "event" and the bringing it to the neighbors is the "callback". Your spouse "runs" your instructions to bring the package over only when the package arrives. Much better!
+
+        This kind of thinking is obvious in daily life, but computers don't have the same kind of common sense. Consider how programmers normally write to a file:
+
+        fileObject = open(file)
+        # now that we have WAITED for the file to open, we can write to it
+        fileObject.write("We are writing to the file.")
+        # now we can continue doing the other, totally unrelated things our program does
+
+        Here, we WAIT for the file to open, before we write to it. This "blocks" the flow of execution, and our program cannot do any of the other things it might need to do! What if we could do this instead:
+
+        # we pass writeToFile (A CALLBACK FUNCTION!) to the open function
+        fileObject = open(file, writeToFile)
+        # execution continues flowing -- we don't wait for the file to be opened
+        # ONCE the file is opened we write to it, but while we wait WE CAN DO OTHER THINGS!
+
+15. Asynchronous Programming:
+        In solving many engineering problems, the software is designed to split up the overall problem into multiple individual tasks, and then execute them asynchronously.
+        Inverting a matrix, or a finite element analysis problem, are good examples.
+        In computing, sorting a list is an example. The quick sort routine, for example, splits the list into two lists, and sorts each of them by calling itself recursively.
+        In both of the above examples, the two tasks can (and often were) executed asynchronously.
+        They do not need to be on separate threads.
+        Even a machine with one CPU, and only one thread of execution can be coded to initiate processing of a second task before a first one has completed.
+        The only criterion is that the results of one task are not necessary as inputs to the other task.
+        As long as the start and end times of the tasks overlap, (possible only if the output of neither is needed as inputs to the other), they are being executed asynchronously, no matter how many threads are in use.
+
+16. Allocating in Stack vs Heap:
+    STACK:
+        SCOPE - Function
+        Allocating in the stack is easy and fast, but stack is limited,
+        Apart from that, stack allocated values are "deleted" once you leave the scope, so it is very good for small local values like primitive variables.
+
+        If you allocate too much in the stack you might run out of stack and die,
+        main as all the functions you execute has a stack frame in the stack and all the local variables to the function are stored there,
+        so going too deep into function calling might get you into a stackoverflow as well.
+
+        and small variables and pointers in the stack.
+
+    HEAP:
+        SCOPE - When you want something to be used outside of the function
+        heap is slower but much bigger.
+        In general is a good rule of thumb to allocate anything that you use often and is bigger than a hundred bytes in the heap,
+
+17. Boxing and Unboxing
+http://stackoverflow.com/questions/2111857/why-do-we-need-boxing-and-unboxing-in-c
+    
+18. Shadowing and Overriding
+http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overriding-in-c
+
+19. Agile Model
+http://istqbexamcertification.com/what-is-agile-model-advantages-disadvantages-and-when-to-use-it/
+   - Software is developed in incremental, rapid cycles. results in small incremental releases with each release building on previous functionality 
+   - DIS ADV: In case of some software deliverables, especially the large ones, it is difficult to assess the effort required at the beginning of the software development life cycle.
+
+20. Types of Polymorphism
+    Run time - Overriding
+    Compile time - Over loading
+
+21. Memory Allocation on Stack Vs Heap
+http://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack
+
+    Stack Allocation:
+        - Just a matter of changing the stack pointer
+        - Just one Instruction
+            EG: sub esp, 0x10 - moves stack pointer by 10 bytes.
+        - Stack Allocations are also scoped to a particular function.
+        - Stack uses Data Locality and Caches the TOP of stack
+        - TOP of Stack is ALMOST ALWAYS on Cache Line
+        - Stack Variables might also get stored in Registers
+
+        - Items on Stack CANNOT be removed out of order.
+        - So adding a new items just adds to the end of stack. Move one pointer in stack.
+
+    Heap Allocation:
+        - Allocating memory on the heap involves looking for a big enough block, splitting it, and managing the "book-keeping" that allows things like free() in a different order.
+        - On Heap, Elements can be removed OUT of ORDER. So tough to maintain as HOLES will
+          be in middle.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UML / DESIGN Questions:
+1. PArking lot  
+http://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
+
+2. Coffee Maker
+http://www.drdobbs.com/object-oriented-analysis-and-design-part/184403494
+
+3. Deck of Cards
+http://latentcontent.net/2010/03/27/anatomy-of-an-interview-question-design-a-deck-of-cards/
+http://programmers.stackexchange.com/questions/284113/i-need-a-data-structure-for-a-card-game
+
+4. What is Cardinality
+    3a. In Data Modelling:
+        - the relationship that one table can have with another table. These relationships include: many-to-many, many-to-one/one-to-many, or one-to-one
+
+        - Suppose we have three tables that are used by a company to store employee information: an Employee table, an Employee_Salary table, and a Department table.
+        - The Department table will have a one to many relationship with the Employee table, because every employee can belong to only one department,
+          but a department can consist of many employees.
+        - In other words, the cardinality of the Department table in relationship to the employee table is one to many.
+        - The cardinality of the Employee table in relationship to the Employee_Salary table will be one to one, since an employee can only have one salary, and vice versa
+
+    3b. In SQL:
+        - remember that the cardinality is a number.
+          For example, let’s say we have a table with a “Sex” column which has only two possible values of “Male” and “Female”.
+          Then, that “Sex” column would have a cardinality of 2
+
+5. What are mock Objects
+http://stackoverflow.com/questions/3622455/what-is-the-purpose-of-mock-objects
+    - Fake objects to test intermediate functions.
+      Eg: Cook <- Waiter <- Customer
+
+6. UML Diagrams
+    5.1 Use Case Diagram:
+        - Has Actors, Scenarios and Use cases
+
+        - It is used to get the overview of the system; 
+          i.e The functionality of the system
+        - It gives a basic understanding of WHO uses the SYSTEM and how the system is USED
+        - It does not say anything about HOW the SYSTEM WILL BE DESIGNED
+
+    5.2 CLASS DIAGRAM
+        - This diagram identifies the key components of the system and how the system should be designed.
+        - It represents the STATIC structure of the project.
+        - It has
+            - Class name
+            - attributes
+            - methods
+
+    5.3 OBJECT DIAGRAM
+        - It gives a REPRESENTATION of a cLASS diagram at any point of time.
+        - I would say OBJECT DIAGRAM as an EXAMPLE of a CLASS DIAGRAM
+
+
+    5.4 SEQUENCE DIAGRAM
+        - Shows interaction between objects at any given time.
+        - This helps in better understanding how the system should be implemented.
+        - IT shows how message flows from One object to another.
+
+        Async Messages: 
+            Thin Overhead
+
+        Sync MEssages:
+            Dark Overhead
+
+7. Factory Pattern vs Singleton Pattern
+http://stackoverflow.com/questions/2094211/difference-between-singleton-and-factory-pattern
+    A singleton pattern ensures that you always get back the same instance of whatever type you are retrieving, whereas the factory pattern generally gives you a different instance of each type
+
+    The Singleton pattern ensures that only one instance of the class exists and typically provides a well-known, i.e., global point for accessing it.
+    The purpose of the singleton is where you want all calls to go through the same instance.
+    An example of this might be a class that manages a disk cache, or gets data from a static dictionary; wherever it is important only one known instance interacts with the resource.
+    This does make it less scalable.
+
+    The Factory pattern defines an interface for creating objects (no limitation on how many) and usually abstracts the control of which class to instantiate.
+    The purpose of the factory is to create and return new instances.
+    Often, these won't actually be the same type at all, but they will be implementations of the same base class.
+    However, there may be many instances of each type
+
+SINGLETON:
+    restricting the instantiation of a class to one object
+
+8. MVC PAttern
+http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
+
+    The model manages fundamental behaviors and data of the application. It can respond to requests for information, respond to instructions to change the state of its information, and even to notify observers in event-driven systems when information changes. This could be a database, or any number of data structures or storage systems. In short, it is the data and data-management of the application.
+
+    The view effectively provides the user interface element of the application. It'll render data from the model into a form that is suitable for the user interface.
+
+    The controller receives user input and makes calls to model objects and the view to perform appropriate actions.
+
+
+    MVC (Model, View, Controller) is a pattern for organising code in an application to improve maintainability.
+    Imagine a photographer with his camera in a studio. A customer asks him to take a photo of a box.
+
+    The box is the model, the photographer is the controller and the camera is the view.
+
+    Because the box does not know about the camera or the photographer, it is completely independent. This separation allows the photographer to walk around the box and point the camera at any angle to get the shot/view that he wants.
+
+    Non-MVC architectures tend to be tightly integrated together. If the box, the controller and the camera were one-and-the-same-object then, we would have to pull apart and then re-build both the box and the camera each time we wanted to get a new view. Also, taking the photo would always be like trying to take a selfie - and that's not always very easy.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+OS NOTES:
+0. Differentiate Threads and Processes
+    Both processes and threads are independent sequences of execution.
+    The typical difference is that threads (of the same process) run in a shared memory space, while processes run in separate memory spaces.
+
+    1. Threads share the address space of the process that created it; processes have their own address space.
+    2. Threads have direct access to the data segment of its process; processes have their own copy of the data segment of the parent process.
+    3. Threads can directly communicate with other threads of its process; processes must use interprocess communication to communicate with sibling processes.
+    4. Threads have almost no overhead; processes have considerable overhead.
+    5. New threads are easily created; new processes require duplication of the parent process.
+    6. Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
+    7. Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; changes to the parent process does not affect child processes.
+
+1. What is a Race Condition
+http://stackoverflow.com/questions/34510/what-is-a-race-condition
+    A race condition occurs when two or more threads can access shared data and they try to change it at the same time.
+    Because the thread scheduling algorithm can swap between threads at any time, you don't know the order in which the threads will attempt to access the shared data.
+    Therefore, the result of the change in data is dependent on the thread scheduling algorithm, i.e. both threads are "racing" to access/change the data.
+
+    Problems often occur when one thread does a "check-then-act"
+    (e.g. "check" if the value is X, then "act" to do something that depends on the value being X) and another thread does something to the value in between the "check" and the "act". E.g:
+        if (x == 5) // The "Check"
+        {
+           y = x * 2; // The "Act"
+
+           // If another thread changed x in between "if (x == 5)" and "y = x * 2" above,
+           // y will not be equal to 10.
+        }
+
+2. Mutex vs Semaphores:
+    http://www.geeksforgeeks.org/mutex-vs-semaphore/
+    https://blog.feabhas.com/2009/09/mutex-vs-semaphores-–-part-1-semaphores/
+
+    Strictly speaking, a mutex is locking mechanism used to synchronize access to a resource.
+    Only one task (can be a thread or process based on OS abstraction) can acquire the mutex.
+    It means there will be ownership associated with mutex, and only the owner can release the lock (mutex).
+
+    Semaphore is signaling mechanism (“I am done, you can carry on” kind of signal).
+    For example, if you are listening songs (assume it as one task) on your mobile and at the same time your friend called you, an interrupt will be triggered upon which an interrupt service routine (ISR) will signal the call processing task to wakeup.
+
+
+    Mutex can be released only by thread that had acquired it, while you can signal semaphore from any other thread (or process), so semaphores are more suitable for some synchronization problems like producer-consumer.
+
+    So, if you have a number of instances of a resource (say three tape drives), you could use a semaphore with a count of 3. Note that this doesn't tell you which of those tape drives you have, just that you have a certain number.
+
+    Also with semaphores, it's possible for a single locker to lock multiple instances of a resource, such as for a tape-to-tape copy. If you have one resource (say a memory location that you don't want to corrupt), a mutex is more suitable.
+
+    Equivalent operations are:
+
+    Counting semaphore          Mutual exclusion semaphore
+    --------------------------  --------------------------
+      Claim/decrease (P)                  Lock
+      Release/increase (V)                Unlock
+
+    Semaphore - Signal Entering and Leaving of a Critical Section
+
+    OWNERSHIP:
+        The mutex is similar to the principles of the binary semaphore with one significant difference: the principle of ownership.
+        Ownership is the simple concept that when a task locks (acquires) a mutex only it can unlock (release)
+
+3. Spin Locks vs Mutex:
+http://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instead-of-mutex
+    The Theory
+    In theory, when a thread tries to lock a mutex and it does not succeed, because the mutex is already locked, it will go to sleep, immediately allowing another thread to run. It will continue to sleep until being woken up, which will be the case once the mutex is being unlocked by whatever thread was holding the lock before. When a thread tries to lock a spinlock and it does not succeed, it will continuously re-try locking it, until it finally succeeds; thus it will not allow another thread to take its place (however, the operating system will forcefully switch to another thread, once the CPU runtime quantum of the current thread has been exceeded, of course).
+
+    The Problem
+    The problem with mutexes is that putting threads to sleep and waking them up again are both rather expensive operations, they'll need quite a lot of CPU instructions and thus also take some time. If now the mutex was only locked for a very short amount of time, the time spent in putting a thread to sleep and waking it up again might exceed the time the thread has actually slept by far and it might even exceed the time the thread would have wasted by constantly polling on a spinlock. On the other hand, polling on a spinlock will constantly waste CPU time and if the lock is held for a longer amount of time, this will waste a lot more CPU time and it would have been much better if the thread was sleeping instead.
+
+    The Solution
+    Using spinlocks on a single-core/single-CPU system makes usually no sense, since as long as the spinlock polling is blocking the only available CPU core, no other thread can run and since no other thread can run, the lock won't be unlocked either. IOW, a spinlock wastes only CPU time on those systems for no real benefit. If the thread was put to sleep instead, another thread could have ran at once, possibly unlocking the lock and then allowing the first thread to continue processing, once it woke up again.
+
+    On a multi-core/multi-CPU systems, with plenty of locks that are held for a very short amount of time only, the time wasted for constantly putting threads to sleep and waking them up again might decrease runtime performance noticeably. When using spinlocks instead, threads get the chance to take advantage of their full runtime quantum (always only blocking for a very short time period, but then immediately continue their work), leading to much higher processing throughput.
+
+    The Practice
+    Since very often programmers cannot know in advance if mutexes or spinlocks will be better (e.g. because the number of CPU cores of the target architecture is unknown), nor can operating systems know if a certain piece of code has been optimized for single-core or multi-core environments, most systems don't strictly distinguish between mutexes and spinlocks. In fact, most modern operating systems have hybrid mutexes and hybrid spinlocks. What does that actually mean?
+
+    A hybrid mutex behaves like a spinlock at first on a multi-core system. If a thread cannot lock the mutex, it won't be put to sleep immediately, since the mutex might get unlocked pretty soon, so instead the mutex will first behave exactly like a spinlock. Only if the lock has still not been obtained after a certain amount of time (or retries or any other measuring factor), the thread is really put to sleep. If the same code runs on a system with only a single core, the mutex will not spinlock, though, as, see above, that would not be beneficial.
+
+    A hybrid spinlock behaves like a normal spinlock at first, but to avoid wasting too much CPU time, it may have a back-off strategy. It will usually not put the thread to sleep (since you don't want that to happen when using a spinlock), but it may decide to stop the thread (either immediately or after a certain amount of time) and allow another thread to run, thus increasing chances that the spinlock is unlocked (a pure thread switch is usually less expensive than one that involves putting a thread to sleep and waking it up again later on, though not by far).
+
+    Summary
+    If in doubt, use mutexes, they are usually the better choice and most modern systems will allow them to spinlock for a very short amount of time, if this seems beneficial. Using spinlocks can sometimes improve performance, but only under certain conditions and the fact that you are in doubt rather tells me, that you are not working on any project currently where a spinlock might be beneficial. You might consider using your own "lock object", that can either use a spinlock or a mutex internally (e.g. this behavior could be configurable when creating such an object), initially use mutexes everywhere and if you think that using a spinlock somewhere might really help, give it a try and compare the results (e.g. using a profiler), but be sure to test both cases, a single-core and a multi-core system before you jump to conclusions (and possibly different operating systems, if your code will be cross-platform).
+
+3a.
+Lock Monitor Mutex and Semaphore
+http://stackoverflow.com/questions/301160/what-are-the-differences-between-various-threading-synchronization-options-in-c?lq=1
+
+    MONITOR / LOCK:
+    Using a lock or monitor is useful for preventing the simultaneous execution of thread-sensitive blocks of code, BUT THESE CONSTRUCTS DO NOT ALLOW ONE THREAD TO COMMUNICATE AN EVENT TO ANOTHER.
+    This requires synchronization events, which are objects that have one of two states, signaled and un-signaled, that can be used to activate and suspend threads.
+
+    Mutex, Semaphores are OS-level concepts. e.g with a NAMED MUTEX you could synchronize across multiple (managed) exes (ensuring that only one instance of your application is running on the machine.)
+
+    MUTEX:
+    Unlike monitors, however, a mutex can be used to synchronize threads across processes.
+    When used for inter-process synchronization, a mutex is called a named mutex because it is to be used in another application, and therefore it cannot be shared by means of a global or static variable.
+    It must be given a name so that both applications can access the same mutex object.
+    In contrast, the Mutex class is a wrapper to a Win32 construct.
+    While it is more powerful than a monitor, a mutex requires interop transitions that are more computationally expensive than those required by the Monitor class.
+
+    SEMAPHORE:
+    Use the Semaphore class to control access to a pool of resources.
+    Threads enter the semaphore by calling the WaitOne method, which is inherited from the WaitHandle class, and release the semaphore by calling the Release method.
+    The count on a semaphore is decremented each time a thread enters the semaphore, and incremented when a thread releases the semaphore.
+    When the count is zero, subsequent requests block until other threads release the semaphore.
+    When all threads have released the semaphore, the count is at the maximum value specified when the semaphore was created.
+    A thread can enter the semaphore multiple times.
+    The Semaphore class does not enforce thread identity on WaitOne or Release.
+    programmers responsibility to not muck up.
+    Semaphores are of two types: local semaphores and named system semaphores.
+    If you create a Semaphore object using a constructor that accepts a name, it is associated with an operating-system semaphore of that name.
+    Named system semaphores are visible throughout the operating system, and can be used to synchronize the activities of processes.
+    A local semaphore exists only within your process.
+    It can be used by any thread in your process that has a reference to the local Semaphore object.
+    Each Semaphore object is a separate local semaphore.
+
+3b.
+Monitor vs Semaphore
+http://stackoverflow.com/questions/7335950/semaphore-vs-monitors-whats-the-difference
+    A Monitor is an object designed to be accessed from multiple threads.
+    The member functions or methods of a monitor object will enforce mutual exclusion, so only one thread may be performing any action on the object at a given time.
+    If one thread is currently executing a member function of the object then any other thread that tries to call a member function of that object will have to wait until the first has finished.
+
+    A Semaphore is a lower-level object.
+    You might well use a semaphore to implement a monitor.
+    A semaphore essentially is just a counter.
+    When the counter is positive, if a thread tries to acquire the semaphore then it is allowed, and the counter is decremented.
+    When a thread is done then it releases the semaphore, and increments the counter.
+
+http://www.programmerinterview.com/index.php/operating-systems/monitors-vs-semaphores/
+    Both Monitors and Semaphores are used for the same purpose – thread synchronization.
+    But, monitors are simpler to use than semaphores because they handle all of the details of lock acquisition and release.
+
+    Another difference when using semaphores is that every routine accessing a shared resource has to explicitly acquire a a lock before using the resource.
+    This can be easily forgotten when coding the routines dealing with multithreading . Monitors, unlike semaphores, automatically acquire the necessary locks.
+
+    MONITOR:
+        A monitor is a set of multiple routines which are protected by a mutual exclusion lock.
+        None of the routines in the monitor can be executed by a thread until that thread acquires the lock.
+        This means that only ONE thread can execute within the monitor at a time.
+        Any other threads must wait for the thread that’s currently executing to give up control of the lock.
+
+        However, a thread can actually suspend itself inside a monitor and then wait for an event to occur.
+        If this happens, then another thread is given the opportunity to enter the monitor.
+        The thread that was suspended will eventually be notified that the event it was waiting for has now occurred, which means it can wake up and reacquire the lock.
+        IMP: Monitor is limited to Current Application Domain.
+
+    SEMAPHORE:
+        A semaphore is a simpler construct than a monitor because it’s just a lock that protects a shared resource – and not a set of routines like a monitor.
+        Semaphore you can call its an advance version of mutex with additional features.
+        Semaphore is also helps us to work with external threads and identifying whether an application is acquired by an external thread or not.
+
+    MUTEX:
+        Mutex helps us to identify whether an application is acquired by an external thread or not and It allows only one single thread to enter to execute a particular task.
+        It means mutex allows only one single external thread to enter and execute its task and same ensuring thread safety.
+        IMP: a mutex can be used to synchronize threads across processes.
+
+3c.
+Monitor vs Mutex
+http://www.albahari.com/threading/part2.aspx#_Mutex
+http://www.onlinebuff.com/article_understand-monitor-vs-mutex-vs-semaphore-vs-semaphoreslim-onlinebuff_60.html
+
+    Locks/Monitors ensures the thread safety which are in process that is threads which are generated by an application (Internal threads) it does not have any control over the threads which are coming from outside of an application.
+    Locks/Monitors provides safety againts the threads generated by an application.
+
+    Mutex ensures the thread safety which are out process that is threads which coming from outside of an application (External threads).
+    Mutex provides safety againts the external threads.
+
+    In a multiple instance of an application external threads are created so to ensure thread safety from an external threads we need to apply mutex.
+
+http://stackoverflow.com/questions/1164038/monitor-vs-mutex-in-c-sharp
+    A Monitor is managed, and more lightweight - but is restricted to your AppDomain.
+    A Mutex can be named, and can span processes (allowing some simple IPC scenarios between applications), and can be used in code that wants a wait-handle).
+
+    For most simple scenarios, Monitor (via lock) is fine.
+
+    A Mutex can be shared across processes, and is much more heavy-weight than a Monitor.
+
+    Use a Monitor unless you need to synchronize across process boundaries.
+
+4. Multi-threaded programming in C++
+http://stackoverflow.com/questions/266168/simple-example-of-threading-in-c
+    Create a function that you want the thread to execute. I'll demonstrate with a trivial example:
+
+    void task1(std::string msg)
+    {
+        std::cout << "task1 says: " << msg;
+    }
+
+    Now create the thread object that will ultimately invoke the function above like so:
+
+    std::thread t1(task1, "Hello");
+
+    (You need to #include <thread> to access the std::thread class)
+
+    As you can see, the constructor's arguments are the function the thread will execute, followed by the function's parameters.
+
+    Finally, join it to your main thread of execution like so:
+
+    t1.join(); 
+
+    (Joining means that the thread who invoked the new thread will wait for the new thread to finish execution, before it will continue it's own execution).
+    The Code
+
+    #include <string>
+    #include <iostream>
+    #include <thread>
+
+    using namespace std;
+
+    // The function we want to execute on the new thread.
+    void task1(string msg)
+    {
+        cout << "task1 says: " << msg;
+    }
+
+    int main()
+    {
+        // Constructs the new thread and runs it. Does not block execution.
+        thread t1(task1, "Hello");
+
+       // Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
+        t1.join();
+    }
+
+4b.
+Thread Join vs Detach
+    If a thread is detached then the Main thread does not wait for the thread to finish its execution
+
+5. Hard Link vs Soft Link
+    http://stackoverflow.com/questions/185899/what-is-the-difference-between-a-symbolic-link-and-a-hard-link
+
+    Underneath the file system files are represented by inodes (or is it multiple inodes not sure)
+
+    A file in the file system is basically a link to an inode.
+    A hard link then just creates another file with a link to the same underlying inode.
+
+    When you delete a file it removes one link to the underlying inode. The inode is only deleted (or deletable/over-writable) when all links to the inode have been deleted.
+
+    A symbolic link is a link to another name in the file system.
+
+    Once a hard link has been made the link is to the inode.
+    deleting renaming or moving the original file will not affect the hard link as it links to the underlying inode.
+    Any changes to the data on the inode is reflected in all files that refer to that inode.
+
+    Note: Hard links are only valid within the same File System. Symbolic links can span file systems as they are simply the name of another file.
+
+    Create two files:
+
+    $ touch blah1; touch blah2
+
+    Enter some Data into them:
+
+    $ echo "Cat" > blah1
+    $ echo "Dog" > blah2
+
+    (Actually, I could have used echo in the first place, as it creates the files if they don't exist... but never mind that.)
+
+    And as expected:
+
+    $cat blah1; cat blah2
+    Cat
+    Dog
+
+    Let's create hard and soft links:
+
+    $ ln blah1 blah1-hard
+    $ ln -s blah2 blah2-soft
+
+    Let's see what just happened:
+
+    $ ls -l
+
+    blah1
+    blah1-hard
+    blah2
+    blah2-soft -> blah2
+
+    Changing the name of blah1 does not matter:
+
+    $ mv blah1 blah1-new
+    $ cat blah1-hard
+    Cat
+
+    blah1-hard points to the inode, the contents, of the file - that wasn't changed.
+
+    $ mv blah2 blah2-new
+    $ ls blah2-soft
+    blah2-soft
+    $ cat blah2-soft  
+    cat: blah2-soft: No such file or directory
+
+    The contents of the file could not be found because the soft link points to the name, that was changed, and not to the contents.
+    Likewise, If blah1 is deleted, blah1-hard still holds the contents; if blah2 is deleted, blah2-soft is just a link to a non-existing file.
+
+5.
+What is an Inode ?
+    It is the metadata about a file.
+    It is a data structure that holds all relevant information about a file.
+
+    File -> iNode -> Actual Data
+    Inodes link to the physical data
+
+    IMP: iNodes track broken up pieces of a file.
+    iNode can tell ALL the blocks  that contain the data
+
+    iNode contains indirect referencing if the FILE is too big
+
+    inode is a Unix thing
+
+    Microsoft uses - FILE RECORD ATTRIBUTES
+    Apple use - Catalog FILES
+
+A file system can run out of space in two ways :
+
+    No space for adding new data is left
+    All the Inodes are consumed.
+
+    Well, the first way is pretty obvious but we need to look at the second way.
+    Yes, its possible that a case arises where we have free storage space but still we cannot add any new data in file system because all the Inodes are consumed.
+    This may happen in a case where file system contains very large number of very small sized files.
+    This will consume all the Inodes and though there would be free space from a Hard-disk-drive point of view but from file system point of view no Inode available to store any new file.
+
+Super block:
+    All iNodes are stored in the iNode table which is the Superblock
+
+What doesn't iNode have the File name
+    Multiple file names can map to the same file.
+    File name is stores in the respective Directory.
+
+Filesytem Basics
+    - In unix everything is a file
+      Even non-file devices such as terminals, printers, and disks themselves are abstracted and accessed via names in the file system. 
+
+How "ls" command works:
+http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
+    1. Find by using strace
+    - Find if "ls" can be found at $PATH
+    - Bash spawns a child process to execute the "ls" program
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+NETWORKS:
+http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
+1. How TCP/IP Network works.
+    - A network can be classified as TCP/IP and Ethernet at the same time.
+      TCP/IP is a set of protocols that deals with layers 3 to 7 from the OSI reference model.
+      Ethernet is a set of protocols that deals with layers 1 and 2 from the OSI reference model
+
+                    Data
+                      |
+                      |
+           TCP/UDP  Data
+           Header 
+                |
+                |
+    IP     TCP/UDP  Data
+  Header   Header 
+                |
+                |
+
+
+    1. Application Layer:
+        - Application parses the request and sends to the Transport Layer.
+        - Communication between programs and transport protocols
+        - This layer handles,
+            a. HTTP, FTP, SMTP
+
+               Email    Browser     FTP Program
+                 |         |            |
+                SMTP      HTTP         FTP
+                 |         |            |
+              Port 25   Port 80      Port 20/21
+                 |         |            |
+              ------------TCP Layer-------------
+
+        - APPLICATION LAYER TALKS TO TRANSPORT LAYER THROUGH PORT NUMBER.
+
+    2. Transport Layer / Network Layer:
+        - TCP and UDP comes here.
+
+        - Divides data into packets
+        - Puts back the packet in orders
+        - Sending ACK back to the sender / receiver
+        - Header will include information like,
+            a. Port Number (Source and destination)
+            b. Sequence Number ( for ordering)
+            c. Checksum (if data is intact)
+
+    3. Internet Layer:
+        - IP is an unreliable protocol. NO ACK system.
+        - Several hops to reach the destination
+        - Adds Source and Target IP address
+        - Responsible for routing of packets.
+            Example: tracert www.google.com
+        - This also deals with fragmentation.
+            Each ROUTER can have a limit on the size of the packet. 
+            So Internet layer fragments when sending the data.
+
+    4. Network Access Layer:
+        a. Logic Link Control (LLC),
+            - The Logic Link Control layer (LLC) is in charge of adding information of which protocol on the Internet layer delivered data to be transmitted,
+              so when receiving a frame from the network this layer on the receiving computer has to know to which protocol from the Internet layer it should deliver data.
+
+        b. Media Access Control (MAC) and
+            - The Media Access Control layer (MAC) is in charge of assembling the frame that will be sent over the network.
+            - This layer is in charge of adding the source MAC address and the target MAC address
+
+            - IMP: To communicate in an Ethernet network, MAC addresses are used.
+                   Ethernet frames (packets) don't know anything about IP addresses. ARP is used to find out the MAC address of a host on the local network.
+        c. Physical
+            - Switches come in this layer.
+        
+
+2. Why is MAC address required    
+    Why do we need the MAC address if all Ethernet connections are done via IP address?
+    - The MAC address is the hardware address, i.e. it is hard coded in the NIC of the machine.
+      So it cannot be changed. Though all Ethernet communication happens via IP address, lower layers do not understand IP but they do understand MAC address.
+      At the same time, there are instances when you use protocols other than IP, like IPX or AppleTalk.
+      In such cases there has to be a mechanism which lets you work without changing hardware.
+      So MAC addresses form the basic identifier of the hardware.
+      MAC addresses are difficult to remember so we use IP addresses, which are more friendly, but not as friendly as names. 
+
+3. Switch vs Hub vs Router:
+    - Switch:
+        - Transmits frames to a particular destination PORT
+        - Keeps tracks of mac address
+    - Hub:
+        - Broadcasts frames to every devices connected
+        - Doesn't keep track of MAC address
+
+4. How NTLM Authentication Works
+https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-works/
+    1. User uses a USername and Password to login to Client Machine
+        - Client computes a HASH of the password 
+        - Client discards the actual password
+    2. Clients sends Username to Server
+    3. Server computes a Random 16-byte Nounce (CHALLENGE) and sends it to client
+    4. Client uses the HASH got in Step 1 to ENCRYPT the nounce
+        - Client returns the Encrypted Nounce to the Server
+    5. Server sends the following to DC
+        - Encrypted Nounce
+        - User name
+        - Challenge sent to client
+    6. DC uses
+        - USername to get the HASH of the Actual Password
+        - Uses the Above Hash to Encrypt the Challenge
+        - Compares Encrypted Nounce with the one Computed
+    7. If match success else failure
+
+5. How Kerberos Authentication Works
+
+6. What happens when I click the Stop button on the browser
+http://stackoverflow.com/questions/138116/what-happens-when-i-click-the-stop-button-on-the-browser?rq=1
+
+    A Web Page load from a browser is usually a 4 step process (not considering redirections):
+
+        - Browser sends HTTP Request, when the Server is available
+        - Server executes code (for dynamic pages)
+        - Server sends the HTTP Response (usually HTML)
+        - Browser renders HTML, and asks for other files (images, css, ...)
+
+    The browser reaction to "Stop" depends on the step your request is at that time:
+
+        - If your server is slow or overloaded, and you hit "Stop" during step 1, nothing happens. The browser doesn't send the request.
+        - Most of the times, however, "Stop" will be hit on steps 2, 3 and 4, and in those steps your code is already executed, the browser simply stops waiting for the response (2), or receiving the response (3), or rendering the response (4).
+
+    The HTTP call itself is always a 2 steps action (Request/Response), and there is no automatic way to rollback the execution from the client
+
+7. what happens when you type in a URL in browser
+http://stackoverflow.com/questions/2092527/what-happens-when-you-type-in-a-url-in-browser
+http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/
+
+    In an extremely rough and simplified sketch, assuming the simplest possible HTTP request, no proxies, IPv4 and no problems in any step:
+
+        - browser checks cache; if requested object is in cache and is fresh, skip to #9
+        - browser asks OS for server's IP address
+        - OS makes a DNS lookup and replies the IP address to the browser
+        - browser opens a TCP connection to server (this step is much more complex with HTTPS)
+        - browser sends the HTTP request through TCP connection
+        - browser receives HTTP response and may close the TCP connection, or reuse it for another request
+        - browser checks if the response is a redirect or a conditional response (3xx result status codes), authorization request (401), error (4xx and 5xx), etc.; these are handled differently from normal responses (2xx)
+        - if cacheable, response is stored in cache
+        - browser decodes response (e.g. if it's gzipped)
+        - browser determines what to do with response (e.g. is it a HTML page, is it an image, is it a sound clip?)
+        - browser renders response, or offers a download dialog for unrecognized types
+
+

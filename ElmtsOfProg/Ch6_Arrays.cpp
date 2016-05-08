@@ -327,8 +327,6 @@ void printAllPermutationsRecUtil(int arr[], uint32_t cI, uint32_t eI, int result
     }
 }
 
-
-
 void printAllPermutationsRec(int arr[], int num)
 {
     int* result = new int[num];
@@ -492,7 +490,6 @@ void printAllKLengthStrings(string str, uint32_t k)
     printAllKLengthStringsRec(str, k, 0,  result);
     //printAllKLengthStringsRec(str, k, 0,  res);
 }
-
 
 int main()
 {

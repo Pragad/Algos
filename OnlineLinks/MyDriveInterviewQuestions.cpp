@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <algorithm>        // std::fill_n
+#include <algorithm>        // std::fill_n, std::reverse
 #include <queue>            // Priority Queue
 #include <typeinfo>         // typeid
 #include <vector>
@@ -28,8 +28,17 @@ using namespace std;
  * PROBLEM 5b. Find the max sub array product
  * int maxProduct(vector<int>& nums)
  * 
- * PROBLEM 6. Coin change problem
- * uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
+ * PROBLEM 5c. Find the SUB ARRAY that will give you a sum
+ * bool subArrayWithSum(int arr[], uint32_t num, int sum)
+ *
+ * PROBLEM 5d. Find ALL SUB ARRAYS that will give you a sum
+ * bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
+ *
+ * PROBLEM 5e. Find the max sum such that no two elements are adjacent
+ * int maxLengthSubArraySum(vector<int> nums)
+ *
+ * PROBLEM 6. Finding greatest sum of elements of array which is divisible by a given number
+ * int greatestSumOfSubarrayDivisibleByK(vector<int> nums, int divNum)
  *
  * PROBLEM 7. Print Matrix Diagonally
  * void printMatrixDiagonally(int** twoDMatrix, uint32_t rows, uint32_t cols)
@@ -68,11 +77,29 @@ using namespace std;
  * PROBLEM 18. Find median of two sorted arrays of same size
  * int medianTwoSortedSameSizeArrays(int arr1[], uint32_t num1, int arr2[], uint32_t num2);
  *
- * PROBLEM 18b. Find median of two sorted arrays of same size
+ * PROBLEM 19. Find median of two sorted arrays of different size
  * int medianTwoSortedDiffSizeArrays(int arr1[], uint32_t num1, int arr2[], uint32_t num2);
  *
- * PROBLEM 19. Find Kth smallest element in Union of two sorted arrays
+ * PROBLEM 20. Find Kth smallest element in Union of two sorted arrays
  * int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2);
+ *
+ * PROBLEM 21. Kth Smallest Element in Unsorted Array
+ * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
+ *
+ * PROBLEM 22. Find if an element is present in a row column sorted matrix
+ * int isElementPresentInRowColMatrix(int arr[], uint32_t num, uint32_t k)
+ *
+ * PROBLEM 23. Multiplication of two very large numbers
+ * int largeNumberMultiplication(int arr[], uint32_t num, uint32_t k)
+ *
+ * PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
+ * uint32_t minWindowContainingString(string str1, string str2)
+ *
+ * PROBLEM 25. 
+ * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
+ *
+ * PROBLEM 26. 
+ * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
  */
 
 // Structure to define a x-axis y-axis point
@@ -197,8 +224,7 @@ char findUniqueChar(string str)
         }
         else
         {
-            uniqChar temp{false, i};
-            charMap[str[i]] = temp;
+            charMap[str[i]] = {false, i};
         }
     }
 
@@ -309,9 +335,7 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
 
     // Set all values of bool array to false;
     int abc[100][100];
-    std::fill_n(abc, 100 * 100, 0);
     //std::fill_n(visited, rows * cols, false);
-    /*
     for (uint32_t i = 0; i < rows; i++)
     {
         for (uint32_t j = 0; j < cols; j++)
@@ -319,7 +343,6 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
             visited[i][j] = false;
         }
     }
-    */
 
     for (int x = 0; x < rows; x++)
     {
@@ -616,106 +639,69 @@ bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
 //            Ans: 80; 5, 40, 35
 //            Returns false if no such array is present
 // ------------------------------------------------------------------------------------------------
-bool maxLengthSubArraySum(vector<int> nums, int& maxNonConSum)
+int maxLengthSubArraySum(vector<int> nums)
 {
-    /*
     if (nums.size() == 0)
     {
         return false;
     }
 
-    vector<int> dpMaxSum;
-    dpMaxSum[0] = 0;
-    dpMaxSum[1] = nums[0];
+    int a = nums[0];
+    int b = nums[1];
+    int maxVal = max(a, b);
 
-    for (uint32_t i = 1; i < nums.size() - 1; i++)
+    for (uint32_t i = 2; i < nums.size(); i++)
     {
-        dpMaxSum[i+1] = max(dpMaxSum[i], nums[i] + dpMaxSum[i-1]);
+        maxVal = max(b, a + nums[i]);
+        a = b;
+        b = maxVal;
     }
 
-    maxNonConSum = dpMaxSum[nums.length()-1];
-    return true;
-    */
+    return maxVal;
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 6. Coin change problem
-//            coins[] = {25, 10, 5}, V = 30
-//            Ans: 2
+// PROBLEM 6. Finding greatest sum of elements of array which is divisible by a given number
+// http://stackoverflow.com/questions/13511885/finding-greatest-sum-of-elements-of-array-which-is-divisible-by-a-given-number
+//
+//            1,  6, 2, 9, 5; 8
+//            Ans: 16
+//
+//            To implement this algorithm, the basic skeleton is as follows.
+//
+//            for (j = 0; j < k; j++) f[0][j] = 0;
+//            for (i = 1; i <= n; i++)
+//              for (j = 0; j < k; j++) {
+//                x = (j + k - a[i]%k) % k;
+//                f[i][j] = max(f[i-1][x] + a[i], f[i-1][j]);
+//              }
 // ------------------------------------------------------------------------------------------------
-//uint32_t minCoinChangeRec(vector<int> coins)
-// http://algorithms.tutorialhorizon.com/dynamic-programming-coin-change-problem/
-// Time Complexity 2^n
-uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
+void printVectorInt(vector<int> nums)
 {
-    if (val == 0)
+    for (int num : nums)
     {
-        return 0;
+        cout << num << ", ";
     }
-
-    else
-    {
-        uint32_t minCoin = UINT_MAX;
-        for (uint32_t i = 0; i < num; i++)
-        {
-            if (val >= coins[i])
-            {
-                // IMP: We have UNLIMITED supply of coins. So comment out the below line
-                //int tempMinCoin = 1 + minCoinChangeRec(coins + 1 , num - 1, val - coins[i]);
-                uint32_t tempMinCoin = minCoinChangeRec(coins + i , num - i, val - coins[i]);
-
-                if (tempMinCoin != UINT_MAX)
-                {
-                    minCoin = min(1 + tempMinCoin, minCoin);
-                }
-            }
-        }
-        return minCoin;
-    }
+    cout << endl;
 }
 
-uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
+int greatestSumOfSubarrayDivisibleByK(vector<int> nums, uint32_t divNum)
 {
-    // We will store values till dpTable of VAL. So need space from 0 to Val + 1.
-    // To store dpTable[5], we need an array of size 6.
-    uint32_t dpTable[val+1];
-    uint32_t tmpResult = UINT_MAX;
-    std::fill_n(dpTable, val+1, UINT_MAX);
+    vector<int32_t> sumArr1(divNum, 0);
+    vector<int32_t> sumArr2(divNum, 0);
 
-    dpTable[0] = 0;
-
-    // Motto is to fill the DP table from 1 to Target Value
-    // For each entry in the dp table, see if we can get that using an entry we have saved before.
-    for(uint32_t i = 1; i <= val; i++)
+    for (uint32_t i = 0; i < nums.size(); i++)
     {
-        for (uint32_t j = 0; j < num; j++)
+        for (uint32_t j = 0; j < sumArr1.size(); j++)
         {
-            // Only if the dp table entry is >= current coin proceed
-            if (coins[j] <= i)
-            {
-                tmpResult = dpTable[i - coins[j]];
-                if ((tmpResult != UINT_MAX) &&
-                    (tmpResult + 1 < dpTable[i]))
-                {
-                    dpTable[i] = tmpResult + 1;
-                }
-            }
+            int tmp = (sumArr1[j] + nums[i]);
+            sumArr2[tmp % divNum] = max(tmp, sumArr2[tmp % divNum]);
         }
+
+        sumArr1 = sumArr2;
     }
 
-    return dpTable[val];
-}
-
-// Wrapper function to return -1 when we can't give out the Coin Change
-int32_t minCoinChangeWrapper(uint32_t coins[], uint32_t num, uint32_t val)
-{
-    // Following is the recursive function
-    //uint32_t minCoins = minCoinChangeRec(coins, num, val);
-
-    // Following is the dynamic programming approach function
-    uint32_t minCoins = minCoinChangeDP(coins, num, val);
-
-    return (minCoins == UINT_MAX ? -1 : minCoins);
+    return sumArr1[0];
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -930,68 +916,64 @@ bool isRectanglesOverlap(Point a1, Point a2, Point b1, Point b2)
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 13. Find Largest Subarray with equal number of 0s and 1s
 // http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+//             Complexity: O(N)
+//             {0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12}
+//             {0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  1,  0,  0};
+//         {0, -1, -2, -3, -4, -5, -6, -7, -6, -5, -6, -5, -6, -7}
 // ------------------------------------------------------------------------------------------------
+struct oneZeroData
+{
+    int32_t startIdx;
+    int32_t endIdx;
+};
+
 void printLargestSubArrayZeroOne(int arr[], uint32_t num)
 {
+    unordered_map<int, oneZeroData> oneZeroDiffMap;
+
     if (num == 0)
     {
         return;
     }
 
-    uint32_t countZero = 0;
-    uint32_t countOne = 0;
+    uint32_t count = 0;
+    uint32_t stIdx = 0;
+    uint32_t endIdx = 0;
+    uint32_t maxSubArrLen = 0;
+
+    // Insert Zero into the map to start with
+    oneZeroDiffMap[0] = {-1, -1};
 
     for(uint32_t i = 0; i < num; i++)
     {
         if (arr[i] == 1)
         {
-            countOne++;
+            count++;
         }
         else if (arr[i] == 0)
         {
-            countZero++;
+            count--;
         }
-    }
 
-    // If either is zero then no sub array
-    if (countOne == 0 || countZero == 0)
-    {
-        cout << "None" << endl;
-        return;
-    }
+        auto itr = oneZeroDiffMap.find(count);
+        if (itr != oneZeroDiffMap.end())
+        {
+            itr->second.endIdx = i;
 
-    for(uint32_t i = 0, j = num-1; i < j;)
-    {
-        if (countOne == countZero)
-        {
-            cout << "Idx 1: " << i << "; Idx 2: " << j << endl;
-            return;
-        }
-        else if (countOne > countZero)
-        {
-            // One count is more
-            if (arr[i] == 1)
+            if (i - (itr->second.startIdx) > maxSubArrLen)
             {
-                i++;
-            }
-            else if (arr[j] == 1)
-            {
-                j--;
+                stIdx = itr->second.startIdx + 1;
+                endIdx = itr->second.endIdx;
+                maxSubArrLen = i - (itr->second.startIdx);
             }
         }
         else
         {
-            // ZeroCount is more
-            if (arr[i] == 0)
-            {
-                i++;
-            }
-            else if (arr[j] == 0)
-            {
-                j--;
-            }
+            oneZeroDiffMap[count] = {(int)i, -1};
         }
     }
+
+    cout << "Start Index: " << stIdx << "; End Index: " << endIdx << endl;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1117,7 +1099,7 @@ void findMissingAndDuplicate(vector<int> nums)
     }
     
     // Find the right most set bit in fullXor
-    rightSetBit = fullXor & (fullXor - 1);
+    rightSetBit = fullXor & ~(fullXor - 1);
 
     // Now divide the numbers into two sets. Set one will have rightSetBit ON and Set two
     // will have rightSetBit OFF
@@ -1236,6 +1218,8 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 17. Find minimum number of conference room required
+// http://stackoverflow.com/questions/12283559/find-overlapping-appointments-in-on-time
+// http://stackoverflow.com/questions/24657695/optimal-room-count-and-sizes-for-n-overlapping-meeting-schedules
 // ------------------------------------------------------------------------------------------------
 static const double EPSILON = 0.000001;
 
@@ -1418,7 +1402,7 @@ double medianTwoSortedSameSizeArrays(int arr1[], int arr2[], uint32_t num)
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 18b. Find median of two sorted arrays of same size
+// PROBLEM 19. Find median of two sorted arrays of different size
 // http://www.geeksforgeeks.org/median-of-two-sorted-arrays-of-different-sizes/
 // http://articles.leetcode.com/median-of-two-sorted-arrays
 //
@@ -1475,7 +1459,7 @@ double medianTwoSortedDiffSizeArrays(int A[], int n, int B[], int m)
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 19. Find Kth smallest element in Union of two sorted arrays
+// PROBLEM 20. Find Kth smallest element in Union of two sorted arrays
 // http://stackoverflow.com/questions/4607945/how-to-find-the-kth-smallest-element-in-the-union-of-two-sorted-arrays
 //
 //             int A[] = {1, 2, 6, 8};
@@ -1610,7 +1594,7 @@ int kthSmallestElementRec(int arr1[], uint32_t index1, uint32_t num1,
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 20. Find Kth smallest element in an Unsorted array
+// PROBLEM 21. Find Kth smallest element in an Unsorted array
 //
 //             int A[] = {3,5,2,1,8,4,6};
 //
@@ -1646,6 +1630,233 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
     }
 
     return kSmallNos.top();
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 22. Find if an element is present in a row column sorted matrix
+//
+//             Last element of a row is lesser than the first element of the next row
+// ------------------------------------------------------------------------------------------------
+template <size_t rows, size_t cols>
+bool isElementPresentInRowColMatrix(int (&twoDMat)[rows][cols])
+{
+    return false;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 23. Multiplication of two very large numbers
+//             Using Bit shift operation
+// ------------------------------------------------------------------------------------------------
+string largeNumberMultiplication(string str1, string str2)
+{
+    uint64_t num1 = stoi(str1);
+    uint64_t num2 = stoi(str2);
+    uint64_t result = 0;
+
+    while (num1)
+    {
+        if ((num1 % 2) != 0)
+        {
+            result += num2;
+        }
+        num2 = num2 << 1;
+        num1 = num1 >> 1;
+    }
+
+    return to_string(result);
+}
+
+// Do Multiplication without using "UINT"
+// Utility function to add two numbers represented as string
+string addStringNumbers(string s1, string s2)
+{
+    string result;
+    uint32_t carry = 0;
+    int32_t i = s1.length() - 1;
+    int32_t j = s2.length() - 1;
+    for (; i >= 0 && j >= 0; i--, j--)
+    {
+        uint32_t temp = (s1[i] - '0') + (s2[j] - '0');
+        result += (carry + (temp % 10)) + '0';
+        carry = temp / 10;
+    }
+
+    while (i >= 0)
+    {
+        result += (carry + (s1[i] - '0')) + '0';
+        i--;
+        carry = 0;
+    }
+
+    while (j >= 0)
+    {
+        result += (carry + (s2[j] - '0')) + '0';
+        j--;
+        carry = 0;
+    }
+
+    reverse(result.begin(), result.end());
+    cout << result << endl;
+    return result;
+}
+
+// Add two strings in binary form
+// http://www.geeksforgeeks.org/add-two-bit-strings/
+// sum = a xor b xor c
+// carry = ab+bc+ca
+
+// Assuming str1 and str2 in binary. Do the multiplication
+string largeNumberBinaryMultStr(string str1, string str2)
+{
+    /*
+    string result;
+
+    while (str1)
+    {
+        if ((str1[str1.length() - 1]) != '0')
+        {
+            result = addStringNumbers(str2, result);
+        }
+        num2 = num2 << 1;
+        num1 = num1 >> 1;
+    }
+
+    return result;
+    */
+}
+
+// Conver a string number to Binary
+string convertStrNumToBin(string num1)
+{
+    // Take the first character
+    uint32_t temp = num1[0] - '0';
+
+    for (uint32_t i = 1; i < num1.length(); i++)
+    {
+        temp = (temp * 10) + (num1[i] - '0');
+        
+    }
+}
+
+string largeNumberMultiplicationString(string str1, string str2)
+{
+    string binStr1 = convertStrNumToBin(str1);
+    string binStr2 = convertStrNumToBin(str2);
+
+    cout << largeNumberBinaryMultStr(binStr1, binStr2);
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
+//             http://articles.leetcode.com/finding-minimum-window-in-s-which
+//             http://stackoverflow.com/questions/3592079/minimum-window-width-in-string-x-that-contains-all-characters-in-string-y
+//             Complexity: O(n). Actually it is O(2n)
+// ------------------------------------------------------------------------------------------------
+void printUnorderedMap(unordered_map<char, uint32_t> myMap)
+{
+    for (auto mm : myMap)
+    {
+        cout << mm.first << ": " << mm.second << " , ";
+    }
+    cout << endl;
+}
+
+uint32_t minWindowContainingString(string str1, string str2)
+{
+    unordered_map<char, uint32_t> hasToFindMap;
+    unordered_map<char, uint32_t> foundMap;
+    uint32_t countFoundChars = 0;
+    uint32_t minWindowSize = INT_MAX;
+    uint32_t windowBegIdx = 0;
+    uint32_t windowEndIdx = 0;
+    uint32_t startPos = 0;
+
+    // Update Count of each character in a HasToFindMap
+    for (char c : str2)
+    {
+        auto itr = hasToFindMap.find(c);
+        if (itr != hasToFindMap.end())
+        {
+            (itr->second)++;
+        }
+        else
+        {
+            hasToFindMap[c] = 1;
+        }
+    }
+
+    // Go over each character and find if it is present in HasToFindMap
+    // If it is not present, then continue to the next character
+    // If it is present, then
+    //     Increase Count only when necessary
+    //     Check if Count has reached to Total Number of Characters 
+    for (uint32_t i = 0; i < str1.length(); i++)
+    {
+        auto itrToFind = hasToFindMap.find(str1[i]);
+
+        // If the character is not present in Has to find map then proceed to the next
+        // character.
+        if (itrToFind != hasToFindMap.end())
+        {
+            auto itrFound = foundMap.find(str1[i]);
+
+            if (itrFound != foundMap.end())
+            {
+                // If Count on Found Map is EQUAL or GREATER, don't increase COUNT
+                // Increase COUNT only if CHAR on Found map is LESS than ToFindMap
+                // IMP: We can use [] operator as the element is preset for sure
+                if (itrFound->second < hasToFindMap[str1[i]])
+                {
+                    countFoundChars++;
+                }
+                (itrFound->second)++;
+            }
+            else
+            {
+                // Should increase found characters in this case too. It should not be
+                // increased only when the CHARs Found are more than chars present
+                foundMap[str1[i]] = 1;
+                countFoundChars++;
+            }
+
+            // If we have found characters same as the number of characters in str2 then
+            // we have found a WINDOW
+            if (countFoundChars == str2.length())
+            {
+                // While we have more characters in hand, increment begin.
+                // This is to reduce the size of the window
+                //
+                // If the character is NOT present in HAS to find map, then go to next char
+                auto itrToFind = hasToFindMap.find(str1[startPos]);
+                while (itrToFind == hasToFindMap.end() ||
+                        foundMap.at(str1[startPos]) > hasToFindMap.at(str1[startPos]))
+                {
+                    // IMP: Do .at() only if the element is present. Else we will get
+                    // out_of_range exception
+                    if (itrToFind != hasToFindMap.end() &&
+                        foundMap.at(str1[startPos]) > hasToFindMap.at(str1[startPos]))
+                    {
+                        foundMap.at(str1[startPos])--;
+                    }
+
+                    startPos++;
+                    itrToFind = hasToFindMap.find(str1[startPos]);
+                }
+
+                // Compute the minimum Window length
+                if (minWindowSize > (i - startPos + 1))
+                {
+                    minWindowSize = (i - startPos + 1);
+                    windowBegIdx = startPos;
+                    windowEndIdx = i;
+                }
+            }
+        }
+    }
+
+    cout << "Win Beg: " << windowBegIdx << "; Win End: " << windowEndIdx << "; Win Len: " << minWindowSize << endl;
+
+    return minWindowSize;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1722,7 +1933,7 @@ int main()
         int arr2[] = {15, 2, 4, 8, 9, 5, 10, 13, 23};
         int arr3[] = {5, 6, 1, -2, -4, 3, 1, 5};
         int arr4[] = {4, 1, -3, 2, 6 , -5};
-
+        vector<int> arr5 = {6, 5, 10, 40, 50, 35};
 
         cout << "Max Sum: " << maxSumSubArray(arr1, sizeof(arr1) / sizeof(arr1[0])) << endl;
         cout << "Max Prod: " << maxProduct(std::vector<int> (arr1, arr1 + sizeof arr1 / sizeof arr1[0])) << endl;
@@ -1730,13 +1941,14 @@ int main()
         subArrayWithSum(arr2, sizeof(arr2) / sizeof(arr2[0]), 23);
 
         allSubArraysWithSum(arr4, sizeof(arr4) / sizeof(arr4[0]), 5);
+
+        cout << "Max Sum Not Adjacent: " << maxLengthSubArraySum(arr5) << endl;
     }
 
-    // Problem 6: Coin Change Problem
+    // Problem 6: Find greatest sum divisble by a number
     {
-        uint32_t coins[] = {10, 5};
-        cout << "Min Coins: ";
-        cout << minCoinChangeWrapper(coins, sizeof(coins)/sizeof(uint32_t), 20) << endl;
+        vector<int> nums = {1, 6, 2, 9};
+        cout << endl << "Greatest Sum Divisble by a number: " << greatestSumOfSubarrayDivisibleByK(nums, 9) << endl;
     }
 
     // Problem 7: Print Matrix Diagonally
@@ -1798,7 +2010,10 @@ int main()
 
     // Problem 13. Largest Subarray with equal number of 0s and 1s
     {
-
+        cout << endl << "Largest Subarray with equal 0s and 1s" << endl;
+        int arr[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0};
+        printLargestSubArrayZeroOne(arr, sizeof(arr) / sizeof(arr[0]));
+        cout << endl;
     }
 
     // Problem 14. 3 number sum closest
@@ -1820,20 +2035,20 @@ int main()
         findTwoMissing(v1, v1.size() + 2);
     }
 
-    // Minimum number of conference rooms
+    // Problem 17. Minimum number of conference rooms
     {
         vector<struct MeetingTime> meetings = {{9, 10}, {14, 16}, {8, 12},  {12, 16},  {10, 12}};
         cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings) << endl;
     }
 
-    // Median of two equal size sorted arrays
+    // Problem 18. Median of two equal size sorted arrays
     {
         int arr1[] = {1, 2, 3};
         int arr2[] = {4, 6, 8};
         cout << endl << "Median 1: " << medianTwoSortedSameSizeArrays(arr1, arr2, sizeof(arr1) / sizeof(arr1[0])) << endl;
     }
 
-    // Median of two sorted UNEQUAL arrays
+    // Problem 19. Median of two sorted UNEQUAL arrays
     {
         //int A[] = {900};
         //int B[] = {5, 8, 10, 20};
@@ -1849,7 +2064,7 @@ int main()
         cout << "Median 2: " << medianTwoSortedDiffSizeArrays(A, N, B, M) << endl;
     }
 
-    // Kth smallest Element
+    // Problem 20. Kth smallest Element
     {
         //int A[] = {1, 2, 6, 8};
         //int B[] = {3, 5};
@@ -1869,15 +2084,45 @@ int main()
 
     }
 
-    // Kth Smallest Element in Unsorted Array
+    // Problem 21. Kth Smallest Element in Unsorted Array
     {
         int arr[] = {3, 5, 2, 1, 8, 4, 6};
-        cout << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
+        cout << endl << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
     }
 
-    // 
+    // Problem 22. Find if an element is present in a row column sorted matrix
     {
+        cout << endl << "Is element present in row column matrix" << endl;
+        int twoD[5][4] = {{1, 2, 3, 4},
+                          {5, 6, 7, 8},
+                          {9, 10, 11, 12},
+                          {13, 14, 15, 16},
+                          {17, 18, 19, 20}};
+ 
+        isElementPresentInRowColMatrix(twoD);
     }
+
+    // Problem 23. Multiplication of two very large numbers
+    {
+        cout << endl << "Multiplication of large numbers using Bit operation" << endl;
+        string s1 = "5830";
+        string s2 = "23958233";
+        cout << largeNumberMultiplication(s1, s2) << endl;
+
+        addStringNumbers(s1, s2);
+    }
+
+    // PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
+    {
+        cout << endl << "Minimum Window containing characters" << endl;
+        string str1 = "ADOBECOEBANCD";
+        string str2 = "ABC";
+        string str3 = "acbbaca";
+        string str4 = "aba";
+        minWindowContainingString(str1, str2);
+        minWindowContainingString(str3, str4);
+    }
+
     cout << endl;
     return 0;
 }

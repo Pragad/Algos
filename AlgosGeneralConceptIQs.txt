@@ -147,6 +147,82 @@ Median of Medians:
 Bit twiddling Stanford material
 http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable
 
+4b.
+Count bits set in a number
+http://stackoverflow.com/questions/22081738/how-variable-precision-swar-algorithm-works
+http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
+    int SWAR(unsigned int i)
+    {
+        // Count the number of bits set in TWO bits at a time. Like Bits 1,2; 3,4; 5,6 etc
+        i = i - ((i >> 1) & 0x55555555);
+
+        // Count the number of bits set in FOUR bits at a time. Like Bits 1,2,3,4; 5,6,7,8 etc
+        i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+
+        // Count the number of bits set in EIGHT bits 
+        // (i + (i >> 4)) & 0x0f0f0f0f
+        // since 0x01010101 = (1 << 24) + (1 << 16) + (1 << 8) + 1, we have:
+        // k * 0x01010101 = (k << 24) + (k << 16) + (k << 8) + k
+
+        // Add all the number of 1s in EIGHT BITS into the highest ordered byte.
+        // We want the last 8 bytes to represent the number of 1s. So right shift >> 24.
+        return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+    }
+
+4c.
+http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c?rq=1
+Set, Unset, Clear, Toggle a Bit
+    Setting a bit
+    number |= 1 << x;
+
+    Clearing a bit
+    number &= ~(1 << x);
+
+    Toggling a bit
+    number ^= 1 << x;
+
+    Checking a bit
+    bit = (number >> x) & 1;
+
+4d.
+Absolute Value of a number
+http://stackoverflow.com/questions/12041632/how-to-compute-the-integer-absolute-value
+
+4e.
+Reverse Bits in a number
+http://stackoverflow.com/questions/845772/how-to-check-if-the-binary-representation-of-an-integer-is-a-palindrome
+http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-number/
+
+    for(unsigned tmp = n; tmp; tmp >>= 1)
+    	m = (m << 1) | (tmp & 1);
+
+    unsigned int reverseBits(unsigned int num)
+    {
+        unsigned int  NO_OF_BITS = sizeof(num) * 8;
+        unsigned int reverse_num = 0;
+        int i;
+        for (i = 0; i < NO_OF_BITS; i++)
+        {
+            if((num & (1 << i)))
+               reverse_num |= 1 << ((NO_OF_BITS - 1) - i);  
+       }
+        return reverse_num;
+    }
+
+    // Using bit shift
+        unsigned int v; // 32-bit word to reverse bit order
+
+        // swap odd and even bits
+        v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
+        // swap consecutive pairs
+        v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
+        // swap nibbles ... 
+        v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
+        // swap bytes
+        v = ((v >> 8) & 0x00FF00FF) | ((v & 0x00FF00FF) << 8);
+        // swap 2-byte long pairs
+        v = ( v >> 16             ) | ( v               << 16);
+
 5.
 String Search:
     Bayer More:
@@ -294,3 +370,46 @@ Space Complexity for Tree Traversal.
          |--> f
          |
          |--> g
+
+16.
+Memoization vs Tabulation in Dynamic Programming
+http://stackoverflow.com/questions/6184869/what-is-difference-between-memoization-and-dynamic-programming
+
+    What is the difference between tabulation (the typical dynamic programming technique) and memoization?
+
+    When you solve a dynamic programming problem using tabulation you solve the problem "bottom up",
+    i.e., by solving all related sub-problems first, typically by filling up an n-dimensional table.
+    Based on the results in the table, the solution to the "top" / original problem is then computed.
+
+    If you use memoization to solve the problem you do it by maintaining a map of already solved sub problems.
+    You do it "top down" in the sense that you solve the "top" problem first (which typically recurses down to solve the sub-problems).
+
+    A good slide from here (link is now dead, slide is still good though):
+
+            If all subproblems must be solved at least once, a bottom-up dynamic-programming algorithm usually outperforms a top-down memoized algorithm by a constant factor
+                No overhead for recursion and less overhead for maintaining table
+                There are some problems for which the regular pattern of table accesses in the dynamic-programming algorithm can be exploited to reduce the time or space requirements even further
+            If some subproblems in the subproblem space need not be solved at all, the memoized solution has the advantage of solving only those subproblems that are definitely required
+
+17.
+How to efficiently check whether it's height balanced for a massively skewed binary search tree
+http://stackoverflow.com/questions/23160438/how-to-efficiently-check-whether-its-height-balanced-for-a-massively-skewed-bin
+
+18.
+How to determine if binary tree is balanced
+http://stackoverflow.com/questions/742844/how-to-determine-if-binary-tree-is-balanced?lq=1
+
+19.
+Explain Morris inorder tree traversal without using stacks or recursion
+http://stackoverflow.com/questions/5502916/explain-morris-inorder-tree-traversal-without-using-stacks-or-recursion
+
+20.
+Count subsequences divisible by K
+http://stackoverflow.com/questions/24518682/count-subsequences-divisible-by-k
+https://www.hackerrank.com/contests/w6/challenges/consecutive-subsequences/editorial
+
+21. Merge Overlapping intervals
+http://www.geeksforgeeks.org/merging-intervals/
+http://stackoverflow.com/questions/4542892/possible-interview-question-how-to-find-all-overlapping-intervals
+http://stackoverflow.com/questions/15150188/amazon-interview-design-meeting-scheduler
+
