@@ -51,6 +51,8 @@ unsigned int fibonacci(int n)
     }
 }
 
+// O(N) space
+// O(2^n) Time
 unsigned int fibonacciDynamic(int n)
 {
     vector<unsigned int> fibVec;
@@ -227,6 +229,7 @@ uint32_t longestIncreasingSubSequenceRec(int arr[], uint32_t num)
     return maxVal;
 }
 
+// TIME COMPLEXITY: O(N^2)
 uint32_t longestIncreasingSubSequence(int arr[], int num)
 {
     if (num < 2)
@@ -482,12 +485,13 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 5. Coin change problem
+// http://algorithms.tutorialhorizon.com/dynamic-programming-coin-change-problem/
 //            coins[] = {25, 10, 5}, V = 30
 //            Ans: 2
+// EVERY COIN EITHER GETS INCLUDED or EXCLUDED
+// Time Complexity 2^n
 // ------------------------------------------------------------------------------------------------
 //uint32_t minCoinChangeRec(vector<int> coins)
-// http://algorithms.tutorialhorizon.com/dynamic-programming-coin-change-problem/
-// Time Complexity 2^n
 uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
 {
     if (val == 0)
@@ -500,7 +504,7 @@ uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
         uint32_t minCoin = UINT_MAX;
         for (uint32_t i = 0; i < num; i++)
         {
-            if (val >= coins[i])
+            if (val >= coins[i])        // IMP Here
             {
                 // IMP: We have UNLIMITED supply of coins. So comment out the below line
                 //int tempMinCoin = 1 + minCoinChangeRec(coins + 1 , num - 1, val - coins[i]);
@@ -517,6 +521,11 @@ uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
 }
 
 // http://www.geeksforgeeks.org/find-minimum-number-of-coins-that-make-a-change/
+// Coins:     2, 3, 4, 5
+// DP   : 0, 1   , 2, 3, 4, 5, 6
+// 6    : 0, -INF, 1, 1, 2, 2, 2
+//                       1, 1, 1
+// Complexity: O(m.n)
 uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
 {
     // We will store values till dpTable of VAL. So need space from 0 to Val + 1.

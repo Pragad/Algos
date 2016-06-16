@@ -1,25 +1,76 @@
-/*
-tree* findLCA(tree* root, tree* a, tree* b)
-bool isTreeBalanced(tree* root)
-uint32_t computeHeight(tree* root)
-int countTree(int numNodes)
-bool sameTree(tree* a, tree* b)
-void doubleTree(tree* root)
-void mirror(tree* root)
-void printPathsVec(tree* root)
-void printPathsRecurVec(tree* root, vector<int> path)
-void printVector(vector<int> path)
-void printPaths(tree* root)
-void printPathsRecur(tree* root, int path[], int pathLen)
-void printArray(int path[], int len)
-bool hasPathSum(tree* root, int sum)
-int minValue(tree* root)
-int maxDepth(tree* root)
-int size(tree* root)
-tree* build123()
-tree* insert(tree* root, int data)
-void printTree(tree* root)
-*/
+/* 
+ * Problem 1. Compute the Number of nodes in the tree
+ * int size(tree* root)
+ *
+ * Problem 2. Compute the max depth in the tree
+ * int maxDepth(tree* root)
+ *
+ * Problem 3. Compute the minimum value
+ * int minValue(tree* root)
+ *
+ * Problem 4. Compute if there is path that matches the sum
+ * bool hasPathSum(tree* root, int sum)
+ *
+ * Problem 5. Compute the Paths recursively
+ * void printPathsRecur(tree* root, int path[], int pathLen)
+ *
+ * Problem 6. Compute the paths using vector
+ * void printPathsVec(tree* root)
+ *
+ * Problem 7. Compute the mirror of a tree
+ * void mirror(tree* root)
+ *
+ * Problem 8. Compute the double of a tree
+ * void doubleTree(tree* root)
+ *
+ * Problem 9. Compute if two trees are same
+ * bool sameTree(tree* a, tree* b)
+ *
+ * Problem 10. Count the number of possible trees
+ * int countTree(int numNodes)
+ *
+ * Problem 11. Compute the max height of a tree
+ * uint32_t computeHeight(tree* root)
+ *
+ * Problem 12. This tell if a binary tree is Balanced or not.
+ * bool isTreeBalanced(tree* root)
+ *
+ * Problem 13. Compute the LCA of a tree
+ * tree* findLCA(tree* root, tree* a, tree* b)
+ *
+ * Problem 14. Given a Binary Tree, find the maximum sum path from a leaf to root.
+ * int maxSumLeafToRoot(tree* root)
+ *
+ * Problem 15. Given a Binary Tree, find the maximum sum path from a leaf to leaf.
+ * int maxSumLeafToLeaf(tree* root)
+ *
+ * Problem 16. Given a Binary Tree, find the maximum sum path from a ANY NODE to ANY NODE
+ * int maxSumNodeToNode(tree* root)
+ *
+ * Problem 17. print-the-longest-leaf-to-leaf-path-in-a-binary-tree-and-its-length
+ * uint32_t longPathLength(tree* root)
+ *
+ * Problem 18. Find the nearest element that is lesser than the given key
+ * int nearestLesserElmt(tree* root, int key, int& minElmt)
+ *
+ * Problem 19. Print Tree in Level Order
+ * void printTreeLevelOrder(tree* root)
+ *
+ * Problem 20. Print Tree in Spiral Order
+ * void printSpiralOrder(tree* root)
+ *
+ * Problem 21. Print Tree in Vertical Order
+ * void printVerticalOrder(tree* root)
+ *
+ * Problem 22. Find largest element smaller than K in a BST
+ * int findLargestNumSmallerThanKey(tree* root, int elmt)
+ *
+ * Problem 23. Find next larger number than K in a BST
+ * int findSmallestNumLargerThanKey(tree* root, int elmt)
+ *
+ * Problem 24. 
+ *
+ */
 
 // This contains solution to Stanford's Tree problems.
 #include <iostream>
@@ -399,7 +450,6 @@ tree* findLCA(tree* root, tree* a, tree* b)
     cout << "0. Root: " << root << " ; a: " << a << " ; b: " << b << endl;
     if (root == NULL)
     {
-        //cout << "1. " << endl;
         return NULL;
     }
 
@@ -416,7 +466,6 @@ tree* findLCA(tree* root, tree* a, tree* b)
     // Fix for the above problem
     if (root == a || root == b)
     {
-        //cout << "2. " << endl;
         return root;
     }
 
@@ -425,18 +474,15 @@ tree* findLCA(tree* root, tree* a, tree* b)
 
     if (la != NULL && ra != NULL)
     {
-        //cout << "3. " << endl;
         return root;
     }
 
     else if (la != NULL)
     {
-        //cout << "4. " << endl;
         return la;
     }
     else
     {
-        //cout << "5. " << endl;
         return ra;
     }
 }
@@ -459,7 +505,8 @@ int findLCANum(tree* root)
 //  The sums of these three paths are 16, 4 and 17 respectively.
 //  The maximum of them is 17 and the path for maximum is 7->10.
 // ------------------------------------------------------------------------------------------------
-void maxSumLeafToRootPath(tree* root, int& curSum, int& maxSum)
+// VERY IMP: Don't have to pass curSum as a REFERENCE
+void maxSumLeafToRootPath(tree* root, int curSum, int& maxSum)
 {
     if (root == NULL)
     {
@@ -474,9 +521,9 @@ void maxSumLeafToRootPath(tree* root, int& curSum, int& maxSum)
             maxSum = curSum;
         }
 
+        // VERY IMP: The below can be ignored as the values are not passed as reference
         // IMP: Reset Current sum to Previous value
-        curSum -= root->data;
-
+        //curSum -= root->data;
         return;
     }
 
@@ -484,6 +531,7 @@ void maxSumLeafToRootPath(tree* root, int& curSum, int& maxSum)
     // VERY IMP: Can't pass a VALUE directly to a reference. It should be put in a 
     // variable before doing so.
     int temp = root->data + curSum;
+
     maxSumLeafToRootPath(root->left, temp, maxSum);
     maxSumLeafToRootPath(root->right, temp, maxSum);
 }
@@ -537,6 +585,7 @@ int maxSumLeafToLeafRec(tree* root, int& maxLeafToLeaf)
         return (max(leftMaxSum, rightMaxSum) + root->data);
     }
 
+    // VERY IMP: This should be ELSE IF. Otherwise the above IF as well as the below IF will get executed
     if (root->left != NULL)
     {
 
@@ -744,7 +793,6 @@ void printTreeLevelOrder(tree* root)
     }
 }
 
-
 // ------------------------------------------------------------------------------------------------
 // Problem 20
 //      Print Tree in Spiral Order
@@ -873,6 +921,93 @@ void printVerticalOrder(tree* root)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 22
+//      Find largest element smaller than K in a BST
+// http://stackoverflow.com/questions/6334514/to-find-largest-element-smaller-than-k-in-a-bst
+// ------------------------------------------------------------------------------------------------
+int findLargestNumSmallerThanKey(tree* root, int elmt)
+{
+    int result = -1;
+
+    while(root != NULL)
+    {
+        if (root->data >= elmt)
+        {
+            root = root->left;
+        }
+        else
+        {
+            result = root->data;
+            root = root->right;
+        }
+    }
+
+    return result;
+}
+
+int findLargestNumSmallerThanKeyRec(tree* root, int elmt)
+{
+    if (root == NULL)
+    {
+        return -1;
+    }
+
+    if (root->data >= elmt)
+    {
+        return findLargestNumSmallerThanKeyRec(root->left, elmt);
+    }
+    else
+    {
+        int result1 = root->data;
+        int result2 = findLargestNumSmallerThanKeyRec(root->right, elmt);
+        return max(result1, result2);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 23
+//      Find next larger number than K in a BST
+// ------------------------------------------------------------------------------------------------
+int findSmallestNumLargerThanKey(tree* root, int elmt)
+{
+    int result = -1;
+
+    while(root != NULL)
+    {
+        if (root->data > elmt)
+        {
+            result = root->data;
+            root = root->left;
+        }
+        else
+        {
+            root = root->right;
+        }
+    }
+
+    return result;
+}
+
+int findSmallestNumLargerThanKeyRec(tree* root, int elmt)
+{
+    if (root == NULL)
+    {
+        return INT_MAX;
+    }
+
+    if (root->data > elmt)
+    {
+        int result1 = root->data;
+        int result2 = findSmallestNumLargerThanKeyRec(root->left, elmt);
+        return min(result1, result2);
+    }
+    else
+    {
+        return findSmallestNumLargerThanKeyRec(root->right, elmt);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -937,7 +1072,7 @@ int main()
         root1->left->left = newNode(-20);
         root1->left->right = newNode(-1);
         root1->right->right = newNode(-25);
-        root1->right->right->left = newNode(3);
+        root1->right->right->left = newNode(17);
         root1->right->right->right = newNode(4);
 
         printTree(root);
@@ -1028,6 +1163,37 @@ int main()
         root->right->right = newNode(103);
 
         printVerticalOrder(root);
+    }
+
+    // Problem 22,23 Find largest element smaller than K in a BST
+    {
+        cout << endl << "Find largest element smaller than K in a BST" << endl;
+        struct tree* root = newNode(20);
+        root->left = newNode(10);
+        root->right = newNode(30);
+
+        root->left->left = newNode(5);
+        root->left->right = newNode(15);
+        root->right->left = newNode(25);
+        root->right->right = newNode(35);
+
+        cout << "Normal: " << findLargestNumSmallerThanKey(root, 30) << endl;
+        cout << "Recursion: " << findLargestNumSmallerThanKeyRec(root, 30) << endl;
+        cout << "Normal: " << findLargestNumSmallerThanKey(root, 5) << endl;
+        cout << "Recursion: " << findLargestNumSmallerThanKeyRec(root, 5) << endl;
+        cout << "Normal: " << findLargestNumSmallerThanKey(root, 25) << endl;
+        cout << "Recursion: " << findLargestNumSmallerThanKeyRec(root, 25) << endl;
+        cout << "Normal: " << findLargestNumSmallerThanKey(root, 35) << endl;
+        cout << "Recursion: " << findLargestNumSmallerThanKeyRec(root, 35) << endl << endl;
+
+        cout << "Normal: " << findSmallestNumLargerThanKey(root, 30) << endl;
+        cout << "Recursion: " << findSmallestNumLargerThanKeyRec(root, 30) << endl;
+        cout << "Normal: " << findSmallestNumLargerThanKey(root, 5) << endl;
+        cout << "Recursion: " << findSmallestNumLargerThanKeyRec(root, 5) << endl;
+        cout << "Normal: " << findSmallestNumLargerThanKey(root, 25) << endl;
+        cout << "Recursion: " << findSmallestNumLargerThanKeyRec(root, 25) << endl;
+        cout << "Normal: " << findSmallestNumLargerThanKey(root, 35) << endl;
+        cout << "Recursion: " << findSmallestNumLargerThanKeyRec(root, 35) << endl;
     }
 
     cout << endl;

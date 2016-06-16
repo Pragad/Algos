@@ -83,7 +83,7 @@ void threeWayQuickSort(int arr[], int num)
 {
     int pivot = 4;
     int endIdx = num-1;
-    int eqIdx = 0;
+    int eqIdx = 0; // This points to the first element equal to pivot.
     bool endFlag = false;
 
     for (int i = 0; i <= endIdx; i++)
@@ -213,6 +213,7 @@ void printAllSubSring(int arr[], int num)
     {
         // VERY IMP "num-i+1"
         // This gives the NUMBER of elements for each i
+        // 'j' : Length # of chars
         for (int j = 1; j < num-i+1; j++)
         {
             cout << tmpStr.substr(i, j) << " ";
@@ -242,7 +243,7 @@ void printVectorOfVectors(vector < vector <int> > subsetVec)
 }
 
 // http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
-// 6.3c Recrusive way to find all substrings
+// 6.3c Recrusive way to find all subsets
 void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subsetVec)
 {
 
@@ -263,14 +264,15 @@ void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subse
             subsetVec[i].push_back(arr[eI]);
         }
 
+        // We want to add Single element SUBSET
         vector<int> tempVec = {arr[eI]};    
         subsetVec.push_back(tempVec);
     }
 }
 
-// 6.3c2 Recrusive way to find all substrings
+// 6.3c2 Recrusive way to find all subsets
 // VERY IMP:
-//      1. USe separate index for result
+//      1. Use separate index for result
 //      2. sI can go bigger than eI
 void printAllSubSetRecVer2(int arr[], uint32_t sI, uint32_t eI, int result[], uint32_t resIdx)
 {
@@ -509,13 +511,13 @@ int main()
         //int arr2[] = {7, 9, 5, 6, 3, 2}; 
         //int arr2[] =  { 3, 2, 6, 9, 5 }; 
         int arr2[] =  { 10, 1, 12, 3, 4, 28, 1 }; 
-        
         //maxDifference(arr2, sizeof(arr2) / sizeof(int));
     }
 
     // Print all subsets
     {
         int arr3[] = {1, 2, 3, 4};
+        cout << "Print All Subsets" << endl;
         printAllSubset(arr3, sizeof(arr3) / sizeof(int));
         cout << endl;
         cout << "Print All Substring" << endl;
@@ -546,6 +548,7 @@ int main()
     }
 
     // Print all permutations of a String
+
     // Print all anagrams of a string
     {
         cout << "Print All Anagrams Recursion" << endl;

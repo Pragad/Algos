@@ -1,6 +1,35 @@
+1. Merge Sort vs Quick Sort
+2. Bubble Sort vs Selection Sort vs Insertion Sort
+3. Median of Medians:
+4. Bit twiddling Stanford material
+4b. Count bits set in a number
+4c. Set, Unset, Clear, Toggle a Bit
+4d. Absolute Value of a number
+4e. Reverse Bits in a number
+5. String Search:
+6. Given 2 sorted arrays of integers, find the nth largest number in sublinear time
+7. k'th smallest in Union of Two arrays:
+8. K’th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
+9. GCD of two numbers:
+10. STOCK PROBLEMS:
+11. Sorted Rotated Array:
+12. Find all subsets of a set
+13. Multiplication of two numers
+14. Spiral Level Order traversal of a tree
+15. Space Complexity for Tree Traversal.
+16. Memoization vs Tabulation in Dynamic Programming
+17. How to efficiently check whether it's height balanced for a massively skewed binary search tree
+18. How to determine if binary tree is balanced
+19. Explain Morris inorder tree traversal without using stacks or recursion
+20. Count subsequences divisible by K
+21. Merge Overlapping intervals
+22. Finding all subsets of a Vector of Vector
+23. Converting Recursive Algorithm to Iterative
+
 1.
 Merge Sort vs Quick Sort
 http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quick-sort-for-sorting-linked-lists?rq=1
+
     "Merge sort is very efficient for immutable datastructures like linked lists"
     "Quick sort is typically faster than merge sort when the data is stored in memory.
      However, when the data set is huge and is stored on external devices such as a hard
@@ -42,6 +71,7 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
 
 2.
 Bubble Sort vs Selection Sort vs Insertion Sort
+
     http://www.sorting-algorithms.com/selection-sort
     Bubble Sort:
         - Check pair of elements and swap them so that the largest gets bubbled to the end.
@@ -84,7 +114,8 @@ Bubble Sort vs Selection Sort vs Insertion Sort
 
 3.
 Median of Medians:
-    http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
+http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
+
         Think of the following set of numbers: 
         5 2 6 3 1
 
@@ -99,7 +130,7 @@ Median of Medians:
         Similar logic for the number of elements m is bigger than.
 
 
-    http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm 
+http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm 
         // L is the array on which median of medians needs to be found.
         // k is the expected median position. E.g. first select call might look like:
         // select (array, N/2), where 'array' is an array of numbers of length N
@@ -151,6 +182,7 @@ http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable
 Count bits set in a number
 http://stackoverflow.com/questions/22081738/how-variable-precision-swar-algorithm-works
 http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
+
     int SWAR(unsigned int i)
     {
         // Count the number of bits set in TWO bits at a time. Like Bits 1,2; 3,4; 5,6 etc
@@ -170,8 +202,9 @@ http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in
     }
 
 4c.
-http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c?rq=1
 Set, Unset, Clear, Toggle a Bit
+http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c?rq=1
+
     Setting a bit
     number |= 1 << x;
 
@@ -187,6 +220,24 @@ Set, Unset, Clear, Toggle a Bit
 4d.
 Absolute Value of a number
 http://stackoverflow.com/questions/12041632/how-to-compute-the-integer-absolute-value
+
+    Let's assume a twos-complement number (as it's the usual case and you don't say otherwise) and let's assume 32-bit:
+
+    First, we perform an arithmetic right-shift by 31 bits.
+    This shifts in all 1s for a negative number or all 0s for a positive one (but note that the actual >>-operator's behaviour in C or C++ is implementation defined for negative numbers, but will usually also perform an arithmetic shift, but let's just assume pseudocode or actual hardware instructions, since it sounds like homework anyway):
+
+        mask = x >> 31;
+
+    So what we get is 111...111 (-1) for negative numbers and 000...000 (0) for positives
+
+    Now we XOR this with x, getting the behaviour of a NOT for mask=111...111 (negative) and a no-op for mask=000...000 (positive):
+        x = x XOR mask;
+
+    And finally subtract our mask, which means +1 for negatives and +0/no-op for positives:
+        x = x - mask;
+
+    So for positives we perform an XOR with 0 and a subtraction of 0 and thus get the same number.
+    And for negatives, we got (NOT x) + 1, which is exactly -x when using twos-complement representation
 
 4e.
 Reverse Bits in a number
@@ -225,11 +276,12 @@ http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-n
 
 5.
 String Search:
+
     Bayer More:
     http://www.geeksforgeeks.org/pattern-searching-set-7-boyer-moore-algorithm-bad-character-heuristic/
 
 6.
-given 2 sorted arrays of integers, find the nth largest number in sublinear time
+Given 2 sorted arrays of integers, find the nth largest number in sublinear time
 http://stackoverflow.com/questions/4686823/given-2-sorted-arrays-of-integers-find-the-nth-largest-number-in-sublinear-time
 
     I think this is two concurrent binary searches on the subarrays A[0..n-1] and B[0..n-1], which is O(log n).
@@ -256,6 +308,7 @@ http://www.programcreek.com/2014/05/leetcode-kth-largest-element-in-an-array-jav
 
 9.
 GCD of two numbers:
+
     GCD(a,b) = GCD(b,a-b)
     GCD(a,b) = GCD(b,a%b)
     NICE IMP Proof:
@@ -263,6 +316,7 @@ GCD of two numbers:
 
 10.
 STOCK PROBLEMS:
+
     http://stackoverflow.com/questions/9514191/maximizing-profit-for-given-stock-quotes
     Traverse Backwards
 
@@ -272,6 +326,7 @@ STOCK PROBLEMS:
 
 11.
 Sorted Rotated Array:
+
     In a rotated sorted array, only one of A and B can be guaranteed to be sorted. If the element lies within a part which is sorted, then the solution is simple:
         just perform the search as if you were doing a normal binary search. If, however, you must search an unsorted part,
         then just recursively call your search function on the non-sorted part.
@@ -280,10 +335,10 @@ Sorted Rotated Array:
 
 12.
 Find all subsets of a set
-    http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
-    http://www.geeksforgeeks.org/power-set/
+http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
+http://www.geeksforgeeks.org/power-set/
+http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-fastest-way
 
-    http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-fastest-way
     for (int i = 0; i < A.length(); i++) {
         for (int j = i+1; j <= A.length(); j++) {
             System.out.println(A.substring(i,j));
@@ -293,6 +348,7 @@ Find all subsets of a set
 13.
 Multiplication of two numers
 http://stackoverflow.com/questions/28888068/time-complexity-of-russian-peasant-multiplication-algorithm
+
     Use bit shifting AKA 
 
     https://en.wikipedia.org/wiki/Multiplication_algorithm#Peasant_or_binary_multiplication
@@ -340,6 +396,7 @@ http://stackoverflow.com/questions/17485773/print-level-order-traversal-of-binar
 
 15.
 Space Complexity for Tree Traversal.
+
     O(h) where h is the height of the tree.
 
     At any time in the stack we will have ones in that depth level
@@ -408,8 +465,50 @@ Count subsequences divisible by K
 http://stackoverflow.com/questions/24518682/count-subsequences-divisible-by-k
 https://www.hackerrank.com/contests/w6/challenges/consecutive-subsequences/editorial
 
-21. Merge Overlapping intervals
+21.
+Merge Overlapping intervals
 http://www.geeksforgeeks.org/merging-intervals/
 http://stackoverflow.com/questions/4542892/possible-interview-question-how-to-find-all-overlapping-intervals
 http://stackoverflow.com/questions/15150188/amazon-interview-design-meeting-scheduler
+
+22.
+Finding all subsets of a Vector of Vector
+http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
+
+    It's very simple to do this recursively.
+    The basic idea is that for each element, the set of subsets can be divided equally into those that contain that element and those that don't, and those two sets are otherwise equal.
+        For n=1, the set of subsets is {{}, {1}}
+        For n>1, find the set of subsets of 1,...,n-1 and make two copies of it. For one of them, add n to each subset. Then take the union of the two copies.
+    Edit To make it crystal clear:
+        The set of subsets of {1} is {{}, {1}}
+        For {1, 2}, take {{}, {1}}, add 2 to each subset to get {{2}, {1, 2}} and take the union with {{}, {1}} to get {{}, {1}, {2}, {1, 2}}
+    Repeat till you reach n
+
+23.
+Converting Recursive Algorithm to Iterative
+http://stackoverflow.com/questions/159590/way-to-go-from-recursion-to-iteration
+http://programmers.stackexchange.com/questions/194646/what-methods-are-there-to-avoid-a-stack-overflow-in-a-recursive-algorithm
+
+    Usually, I replace a recursive algorithm by an iterative algorithm by pushing the parameters that would normally be passed to the recursive function onto a stack.
+    In fact, you are replacing the program stack by one of your own.
+
+        Stack<Object> stack;
+        stack.push(first_object);
+        while( !stack.isEmpty() ) {
+           // Do something
+           my_object = stack.pop();
+
+          // Push other objects on the stack.
+
+        }
+
+    Note: if you have more than one recursive call inside and you want to preserve the order of the calls, you have to add them in the reverse order to the stack:
+
+        foo(first);
+        foo(second);
+
+        has to be replaced by
+
+        stack.push(second);
+        stack.push(first);
 

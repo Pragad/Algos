@@ -23,7 +23,7 @@ using namespace std;
  * int      medianOfStreams(int number, maxHeap, minHeap)
  *
  * PROBLEM 5. Find the max sub array sum
- * int      maxSubArraySum(int arr[], int num)
+ * int      maxSumSubArray(int arr[], int num)
  *
  * PROBLEM 5b. Find the max sub array product
  * int maxProduct(vector<int>& nums)
@@ -87,7 +87,9 @@ using namespace std;
  * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
  *
  * PROBLEM 22. Find if an element is present in a row column sorted matrix
- * int isElementPresentInRowColMatrix(int arr[], uint32_t num, uint32_t k)
+ * int findFirstSmallerIndex(vector< vector< int > > twoD, int elmt)
+ * bool isElementPresentInRowColMatrix(vector<vector<int> > twoD, int elmt)
+ * bool isElementPresentInRowColMatrixModified(vector<vector<int> > twoD, int elmt)
  *
  * PROBLEM 23. Multiplication of two very large numbers
  * int largeNumberMultiplication(int arr[], uint32_t num, uint32_t k)
@@ -95,11 +97,16 @@ using namespace std;
  * PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
  * uint32_t minWindowContainingString(string str1, string str2)
  *
- * PROBLEM 25. 
- * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
+ * PROBLEM 25. Find if an element is present in a rotated sorted array
+ * bool binarySearchRecursion(vector<int> nums, int low, int high, int elmt)
+ * bool binarySearch(vector<int> nums, int elmt)
+ * int findInSortedRotatedArray(vector<int> nums, int elmt)
  *
  * PROBLEM 26. 
- * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
+ * uint32_t findGrantsCap(vector<int> grants, uint32_t budget)
+ *
+ * PROBLEM 27. 
+ * uint32_t (int arr[], uint32_t num, uint32_t k)
  */
 
 // Structure to define a x-axis y-axis point
@@ -325,6 +332,9 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
 {
     uint32_t numIslands = 0;
     bool **visited = new bool*[rows];
+
+    // Can use a 2D Vector instead
+    // vector< vector<int> > myTwoDVec(rows, vector<int> (cols, 5));
 
     // Initialize a Visited bool array
     for (uint32_t i = 0; i < rows; i++)
@@ -584,7 +594,10 @@ bool subArrayWithSum(int arr[], uint32_t num, int sum)
 //
 //              
 //             Sum      : 4
-//             Map Find : -1, 0, -3, -1, 5 0
+//             Index    : 0, 1,  2, 3, 4,  5
+//             Arr      : 4, 1, -3, 2, 6 , -5
+//             Map    :0, 4, 5,  2, 4, 10,  5 // VERY IMP: Map should start from 0.
+//             Map Find : 0, 1, -2, 0,  6,  1
 // ------------------------------------------------------------------------------------------------
 bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
 {
@@ -664,8 +677,32 @@ int maxLengthSubArraySum(vector<int> nums)
 // PROBLEM 6. Finding greatest sum of elements of array which is divisible by a given number
 // http://stackoverflow.com/questions/13511885/finding-greatest-sum-of-elements-of-array-which-is-divisible-by-a-given-number
 //
-//            1,  6, 2, 9, 5; 8
+//            1,  6, 2, 9, 5; 4
 //            Ans: 16
+//
+//            Arr 1:        Arr 2:
+//            0: 0   0+1    0: 0
+//            1: 0   0+1    1: 1
+//            2: 0   0+1    2: 0
+//            3: 0   0+1    3: 0
+//
+//            Arr 1:        Arr 2:
+//            0: 0   0+6    0: 0
+//            1: 1   1+6    1: 1
+//            2: 0   0+6    2: 6
+//            3: 0   0+6    3: 7
+//
+//            Arr 1:        Arr 2:
+//            0: 0   0+2    0: 8
+//            1: 1   1+2    1: 9
+//            2: 6   6+2    2: 6
+//            3: 7   7+2    3: 7
+//
+//            Arr 1:        Arr 2:
+//            0: 8   8+9    0: 16
+//            1: 9   9+9    1: 17
+//            2: 6   6+9    2: 18
+//            3: 7   7+9    3: 15
 //
 //            To implement this algorithm, the basic skeleton is as follows.
 //
@@ -708,6 +745,20 @@ int greatestSumOfSubarrayDivisibleByK(vector<int> nums, uint32_t divNum)
 // PROBLEM 7. Print Matrix Diagonally
 // http://stackoverflow.com/questions/28433572/print-2d-array-diagonally-from-bottom-to-top
 // http://stackoverflow.com/questions/20420065/loop-diagonally-through-two-dimensional-array
+//
+//      0,0
+//      1,0     0,1
+//      2,0     1,1     0,2
+//      2,1     1,2     0,3
+//      2,2     1,3
+//      2,3
+//
+//      One should be increasing and other should be decreasing
+//
+//  i: 0    1       2           3               4
+//  j: 0    0, 1    0, 1, 2     0, 1, 2, 3      0, 1, 2, 3, 4
+//  k: 0    1, 0    2, 1, 0     3, 2, 1, 0      4, 3, 2, 1, 0
+//Inv:                          x               x, x // Invalid numbers based on Row and Col
 // ------------------------------------------------------------------------------------------------
 template <int rows, int cols>
 void printMatrixDiagonally(int (&twoDMatrix)[rows][cols])
@@ -796,6 +847,11 @@ int largestNumByRemovingDup(int number)
         return number;
     }
 
+    // From FRONT try to find,
+    //      num[i] == num[i+1] &&
+    //      num[i+1] < num[i+2]
+    // If NO SUCH number is present, then remove from the last
+    //      num[l] == num[l-1]
     for (uint32_t i = 0; i < strNum.size() - 1; i++)
     {
         if (strNum[i] == strNum[i+1])
@@ -828,12 +884,12 @@ int largestNumByRemovingDup(int number)
                     strNum.erase(i-1, 1);
                     return atoi(strNum.c_str());
                 }
-                // Reached end of string and first digit is  repeated. Just remove it
-                else
-                {
-                    strNum.erase(i-1, 1);
-                    return atoi(strNum.c_str());
-                }
+            }
+            // Reached end of string and first digit is  repeated. Just remove it
+            else
+            {
+                strNum.erase(i-1, 1);
+                return atoi(strNum.c_str());
             }
         }
     }
@@ -915,7 +971,7 @@ bool isRectanglesOverlap(Point a1, Point a2, Point b1, Point b2)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 13. Find Largest Subarray with equal number of 0s and 1s
-// http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+// http://stackoverflow.com/questions/31201245/finding-the-largest-subarray-with-equal-number-of-0s-and-1s
 //             Complexity: O(N)
 //             {0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12}
 //             {0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  1,  0,  0};
@@ -929,6 +985,7 @@ struct oneZeroData
 
 void printLargestSubArrayZeroOne(int arr[], uint32_t num)
 {
+    // Store SUM and START and END INDEX
     unordered_map<int, oneZeroData> oneZeroDiffMap;
 
     if (num == 0)
@@ -979,6 +1036,7 @@ void printLargestSubArrayZeroOne(int arr[], uint32_t num)
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 14. 3 number sum closest
 // http://www.geeksforgeeks.org/find-a-triplet-that-sum-to-a-given-value/
+// http://stackoverflow.com/questions/2070359/finding-three-elements-in-an-array-whose-sum-is-closest-to-a-given-number
 //             This problem can be solved only by sorting the array. So consider  the array
 //             is sorted.
 // ------------------------------------------------------------------------------------------------
@@ -1076,7 +1134,6 @@ void printThreeNumClosestSum(int arr[], uint32_t num, int sum)
 // http://www.geeksforgeeks.org/find-a-repeating-and-a-missing-number/
 //             Given an unsorted array of size n.
 //             One number from set {1, 2, n} is missing and one number occurs twice in array
-//             is sorted.
 // ------------------------------------------------------------------------------------------------
 void findMissingAndDuplicate(vector<int> nums)
 {
@@ -1214,7 +1271,6 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
 
     cout << "Num1: " << numsWithRightSetBit << "; Num2: " << numsWithoutRightSetBit << endl;
 }
-
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 17. Find minimum number of conference room required
@@ -1382,7 +1438,6 @@ double medianTwoSortedSameSizeArrays(int arr1[], int arr2[], uint32_t num)
         medArr2 = arr2[num/2];
     }
 
-    cout << "Med1: " << medArr1 << "; Med2: " << medArr2 << endl;
     if (medArr1 == medArr2)
     {
         return medArr1;
@@ -1513,6 +1568,8 @@ int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uin
 }
 
 // Kth Smallest Element Iterative method 2
+// We maintain i + j = k, and find such i and j so that a[i-1] < b[j-1] < a[i] (or the other way round).
+// Now since there are i elements in 'a' smaller than b[j-1], and j-1 elements in 'b' smaller than b[j-1], b[j-1] is the i + j-1 + 1 = kth smallest element.
 int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
 {
     if (k > num1 + num2)
@@ -1522,6 +1579,7 @@ int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, 
     }
 
     // Index 1 + Index 2 will always be k
+    // IMP ASSUMPTION: Both ARRAYS have ATLEAST k/2 elements
     uint32_t idx1 = k/2;
     uint32_t idx2 = k - idx1;
 
@@ -1545,6 +1603,9 @@ int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, 
     }
 
     cout << "1. Idx 1: " << idx1 << "; Idx 2: " << idx2 << endl;
+
+    // Idx1 and Idx2 will give the k+1th and k+2th elements.
+    // So Greatest of Idx-1 and Idx2-1 is the answer which will be k'th element
     if (arr1[idx1 - 1] > arr2[idx2 - 1])
     {
         return arr1[idx1 - 1];
@@ -1554,7 +1615,6 @@ int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, 
         return arr2[idx2 - 1];
     }
 }
-
 
 // Recurisve Algorithm to find the k'th smallest
 int kthSmallestElementRec(int arr1[], uint32_t index1, uint32_t num1,
@@ -1618,8 +1678,6 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
         kSmallNos.push(arr[i]);
     }
 
-    cout << kSmallNos.top() << endl;
-
     for(uint32_t i = k; i < num; i++)
     {
         if (arr[i] < kSmallNos.top())
@@ -1634,12 +1692,90 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 22. Find if an element is present in a row column sorted matrix
+// http://articles.leetcode.com/searching-2d-sorted-matrix-part-ii/
 //
 //             Last element of a row is lesser than the first element of the next row
 // ------------------------------------------------------------------------------------------------
-template <size_t rows, size_t cols>
-bool isElementPresentInRowColMatrix(int (&twoDMat)[rows][cols])
+int findFirstSmallerIndex(vector< vector< int > > twoD, int elmt)
 {
+    int low = 0;
+    int high = twoD.size() - 1;
+    uint32_t rows = twoD.size();
+    uint32_t cols = twoD[0].size();
+
+    if (elmt < twoD[0][0] || elmt > twoD[rows-1][cols-1])
+    {
+        return -1;
+    }
+
+    while (low <= high)
+    {
+        int mid = low + (high - low) / 2;
+
+        if (twoD[mid][0] > elmt)
+        {
+            if (twoD[mid-1][0] <= elmt)
+            {
+                return mid - 1;
+            }
+            else
+            {
+                high = mid - 1;
+            }
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+
+    if (low - 1 == high)
+    {
+        return low - 1;
+    }
+
+    return -1;
+}
+
+// Forward Declaration
+bool binarySearch(vector<int> nums, int elmt);
+
+// Complexity is O(log(N)). Using Binary Search for both Row and Col
+bool isElementPresentInRowColMatrixModified(vector<vector<int> > twoD, int elmt)
+{
+    int32_t r = findFirstSmallerIndex(twoD, elmt);
+
+    if (r < 0 || r > twoD.size())
+    {
+        return false;
+    }
+
+    return binarySearch(twoD[r], elmt);
+}
+
+// Complexity is O(N) where N is either N or M based on where it is found.
+bool isElementPresentInRowColMatrix(vector<vector<int> > twoD, int elmt)
+{
+    uint32_t rows = twoD.size();
+    uint32_t cols = twoD[0].size();
+
+    for (int i = 0, j = cols - 1; i <= rows && j >=0;)
+    {
+        if (twoD[i][j] > elmt)
+        {
+            j--;
+        }
+        else if (twoD[i][j] < elmt)
+        {
+            i++;
+        }
+        else
+        {
+            // twoD[i][j] == elmt
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -1857,6 +1993,160 @@ uint32_t minWindowContainingString(string str1, string str2)
     cout << "Win Beg: " << windowBegIdx << "; Win End: " << windowEndIdx << "; Win Len: " << minWindowSize << endl;
 
     return minWindowSize;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 25. Find if an element is present in a rotated sorted array
+//             http://stackoverflow.com/questions/4773807/searching-in-an-sorted-and-rotated-array
+//             Complexity: O(log(n)).
+// ------------------------------------------------------------------------------------------------
+bool binarySearchRecursion(vector<int> nums, int low, int high, int elmt)
+{
+    if (low > high)
+    {
+        return false;
+    }
+
+    // IMP: should be SIGNED. Imagine a CASE with just ONE element
+    int32_t mid = low + (high - low) / 2;
+
+    if (nums[mid] == elmt)
+    {
+        return true;
+    }
+    else if (elmt < nums[mid])
+    {
+        return binarySearchRecursion(nums, low, mid - 1, elmt);
+    }
+    else
+    {
+        return binarySearchRecursion(nums, mid + 1, high, elmt);
+    }
+
+}
+
+bool binarySearch(vector<int> nums, int elmt)
+{
+    uint32_t low = 0;
+    uint32_t high = nums.size() - 1;
+
+    while (low <= high)
+    {
+        int32_t mid = low + (high - low) / 2;
+
+        if (nums[mid] == elmt)
+        {
+            return true;
+        }
+        else if (elmt < nums[mid])
+        {
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+
+    return false;
+}
+
+bool findInSortedRotatedArray(vector<int> nums, int elmt)
+{
+    uint32_t low = 0;
+    uint32_t high = nums.size() - 1;
+
+    while (low <= high)
+    {
+        uint32_t mid = low + (high - low) / 2;
+
+        // First part is sorted
+        if (nums[low] <= nums[mid])
+        {
+            // Element present in Sorted first half
+            if (elmt >= nums[low] && elmt <= nums[mid])
+            {
+                // Do a binary search for the element here
+                return binarySearchRecursion(nums, low, mid, elmt);
+            }
+            else
+            {
+                // Element present in 2nd half which is not sorted
+                low = mid + 1;
+            }
+        }
+        else
+        {
+            // Element present in Sorted Second Half
+            if (elmt >= nums[mid] && elmt <= nums[high])
+            {
+                // Do a binary search for the element here
+                return binarySearchRecursion(nums, mid, high, elmt);
+            }
+            else
+            {
+                // Element present in 1st half which is not sorted
+                high = mid - 1;
+            }
+        }
+    }
+
+    return false;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 26. Find Award Budget Cuts Problem
+//             
+// 40,    50,      50,      100,       160,       200,       325,       500,       1075,        1500
+// 400,   490,     490,     840,       1200,      1400,      1900,      2425,      3575,        4000
+// 40*10, 40+50*9, 90+50*8, 140+100*7, 240+160*6, 400+200*5, 600+325*4, 925+500*3, 1425+1075*2, 2500+1500 
+// ------------------------------------------------------------------------------------------------
+double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
+{
+    vector<uint32_t> sumVec;
+    uint32_t curSum = 0;
+    uint32_t tmpSum = 0;
+    uint32_t i = 0;
+
+
+    for (; i < grants.size(); i++)
+    {
+        tmpSum = curSum + grants[i] * (grants.size() - i);
+        cout << tmpSum << ",";
+        sumVec.push_back(tmpSum);
+
+        if (tmpSum == budget)
+        {
+            return grants[i];
+        }
+        else if(tmpSum > budget)
+        {
+            break;
+        }
+
+        curSum += grants[i];
+    }
+    cout << endl;
+
+    if (i == grants.size())
+    {
+        // Returning the max value
+        return grants[i-1];
+    }
+    else
+    {
+        return (double)(budget - curSum) / (grants.size() - i);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 27. Find if a Bit Stream is divisible by 3
+//             http://stackoverflow.com/questions/4773807/searching-in-an-sorted-and-rotated-array
+//             Complexity: O(log(n)).
+// ------------------------------------------------------------------------------------------------
+bool isBitStreamDivsible()
+{
+
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2092,14 +2382,27 @@ int main()
 
     // Problem 22. Find if an element is present in a row column sorted matrix
     {
-        cout << endl << "Is element present in row column matrix" << endl;
-        int twoD[5][4] = {{1, 2, 3, 4},
-                          {5, 6, 7, 8},
-                          {9, 10, 11, 12},
-                          {13, 14, 15, 16},
-                          {17, 18, 19, 20}};
- 
-        isElementPresentInRowColMatrix(twoD);
+        cout << endl << "Is element present in row column matrix" << ": ";
+        vector< vector <int> > twoD = {{1,  4,  7, 11, 15},
+                                       {2,  5,  8, 12, 19},
+                                       {3,  6,  9, 16, 22},
+                                       {10, 13, 14, 17, 24},
+                                       {18, 21, 23, 26, 30}};
+
+        vector< vector <int> > twoD2 = {{1, 2, 3, 4},
+                                        {5, 6, 7, 8},
+                                        {9, 10, 11, 12},
+                                        {13, 14, 15, 16},
+                                        {17, 18, 19, 20}};
+
+        cout << isElementPresentInRowColMatrix(twoD, 19) << endl;
+        cout << isElementPresentInRowColMatrixModified(twoD2, 0) << " ";
+        cout << isElementPresentInRowColMatrixModified(twoD2, 2) << " ";
+        cout << isElementPresentInRowColMatrixModified(twoD2, 7) << " ";
+        cout << isElementPresentInRowColMatrixModified(twoD2, 11) << " ";
+        cout << isElementPresentInRowColMatrixModified(twoD2, 15) << " ";
+        cout << isElementPresentInRowColMatrixModified(twoD2, 19) << " ";
+        cout << isElementPresentInRowColMatrixModified(twoD2, 21) << endl;
     }
 
     // Problem 23. Multiplication of two very large numbers
@@ -2123,6 +2426,49 @@ int main()
         minWindowContainingString(str3, str4);
     }
 
+    // Problem 25. Find if an element is present in a rotated sorted array
+    {
+        cout << endl << "Binary Search and Rotated Sorted Array" << endl;
+        vector<int> nums = {2, 3, 17, 19, 22, 46, 82};
+        cout << binarySearch(nums, 2) << " ";
+        cout << binarySearch(nums, 3) << " ";
+        cout << binarySearch(nums, 17) << " ";
+        cout << binarySearch(nums, 19) << " ";
+        cout << binarySearch(nums, 22) << " ";
+        cout << binarySearch(nums, 46) << " ";
+        cout << binarySearch(nums, 82) << " ";
+        cout << binarySearch(nums, 83) << endl;
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 2) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 3) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 17) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 19) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 22) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 46) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 82) << " ";
+        cout << binarySearchRecursion(nums, 0, nums.size()-1, 83) << endl;
+
+        vector<int> nums2 = {17, 19, 22, 46, 82, 2, 3};
+        cout << findInSortedRotatedArray(nums, 2) << " ";
+        cout << findInSortedRotatedArray(nums, 3) << " ";
+        cout << findInSortedRotatedArray(nums, 17) << " ";
+        cout << findInSortedRotatedArray(nums, 19) << " ";
+        cout << findInSortedRotatedArray(nums, 22) << " ";
+        cout << findInSortedRotatedArray(nums, 46) << " ";
+        cout << findInSortedRotatedArray(nums, 82) << " ";
+        cout << findInSortedRotatedArray(nums, 20) << endl;
+    }
+
+    // PROBLEM 26. Find Award Budget Cuts Problem
+    {
+        cout << endl << "Award Cuts Problem" << endl;
+        vector<uint32_t> grants = {40, 50, 50, 100, 160, 200, 325, 500, 1075, 1500};
+        cout << findGrantsCap(grants, 2000) << endl;
+    }
+
+    // PROBLEM 27. Find if a Bit Stream is divisible by 3
+    {
+        isBitStreamDivsible();
+    }
     cout << endl;
     return 0;
 }

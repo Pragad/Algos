@@ -22,6 +22,11 @@ Genral Programming / OOPS Concepts
 18. Shadowing and Overriding
 19. Agile Model
 20. Types of Polymorphism
+21. Memory Allocation on Stack Vs Heap
+22. Compiler vs Interpretor
+23. Recursion vs Iterative Approach
+24. Tail Recursion Advantages
+
 -----------------------------------------------
 UML / DESIGN Questions
 1. PArking lot  
@@ -44,6 +49,8 @@ OS NOTES
 4. Multi-threaded programming in C++
 4b. Thread Join vs Detach
 5. What is an Inode ?
+6. Multi Processor vs Multi Core System
+
 -----------------------------------------------
 NETWORKS
 1. How TCP/IP Network works.
@@ -57,19 +64,22 @@ NETWORKS
 
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
-0. What is Abstraction:
+0.
+What is Abstraction:
     - Abstraction is the concept of ignoring unnecessary details.
     - Or other words, describing something in a simpler way by not concentrating on the intricate details and focusing only on necessary details.
     - It can be thought as generalization.
     - Say when you are meeting a random person, you would say that you are the guy in Black Shirt and Blue Jean.
     - We can consider Interfaces as Abstraction.
 
-1. What is Encapsulation:
+1.
+What is Encapsulation:
     - Encapsulation is something like group similar things in a box.
     - So someone else won't have access to the inside of the box. They can just use the box to do what they want.
     - Changing the contents of the box won't affect the outsider. They will still be able to use the box.
 
-2. What is Polymorphism:
+2.
+What is Polymorphism:
     - Polymorphism is the ability to an object to decide what it should.
    - Simple example would be to consider "Shapes" class. And the class has methods like Area and Cirumferance.
     - We can have subclasses like Square, Rectangle.
@@ -116,7 +126,8 @@ VERY IMP:
 
         The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
  
-3b. Polymorphism vs Overriding vs Overloading:
+3b.
+Polymorphism vs Overriding vs Overloading:
     http://stackoverflow.com/questions/154577/polymorphism-vs-overriding-vs-overloading
 
     The clearest way to express polymorphism is via an abstract base class (or interface)
@@ -130,7 +141,8 @@ VERY IMP:
 
     So we defer the implementation by using the abstract class.
 
-3c. Why do you need Polymorphism:
+3c.
+Why do you need Polymorphism:
     Say you have MS Company. It creates a Function.
 
     Google, FB, etc are derived classes whose object will be passed to the function that MS has.
@@ -140,20 +152,24 @@ VERY IMP:
 
     MS can just execute it by doing ob.exec();
 
-4. Overriding:
+4.
+Overriding:
     - Concept of adding more details to a function in the derived class.
     - It replaces the function in the base class.
 
-5. Overloading:
+5.
+Overloading:
     - It is concept of defining multiple methods based on the parameters passed.
 
-6. What is Inheritence:
+6.
+What is Inheritence:
     - It is concept where a new class is derived from an existing class.
     - This happens when we want to have a new Class that will make use of an existing class with some added details to it.
     - Eg we have a Vehicle / Shapes class and we want to add Car / Square class.
     - Inheritence should only be used if the sub class is BEHAVIORIALLY equal to the superclass.
 
-7. Is-A vs Has-A
+7.
+Is-A vs Has-A
     A House is a Building (inheritance);
     A House has a Room (composition);
     A House has an occupant (aggregation).
@@ -235,7 +251,8 @@ VERY IMP:
        return 0;
     }
 
-9. Friend Function vs Static Function
+9.
+Friend Function vs Static Function
 http://stackoverflow.com/questions/4723143/static-member-functions
 http://stackoverflow.com/questions/2315166/where-would-you-use-a-friend-function-vs-a-static-member-function
 http://stackoverflow.com/questions/4921150/when-to-use-static-member-function?lq=1
@@ -273,7 +290,8 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
           void setName( string newName );
         };
 
-10. External Linkage vs Internal Linkage
+10.
+External Linkage vs Internal Linkage
     TIC++
     - Internal linkage means that storage is created to represent the identifier only for the file being compiled.
     - Internal linkage is specified by the keyword static in C and C++
@@ -284,7 +302,8 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
     - Global variables and function names have external linkage.
     - These are accessed from other files by declaring them with the keyword extern.
 
-11. Early binding vs Late Binding
+11.
+Early binding vs Late Binding
     a. Early Binding:
        Compiler generates a call to a specific function
        Runtime system resolves this call to aboslute address of the code
@@ -294,7 +313,8 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
        Compiler DOES NOT know the exact code to execute
        - Address of the method is calculated USING the information stored in the object.
 
-12. Segmentation Fault:
+12.
+Segmentation Fault:
     http://stackoverflow.com/questions/2346806/what-is-segmentation-fault
 
     - generates SIGSEGV event
@@ -310,10 +330,12 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
     Still, segmentation fault can occur in case of accessing our own (process) memory in improper way (for instance trying to write to non-writable space).
     But the most common reason for it is the access to the part of the virtual address space that is not mapped to physical one at all.
 
-13. Interrupts vs Exception
+13.
+Interrupts vs Exception
     http://stackoverflow.com/questions/125394/interrupts-and-exceptions
 
-14. Callback Functions:
+14.
+Callback Functions:
     http://stackoverflow.com/questions/9596276/how-to-explain-callbacks-in-plain-english-how-are-they-different-from-calling-o
         Imagine this scenario: You are expecting a package in a couple of days. The package is a gift for your neighbor. Therefore, once you get the package, you want it brought over to the neighbors. You are out of town, and so you leave instructions for your spouse.
 
@@ -335,7 +357,8 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
         # execution continues flowing -- we don't wait for the file to be opened
         # ONCE the file is opened we write to it, but while we wait WE CAN DO OTHER THINGS!
 
-15. Asynchronous Programming:
+15.
+Asynchronous Programming:
         In solving many engineering problems, the software is designed to split up the overall problem into multiple individual tasks, and then execute them asynchronously.
         Inverting a matrix, or a finite element analysis problem, are good examples.
         In computing, sorting a list is an example. The quick sort routine, for example, splits the list into two lists, and sorts each of them by calling itself recursively.
@@ -345,7 +368,8 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
         The only criterion is that the results of one task are not necessary as inputs to the other task.
         As long as the start and end times of the tasks overlap, (possible only if the output of neither is needed as inputs to the other), they are being executed asynchronously, no matter how many threads are in use.
 
-16. Allocating in Stack vs Heap:
+16.
+Allocating in Stack vs Heap:
     STACK:
         SCOPE - Function
         Allocating in the stack is easy and fast, but stack is limited,
@@ -362,22 +386,27 @@ http://stackoverflow.com/questions/17434/when-should-you-use-friend-in-c
         heap is slower but much bigger.
         In general is a good rule of thumb to allocate anything that you use often and is bigger than a hundred bytes in the heap,
 
-17. Boxing and Unboxing
+17.
+Boxing and Unboxing
 http://stackoverflow.com/questions/2111857/why-do-we-need-boxing-and-unboxing-in-c
     
-18. Shadowing and Overriding
+18.
+Shadowing and Overriding
 http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overriding-in-c
 
-19. Agile Model
+19.
+Agile Model
 http://istqbexamcertification.com/what-is-agile-model-advantages-disadvantages-and-when-to-use-it/
    - Software is developed in incremental, rapid cycles. results in small incremental releases with each release building on previous functionality 
    - DIS ADV: In case of some software deliverables, especially the large ones, it is difficult to assess the effort required at the beginning of the software development life cycle.
 
-20. Types of Polymorphism
+20.
+Types of Polymorphism
     Run time - Overriding
     Compile time - Over loading
 
-21. Memory Allocation on Stack Vs Heap
+21.
+Memory Allocation on Stack Vs Heap
 http://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack
 
     Stack Allocation:
@@ -397,6 +426,118 @@ http://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much
         - On Heap, Elements can be removed OUT of ORDER. So tough to maintain as HOLES will
           be in middle.
 
+22.
+Compiler vs Interpretor
+http://stackoverflow.com/questions/3996651/what-is-compiler-linker-loader
+    Compiler:
+        Takes a high level language and converts it into Machine Code
+        The machine code is put in memory for execution
+    Interpretor:
+        Take the high level language code and on the go put each line into memory for execution
+        Doesn't get converted into an intermediate machine code.
+        But it does it at the moment the program is run
+
+    Compiler characteristics:
+        spends a lot of time analyzing and processing the program
+        the resulting executable is some form of machine- specific binary code
+        the computer hardware interprets (executes) the resulting code
+        program execution is fast
+
+    Interpreter characteristics:
+        relatively little time is spent analyzing and processing the program
+        the resulting code is some sort of intermediate code
+        the resulting code is interpreted by another program
+        program execution is relatively slow
+
+
+    =====> COMPILATION PROCESS <======
+                         |
+                         |---->  Input is Source file(.c)
+                         |
+                         V
+                +=================+
+                |                 |
+                | C Preprocessor  |
+                |                 |
+                +=================+
+                         |
+                         | ---> Pure C file ( comd:cc -E <file.name> )
+                         |
+                         V
+                +=================+
+                |                 |
+                | Lexical Analyzer|
+                |                 |
+                +-----------------+
+                |                 |
+                | Syntax Analyzer |
+                |                 |
+                +-----------------+
+                |                 |
+                | Semantic Analize|
+                |                 |
+                +-----------------+
+                |                 |
+                | Pre Optimization|
+                |                 |
+                +-----------------+
+                |                 |
+                | Code generation |
+                |                 |
+                +-----------------+
+                |                 |
+                | Post Optimize   |
+                |                 |
+                +=================+
+                         |
+                         |--->  Assembly code (comd: cc -S <file.name> )
+                         |
+                         V
+                +=================+
+                |                 |
+                |   Assembler     |
+                |                 |
+                +=================+
+                         |
+                         |--->  Object file (.obj) (comd: cc -c <file.name>)
+                         |
+                         V
+                +=================+
+                |     Linker      |
+                +=================+
+                         |
+                         |--->  Executable (.Exe/a.out) (com:cc <file.name> ) 
+                         |
+                         V
+                Executable file(a.out)
+                         |
+                         |---> Put into Main Memory
+                         |
+                +=================+
+                |     Loader      |
+                +=================+
+
+23.
+Recursion vs Iterative Approach
+http://www.codeproject.com/Articles/21194/Iterative-vs-Recursive-Approaches
+http://stackoverflow.com/questions/72209/recursion-or-iteration
+
+    It is possible that recursion will be more expensive, depending on if the recursive function is tail recursive (last line is recursive call).
+    Tail recursion should be recognized by the compiler and optimized to its iterative counterpart (while maintaining the concise, clear implementation you have in your code).
+
+    Basically, a recursive algorithm will add overhead since you store recursive calls in the execution stack.
+
+    But if the recursive function is the last line of the call (tail recursion) then there is no additional penalty.
+
+    That is of course both algorithms are the same
+
+24.
+Tail Recursion Advantages
+http://stackoverflow.com/questions/19854007/what-is-the-advantage-of-using-tail-recursion-here
+
+    A tail recursive function call allows the compiler to perform a special optimization which it normally can not with regular recursion.
+    In a tail recursive function, the recursive call is the very last thing to be executed.
+    In this case, instead of allocating a stack frame for each call, the compiler can rework the code to simply reuse the current stack frame, meaning a tail-recursive function will only use a single stack frame as opposed to hundreds or even thousands.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 1. PArking lot  
@@ -840,6 +981,8 @@ http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
     - Find if "ls" can be found at $PATH
     - Bash spawns a child process to execute the "ls" program
 
+6.
+Multi Processor vs Multi Core System
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 NETWORKS:
 http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
@@ -932,7 +1075,8 @@ http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
 
 4. How NTLM Authentication Works
 https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-works/
-    1. User uses a USername and Password to login to Client Machine
+
+    1. User uses a Username and Password to login to Client Machine
         - Client computes a HASH of the password 
         - Client discards the actual password
     2. Clients sends Username to Server
@@ -944,12 +1088,45 @@ https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-wo
         - User name
         - Challenge sent to client
     6. DC uses
-        - USername to get the HASH of the Actual Password
+        - Username to get the HASH of the Actual Password
         - Uses the Above Hash to Encrypt the Challenge
         - Compares Encrypted Nounce with the one Computed
     7. If match success else failure
 
 5. How Kerberos Authentication Works
+https://www.youtube.com/watch?v=kp5d8Yv3-0c
+    
+    3 PARTIES are Involved.
+    1. Client
+    2. Server
+    3. KDC (Key Distribution Center) which is Active Directory Domain Controller (AD DC)
+
+    In Kerberos NO communication between SERVER and KDC
+    1. Client attempts to logon into the network.
+        a. Client creates an AUTHENTICATOR with client's info. 
+           It is valid for a short time
+        b. A portion of AUTHENTICATOR is unencrypted.
+        c. A portion is ENCRYPTED using USER's PWD
+        d. VERY IMP: PASSWORD is not sent. Instead it is used as a key
+
+    2. Client sends  the AUTHENTICATOR to KDC
+    3. KDC sees the username and uses the PASSWORD that KDC has to decrpt the secured portion
+       of the Authenticator
+    4. If SUCCESS, then NO NEED for AUTHENTICATOR any more
+    5. Use KDC's key and generate a TGC (Ticket Granting Ticket).
+       TG
+       Only KDC knows the key. So no one can decrypt it.
+    6. Send the TGC to client.
+
+    7. NOW CLIENTS wants to talk to Server
+    8. Client will send TGC to KDC and ask for a TICKET for that server.
+    9. KDC will use the TGC to get Client's info 
+    10. KDC use the Server's KEY and generates a TICKET
+        Only the SERVER can decrypt this TICKET as no one else is aware of the Server's key
+    11. Client will store the TICKET and previously got TGC in the Kerberos Tray
+    12. Clients uses the TICKET to talk to Server
+    13. Client sends that TICKET evertime to the Server.
+    14. So SERVER doesn't have to do anything.
 
 6. What happens when I click the Stop button on the browser
 http://stackoverflow.com/questions/138116/what-happens-when-i-click-the-stop-button-on-the-browser?rq=1

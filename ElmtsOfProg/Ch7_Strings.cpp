@@ -21,14 +21,14 @@ using namespace std;
 string intToString(int x)
 {
     uint32_t len = abs(log10(x)) + 1;
-    char* strNum = new char[len];
+    char* strNum = new char[len];       // Memleak here
     int i = len - 1;
 
     while (x > 0)
     {
         int rem = x % 10;
 
-        strNum[i] = rem + '0';
+        strNum[i] = rem + '0';          // IF "rem < 0" then num is NEGATIVE
         i--;
         x = x / 10;
     }
@@ -65,7 +65,7 @@ bool myAtoI(string str, int& resNum)
     if (str[0] == '-')
     {
         sign = -1;
-        stIdx = 1;
+        stIdx = 1;      // IMP
     }
 
     for (; stIdx < str.length(); stIdx++)
