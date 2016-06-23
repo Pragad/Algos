@@ -1,12 +1,14 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <algorithm>        // std::fill_n, std::reverse
+#include <unordered_set>
+#include <algorithm>        // std::fill_n, std::reverse, std::swap
 #include <queue>            // Priority Queue
 #include <typeinfo>         // typeid
 #include <vector>
 #include <cmath>            // ciel
 #include <cstring>          // memset
+#include <functional>       // std::function
 using namespace std;
 
 /*
@@ -86,6 +88,9 @@ using namespace std;
  * PROBLEM 21. Kth Smallest Element in Unsorted Array
  * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
  *
+ * PROBLEM 21b. Kth Smallest Element in Unsorted Array using QuickSelect
+ * int kthSmallQuickSelect(vector<int> nums, uint32_t k)
+ *
  * PROBLEM 22. Find if an element is present in a row column sorted matrix
  * int findFirstSmallerIndex(vector< vector< int > > twoD, int elmt)
  * bool isElementPresentInRowColMatrix(vector<vector<int> > twoD, int elmt)
@@ -102,11 +107,29 @@ using namespace std;
  * bool binarySearch(vector<int> nums, int elmt)
  * int findInSortedRotatedArray(vector<int> nums, int elmt)
  *
- * PROBLEM 26. 
+ * PROBLEM 26. Find Award Budget Cuts Problem
  * uint32_t findGrantsCap(vector<int> grants, uint32_t budget)
  *
- * PROBLEM 27. 
+ * PROBLEM 27. Find if a Bit Stream is divisible by 3
  * uint32_t (int arr[], uint32_t num, uint32_t k)
+ *
+ * PROBLEM 28. Sort an array of 0s, 1s and 2s
+ * void sortZeroOneTwoDutchFlag(vector<int> &nums)
+ *
+ * PROBLEM 29. Find majority element in an array
+ * bool isMajorityElementPresent(vector<int> nums)
+ *
+ * PROBLEM 30. Sorting almost sorted array misplaced by k elements
+ * void sortKsortedArray(vector<int>& nums, uint32_t k)
+ *
+ * PROBLEM 31. Given N points, find k points closest to 0,0
+ * vector<point> findKclosestPoints(vector<point> pointsList, uint32_t k)
+ *
+ * PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
+ * void moveEvenNosOddNosWithOrder(vector<int> nums)
+ *
+ * PROBLEM 33. Given list of software dependencies. Find order of software installation
+ * vector<char> findSoftwareInstallationOrder(vector<softwawre> dependencyList)
  */
 
 // Structure to define a x-axis y-axis point
@@ -1570,6 +1593,7 @@ int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uin
 // Kth Smallest Element Iterative method 2
 // We maintain i + j = k, and find such i and j so that a[i-1] < b[j-1] < a[i] (or the other way round).
 // Now since there are i elements in 'a' smaller than b[j-1], and j-1 elements in 'b' smaller than b[j-1], b[j-1] is the i + j-1 + 1 = kth smallest element.
+// I'll assume that N and M are > k, so the complexity here is O(log k), which is O(log N + log M)
 int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
 {
     if (k > num1 + num2)
@@ -1588,7 +1612,6 @@ int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, 
 
     while (step > 0)
     {
-        //cout << "0. Idx 1: " << idx1 << "; Idx 2: " << idx2 << endl;
         if (arr1[idx1 - 1] > arr2[idx2 - 1])
         {
             idx1 -= step;
@@ -1659,7 +1682,9 @@ int kthSmallestElementRec(int arr1[], uint32_t index1, uint32_t num1,
 //             int A[] = {3,5,2,1,8,4,6};
 //
 //             Ans: 4th Smallest is 4
-//
+//             Complexity: O(N log K)
+// http://stackoverflow.com/questions/2974470/efficiency-of-the-stl-priority-queue
+// http://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array/
 // ------------------------------------------------------------------------------------------------
 int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
 {
@@ -1673,11 +1698,15 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
     priority_queue<int> kSmallNos;
 
     // Now the heap will contain the first k numbers
+    // Complexity O(K log K)
+    // One push is (Log k)
     for(uint32_t i = 0; i < k; i++)
     {
         kSmallNos.push(arr[i]);
     }
 
+    // Complexity (num - k)log K
+    // So Total Complexity: O(K log K + (num-k)log K)
     for(uint32_t i = k; i < num; i++)
     {
         if (arr[i] < kSmallNos.top())
@@ -1688,6 +1717,21 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
     }
 
     return kSmallNos.top();
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 21b. Find Kth smallest element in an Unsorted array using QuickSelect
+//
+//              int A[] = {3,5,2,1,8,4,6};
+//
+//              Ans: 4th Smallest is 4
+//              Complexity: O(N)
+//
+// http://stackoverflow.com/questions/251781/how-to-find-the-kth-largest-element-in-an-unsorted-array-of-length-n-in-on
+// ------------------------------------------------------------------------------------------------
+int kthSmallQuickSelect(vector<int> nums, uint32_t k)
+{
+
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1963,6 +2007,7 @@ uint32_t minWindowContainingString(string str1, string str2)
                 // This is to reduce the size of the window
                 //
                 // If the character is NOT present in HAS to find map, then go to next char
+                // VERY IMP to check foundMap[i] > hasToFindMap[i]
                 auto itrToFind = hasToFindMap.find(str1[startPos]);
                 while (itrToFind == hasToFindMap.end() ||
                         foundMap.at(str1[startPos]) > hasToFindMap.at(str1[startPos]))
@@ -2095,6 +2140,73 @@ bool findInSortedRotatedArray(vector<int> nums, int elmt)
 }
 
 // ------------------------------------------------------------------------------------------------
+// PROBLEM 25b. Find Index where array is rotated
+//              http://stackoverflow.com/questions/11855709/how-to-determine-at-which-index-has-a-sorted-array-been-rotated-around
+//              Complexity: O(log(n)).
+// ------------------------------------------------------------------------------------------------
+bool IsArrayRotatedSorted(vector<int> nums)
+{
+    bool foundDip = false;
+
+    for (uint32_t i = 1; i < nums.size() - 1; i++)
+    {
+        if (!foundDip && nums[i] < nums[i - 1])
+        {
+            foundDip = true;
+        }
+    }
+
+    return foundDip;
+}
+
+int IndexOfRotatedSortedArray(vector<int> nums)
+{
+    if (!IsArrayRotatedSorted(nums))
+    {
+        return -1;
+    }
+
+    uint32_t low = 0;
+    uint32_t high = nums.size() - 1;
+
+    uint32_t mid = low + (high - low) / 2;
+
+    while (mid != low && mid != high)
+    {
+        // Check if 1st half is sorted
+        if (nums[low] < nums[mid])
+        {
+            low = mid;
+        }
+        else
+        {
+            high = mid;
+        }
+
+        mid = low + (high - low) / 2;
+    }
+
+    return high;
+
+    /*
+    while (low < high)
+    {
+        uint32_t mid = low + (high - low) / 2;
+
+        // Check if 1st half is sorted
+        if (nums[low] < nums[mid])
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+    */
+}
+
+// ------------------------------------------------------------------------------------------------
 // PROBLEM 26. Find Award Budget Cuts Problem
 //             
 // 40,    50,      50,      100,       160,       200,       325,       500,       1075,        1500
@@ -2103,7 +2215,6 @@ bool findInSortedRotatedArray(vector<int> nums, int elmt)
 // ------------------------------------------------------------------------------------------------
 double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
 {
-    vector<uint32_t> sumVec;
     uint32_t curSum = 0;
     uint32_t tmpSum = 0;
     uint32_t i = 0;
@@ -2112,8 +2223,6 @@ double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
     for (; i < grants.size(); i++)
     {
         tmpSum = curSum + grants[i] * (grants.size() - i);
-        cout << tmpSum << ",";
-        sumVec.push_back(tmpSum);
 
         if (tmpSum == budget)
         {
@@ -2126,7 +2235,6 @@ double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
 
         curSum += grants[i];
     }
-    cout << endl;
 
     if (i == grants.size())
     {
@@ -2139,15 +2247,372 @@ double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
     }
 }
 
+double findGrantsCapModified(vector<uint32_t> grants, uint32_t budget)
+{
+    uint32_t i = 0;
+    double cap = budget / grants.size();
+
+    for (; i < grants.size(); i++)
+    {
+        cout << cap << ", ";
+        if (grants[i] <= cap)
+        {
+            cap += (double)(cap - grants[i]) / (grants.size() - i - 1);
+        }
+        else
+        {
+            break;
+        }
+    }
+    cout << endl;
+
+    return cap;
+}
+
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 27. Find if a Bit Stream is divisible by 3
-//             http://stackoverflow.com/questions/4773807/searching-in-an-sorted-and-rotated-array
-//             Complexity: O(log(n)).
+//
+// http://www.geeksforgeeks.org/dfa-based-division/
+// https://www.careercup.com/question?id=11903257
+//             Complexity: O(n).
 // ------------------------------------------------------------------------------------------------
-bool isBitStreamDivsible()
+bool isDivisible(uint32_t i, uint32_t num, uint32_t& rem)
 {
+    rem = (rem * 2 + i) % num;
+}
+
+bool isBitStreamDivsible(string bitStream, uint32_t num)
+{
+    uint32_t rem = 0;
+
+    for (char c : bitStream)
+    {
+        isDivisible(c - '0', num, rem);
+    }
+
+    return rem;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 28. Sort an array of 0s, 1s and 2s
+//
+// http://www.geeksforgeeks.org/sort-an-array-of-0s-1s-and-2s/
+//             Complexity: O(n).
+// ------------------------------------------------------------------------------------------------
+void sortZeroOneTwoDutchFlag(vector<int> &nums)
+{
+    int32_t x = 0;
+    int32_t y = 0;
+    int32_t z = nums.size() - 1;
+    
+    while (y < z)
+    {
+        if (nums[y] == 0)
+        {
+            swap(nums[x++], nums[y++]);
+        }
+        else if (nums[y] == 1)
+        {
+            y++;
+        }
+        else
+        {
+            swap(nums[y], nums[z--]);
+        }
+    }
+}
+
+void sortZeroOneTwos(vector<int>& nums)
+{
+    int32_t x = 0;
+    int32_t y = 0;
+    int32_t z = nums.size() - 1;
+
+    while (x < z && y < z)
+    {
+        while (nums[x] == 0)
+        {
+            x++;
+        }
+
+        while (nums[z] == 2)
+        {
+            z--;
+        }
+
+        if (nums[x] == 1)
+        {
+            y = x;
+            while (nums[y] == 1)
+            {
+                y++;
+            }
+        }
+
+        if (y < x)
+        {
+            y = x;
+        }
+
+        if (x >= z || y >= z)
+        {
+            break;
+        }
+
+        if (nums[z] == 1)
+        {
+            swap(nums[z], nums[y]);
+        }
+        if (nums[z] == 0)
+        {
+            swap(nums[z], nums[x]);
+            x++;
+        }
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 29. Find majority element in an array
+//
+//             http://stackoverflow.com/questions/4325200/find-the-majority-element-in-array
+//             Complexity: O(n).
+// ------------------------------------------------------------------------------------------------
+bool isMajorityElementPresent(vector<int> nums)
+{
+    uint32_t count = 0;
+    uint32_t majorityElement = 0;
+
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        if (count == 0)
+        {
+            majorityElement = nums[i];
+        }
+
+        if (nums[i] == majorityElement)
+        {
+            count++;
+        }
+        else
+        {
+            count--;
+        }
+    }
+
+    // Got the majority element. find if it has occurs more than n/2 time
+    count = 0;
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        if (nums[i] == majorityElement)
+        {
+            count++;
+        }
+    }
+
+    return count > (nums.size()/2) ? true : false;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 30. Sorting almost sorted array misplaced by k elements
+//      
+//      {2, 6, 3, 12, 56, 8}
+//
+// http://stackoverflow.com/questions/2726785/sorting-an-almost-sorted-array-elements-misplaced-by-no-more-than-k
+// ------------------------------------------------------------------------------------------------
+void sortKsortedArray(vector<int>& nums, uint32_t k)
+{
+    priority_queue<int, vector<int>, std::greater<int> > kNumPriQ;
+
+    for (uint32_t i = 0; i < k; i++)
+    {
+        kNumPriQ.push(nums[i]);
+    }
+
+    uint32_t j = 0;
+    for (uint32_t i = k; i < nums.size(); i++, j++)
+    {
+        kNumPriQ.push(nums[i]);
+        nums[j] = kNumPriQ.top();
+        kNumPriQ.pop();
+    }
+
+    for (; j < nums.size(); j++)
+    {
+        nums[j] = kNumPriQ.top();
+        kNumPriQ.pop();
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 31. Given N points, find k points closest to 0,0
+//
+// http://stackoverflow.com/questions/9202315/algorithm-to-find-100-closest-stars-to-the-origin
+// http://stackoverflow.com/questions/20398799/find-k-nearest-points-to-point-p-in-2-dimensional-plane
+// http://www.geeksforgeeks.org/closest-pair-of-points-onlogn-implementation/
+// ------------------------------------------------------------------------------------------------
+double computeDistanceFromOrigin(pair<int, int> point)
+{
+    return sqrt(((double)point.first * point.first) + ((double)point.second * point.second));
+}
+
+bool compGreater(pair<int, int> x, pair<int, int> y)
+{
+    return computeDistanceFromOrigin(x) < computeDistanceFromOrigin(y);
+}
+
+void findKclosestPoints(vector<pair<int, int> >& pointsList, uint32_t k)
+{
+    uint32_t i = 0;
+    priority_queue< pair<int, int>, vector<pair<int, int> >, std::function<bool(pair<int, int>, pair<int, int>)> > kClosest(compGreater);
+
+    for (; i < k; i++)
+    {
+        kClosest.push(pointsList[i]);
+    }
+
+    for (; i < pointsList.size(); i++)
+    {
+        if (computeDistanceFromOrigin(pointsList[i]) < computeDistanceFromOrigin(kClosest.top()))
+        {
+            kClosest.pop();
+            kClosest.push(pointsList[i]);
+        }
+    }
+
+    // Will be printed in descending order
+    for (uint32_t j = 0; j < k; j++)
+    {
+        cout << kClosest.top().first << ":" << kClosest.top().second << ", ";
+        kClosest.pop();
+    }
+    cout << endl;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
+//
+// https://www.quora.com/What-are-the-ways-to-segregate-even-and-odd-numbers-in-an-array-while-maintaining-the-order-of-even-and-odd-numbers
+// http://stackoverflow.com/questions/10284123/arrays-puzzle-segregate-even-and-odd-numbers
+// ------------------------------------------------------------------------------------------------
+void moveEvenNosOddNosWithOrder(vector<int>& nums)
+{
+    vector<int> orderedNums;
+
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        if (nums[i] % 2 == 0)
+        {
+            orderedNums.push_back(nums[i]);
+        }
+    }
+
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        if (nums[i] % 2 != 0)
+        {
+            orderedNums.push_back(nums[i]);
+        }
+    }
+
+    nums = orderedNums;
 
 }
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 33. Given list of software dependencies. Find order of software installation
+//      {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}
+//      Ans: A -> C -> B -> D -> E
+//
+//      https://www.careercup.com/question?id=5717669093310464
+// ------------------------------------------------------------------------------------------------
+void printDependencyMap(unordered_map <char, vector<char> > depMap)
+{
+    for (auto itr = depMap.begin(); itr != depMap.end(); itr++)
+    {
+        cout << itr->first << ": ";
+        for (uint32_t i = 0; i < itr->second.size(); i++)
+        {
+            cout << itr->second[i] << ", ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void findSoftwareInstallationOrder(vector<pair<char, char> >& dependencyList)
+{
+    unordered_map <char, vector<char> > startMap;
+    unordered_map <char, vector<char> > endMap;
+    unordered_set <char> softwareSet;
+    vector<char> result;
+
+    for (uint32_t i = 0; i < dependencyList.size(); i++)
+    {
+        auto itr1 = startMap.find(dependencyList[i].first);
+        if (itr1 != startMap.end())
+        {
+            itr1->second.push_back(dependencyList[i].second);
+        }
+        else
+        {
+            startMap[dependencyList[i].first] = vector<char> {dependencyList[i].second};
+        }
+
+        auto itr2 = endMap.find(dependencyList[i].second);
+        if (itr2 != endMap.end())
+        {
+            itr2->second.push_back(dependencyList[i].first);
+        }
+        else
+        {
+            endMap[dependencyList[i].second] = vector<char> {dependencyList[i].first};
+        }
+
+        softwareSet.insert(dependencyList[i].first);
+        softwareSet.insert(dependencyList[i].second);
+    }
+
+    for (auto endElmt : endMap)
+    {
+        cout << "Start Map: " << endl;
+        printDependencyMap(startMap);
+        cout  << "End Map: " << endl;
+        printDependencyMap(endMap);
+        auto itr = startMap.find(endElmt.first);
+
+        // There should be at least one element that is NOT present in startMap
+        if (itr == startMap.end())
+        {
+            result.push_back(endElmt.first);
+
+            // For each element in Vector find if it is present in startMap
+            for (char c : endElmt.second)
+            {
+                auto i2 = startMap.find(c);
+                if (i2 != startMap.end())
+                {
+                    i2->second.erase(std::remove(i2->second.begin(), i2->second.end(), endElmt.first), i2->second.end());
+                }
+
+                if (i2->second.size() == 0)
+                {
+                    startMap.erase(endElmt.first);
+                }
+            }
+
+            endMap.erase(endElmt.first);
+            softwareSet.erase(endElmt.first);
+            break;
+        }
+    }
+
+    cout << "Start Map: " << endl;
+    printDependencyMap(startMap);
+    cout  << "End Map: " << endl;
+    printDependencyMap(endMap);
+
+}
+
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -2380,6 +2845,12 @@ int main()
         cout << endl << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
     }
 
+    // Problem 21b. Kth Smallest Element in Unsorted Array using QuickSelect
+    {
+        vector<int> nums = {3, 5, 2, 1, 8, 4, 6};
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 4) << endl;
+    }
+
     // Problem 22. Find if an element is present in a row column sorted matrix
     {
         cout << endl << "Is element present in row column matrix" << ": ";
@@ -2458,16 +2929,74 @@ int main()
         cout << findInSortedRotatedArray(nums, 20) << endl;
     }
 
+    // PROBLEM 25b. Find Index where array is rotated
+    {
+        cout << endl << "Find Index where array is rotated" << endl;
+        vector<int> nums = {17, 19, 22, 46, 82, 2, 3};
+        cout << IndexOfRotatedSortedArray(nums) << endl;
+    }
+
     // PROBLEM 26. Find Award Budget Cuts Problem
     {
         cout << endl << "Award Cuts Problem" << endl;
         vector<uint32_t> grants = {40, 50, 50, 100, 160, 200, 325, 500, 1075, 1500};
         cout << findGrantsCap(grants, 2000) << endl;
+        cout << findGrantsCapModified(grants, 2000) << endl;
     }
 
     // PROBLEM 27. Find if a Bit Stream is divisible by 3
     {
-        isBitStreamDivsible();
+        cout << endl << "Is Bit Stream Divisble by 3" << endl;
+        string stream = "111";
+        cout << isBitStreamDivsible(stream, 3) << endl;
+    }
+
+    // PROBLEM 28. Sort an array of 0s, 1s and 2s{
+    {
+        cout << endl << "Sort an array of 0s 1s and 2s" << endl;
+        vector <int> nums = {0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 1};
+        printVectorInt(nums);
+        sortZeroOneTwoDutchFlag(nums);
+        printVectorInt(nums);
+    }
+
+    // PROBLEM 29. Find majority element in an array
+    {
+        cout << endl << "Find Majority Element"<< endl;
+        vector <int> nums = {0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 1};
+        cout << isMajorityElementPresent(nums) << endl;
+    }
+
+    // PROBLEM 30. Sorting almost sorted array misplaced by k elements
+    {
+        cout << endl << "Sorting almost sorted array misplaced by k elements" << endl;
+        vector <int> nums = {2, 6, 3, 12, 56, 8};
+        printVectorInt(nums);
+        sortKsortedArray(nums, 3);
+        printVectorInt(nums);
+    }
+
+    // PROBLEM 31. Given N points, find k points closest to 0,0
+    {
+        cout << endl << "Given N points, find k points closest to Origin: " << endl;
+        vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
+        findKclosestPoints(pointsList, 3);
+    }
+
+    // PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
+    {
+        cout << endl << "Move even numbers to front and odd numbers to back with Order preserved" << endl;
+        vector <int> nums = {5, 6, 8, 3, 7, 1, 2, 9};
+        printVectorInt(nums);
+        moveEvenNosOddNosWithOrder(nums);
+        printVectorInt(nums);
+    }
+
+    // PROBLEM 33. Given list of software dependencies. Find order of software installation
+    {
+        cout << endl << "Find order of software installation" << endl;
+        vector<std::pair<char, char> > softwareList = {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}; 
+        findSoftwareInstallationOrder(softwareList);
     }
     cout << endl;
     return 0;

@@ -1,4 +1,7 @@
 /* 
+ * Problem 0. Print Tree Inorder
+ * void printTreeInorderIterative(tree* root)
+ *
  * Problem 1. Compute the Number of nodes in the tree
  * int size(tree* root)
  *
@@ -68,7 +71,16 @@
  * Problem 23. Find next larger number than K in a BST
  * int findSmallestNumLargerThanKey(tree* root, int elmt)
  *
- * Problem 24. 
+ * Problem 24. Nth largest element in a binary search tree
+ * int NthLargestInBST(tree* root, uint32_t n)
+ *
+ * Problem 25 In Order Successor in Binary Search Tree
+ * tree* InorderSuccessorWithParent(treeWithParent* node)
+ * tree* InorderSuccessor(tree* node)
+ *
+ * Problem 26. Iterative Inorder Traversal
+ * void printTreeInorderIterative(tree* root)
+ *
  *
  */
 
@@ -77,6 +89,7 @@
 #include <vector>
 #include <cmath>
 #include <queue>
+#include <stack>
 #include <map>
 #include <unordered_map>
 using namespace std;
@@ -94,6 +107,25 @@ tree* newNode(int data)
     node->data = data;
     node->left = NULL;
     node->right = NULL;
+
+    return node;
+}
+
+struct treeWithParent
+{
+    int data;
+    struct treeWithParent* left;
+    struct treeWithParent* right;
+    struct treeWithParent* parent;
+};
+
+treeWithParent* newNodeParent(int data)
+{
+    struct treeWithParent* node = new treeWithParent();
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    node->parent = NULL;
 
     return node;
 }
@@ -923,7 +955,7 @@ void printVerticalOrder(tree* root)
 // ------------------------------------------------------------------------------------------------
 // Problem 22
 //      Find largest element smaller than K in a BST
-// http://stackoverflow.com/questions/6334514/to-find-largest-element-smaller-than-k-in-a-bst
+//      http://stackoverflow.com/questions/6334514/to-find-largest-element-smaller-than-k-in-a-bst
 // ------------------------------------------------------------------------------------------------
 int findLargestNumSmallerThanKey(tree* root, int elmt)
 {
@@ -967,6 +999,7 @@ int findLargestNumSmallerThanKeyRec(tree* root, int elmt)
 // ------------------------------------------------------------------------------------------------
 // Problem 23
 //      Find next larger number than K in a BST
+//      http://stackoverflow.com/questions/6334514/to-find-largest-element-smaller-than-k-in-a-bst
 // ------------------------------------------------------------------------------------------------
 int findSmallestNumLargerThanKey(tree* root, int elmt)
 {
@@ -1006,6 +1039,121 @@ int findSmallestNumLargerThanKeyRec(tree* root, int elmt)
         return findSmallestNumLargerThanKeyRec(root->right, elmt);
     }
 }
+
+// ------------------------------------------------------------------------------------------------
+// Problem 24
+//      Nth largest element in a binary search tree
+//      http://stackoverflow.com/questions/2612362/nth-largest-element-in-a-binary-search-tree
+// ------------------------------------------------------------------------------------------------
+void NthLargestInBST(tree* root, uint32_t& n, int32_t& result)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    NthLargestInBST(root->right, n, result);
+
+    n--;
+    if (n == 0)
+    {
+        result = root->data;
+        return;
+    }
+
+    NthLargestInBST(root->left, n, result);
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 25
+//      In Order Successor in Binary Search Tree
+//      http://stackoverflow.com/questions/5471731/in-order-successor-in-binary-search-tree
+// ------------------------------------------------------------------------------------------------
+treeWithParent* findLeftMostNode(treeWithParent* node)
+{
+    while(node->left != NULL)
+    {
+        node = node->left;
+    }
+
+    return node;
+}
+
+treeWithParent* InorderSuccessorWithParent(treeWithParent* node)
+{
+    if (node == NULL || 
+        (node->left == NULL && node->right == NULL && node->parent == NULL))
+    {
+        return newNodeParent(-1);
+    }
+
+    // Find the left most element in the Right child of the node.
+    if (node->right != NULL)
+    {
+        // IMP: Should call on the RIGHT child and NOT on the node itself
+        return findLeftMostNode(node->right);
+    }
+    else
+    {
+        while (node->parent != NULL)
+        {
+            if (node->parent->left == node)
+            {
+                // IMP: Should return the PARENT and NOT the node itself
+                return node->parent;
+            }
+            else
+            {
+                node = node->parent;
+            }
+        }
+
+        // Where node is the Largest element and has no successor
+        return newNodeParent(-1);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 26. Iterative Inorder Traversal
+//      Iterative Inorder Traversal of a Tree
+//      http://www.geeksforgeeks.org/inorder-tree-traversal-without-recursion/
+//
+//      Without Stack:
+//      Morris inorder tree traversal
+//      http://stackoverflow.com/questions/5502916/explain-morris-inorder-tree-traversal-without-using-stacks-or-recursion
+// ------------------------------------------------------------------------------------------------
+void printTreeInorderIterative(tree* root)
+{
+    stack<tree*> recStack;
+
+    if (root == NULL)
+    {
+        return;
+    }
+
+    do
+    {
+        if (root != NULL)
+        {
+            recStack.push(root);
+
+            while (root->left != NULL)
+            {
+                recStack.push(root->left);
+                root = root->left;
+            }
+        }
+
+        root = recStack.top();
+        recStack.pop();
+        cout << root->data << ", ";
+
+        root = root->right;
+    } while (!recStack.empty() || root != NULL);
+
+    cout << endl;
+}
+
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -1111,7 +1259,6 @@ int main()
         printTreeInorder(root);
         cout << endl;
 
-
         cout << "Nearest Lower Element: " << nearestLesserElmt(root, 4, minElement) << endl;
     }
 
@@ -1165,18 +1312,17 @@ int main()
         printVerticalOrder(root);
     }
 
+    root = newNode(20);
+    root->left = newNode(10);
+    root->right = newNode(30);
+
+    root->left->left = newNode(5);
+    root->left->right = newNode(15);
+    root->right->left = newNode(25);
+    root->right->right = newNode(35);
     // Problem 22,23 Find largest element smaller than K in a BST
     {
         cout << endl << "Find largest element smaller than K in a BST" << endl;
-        struct tree* root = newNode(20);
-        root->left = newNode(10);
-        root->right = newNode(30);
-
-        root->left->left = newNode(5);
-        root->left->right = newNode(15);
-        root->right->left = newNode(25);
-        root->right->right = newNode(35);
-
         cout << "Normal: " << findLargestNumSmallerThanKey(root, 30) << endl;
         cout << "Recursion: " << findLargestNumSmallerThanKeyRec(root, 30) << endl;
         cout << "Normal: " << findLargestNumSmallerThanKey(root, 5) << endl;
@@ -1194,6 +1340,88 @@ int main()
         cout << "Recursion: " << findSmallestNumLargerThanKeyRec(root, 25) << endl;
         cout << "Normal: " << findSmallestNumLargerThanKey(root, 35) << endl;
         cout << "Recursion: " << findSmallestNumLargerThanKeyRec(root, 35) << endl;
+    }
+
+    // Problem 24 Nth largest element in a binary search tree
+    {
+        cout << endl << "Nth largest element in a binary search tree" << endl;
+        uint32_t n = 1;
+        int32_t result = 0;
+        NthLargestInBST(root, n, result); cout << result << ", ";
+        n = 2;
+        NthLargestInBST(root, n, result); cout << result << ", ";
+        n = 3;
+        NthLargestInBST(root, n, result); cout << result << ", ";
+        n = 4;
+        NthLargestInBST(root, n, result); cout << result << ", ";
+        n = 5;
+        NthLargestInBST(root, n, result); cout << result << ", ";
+        n = 6;
+        NthLargestInBST(root, n, result); cout << result << ", ";
+        n = 7;
+        NthLargestInBST(root, n, result); cout << result << endl;
+    }
+
+    // Problem 25 In Order Successor in Binary Search Tree
+    {
+        struct treeWithParent* root = newNodeParent(20);
+        root->left = newNodeParent(10);
+        root->left->parent = root;
+        root->right = newNodeParent(30);
+        root->right->parent = root;
+
+        root->left->left = newNodeParent(5);
+        root->left->left->parent = root->left;
+        root->left->right = newNodeParent(15);
+        root->left->right->parent = root->left;
+
+        root->right->left = newNodeParent(25);
+        root->right->left->parent = root->right;
+        root->right->right = newNodeParent(35);
+        root->right->right->parent = root->right;
+
+        cout << endl << "In Order Successor in Binary Search Tree" << endl;
+        treeWithParent* result = InorderSuccessorWithParent(root);
+        cout << root->data << "**" << result->data << ", ";
+
+        result = InorderSuccessorWithParent(root->left);
+        cout << root->left->data << "**" << result->data << ", ";
+
+        result = InorderSuccessorWithParent(root->right);
+        cout << root->right->data << "**" << result->data << ", ";
+
+        result = InorderSuccessorWithParent(root->left->left);
+        cout << root->left->left->data << "**" << result->data << ", ";
+
+        result = InorderSuccessorWithParent(root->left->right);
+        cout << root->left->right->data << "**" << result->data << ", ";
+
+        result = InorderSuccessorWithParent(root->right->left);
+        cout << root->right->left->data << "**" << result->data << ", ";
+
+        result = InorderSuccessorWithParent(root->right->right);
+        cout << root->right->right->data << "**" << result->data << ", ";
+    }
+
+    // Problem 26. Iterative Inorder Traversal
+    {
+        root = newNode(20);
+        root->left = newNode(10);
+        root->right = newNode(30);
+
+        root->left->left = newNode(5);
+        root->left->right = newNode(15);
+        root->right->left = newNode(25);
+        root->right->right = newNode(35);
+
+        root->left->left->left = newNode(1);
+        root->left->right->right = newNode(17);
+        root->right->left->right = newNode(28);
+        root->right->right->left = newNode(33);
+
+        cout << endl << endl << "Iterative Inorder Traversal" << endl;
+        printTreeInorderIterative(root);
+        cout << endl;
     }
 
     cout << endl;
