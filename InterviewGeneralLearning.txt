@@ -3,6 +3,7 @@ Genral Programming / OOPS Concepts
 1. What is Encapsulation:
 2. What is Polymorphism:
 3. Encapsulation vs Abstraction:
+3a. How are Abstraction and Encapsulation related
 3b. Polymorphism vs Overriding vs Overloading:
 3c. Why do you need Polymorphism:
 4. Overriding:
@@ -18,11 +19,13 @@ Genral Programming / OOPS Concepts
 14. Callback Functions:
 15. Asynchronous Programming:
 16. Allocating in Stack vs Heap:
-17. Boxing and Unboxing
-18. Shadowing and Overriding
-19. Agile Model
-20. Types of Polymorphism
-21. Memory Allocation on Stack Vs Heap
+16b. Is Stack Faster than Heap
+17. Memory Allocation on Stack Vs Heap
+17b. What and Where are Stack and Heap
+18. Boxing and Unboxing
+19. Shadowing and Overriding
+20. Agile Model
+21. Types of Polymorphism
 22. Compiler vs Interpretor
 23. Recursion vs Iterative Approach
 24. Tail Recursion Advantages
@@ -43,6 +46,7 @@ OS NOTES
 1. What is a Race Condition
 2. Mutex vs Semaphores:
 3. Spin Locks vs Mutex:
+3a. Spin Lock in a Uniprocessor System
 3a. Lock Monitor Mutex and Semaphore
 3b. Monitor vs Semaphore
 3c. Monitor vs Mutex
@@ -58,6 +62,7 @@ NETWORKS
 3. Switch vs Hub vs Router:
 4. How NTLM Authentication Works
 5. How Kerberos Authentication Works
+5b. NTLM vs Kerberos
 6. What happens when I click the Stop button on the browser
 7. what happens when you type in a URL in browser
 
@@ -87,7 +92,32 @@ What is Polymorphism:
 
 3. Encapsulation vs Abstraction:
 VERY IMP:
-    Though every method is an encapsulation, it is also an abstraction, because every time you put some things together and give it a name you create a new (abstract) concept. Encapsulation without abstraction is useless.
+http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
+    Abstraction is achieved by making class abstract having one or more methods abstract. Which is nothing but essential characteristic which should be implemented by the class extending it.
+    e.g. when you inventing/designing a car you define a characteristics like car should have 4 doors, break, steering wheel etc… so anyone uses this design should include this characteristics.
+    Implementation is not the head each of abstraction. It will just define characteristics which should be included.
+
+    Encapsulation:
+        Example 1.
+        A cell phone is a great example.
+        I have no idea how the cell phone connects to a satellite, tower, or another phone.
+        I have no idea how the damn thing understands my key presses or how it takes and sends pictures to an email address or another phone number.
+        I have no idea about the intricate details of most of how a modern smart phone works.
+
+        Example 2.
+        As a driver you know how to start the car by pressing the start button and internal details of the starting operations are hidden from you.
+        So the entire starting process is hidden from you otherwise we can tell starting operation is encapsulated from you.
+
+    Abstraction:
+        Example 1.
+        But, I can use a cell phone.
+        The phones have standard interfaces (yes - both literal and software design) that allows someone who understand the basics of one to use almost all of them.
+
+        Example 2.
+        The car's operation is completely abstracted from you and it is partially implemented to Local Mechanic Entity and fully implemented to Expert Entity.
+        So you are an abstract class having only abstract methods, Local Mechanic Entity has extended You(Since he is also an ordinary user) and he implemented some of the methods and last our expert Entity extending Local Mechanic and implementing all the methods
+
+        Though every method is an encapsulation, it is also an abstraction, because every time you put some things together and give it a name you create a new (abstract) concept. Encapsulation without abstraction is useless.
 
     http://stackoverflow.com/questions/742341/difference-between-abstraction-and-encapsulation
         Encapsulation puts some things in a box and gives you a peephole; this keeps you from mucking with the gears.
@@ -126,6 +156,15 @@ VERY IMP:
 
         The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
  
+3a.
+How are Abstraction and Encapsulation related
+http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
+    Both abstraction and encapsulation are underlying foundations of object oriented thought and design.
+    So, in our cell phone example.
+    The notion of a smart phone is an abstraction, within which certain features and services are encapsulated.
+    The iPhone and Galaxy are further abstractions of the higher level abstraction.
+    Your physical iPhone or Galaxy are concrete examples of multiple layers of abstractions which contain encapsulated features and services.
+
 3b.
 Polymorphism vs Overriding vs Overloading:
     http://stackoverflow.com/questions/154577/polymorphism-vs-overriding-vs-overloading
@@ -137,9 +176,37 @@ Polymorphism vs Overriding vs Overloading:
        public abstract void goPee();
     }
 
-    This class is abstract because the goPee() method is not definable for Humans. It is only definable for the subclasses Male and Female. Also, Human is an abstract concept — You cannot create a human that is neither Male nor Female. It’s got to be one or the other.
+    This class is abstract because the goPee() method is not definable for Humans.
+    It is only definable for the subclasses Male and Female.
+    Also, Human is an abstract concept - You cannot create a human that is neither Male nor Female. It’s got to be one or the other.
 
     So we defer the implementation by using the abstract class.
+        public class Male extends Human{
+        ...
+            @Override
+            public void goPee(){
+                System.out.println("Stand Up");
+            }
+        }
+
+        public class Female extends Human{
+        ...
+            @Override
+            public void goPee(){
+                System.out.println("Sit Down");
+            }
+        }
+
+    Now we can tell an entire room full of Humans to go pee.
+        public static void main(String[] args){
+            ArrayList<Human> group = new ArrayList<Human>();
+            group.add(new Male());
+            group.add(new Female());
+            // ... add more...
+
+            // tell the class to take a pee break
+            for (Human person : group) person.goPee();
+        }
 
 3c.
 Why do you need Polymorphism:
@@ -267,6 +334,23 @@ http://stackoverflow.com/questions/4921150/when-to-use-static-member-function?lq
             Making it a static member function gives it access to private members of the class, although a friend would suffice here too
             A protected static member function thus is accessible only to the class and classes derived from it.
 
+http://stackoverflow.com/questions/2671496/java-when-to-use-static-methods
+    Ask yourself "does it make sense to call this method, even if no Obj has been constructed yet?" If so, it should definitely be static.
+
+    So in a class Car you might have a method double convertMpgToKpl(double mpg) which would be static, because one might want to know what 35mpg converts to, even if nobody has ever built a Car.
+    But void setMileage(double mpg) (which sets the efficiency of one particular Car) can't be static since it's inconceivable to call the method before any Car has been constructed.
+
+    Define static methods in the following scenarios only:
+
+        1. If you are writing utility classes and they are not supposed to be changed.
+        2. If the method is not using any instance variable.
+        3. If any operation is not dependent on instance creation.
+        4. If there is some code that can easily be shared by all the instance methods, extract that code into a static method.
+        5. If you are sure that the definition of the method will never be changed or overridden. As static methods can not be overridden.
+
+    Friend
+        In many situations you will have objects with data or functionality that are not intended to be called publicly available.
+
     Friend function:
         It has access to private members of the class.
 
@@ -296,6 +380,7 @@ External Linkage vs Internal Linkage
     - Internal linkage means that storage is created to represent the identifier only for the file being compiled.
     - Internal linkage is specified by the keyword static in C and C++
 
+    Const defaults to Internal Linkage in C++ and External Linkage in C
 
     - External linkage means that a single piece of storage is created to represent the identifier for all files being compiled.
     - The storage is created once, and the linker must resolve all other references to that storage.
@@ -305,10 +390,12 @@ External Linkage vs Internal Linkage
 11.
 Early binding vs Late Binding
     a. Early Binding:
+       In Method Overloading your method calls to the methods are decided by the compiler in the sense that which function is going to be called is decided by your compiler at compile time. Hence being EARLY BINDING
        Compiler generates a call to a specific function
        Runtime system resolves this call to aboslute address of the code
 
     b. Late Binding:
+       In method Overriding, it is decided at RUNTIME which method is going to be called. So it is reffered as LATE BINDING.
        Compiler just ensures that the method exists and performs type checking on args and return value
        Compiler DOES NOT know the exact code to execute
        - Address of the method is calculated USING the information stored in the object.
@@ -319,20 +406,63 @@ Segmentation Fault:
 
     - generates SIGSEGV event
     - Segmentation fault is a specific kind of error caused by accessing memory that “does not belong to you.
-    int *p = NULL;
-    *p = 1;
+        int *p = NULL;
+        *p = 1;
 
     It would be worth noting that segmentation fault isn't caused by directly accessing another process memory, as it is simply not possible.
     With virtual memory every process has its own virtual address space and there is no way to access another one using any value of pointer.
     Exception to this can be shared libraries which are same physical address space mapped to (possibly) different virtual addresses and kernel memory which is even mapped in the same way in every process (to avoid TLB flushing on syscall, I think).  - these are what I count as 'indirect' access.
     One can, however, check that they are usually located long way from process code and we are usually able to access them (this is why they are there, nevertheless accessing them in a improper way will produce segmentation fault).
 
-    Still, segmentation fault can occur in case of accessing our own (process) memory in improper way (for instance trying to write to non-writable space).
+    Still, SEGMENTATION FAULT CAN OCCUR IN CASE OF ACCESSING OUR OWN (PROCESS) MEMORY IN IMPROPER WAY (for instance trying to write to non-writable space).
     But the most common reason for it is the access to the part of the virtual address space that is not mapped to physical one at all.
 
 13.
 Interrupts vs Exception
     http://stackoverflow.com/questions/125394/interrupts-and-exceptions
+
+    WHERE AN EXCEPTION DIFFERS FROM AN INTERRUPT IS THAT AN EXCEPTION IS CAUSED BY SOME ILLEGAL ACTIVITY THAT THE PROCESSOR HAS DETECTED.
+
+    Interrupt:
+        Interrupts are generated by devices external to the CPU (timer tick, disk operation completion, network packet arrival, etc.)
+        An interupt is a CPU signal generated by hardware, or specific CPU instructions.
+        These cause interupt handlers to be executed.
+        Things such as I/O signals from I/O hardware generate interupts.
+        Eg: Keyboard Interrupt
+
+        Your processor is going to have a number of external interrupt pins.
+        Typically these pins are connected to hardware and are used to indicate when some external event occurs.
+
+        Other peripherals like timers, usb controllers, etc. will also generate interrupts on the basis of some external event.
+
+ISR:
+        When the processor receives a signal on one of it's external interrupt pins it will immediately jump to some nominated location in memory and start executing.
+        The code executed is typically called an ISR, or interrupt service routine.
+
+    TIMER INTERRUPT:
+        So, let's say I write a simple C program that counts all numbers, or the Fibonacci sequence, or something else without stopping. Or even better: does nothing but spins inside of a while(1) loop. How do the other processes on the system get a chance to run? What if there is nothing happening to cause an interrupt?
+
+        The answer is that you have a timer device that is constantly interrupting. And it is what keeps a spinning process from taking down the entire system.
+
+    Exception:
+        An exception can be thought of as a software-version of an interupt, that only affects its process.
+
+    There have been 3 different meanings listed in other answers on this page.
+
+    SOFTWARE CONSTRUCT:
+        This is purely an application level exception, where a piece of code is able to indicate an error that can be detected by some other piece of code.
+        There is no hardware involvement here at all.
+
+    TASK EXCEPTION:
+        Then there is the exception as seen by a task.
+        This is an operating system level construct that is used to kill a task when it does something illegal - like divide by 0, illegally accessing memory etc.
+
+    HARDWARE EXCEPTION:
+        And thirdly, there is the hardware exception.
+        In terms of behaviour it is identical to an interrupt in that the processor will immediately jump to some nominated memory location and start executing.
+        Where an exception differs from an interrupt is that an exception is caused by some illegal activity that the processor has detected.
+        For example the MMU on the processor will detect illegal memory accesses and cause an exception.
+        These hardware exceptions are the initial trigger for the operating system to perform it's cleanup tasks (as described in the paragraph above)
 
 14.
 Callback Functions:
@@ -359,14 +489,14 @@ Callback Functions:
 
 15.
 Asynchronous Programming:
-        In solving many engineering problems, the software is designed to split up the overall problem into multiple individual tasks, and then execute them asynchronously.
-        Inverting a matrix, or a finite element analysis problem, are good examples.
-        In computing, sorting a list is an example. The quick sort routine, for example, splits the list into two lists, and sorts each of them by calling itself recursively.
-        In both of the above examples, the two tasks can (and often were) executed asynchronously.
-        They do not need to be on separate threads.
-        Even a machine with one CPU, and only one thread of execution can be coded to initiate processing of a second task before a first one has completed.
-        The only criterion is that the results of one task are not necessary as inputs to the other task.
-        As long as the start and end times of the tasks overlap, (possible only if the output of neither is needed as inputs to the other), they are being executed asynchronously, no matter how many threads are in use.
+    In solving many engineering problems, the software is designed to split up the overall problem into multiple individual tasks, and then execute them asynchronously.
+    Inverting a matrix, or a finite element analysis problem, are good examples.
+    In computing, sorting a list is an example. The quick sort routine, for example, splits the list into two lists, and sorts each of them by calling itself recursively.
+    In both of the above examples, the two tasks can (and often were) executed asynchronously.
+    They do not need to be on separate threads.
+    Even a machine with one CPU, and only one thread of execution can be coded to initiate processing of a second task before a first one has completed.
+    THE ONLY CRITERION IS THAT THE RESULTS OF ONE TASK ARE NOT NECESSARY AS INPUTS TO THE OTHER TASK.
+    As long as the start and end times of the tasks overlap, (possible only if the output of neither is needed as inputs to the other), they are being executed asynchronously, no matter how many threads are in use.
 
 16.
 Allocating in Stack vs Heap:
@@ -376,36 +506,39 @@ Allocating in Stack vs Heap:
         Apart from that, stack allocated values are "deleted" once you leave the scope, so it is very good for small local values like primitive variables.
 
         If you allocate too much in the stack you might run out of stack and die,
-        main as all the functions you execute has a stack frame in the stack and all the local variables to the function are stored there,
-        so going too deep into function calling might get you into a stackoverflow as well.
+        Main as all the functions you execute has a stack frame in the stack and all the local variables to the function are stored there.
+        So going too deep into function calling might get you into a stackoverflow as well.
 
-        and small variables and pointers in the stack.
+        In general is a good rule of thumb to allocate anything that you use often and is bigger than a hundred bytes in the heap, and small variables and pointers in the stack.
 
     HEAP:
         SCOPE - When you want something to be used outside of the function
         heap is slower but much bigger.
         In general is a good rule of thumb to allocate anything that you use often and is bigger than a hundred bytes in the heap,
 
+16b.
+Is Stack Faster than Heap
+http://stackoverflow.com/questions/161053/which-is-faster-stack-allocation-or-heap-allocation
+http://stackoverflow.com/questions/24057331/is-accessing-data-in-the-heap-faster-than-from-the-stack
+
+    Stack is always hot, the memory you get is much more likely to be in cache than any far heap allocated memory
+
+    Stack allocation is much faster since all it really does is move the stack pointer.
+    Using memory pools, you can get comparable performance out of heap allocation
+
+    Stack is much faster. It literally only uses a single instruction on most architectures, in most cases, e.g. on x86:
+    (That moves the stack pointer down by 0x10 bytes and thereby "allocates" those bytes for use by a variable.)
+
+        sub esp, 0x10
+
+    The OS (which is responsible for page faulting / swapping), and the hardware (CPU) trapping on accesses to swapped-out or not-yet-accessed pages, would not even be tracking which pages are "stack" vs "heap"... a memory page is a memory page
+
+    That said, the virtual address of global data may be able to be calculated and hardcoded at compile time,
+    The addresses of stack-based data are typically stack-pointer relative, while memory on the heap must almost always be accessed using pointers, which might be slightly slower on some systems -
+    it depends on the CPU addressing modes and cycles, but it's almost always insignificant -
+    not even worth a look or second thought unless you're writing something where millionths of a second are enormously important.
+
 17.
-Boxing and Unboxing
-http://stackoverflow.com/questions/2111857/why-do-we-need-boxing-and-unboxing-in-c
-    
-18.
-Shadowing and Overriding
-http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overriding-in-c
-
-19.
-Agile Model
-http://istqbexamcertification.com/what-is-agile-model-advantages-disadvantages-and-when-to-use-it/
-   - Software is developed in incremental, rapid cycles. results in small incremental releases with each release building on previous functionality 
-   - DIS ADV: In case of some software deliverables, especially the large ones, it is difficult to assess the effort required at the beginning of the software development life cycle.
-
-20.
-Types of Polymorphism
-    Run time - Overriding
-    Compile time - Over loading
-
-21.
 Memory Allocation on Stack Vs Heap
 http://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack
 
@@ -425,6 +558,59 @@ http://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much
         - Allocating memory on the heap involves looking for a big enough block, splitting it, and managing the "book-keeping" that allows things like free() in a different order.
         - On Heap, Elements can be removed OUT of ORDER. So tough to maintain as HOLES will
           be in middle.
+
+17b.
+What and Where are Stack and Heap
+http://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap?lq=1
+
+    The stack is the memory set aside as scratch space for a thread of execution.
+    When a function is called, a block is reserved on the top of the stack for local variables and some bookkeeping data.
+    When that function returns, the block becomes unused and can be used the next time a function is called.
+    The stack is always reserved in a LIFO (last in first out) order; the most recently reserved block is always the next block to be freed.
+    This makes it really simple to keep track of the stack; freeing a block from the stack is nothing more than adjusting one pointer.
+
+    The heap is memory set aside for dynamic allocation.
+    Unlike the stack, there's no enforced pattern to the allocation and deallocation of blocks from the heap; you can allocate a block at any time and free it at any time.
+    This makes it much more complex to keep track of which parts of the heap are allocated or free at any given time; there are many custom heap allocators available to tune heap performance for different usage patterns.
+
+    Each thread gets a stack, while there's typically only one heap for the application (although it isn't uncommon to have multiple heaps for different types of allocation).
+
+    To answer your questions directly:
+    Q: To what extent are they controlled by the OS or language runtime?
+    A: The OS allocates the stack for each system-level thread when the thread is created.
+       Typically the OS is called by the language runtime to allocate the heap for the application.
+
+    Q: What is their scope?
+    A: The stack is attached to a thread, so when the thread exits the stack is reclaimed.
+       The heap is typically allocated at application startup by the runtime, and is reclaimed when the application (technically process) exits.
+
+    Q: What determines the size of each of them?
+    A: The size of the stack is set when a thread is created.
+       The size of the heap is set on application startup, but can grow as space is needed (the allocator requests more memory from the operating system).
+
+    Q: What makes one faster?
+    A: The stack is faster because the access pattern makes it trivial to allocate and deallocate memory from it (a pointer/integer is simply incremented or decremented), while the heap has much more complex bookkeeping involved in an allocation or deallocation.
+       Also, each byte in the stack tends to be reused very frequently which means it tends to be mapped to the processor's cache, making it very fast.
+       Another performance hit for the heap is that the heap, being mostly a global resource, typically has to be multi-threading safe, i.e. each allocation and deallocation needs to be - typically - synchronized with "all" other heap accesses in the program.
+
+18.
+Boxing and Unboxing
+http://stackoverflow.com/questions/2111857/why-do-we-need-boxing-and-unboxing-in-c
+    
+19.
+Shadowing and Overriding
+http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overriding-in-c
+
+20.
+Agile Model
+http://istqbexamcertification.com/what-is-agile-model-advantages-disadvantages-and-when-to-use-it/
+   - Software is developed in incremental, rapid cycles. results in small incremental releases with each release building on previous functionality 
+   - DIS ADV: In case of some software deliverables, especially the large ones, it is difficult to assess the effort required at the beginning of the software development life cycle.
+
+21.
+Types of Polymorphism
+    Run time - Overriding
+    Compile time - Over loading
 
 22.
 Compiler vs Interpretor
@@ -642,7 +828,22 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 OS NOTES:
-0. Differentiate Threads and Processes
+0.
+Differentiate Threads and Processes
+http://stackoverflow.com/questions/1762418/process-vs-thread
+
+    Recently, I have been asked a question in an interview what's the difference between a process and a thread. Really, I did not know the answer. I thought for a minute and gave a very weird answer.
+
+    Threads share the same memory.. processes do not. After answering this, the interviewer gave me an evil smile and fired the following questions at me:
+
+    Q. Do you know the segments in which a program gets divided?
+       My answer: yep (thought it was an easy one) Stack, Data, Code, Heap
+
+    Q. So, tell me which segments share threads?
+       You're pretty much correct, but threads share all segments except the stack.
+       Threads have independent call stacks, however the memory in other thread stacks is still accessible and in theory you could hold a pointer to memory in some other thread's local stack frame (though you probably should find a better place to put that memory!).
+
+
     Both processes and threads are independent sequences of execution.
     The typical difference is that threads (of the same process) run in a shared memory space, while processes run in separate memory spaces.
 
@@ -654,8 +855,10 @@ OS NOTES:
     6. Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
     7. Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; changes to the parent process does not affect child processes.
 
-1. What is a Race Condition
+1.
+What is a Race Condition
 http://stackoverflow.com/questions/34510/what-is-a-race-condition
+
     A race condition occurs when two or more threads can access shared data and they try to change it at the same time.
     Because the thread scheduling algorithm can swap between threads at any time, you don't know the order in which the threads will attempt to access the shared data.
     Therefore, the result of the change in data is dependent on the thread scheduling algorithm, i.e. both threads are "racing" to access/change the data.
@@ -723,6 +926,20 @@ http://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instea
 
     Summary
     If in doubt, use mutexes, they are usually the better choice and most modern systems will allow them to spinlock for a very short amount of time, if this seems beneficial. Using spinlocks can sometimes improve performance, but only under certain conditions and the fact that you are in doubt rather tells me, that you are not working on any project currently where a spinlock might be beneficial. You might consider using your own "lock object", that can either use a spinlock or a mutex internally (e.g. this behavior could be configurable when creating such an object), initially use mutexes everywhere and if you think that using a spinlock somewhere might really help, give it a try and compare the results (e.g. using a profiler), but be sure to test both cases, a single-core and a multi-core system before you jump to conclusions (and possibly different operating systems, if your code will be cross-platform).
+
+3a. 
+Spin Lock in a Uniprocessor System
+http://stackoverflow.com/questions/1025859/is-spin-lock-useful-in-a-single-processor-uni-core-architecture
+
+    Spin locks must not be used on a single processor system.
+    In the best case, a spin lock on a single processor system will waste resources, slowing down the owner of the lock; in the worst case, it will deadlock the processor.
+
+    On single-processor systems, spinlocks are not needed because spinlock synchronization is required on high IRQLs only.
+    On high IRQLs (above dispatch IRQL) a context switch cannot occur, so instead of spinning the acquiring thread can simply request an interrupt on the relevant IRQL and return; the interrupt will be masked until the releasing thread lowers the IRQL below the requested IRQL.
+
+    For single processor systems, the kernel will ignore the spin count value, and treat it as zero - essentially making a spinlock a no-op.
+
+    Yes, spin locks can be useful, and improve efficiency of some operations. However, generally you should start with a mutex, and if profiling show it to be a bottleneck, you may want to consider a spinlock. 
 
 3a.
 Lock Monitor Mutex and Semaphore
@@ -1127,6 +1344,91 @@ https://www.youtube.com/watch?v=kp5d8Yv3-0c
     12. Clients uses the TICKET to talk to Server
     13. Client sends that TICKET evertime to the Server.
     14. So SERVER doesn't have to do anything.
+
+https://www.youtube.com/watch?v=kp5d8Yv3-0c
+    - Can be used only when DOMAIN is used
+    - If we directly use the IP address then the CLIENT does not go to the DC to resolve
+      the Domain's IP address. Instead it goes directly to the Server and KDC does not
+      come in the picture
+
+    - Three Parties are involved
+        1. Client (Has Client KEY)
+        2. Server (Has Server KEY)
+        3. Key Distribution Center KDC (Has Client Key, Server KEy and KDC Key)
+           - In a AD network it is the AD DC
+           - Brings everybody together
+    - In Kerberos no communication between KDC and Server
+    - Client takes the majority of processing burder in Kerberos
+
+    1. Client constructs and Authenticator which contain basic info about the client.
+        - This authenticator is GOOD only for a short time
+        - A portion of the authenticator is UNENCRYPTED (USer name etc).
+            - This will help KDC/DC in finding who the guy is
+        - A portion is ENCRYPTED using USER'S PASSWORD
+            - USer's password is used as ENCRYPTION KEY
+            - So password need not be SENT over the network
+
+    2. KDC receives the Authenticator from the Client.
+        - KDC knows the Client's Password
+        - KDC will use that password to try to decrypt the Authenticator
+        - If FAILURE then incorrect password and reject it
+        - If SUCCESS then the client is legitimate
+
+        - Once Success THE AUTHENTICATOR is no longer needed.
+        - KDC will generate a TICKET GRANTING TICKET using a KEY WHICH ONLY KDC is aware of
+        - KDC will send the TGT to Client (TGT is valid for 8hrs in general)
+
+    3. Client stores the TGT in MAIN MEMORY
+        - So in case of Crash the TGT will go away
+        - Next time client wants to talk to KDC it will directly use the TGT
+        - This will help KDC in not doing a lookup of the client user name.
+        - KDC can directly use its SPECIAL key to authenticate it.
+
+    4. Now for Client to Communicate with the Server
+        - Client will send TGT to KDC. 
+        - Client will ask for a Ticket in order to TALK to Client
+
+    5. KDC will know the PAssword of the File Server as even that is a member of the DC
+        - DC will have the logon info the Server
+        - KDC will use the SERVER's KEY and generate a TICKET
+        - This ticket will be sent to the Client
+        - Client can't use the Ticket as it doesn't know the Server's key
+
+    6. Client will just send the TICKET got from KDC to the Server
+        - Server will use its own KEY to see if the client is legitimate.
+        - Server can prove that the client is legitimate as only KDC know the server's
+          pasword.
+        - Client will send the SERVER TICKET it got from KDC for every REQUEST that it
+          sends to the SERVER
+        - This way SERVER doesn't have to remember the TICKETS of the all the clients it is
+          currently talking to.
+
+https://technet.microsoft.com/en-us/library/cc780469(v=ws.10).aspx
+    Possible Kerberos keys include:
+    Long-term key.
+    A key — known only to the target server and the KDC — with which the client’s ticket is encrypted.
+
+    Client/server session key.
+    A short-term, single-session key that is created by the KDC and used to encrypt the client-to-server and server-to-client messages after identity and authorization have been confirmed.
+
+    KDC/user session key.
+    The KDC and the user share a secret encryption key as well, which is used, for example, to encrypt the message to the client containing a session key.
+
+
+5b.
+NTLM vs Kerberos
+http://sharepoint.stackexchange.com/questions/13400/ntlm-vs-kerberos
+
+    NTLM is a properitary AuthN protocol invented by Microsoft whereas
+    Kerberos is a standard protocol.
+
+    The big difference is how the two protocols handle the authentication:
+    NTLM uses a three-way handshake between the client and server and
+    Kerberos uses a two-way handshake using a ticket granting service (key distribution center).
+    In Kerberos the client must have access to a domain controller (which issues the tickets) whereas in
+    NTLM the client contacts the server which contacts the domain controller.
+    NTLM: Slower authentication because of pass-through authentication 
+    Kerberos: Faster authentication because of unique ticketing system
 
 6. What happens when I click the Stop button on the browser
 http://stackoverflow.com/questions/138116/what-happens-when-i-click-the-stop-button-on-the-browser?rq=1

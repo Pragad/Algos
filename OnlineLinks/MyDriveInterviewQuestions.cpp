@@ -45,6 +45,9 @@ using namespace std;
  * PROBLEM 7. Print Matrix Diagonally
  * void printMatrixDiagonally(int** twoDMatrix, uint32_t rows, uint32_t cols)
  *
+ * PROBLEM 7b. Print Matrix in Spiral Order
+ * void printMatrixSpiralOrder(vector< vector <int> > twoDMatrix)
+ *
  * PROBLEM 8. Given a string of 1s and 0s with '?' in between. A '?' can be either one or zero.
  * void printCombinationOnesZeros(string str, uint32_t stIdx, uint32_t lastQMarkPos)
  *
@@ -130,6 +133,15 @@ using namespace std;
  *
  * PROBLEM 33. Given list of software dependencies. Find order of software installation
  * vector<char> findSoftwareInstallationOrder(vector<softwawre> dependencyList)
+ *
+ * PROBLEM 34. Find angle between hour and minute hand of clock
+ * uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
+ *
+ * PROBLEM 35. Find busiest time in a mall
+ * void printBusiestPeriod(vector<doorData> mallData)
+ *
+ * PROBLEM 36. 
+ * uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
  */
 
 // Structure to define a x-axis y-axis point
@@ -804,6 +816,52 @@ void printMatrixDiagonally(int (&twoDMatrix)[rows][cols])
 }
 
 // ------------------------------------------------------------------------------------------------
+// PROBLEM 7b. Print Matrix Spirally
+// http://www.geeksforgeeks.org/print-a-given-matrix-in-spiral-form/
+// http://stackoverflow.com/questions/726756/print-two-dimensional-array-in-spiral-order
+// M  =  1   2   3   4   5
+//       6   7   8   9  10
+//      11  12  13  14  15
+//      16  17  18  19  20
+//
+// The clockwise spiral print is:  1 2 3 4 5 10 15 20 19 18 17 16 11 6 7 8 9 14 13 12
+// ------------------------------------------------------------------------------------------------
+void printMatrixSpiralOrder(vector< vector <int> > twoDMatrix)
+{
+    int curRow = 0;
+    int curCol = 0;
+    int maxRow = twoDMatrix.size() - 1;
+    int maxCol = twoDMatrix[0].size() - 1;
+
+    while (curRow <= maxRow && curCol <= maxCol)
+    {
+        for (int i = curCol; i <= maxCol; i++)
+        {
+            cout << twoDMatrix[curRow][i] << ", ";
+        }
+        curRow++;
+
+        for (int i = curRow; i <= maxRow; i++)
+        {
+            cout << twoDMatrix[i][maxCol] << ", ";
+        }
+        maxCol--;
+
+        for (int i = maxCol; i >= curCol; i--)
+        {
+            cout << twoDMatrix[maxRow][i] << ", ";
+        }
+        maxRow--;
+
+        for (int i = maxRow; i >= curRow; i--)
+        {
+            cout << twoDMatrix[i][curCol] << ", ";
+        }
+        curCol++;
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
 // PROBLEM 8. Given a string of 1s and 0s with '?' in between. A '?' can be either one or zero.
 //            Print All combinations of the string.
 //
@@ -904,6 +962,7 @@ int largestNumByRemovingDup(int number)
             {
                 if (strNum[i-1] < strNum[i-2])
                 {
+
                     strNum.erase(i-1, 1);
                     return atoi(strNum.c_str());
                 }
@@ -1326,18 +1385,6 @@ struct MeetingTime
 
     MeetingTime(double sT, double eT) : startTime(sT),
                                         endTime(eT) { }
-
-    /*
-    bool operator < (const MeetingTime& meetTime) const
-    {
-        return (startTime < meetTime.startTime);
-    }
-
-    bool operator > (const MeetingTime& meetTime) const
-    {
-        return (areDoubleGreater(endTime, meetTime.endTime));
-    }
-    */
 
     bool operator < (const MeetingTime& meetTime) const
     {
@@ -2034,7 +2081,6 @@ uint32_t minWindowContainingString(string str1, string str2)
             }
         }
     }
-
     cout << "Win Beg: " << windowBegIdx << "; Win End: " << windowEndIdx << "; Win Len: " << minWindowSize << endl;
 
     return minWindowSize;
@@ -2219,7 +2265,7 @@ double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
     uint32_t tmpSum = 0;
     uint32_t i = 0;
 
-
+    //Find the first entry where we exceed the budget if we give the amount that is requested
     for (; i < grants.size(); i++)
     {
         tmpSum = curSum + grants[i] * (grants.size() - i);
@@ -2252,6 +2298,8 @@ double findGrantsCapModified(vector<uint32_t> grants, uint32_t budget)
     uint32_t i = 0;
     double cap = budget / grants.size();
 
+    // Find the minimum Cap that can be given and start incrementing the cap if we have a 
+    // grant that is less than the cap
     for (; i < grants.size(); i++)
     {
         cout << cap << ", ";
@@ -2613,6 +2661,52 @@ void findSoftwareInstallationOrder(vector<pair<char, char> >& dependencyList)
 
 }
 
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 34. Find angle between hour and minute hand of clock
+//
+//     http://www.geeksforgeeks.org/calculate-angle-hour-hand-minute-hand/
+//
+//     Hour hand makes 360deg in 12 hours. 
+//     i.e In 1 hour, 30 deg
+//     So  In 1 min, 0.5 deg
+//
+//     Minute hand makes 360 deg in 60 minutes.
+//     So In 1 min, 6 deg
+// ------------------------------------------------------------------------------------------------
+uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
+{
+    // VERY IMP: SHOULD be INT32_T and NOT UINT
+    // Find Degree made by hour hand w.r.t handle 12
+    int32_t hourDegree = hour * 30 + min * 0.5;
+
+    // Find Degree made by minute hand w.r.t handle 12
+    int32_t minDegree = min * 6;
+
+    return abs(hourDegree - minDegree);
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 35. Find busiest time in a mall
+//
+//      https://www.pramp.com/question/2WBx3Axln1t7JQ2jQq96
+// ------------------------------------------------------------------------------------------------
+/*
+void printBusiestPeriod(vector<doorData> mallData)
+{
+
+}
+*/
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 36. 
+//
+// ------------------------------------------------------------------------------------------------
+/*
+void printBusiestPeriod(vector<doorData> mallData)
+{
+
+}
+*/
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -2708,6 +2802,7 @@ int main()
 
     // Problem 7: Print Matrix Diagonally
     {
+        cout << endl << "Print Matrix Diagonally" << endl;
         int twoD[5][4] = {{1, 2, 3, 4},
                           {5, 6, 7, 8},
                           {9, 10, 11, 12},
@@ -2720,7 +2815,21 @@ int main()
                           */
 
         printMatrixDiagonally(twoD);
+        cout << endl;
         //printMatrixDiagonally(twoD, 3, 3);
+    }
+
+    // Problem 7: Print Matrix Spirally
+    {
+        cout << endl << "Print Matrix Spirally" << endl;
+        vector< vector <int> > twoDMatrix = {{1, 2, 3, 4},
+                                             {5, 6, 7, 8},
+                                             {9, 10, 11, 12},
+                                             {13, 14, 15, 16},
+                                             {17, 18, 19, 20}};
+
+        printMatrixSpiralOrder(twoDMatrix);
+        cout << endl;
     }
 
     // Problem 8: Combination of 1s and 0s
@@ -2994,9 +3103,17 @@ int main()
 
     // PROBLEM 33. Given list of software dependencies. Find order of software installation
     {
-        cout << endl << "Find order of software installation" << endl;
+        //cout << endl << "Find order of software installation" << endl;
         vector<std::pair<char, char> > softwareList = {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}; 
-        findSoftwareInstallationOrder(softwareList);
+        //findSoftwareInstallationOrder(softwareList);
+    }
+
+    // Find angle between hour and minute hand of clock
+    {
+        cout << endl << "Find angle between hour and minute hand of clock" << endl;
+        cout << findAngleBtwnHourMinute(3, 30) << endl;
+        cout << findAngleBtwnHourMinute(7, 40) << endl;
+        cout << findAngleBtwnHourMinute(7, 20) << endl;
     }
     cout << endl;
     return 0;

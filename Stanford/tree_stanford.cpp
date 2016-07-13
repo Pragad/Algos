@@ -76,7 +76,6 @@
  *
  * Problem 25 In Order Successor in Binary Search Tree
  * tree* InorderSuccessorWithParent(treeWithParent* node)
- * tree* InorderSuccessor(tree* node)
  *
  * Problem 26. Iterative Inorder Traversal
  * void printTreeInorderIterative(tree* root)
