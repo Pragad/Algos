@@ -29,6 +29,8 @@ Genral Programming / OOPS Concepts
 22. Compiler vs Interpretor
 23. Recursion vs Iterative Approach
 24. Tail Recursion Advantages
+25. Problems with Multiple Inheritence
+26. Static Linking vs Dynamic Linking
 
 -----------------------------------------------
 UML / DESIGN Questions
@@ -43,29 +45,35 @@ UML / DESIGN Questions
 -----------------------------------------------
 OS NOTES
 0. Differentiate Threads and Processes
+0b. Explain Multithreading to a 5year old
 1. What is a Race Condition
 2. Mutex vs Semaphores:
 3. Spin Locks vs Mutex:
-3a. Spin Lock in a Uniprocessor System
-3a. Lock Monitor Mutex and Semaphore
-3b. Monitor vs Semaphore
-3c. Monitor vs Mutex
+3a. Mutex Moniotr and Semaphore
+3b. Spin Lock in a Uniprocessor System
+3c. Lock Monitor Mutex and Semaphore
+3d. Monitor vs Semaphore
+3e. Monitor vs Mutex
 4. Multi-threaded programming in C++
 4b. Thread Join vs Detach
 5. What is an Inode ?
 6. Multi Processor vs Multi Core System
+7. What is a File descriptor
+8. Why can't RAM be replaced by Cache memory
 
 -----------------------------------------------
 NETWORKS
-1. How TCP/IP Network works.
+1. How TCP/IP Network works
+1b. How Internet Works
 2. Why is MAC address required    
-3. Switch vs Hub vs Router:
+3. Switch vs Hub vs Router
 4. How NTLM Authentication Works
 5. How Kerberos Authentication Works
 5b. NTLM vs Kerberos
 6. What happens when I click the Stop button on the browser
 7. what happens when you type in a URL in browser
-
+8. What is DHCP and how it works
+9. How WiFi works
 
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
@@ -93,6 +101,7 @@ What is Polymorphism:
 3. Encapsulation vs Abstraction:
 VERY IMP:
 http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
+http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction-a-real-time-example-bid-wvGh8f5F89208310.html
     Abstraction is achieved by making class abstract having one or more methods abstract. Which is nothing but essential characteristic which should be implemented by the class extending it.
     e.g. when you inventing/designing a car you define a characteristics like car should have 4 doors, break, steering wheel etc… so anyone uses this design should include this characteristics.
     Implementation is not the head each of abstraction. It will just define characteristics which should be included.
@@ -435,7 +444,7 @@ Interrupts vs Exception
 
         Other peripherals like timers, usb controllers, etc. will also generate interrupts on the basis of some external event.
 
-ISR:
+    ISR:
         When the processor receives a signal on one of it's external interrupt pins it will immediately jump to some nominated location in memory and start executing.
         The code executed is typically called an ISR, or interrupt service routine.
 
@@ -618,6 +627,7 @@ http://stackoverflow.com/questions/3996651/what-is-compiler-linker-loader
     Compiler:
         Takes a high level language and converts it into Machine Code
         The machine code is put in memory for execution
+
     Interpretor:
         Take the high level language code and on the go put each line into memory for execution
         Doesn't get converted into an intermediate machine code.
@@ -724,6 +734,159 @@ http://stackoverflow.com/questions/19854007/what-is-the-advantage-of-using-tail-
     A tail recursive function call allows the compiler to perform a special optimization which it normally can not with regular recursion.
     In a tail recursive function, the recursive call is the very last thing to be executed.
     In this case, instead of allocating a stack frame for each call, the compiler can rework the code to simply reuse the current stack frame, meaning a tail-recursive function will only use a single stack frame as opposed to hundreds or even thousands.
+
+25.
+Problems with Multiple Inheritence
+http://stackoverflow.com/questions/225929/what-is-the-exact-problem-with-multiple-inheritance
+http://stackoverflow.com/questions/406081/why-should-i-avoid-multiple-inheritance-in-c
+
+    The most obvious problem is with function overriding.
+
+    Let's say have two classes A and B, both of which define a method "doSomething".
+    Now you define a third class C, which inherits from both A and B, but you don't override the "doSomething" method.
+
+    When the compiler seed this code...
+        C c = new C();
+        c.doSomething();
+
+    ...which implementation of the method should it use?
+    Without any further clarification, it's impossible for the compiler to resolve the ambiguity.
+
+    Besides overriding, the other big problem with multiple inheritance is the layout of the physical objects in memory.
+
+    Languages like C++ and Java and C# create a fixed address-based layout for each type of object. Something like this:
+
+        class A:
+            at offset 0 ... "abc" ... 4 byte int field
+            at offset 4 ... "xyz" ... 8 byte double field
+            at offset 12 ... "speak" ... 4 byte function pointer
+
+        class B:
+            at offset 0 ... "foo" ... 2 byte short field
+            at offset 2 ... 2 bytes of alignment padding
+            at offset 4 ... "bar" ... 4 byte array pointer
+            at offset 8 ... "baz" ... 4 byte function pointer
+
+    When the compiler generates machine code (or bytecode), it uses those numeric offsets to access each method or field.
+
+    Multiple inheritance makes it very tricky.
+
+    If class C inherits from both A and B, the compiler has to decide whether to layout the data in AB order or in BA order.
+
+    But now imagine that you're calling methods on a B object.
+    Is it really just a B? Or is it actually a C object being called polymorphically, through its B interface? Depending on the actual identity of the object, the physical layout will be different, and its impossible to know the offset of the function to invoke at the call-site.
+
+    The way to handle this kind of system is to ditch the fixed-layout approach, allowing each object to be queried for its layout before attempting to invoke the functions or access its fields.
+
+    it's a pain in the neck for compiler authors to support multiple inheritance.
+    So when someone like Guido van Rossum designs python, or when Anders Hejlsberg designs c#, they know that supporting multiple inheritance is going to make the compiler implementations significantly more complex, and presumably they don't think the benefit is worth the cost.
+
+    Summary
+
+        1. Consider composition of features, instead of inheritance
+        2. Be wary of the Diamond of Dread
+        3. Consider inheritance of multiple interfaces instead of objects
+        4. Sometimes, Multiple Inheritance is the right thing. If it is, then use it.
+        5. Be prepared to defend your multiple-inherited architecture in code reviews
+
+    1. Perhaps composition?
+        This is true for inheritance, and so, it's even more true for multiple inheritance.
+
+        Does your object really needs to inherit from another?
+        A Car do not need to inherit from an Engine to work, nor from a Wheel.
+        A Car has an Engine and four Wheel.
+
+        If you use multiple inheritance to resolve this problem instead of composition, then you did something wrong.
+
+    2. The Diamond of Dread
+        Usually, you have a class A, and then B and C both inherit from A.
+        And don't ask me why, someone then decides that D must inherit both from B and C.
+
+        I encountered this kind of problem twice in 8 eights years, and it is amusing to see because of:
+
+            1. How much a mistake it was from the beginning (In both cases, D should not have inherited from both B anc C), because this was bad architecture (in fact, C should not have existed at all...)
+            2. How much maintainers were paying for that, because in C++, the parent class A was present twice in its grandchild class D, and thus, updating one parent field A::field meant either updating them twice (through B::field and C::field), or have something goes silently wrong and crash, later (new a pointer in B::field, and delete C::field...)
+
+        Using the keyword virtual in C++ void the double layout described above, but anyway, you're probably doing something wrong...
+
+        In Object hierarchy, you should keep the hiearchy as a Tree (a node has ONE parent), not as a graph.
+
+    3. Interfaces
+
+        Multiple inheritance of zero or one concrete classe, and zero or more interfaces is usually Ok, because you won't encounter the Diamond of Dread described above.
+        In fact, this is how things are done in Java.
+
+        Usually, what you mean when C inherits from A and B is that users can use C as if it was a A, and/or as if it was a B.
+
+        In C++, an interface is an abstract class which has:
+            1. all its method declared pure virtual (suffixed by = 0)
+            2. no member variables
+
+        The Multiple inheritance of zero to one real object, and zero or more interfaces is not considered "smelly" (at least, not as much)
+
+    4. Do you really need Multiple Inheritance?
+        Sometimes, yes.
+
+        Usually, your C class is inheriting from A and B, and A and B are two unrelated objects (i.e. not in the same hierarchy, nothing in common, different concepts, etc.).
+
+        For example, you could have a system of Nodes with X,Y,Z coordinates, able to do a lot of geometric calculations (perhaps a point, part of geometric objects) and each Node is an Automated Agent, able to communicate with other agents.
+
+        Perhaps you already have access to two libraries, each with its own namespace (another reason to use namespaces... But you use namespaces, don't you?), one being "geo" and the other being "ai"
+
+        So you have your own "own::Node" derive both from "ai::Agent" and "geo::Point".
+
+        This is the moment when you should ask yourself if you should not use composition instead. If "own::Node" is really really both a "ai::Agent" and a "geo::Point", then composition would not do.
+
+        Then you'll need multiple inheritance, having your "own::Node" communicate with other agents according to their position in a 3D space.
+
+        (You'll note that ai::Agent and geo::Point are completely, totally, fully UNRELATED... This drastically reduces the danger of multiple inheritance)
+
+    5. So, should I do Multiple Inheritance?
+        Most of the time, no. MI is not the right tool, even if it seems to work.
+
+        But sometimes, yes. And at that time, nothing will work better than MI, and you won't have a Diamond of Dread, and your object is really both its parent.
+
+        But because MI is smelly, be prepared to defend your architecture in code reviews (and defending it is a good thing, because if you're not able to defend it, then you should not do it).
+
+26. Static Linking vs Dynamic Linking
+https://kb.iu.edu/d/akqn
+http://stackoverflow.com/questions/311882/what-do-statically-linked-and-dynamically-linked-mean
+http://cs-fundamentals.com/tech-interview/c/difference-between-static-and-dynamic-linking.php
+
+    When you compile some C code (for instance), it is translated to machine language. Just a sequence of bytes which, when run, causes the processor to add, subtract, compare, "goto", read memory, write memory, that sort of thing. This stuff is stored in object (.o) files.
+
+    Now, a long time ago, computer scientists invented this "subroutine" thing. Execute-this-chunk-of-code-and-return-here. It wasn't too long before they realised that the most useful subroutines could be stored in a special place and used by any program that needed them.
+
+    Now in the early days programmers would have to punch in the memory address that these subroutines were located at. Something like CALL 0x5A62. This was tedious and problematic should those memory addresses ever need to be changed.
+
+    So, the process was automated. You write a program that calls printf(), and the compiler doesn't know the memory address of printf. So the compiler just writes CALL 0x0000, and adds a note to the object file saying "must replace this 0x0000 with the memory location of printf".
+
+    Static linkage means that the linker program (the GNU one is called ld) adds printf's machine code directly to your executable file, and changes the 0x0000 to the address of printf. This happens when your executable is created.
+
+    Dynamic linkage means that the above step doesn't happen. The executable file still has a note that says "must replace 0x000 with the memory location of printf". The operating system's loader needs to find the printf code, load it into memory, and correct the CALL address, each time the program is run.
+
+    It's common for programs to call some functions which will be statically linked (standard library functions like printf are usually statically linked) and other functions which are dynamically linked. The static ones "become part" of the executable and the dynamic ones "join in" when the executable is run.
+
+    Static linking is the result of the linker copying all library routines used in the program into the executable image.
+    This may require more disk space and memory than dynamic linking, but is both faster and more portable, since it does not require the presence of the library on the system where it is run.
+
+    Dynamic linking is accomplished by placing the name of a sharable library in the executable image.
+    Actual linking with the library routines does not occur until the image is run, when both the executable and the library are placed in memory.
+    An advantage of dynamic linking is that multiple programs can share a single copy of the library.
+
+    The distinction is made for, among other things, allowing third party libraries to be included in your executable without you seeing their source code (such as libraries for database access, network communications and graphical user interfaces), or for compiling code in different languages (C and assembly code for example) and then linking them all together.
+
+    When you statically link a file into an executable, the contents of that file are included at link time. In other words, the contents of the file are physically inserted into the executable that you will run.
+
+    When you link dynamically, a pointer to the file being linked in (the file name of the file, for example) is included in the executable and the contents of said file are not included at link time. It's only when you later run the executable that these dynamically linked files are bought in and they're only bought into the in-memory copy of the executable, not the one on disk.
+
+    It's basically a method of deferred linking. There's an even more deferred method (called late binding on some systems) that won't bring in the dynamically linked file until you actually try to call a function within it.
+
+    Statically-linked files are 'locked' to the executable at link time so they never change. A dynamically linked file referenced by an executable can change just by replacing the file on the disk.
+
+    This allows updates to functionality without having to re-link the code; the loader re-links every time you run it.
+
+    This is both good and bad - on one hand, it allows easier updates and bug fixes, on the other it can lead to programs ceasing to work if the updates are incompatible - this is sometimes responsible for the dreaded "DLL hell" that some people mention in that applications can be broken if you replace a dynamically linked library with one that's not compatible (developers who do this should expect to be hunted down and punished severely, by the way).
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 1. PArking lot  
@@ -815,7 +978,6 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
 
     The controller receives user input and makes calls to model objects and the view to perform appropriate actions.
 
-
     MVC (Model, View, Controller) is a pattern for organising code in an application to improve maintainability.
     Imagine a photographer with his camera in a studio. A customer asks him to take a photo of a box.
 
@@ -824,7 +986,6 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
     Because the box does not know about the camera or the photographer, it is completely independent. This separation allows the photographer to walk around the box and point the camera at any angle to get the shot/view that he wants.
 
     Non-MVC architectures tend to be tightly integrated together. If the box, the controller and the camera were one-and-the-same-object then, we would have to pull apart and then re-build both the box and the camera each time we wanted to get a new view. Also, taking the photo would always be like trying to take a selfie - and that's not always very easy.
-
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 OS NOTES:
@@ -843,6 +1004,15 @@ http://stackoverflow.com/questions/1762418/process-vs-thread
        You're pretty much correct, but threads share all segments except the stack.
        Threads have independent call stacks, however the memory in other thread stacks is still accessible and in theory you could hold a pointer to memory in some other thread's local stack frame (though you probably should find a better place to put that memory!).
 
+    - A process is an executing instance of an application.
+    - What does that mean? Well, for example, when you double-click the Microsoft Word icon, you start a process that runs Word.
+    - A thread is a path of execution within a process.
+    - Also, a process can contain multiple threads.
+    - When you start Word, the operating system creates a process and begins executing the primary thread of that process. 
+
+    - Another difference between a thread and a process is that threads within the same process share the same address space, whereas different processes do not.
+    - This allows threads to read from and write to the same data structures and variables, and also facilitates communication between threads.
+    - Communication between processes – also known as IPC, or inter-process communication – is quite difficult and resource-intensive.
 
     Both processes and threads are independent sequences of execution.
     The typical difference is that threads (of the same process) run in a shared memory space, while processes run in separate memory spaces.
@@ -854,6 +1024,17 @@ http://stackoverflow.com/questions/1762418/process-vs-thread
     5. New threads are easily created; new processes require duplication of the parent process.
     6. Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
     7. Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; changes to the parent process does not affect child processes.
+
+0b.
+Explain Multithreading to a 5year old
+http://programmers.stackexchange.com/questions/54359/how-would-you-explain-multi-threading-to-a-seven-year-old-kid/54519
+
+    You have five jobs to do. You need to start working on all of them right now.
+    Each job is a thread.
+    You are the processor.
+    Spend a little bit of time working on each job and then move to the next one, making sure you give attention to all of them.
+    If you have more people, a job can only be worked on by one person at a time.
+    Since each person can work on a different job, more people can get all the work done faster, if you have more than one job.
 
 1.
 What is a Race Condition
@@ -927,7 +1108,29 @@ http://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instea
     Summary
     If in doubt, use mutexes, they are usually the better choice and most modern systems will allow them to spinlock for a very short amount of time, if this seems beneficial. Using spinlocks can sometimes improve performance, but only under certain conditions and the fact that you are in doubt rather tells me, that you are not working on any project currently where a spinlock might be beneficial. You might consider using your own "lock object", that can either use a spinlock or a mutex internally (e.g. this behavior could be configurable when creating such an object), initially use mutexes everywhere and if you think that using a spinlock somewhere might really help, give it a try and compare the results (e.g. using a profiler), but be sure to test both cases, a single-core and a multi-core system before you jump to conclusions (and possibly different operating systems, if your code will be cross-platform).
 
-3a. 
+3a
+Mutex Moniotr and Semaphore
+
+    - Use a Monitor unless you need to synchroize across process boundaries
+
+    MONITOR:
+        - Simpler to use than Semaphores
+        - Handles all the details of lock acquisition and release
+        - automatically acquire necessary locks
+        - It is LIMITED to the Current Application Domain
+
+        - Ensure thread safety which are IN PROCESS that is threads which are generated by an application (Internal Threads)
+
+    SEMAPHORE:
+        - Work with external threads
+        - Ensure thread safety which are OUT PROCESS that is threads which are coming from outside of an application (External threads)
+
+    MUTEX:
+        - Synchronize threads across process
+        - Can be shared across processes
+        - Much more heavy-weight than a Monitor
+
+3b. 
 Spin Lock in a Uniprocessor System
 http://stackoverflow.com/questions/1025859/is-spin-lock-useful-in-a-single-processor-uni-core-architecture
 
@@ -941,7 +1144,7 @@ http://stackoverflow.com/questions/1025859/is-spin-lock-useful-in-a-single-proce
 
     Yes, spin locks can be useful, and improve efficiency of some operations. However, generally you should start with a mutex, and if profiling show it to be a bottleneck, you may want to consider a spinlock. 
 
-3a.
+3c.
 Lock Monitor Mutex and Semaphore
 http://stackoverflow.com/questions/301160/what-are-the-differences-between-various-threading-synchronization-options-in-c?lq=1
 
@@ -974,9 +1177,10 @@ http://stackoverflow.com/questions/301160/what-are-the-differences-between-vario
     It can be used by any thread in your process that has a reference to the local Semaphore object.
     Each Semaphore object is a separate local semaphore.
 
-3b.
+3d.
 Monitor vs Semaphore
 http://stackoverflow.com/questions/7335950/semaphore-vs-monitors-whats-the-difference
+    
     A Monitor is an object designed to be accessed from multiple threads.
     The member functions or methods of a monitor object will enforce mutual exclusion, so only one thread may be performing any action on the object at a given time.
     If one thread is currently executing a member function of the object then any other thread that tries to call a member function of that object will have to wait until the first has finished.
@@ -1015,7 +1219,7 @@ http://www.programmerinterview.com/index.php/operating-systems/monitors-vs-semap
         It means mutex allows only one single external thread to enter and execute its task and same ensuring thread safety.
         IMP: a mutex can be used to synchronize threads across processes.
 
-3c.
+3e.
 Monitor vs Mutex
 http://www.albahari.com/threading/part2.aspx#_Mutex
 http://www.onlinebuff.com/article_understand-monitor-vs-mutex-vs-semaphore-vs-semaphoreslim-onlinebuff_60.html
@@ -1099,56 +1303,52 @@ Thread Join vs Detach
 
     A symbolic link is a link to another name in the file system.
 
-    Once a hard link has been made the link is to the inode.
-    deleting renaming or moving the original file will not affect the hard link as it links to the underlying inode.
-    Any changes to the data on the inode is reflected in all files that refer to that inode.
+    IMP:
+    - Once a hard link has been made the link is to the inode.
+    - deleting renaming or moving the original file will not affect the hard link as it links to the underlying inode.
+    - Any changes to the data on the inode is reflected in all files that refer to that inode.
 
-    Note: Hard links are only valid within the same File System. Symbolic links can span file systems as they are simply the name of another file.
+    NOTE:
+    Hard links are only valid within the same File System.
+    Symbolic links can span file systems as they are simply the name of another file.
 
     Create two files:
-
-    $ touch blah1; touch blah2
+        $ touch blah1; touch blah2
 
     Enter some Data into them:
-
-    $ echo "Cat" > blah1
-    $ echo "Dog" > blah2
+        $ echo "Cat" > blah1
+        $ echo "Dog" > blah2
 
     (Actually, I could have used echo in the first place, as it creates the files if they don't exist... but never mind that.)
 
     And as expected:
-
-    $cat blah1; cat blah2
-    Cat
-    Dog
+        $cat blah1; cat blah2
+        Cat
+        Dog
 
     Let's create hard and soft links:
-
-    $ ln blah1 blah1-hard
-    $ ln -s blah2 blah2-soft
+        $ ln blah1 blah1-hard
+        $ ln -s blah2 blah2-soft
 
     Let's see what just happened:
+        $ ls -l
 
-    $ ls -l
-
-    blah1
-    blah1-hard
-    blah2
-    blah2-soft -> blah2
+        blah1
+        blah1-hard
+        blah2
+        blah2-soft -> blah2
 
     Changing the name of blah1 does not matter:
-
-    $ mv blah1 blah1-new
-    $ cat blah1-hard
-    Cat
+        $ mv blah1 blah1-new
+        $ cat blah1-hard
+        Cat
 
     blah1-hard points to the inode, the contents, of the file - that wasn't changed.
-
-    $ mv blah2 blah2-new
-    $ ls blah2-soft
-    blah2-soft
-    $ cat blah2-soft  
-    cat: blah2-soft: No such file or directory
+        $ mv blah2 blah2-new
+        $ ls blah2-soft
+        blah2-soft
+        $ cat blah2-soft  
+        cat: blah2-soft: No such file or directory
 
     The contents of the file could not be found because the soft link points to the name, that was changed, and not to the contents.
     Likewise, If blah1 is deleted, blah1-hard still holds the contents; if blah2 is deleted, blah2-soft is just a link to a non-existing file.
@@ -1200,10 +1400,55 @@ http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
 
 6.
 Multi Processor vs Multi Core System
+http://superuser.com/questions/13107/whats-the-difference-between-multicore-proc-and-multiproc-system
+
+    Multiple processors let your computer do literally two things at once (instead of only seemingly doing two things at once, but actually just swapping between tasks extremely rapidly).
+
+    Multiple cores are the same.
+    The advantage of multiple cores over multiple processors is that they share some bits of the CPU, e.g. the second level cache, which makes it possible for them to work even more efficiently if they have some shared data.
+    This makes them much cheaper to manufacture.
+    A single dual-core CPU also takes up less room than two single-core CPUs, which is an important factor these days with everyone moving to laptops.
+
+    A multiprocessor system contains more than one such CPU, allowing them to work in parallel.
+    This is called SMP, or Simultaneous Multiprocessing.
+
+    A multi*core* CPU has multiple execution cores on one CPU.
+    Now, this can mean different things depending on the exact architecture, but it basically means that a certain subset of the CPU's components is duplicated, so that multiple "cores" can work in parallel on separate operations.
+    This is called CMP, Chip-level Multiprocessing.
+
+7.
+What is a File descriptor
+http://stackoverflow.com/questions/5256599/what-are-file-descriptors-explained-in-simple-terms
+
+    In simple words, when you open a file, the operating system creates an entry to represent that file and store the information about that opened file.
+    So if there are 100 files opened in your OS then there will be 100 entries in OS (somewhere in kernel).
+    These entries are represented by integers like (...100, 101, 102....).
+    This entry number is the file descriptor.
+    So it is just an integer number that uniquely represents an opened file in operating system.
+    If your process opens 10 files then your Process table will have 10 entries for file descriptors.
+
+    Similarly when you open a network socket, it is also represented by an integer and it is called Socket Descriptor.
+
+8.
+Why can't RAM be replaced by Cache memory
+https://www.quora.com/Why-cant-RAM-be-replaced-by-Cache-memory
+
+    It's all about the memory hierarchy.
+    In general, it's very difficult to make a semiconductor memory which has both a large capacity and a high speed.
+    The former (capacity) requires a large physical size, while the latter (high speed) requires high power consumption as well as a high degree of locality (if your memory is 1 cm from your logic devices, it will be much slower than a memory that is 10 microns from the logic devices).
+
+    Part of it comes down to cost.
+    CPU cache memory is extremely expensive to manufacture in comparison to RAM, which is extremely expensive to manufacture in comparison to storage media like HDDs/SSDs.
+    Then there's the logistics of fitting all that memory on the die of the CPU.
+    Part of the reason why CPU cache memory is so fast is because it's directly accessible by the CPU, and doesn't have to be bussed, unlike RAM or HDD/SSD memory.
+    Increasing cache size also proportionally increases latency, which defeats the advantage of the cache.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 NETWORKS:
+1.
+How TCP/IP Network works.
 http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
-1. How TCP/IP Network works.
+Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
+
     - A network can be classified as TCP/IP and Ethernet at the same time.
       TCP/IP is a set of protocols that deals with layers 3 to 7 from the OSI reference model.
       Ethernet is a set of protocols that deals with layers 1 and 2 from the OSI reference model
@@ -1272,8 +1517,11 @@ http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
         c. Physical
             - Switches come in this layer.
         
+1b. How Internet Works
+http://www.theshulers.com/whitepapers/internet_whitepaper/index.html
 
-2. Why is MAC address required    
+2.
+Why is MAC address required    
     Why do we need the MAC address if all Ethernet connections are done via IP address?
     - The MAC address is the hardware address, i.e. it is hard coded in the NIC of the machine.
       So it cannot be changed. Though all Ethernet communication happens via IP address, lower layers do not understand IP but they do understand MAC address.
@@ -1282,15 +1530,28 @@ http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
       So MAC addresses form the basic identifier of the hardware.
       MAC addresses are difficult to remember so we use IP addresses, which are more friendly, but not as friendly as names. 
 
-3. Switch vs Hub vs Router:
+3.
+Switch vs Hub vs Router:
     - Switch:
         - Transmits frames to a particular destination PORT
         - Keeps tracks of mac address
+        - Starts with an empty table and initially behaves like a Hub and learns as it goes
+
     - Hub:
         - Broadcasts frames to every devices connected
         - Doesn't keep track of MAC address
 
-4. How NTLM Authentication Works
+    - Router vs Switch
+        - Router:
+          - Connects network
+          - Uses MAC address
+
+        - Switch:
+          - Creates network
+          - Uses IP address
+
+4.
+How NTLM Authentication Works
 https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-works/
 
     1. User uses a Username and Password to login to Client Machine
@@ -1310,7 +1571,8 @@ https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-wo
         - Compares Encrypted Nounce with the one Computed
     7. If match success else failure
 
-5. How Kerberos Authentication Works
+5.
+How Kerberos Authentication Works
 https://www.youtube.com/watch?v=kp5d8Yv3-0c
     
     3 PARTIES are Involved.
@@ -1430,7 +1692,8 @@ http://sharepoint.stackexchange.com/questions/13400/ntlm-vs-kerberos
     NTLM: Slower authentication because of pass-through authentication 
     Kerberos: Faster authentication because of unique ticketing system
 
-6. What happens when I click the Stop button on the browser
+6.
+What happens when I click the Stop button on the browser
 http://stackoverflow.com/questions/138116/what-happens-when-i-click-the-stop-button-on-the-browser?rq=1
 
     A Web Page load from a browser is usually a 4 step process (not considering redirections):
@@ -1447,7 +1710,8 @@ http://stackoverflow.com/questions/138116/what-happens-when-i-click-the-stop-but
 
     The HTTP call itself is always a 2 steps action (Request/Response), and there is no automatic way to rollback the execution from the client
 
-7. what happens when you type in a URL in browser
+7.
+what happens when you type in a URL in browser
 http://stackoverflow.com/questions/2092527/what-happens-when-you-type-in-a-url-in-browser
 http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/
 
@@ -1465,4 +1729,37 @@ http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/
         - browser determines what to do with response (e.g. is it a HTML page, is it an image, is it a sound clip?)
         - browser renders response, or offers a download dialog for unrecognized types
 
+8.
+What is DHCP and how it works
+http://whatismyipaddress.com/dhcp
 
+    DHCP is at the heart of assigning you (and everyone) their IP address. The key word in DHCP is protocol—the guiding rules and process for Internet connections for everyone, everywhere. DHCP is consistent, accurate and works the same for every computer. Remember that without an IP address, you would not be able to receive the information you requested. As you've learned (by reading IP: 101), your IP address tells the Internet to send the information that you requested (Web page, email, data, etc.) right to the computer that requested it.
+
+    THOSE INCREDIBLE PROTOCOLS
+    There are more than one billion computers in the world, and each individual computer needs its own IP address whenever it's online. The TCP/IP protocols (our computers' built-in, internal networking software) include a DHCP protocol. It automatically assigns and keeps tabs of IP addresses and any "subnetworks" that require them. Nearly all IP addresses are dynamic, as opposed to "static" IP addresses that never change.
+
+    DHCP is a part of the "application layer," which is just one of the several TCP/IP protocols. All of the processing and figuring out of what to send to whom happens virtually instantly.
+
+    CLIENTS AND SERVERS
+    The networking world classifies computers into two distinctive categories: 1) individual computers, called "hosts," and 2) computers that help process and send data (called "servers"). A DHCP server is one computer on the network that has a number of IP address at its disposal to assign to the computers/hosts on that network. If you use a cable company for Internet access, making them your Internet Service Provider, they likely are your DHCP server.
+
+    PERMISSION SLIPS
+    Think of getting an IP address as similar to obtaining a special permission slip from the DHCP server to use the Internet. In this scenario, you are the DHCP client—whenever you want to go on the Internet, your computer automatically requests an IP address from the network's DHCP server. If there's one available, the DHCP server sends a response containing an IP address to your computer.
+
+    HOW DHCP WORKS
+    The key word in DHCP is "dynamic." Because instead of having just one fixed and specific IP address, most computers will be assigned one that is available from a subnet or "pool" that is assigned to the network. The Internet isn't one big computer in one big location. It's an interconnected network of networks, all created to make one-on-one connections between any two clients that want to exchange information.
+
+    One of the features of DHCP is that it provides IP addresses that "expire." When DHCP assigns an IP address, it actually leases that connection identifier to the user's computer for a specific amount of time. The default lease is five days.
+
+    Here is how the DHCP process works when you go online:
+        Your go on your computer to connect to the Internet.
+        The network requests an IP address (this is actually referred to as a DHCP discover message).
+        On behalf of your computer's request, the DHCP server allocates (leases) to your computer an IP address. This is referred to as the DHCP offer message.
+        Your computer (remember—you're the DHCP client) takes the first IP address offer that comes along. It then responds with a DHCP request message that verifies the IP address that's been offered and accepted.
+        DHCP then updates the appropriate network servers with the IP address and other configuration information for your computer.
+        Your computer (or whatever network device you're using) accepts the IP address for the lease term.
+
+    Typically, a DHCP server renews your lease automatically, without you (or even a network administrator) having to do anything. However, if that IP address's lease expires, you'll be assigned a new IP address using the same DHCP protocols.
+
+9.
+How WiFi works

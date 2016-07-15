@@ -115,6 +115,7 @@ Bubble Sort vs Selection Sort vs Insertion Sort
 3.
 Median of Medians:
 http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
+http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm?rq=1
 
         Think of the following set of numbers: 
         5 2 6 3 1
