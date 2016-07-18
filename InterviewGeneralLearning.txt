@@ -31,7 +31,7 @@ Genral Programming / OOPS Concepts
 24. Tail Recursion Advantages
 25. Problems with Multiple Inheritence
 26. Static Linking vs Dynamic Linking
-
+27. How to resolve Hash Collisions
 -----------------------------------------------
 UML / DESIGN Questions
 1. PArking lot  
@@ -887,6 +887,23 @@ http://cs-fundamentals.com/tech-interview/c/difference-between-static-and-dynami
     This allows updates to functionality without having to re-link the code; the loader re-links every time you run it.
 
     This is both good and bad - on one hand, it allows easier updates and bug fixes, on the other it can lead to programs ceasing to work if the updates are incompatible - this is sometimes responsible for the dreaded "DLL hell" that some people mention in that applications can be broken if you replace a dynamically linked library with one that's not compatible (developers who do this should expect to be hunted down and punished severely, by the way).
+
+27.
+How to resolve Hash Collisions
+
+    1. Chaining
+       - Start creating a list
+       - Deletion is easy
+
+    Open Addressing:
+       - Deletion is tricky
+    2a. Linear Probing:
+       - If element present, then traverse linearly to find next empty bucket
+
+    2b. Double Hashing:
+       - If element present, use a second hash function. 
+       - Say first hash function gave (5) and element is present. Second hash function gave 8
+         Next go to 13, 21, 29 etc to find the first free spot
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 1. PArking lot  

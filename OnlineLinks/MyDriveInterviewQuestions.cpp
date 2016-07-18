@@ -1999,6 +1999,7 @@ uint32_t minWindowContainingString(string str1, string str2)
     uint32_t startPos = 0;
 
     // Update Count of each character in a HasToFindMap
+    ++hasToFindMap[c];
     for (char c : str2)
     {
         auto itr = hasToFindMap.find(c);
@@ -2690,12 +2691,6 @@ uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
 //
 //      https://www.pramp.com/question/2WBx3Axln1t7JQ2jQq96
 // ------------------------------------------------------------------------------------------------
-/*
-void printBusiestPeriod(vector<doorData> mallData)
-{
-
-}
-*/
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 36. 
@@ -3108,7 +3103,7 @@ int main()
         //findSoftwareInstallationOrder(softwareList);
     }
 
-    // Find angle between hour and minute hand of clock
+    // PROBLEM 34. Find angle between hour and minute hand of clock
     {
         cout << endl << "Find angle between hour and minute hand of clock" << endl;
         cout << findAngleBtwnHourMinute(3, 30) << endl;

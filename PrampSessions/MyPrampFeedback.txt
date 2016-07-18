@@ -1,0 +1,649 @@
+------------------------------------------------------------------------------------------------
+Your interview last Thursday at 8:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Nailed it
+The most efficient solution with no hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Very Good
+Communicated well
+
+• Working Together: peer's motivation to be your colleague
+I think so
+Well... why not?
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+- Not Applicable -
+
+• Things you did well:
+
+Proceeding very logically
+
+• Things you should work on:
+
+Writing out things like the test cases, time complexity, assumptions/constraints on the problem. Think interviews like it when it is written out.
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   Helpful and nice, but not too helpful
+
+------------------------------------------------------------------------------------------------
+Your interview last Wednesday at 8:04 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Strong
+Got it with only few hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+I think so
+Well... why not?
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+- Not Applicable -
+
+• Things you did well:
+
+You are very good at knowing what the right question to ask, and look at examples and tries to understand fully before coding. You also test through your code, which is very good.
+
+• Things you should work on:
+
+Minor, you can try to clean up the code before letting the interviewer point it out.
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Good
+That person was helpful
+
+comments:   There was no audio, so purely typing.
+
+------------------------------------------------------------------------------------------------
+Your interview last Tuesday at 6:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Strong
+Got it with only few hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Good
+Correct besides a few bugs
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+I think so
+Well... why not?
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+
+• Things you did well:
+
+Got to the good idea pretty quickly
+
+• Things you should work on:
+
+If you are sure that a line will never be executed (the numbers were unique), no need to check for it.
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   Helpful hints when needed
+
+------------------------------------------------------------------------------------------------
+Your interview last Monday at 10:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Strong
+Got it with only few hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+Yes
+It will be nice
+
+• Creativity: original or innovative thinking
+Very Creative
+Got a new solution
+
+• Things you did well:
+
+He got better solution that suggested in the question :)
+
+• Things you should work on:
+
+nothing, he nailed it
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   He was great, he was well prepared and helpful during the interview
+
+------------------------------------------------------------------------------------------------
+Your interview on July 10th at 6:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Nailed it
+The most efficient solution with no hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Ninja
+Flawless code: readable, reusable & maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+Hell YES!
+Can I work where that person works?
+
+• Creativity: original or innovative thinking
+Picasso!
+Re-invented the solution
+
+• Things you did well:
+
+He/She got the most efficient answer from the first time
+
+• Things you should work on:
+
+Nothing I see
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   Very helpful
+
+------------------------------------------------------------------------------------------------
+Your interview on July 9th at 4:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Nailed it
+The most efficient solution with no hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Good
+Correct besides a few bugs
+
+• Communication: clarity of your answers and line of reasoning
+Good
+I was mostly able to understand
+
+• Working Together: peer's motivation to be your colleague
+I think so
+Well... why not?
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+
+• Things you did well:
+
+He did well in step-by-step explanation. Rather coding straight on, he coded step-by-step with ample explanation.
+
+• Things you should work on:
+
+Speed: He can work on increasing coding speed. APIs: He can work on understanding the language APIs better. For instance, there is a better way to loop through the "unordered_map".
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   Yes. He gives some additional questions that he comes out with on spot. :)
+
+------------------------------------------------------------------------------------------------
+Your interview on July 8th at 6:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Good
+Solved the problem with hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Good
+Correct besides a few bugs
+
+• Communication: clarity of your answers and line of reasoning
+Good
+I was mostly able to understand
+
+• Working Together: peer's motivation to be your colleague
+I think so
+Well... why not?
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+
+• Things you did well:
+
+Sort input first, which improved the efficiency
+
+• Things you should work on:
+
+Imagine the solution in their heads before coding
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   helpful and timely hints
+
+------------------------------------------------------------------------------------------------
+Your interview on June 29th at 10:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Nailed it
+The most efficient solution with no hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+Yes
+It will be nice
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+
+• Things you did well:
+
+Coded cleanly. Admitted he has seen the question before (honesty points). covered all the corner cases in one go
+
+• Things you should work on:
+
+Code could have been more optimized. Check for possible compilation errors while checking for logic
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+------------------------------------------------------------------------------------------------
+Your interview on June 27th at 8:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Okay
+Got a brute force solution
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+So and So
+Completed the code with several bugs
+
+• Communication: clarity of your answers and line of reasoning
+Okay
+I was able to understand some parts
+
+• Working Together: peer's motivation to be your colleague
+Okay
+I'll manage to get along
+
+• Creativity: original or innovative thinking
+A little
+Tried to be creative
+
+• Things you did well:
+
+NA
+
+• Things you should work on:
+
+NA
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Okay
+Not bad overall
+
+------------------------------------------------------------------------------------------------
+Your interview on June 22nd at 10:04 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Nailed it
+The most efficient solution with no hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Ninja
+Flawless code: readable, reusable & maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Okay
+I was able to understand some parts
+
+• Working Together: peer's motivation to be your colleague
+Yes
+It will be nice
+
+• Creativity: original or innovative thinking
+Very Creative
+Got a new solution
+
+• Things you did well:
+
+determined and eager to solve the problem even with (device techincal problems )
+
+• Things you should work on:
+
+communication do to lack of microphone
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+------------------------------------------------------------------------------------------------
+Your interview on June 19th at 8:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Strong
+Got it with only few hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+Yes
+It will be nice
+
+• Creativity: original or innovative thinking
+Original
+Had creative insights
+
+• Things you did well:
+
+He is the first one (out of 4) i have interviewed on pramp who solved this problem with a few hints only. So Thats a good sign for him! Wrote a neat code and checked it completely!
+
+• Things you should work on:
+
+You are good!
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   I got to the solution very quickly and hence thought the interview is over so i was disappointed . But like a real interviewer made me right a recursive solution. In that too patiently checked everything ,told where i can improve. or where i could possibly go wrong, helped me improve and write a bugless code. (y)
+
+------------------------------------------------------------------------------------------------
+Your interview on June 17th at 10:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Okay
+Got a brute force solution
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Good
+Correct besides a few bugs
+
+• Communication: clarity of your answers and line of reasoning
+Good
+I was mostly able to understand
+
+• Working Together: peer's motivation to be your colleague
+Okay
+I'll manage to get along
+
+• Creativity: original or innovative thinking
+Wide Thinker
+Used many approaches
+- Not Applicable -
+
+• Things you did well:
+
+Got the right approach to use the hash map.
+
+• Things you should work on:
+
+must know about all the stl ,atleast their constructors and iterators
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Good
+That person was helpful
+
+------------------------------------------------------------------------------------------------
+Your interview on June 15th at 8:04 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Strong
+Got it with only few hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Good
+Correct besides a few bugs
+
+• Communication: clarity of your answers and line of reasoning
+Very Good
+Communicated well
+
+• Working Together: peer's motivation to be your colleague
+Yes
+It will be nice
+
+• Creativity: original or innovative thinking
+Wide Thinker
+Used many approaches
+- Not Applicable -
+
+• Things you did well:
+
+* Communicated well * Ran through an example before coding * Verified code afterward * Covered edge cases * Followed hints well
+
+• Things you should work on:
+
+* Initial example used was a special case (special cases don't make for good examples) * Had a bug in second example which complicated things for him (good idea to verify the example is bug free) * Took some convincing to use the language he's proficient in (unless mandated by the interview, it's _always_ a good idea to use a language one is proficient in)
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Great
+Superb interviewer! well done
+
+comments:   Helped guide me through the solution. I was one the right track and the nice encouraging gestures and a hint or two here and there gave me confidence.
+
+------------------------------------------------------------------------------------------------
+Your interview on June 6th at 8:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Kind of
+Partial Solution
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Weak
+Partially completed
+
+• Communication: clarity of your answers and line of reasoning
+Good
+I was mostly able to understand
+
+• Working Together: peer's motivation to be your colleague
+Maybe
+If I have to
+
+• Creativity: original or innovative thinking
+Wide Thinker
+Used many approaches
+- Not Applicable -
+
+• Things you did well:
+
+He was thinking loud during during the interview He was giving best effort to come with the solution.
+
+• Things you should work on:
+
+After lots of hint he didn't come up with final solution.
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Good
+That person was helpful
+
+comments:   overall good experience.
+
+------------------------------------------------------------------------------------------------
+Your interview on June 4th at 8:00 PM
+You as an interviewee
+
+• Problem Solving:answering correctly, without much help or hints
+Good
+Solved the problem with hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Expression Artist!
+Every single bit was crystal clear
+
+• Working Together: peer's motivation to be your colleague
+Yes
+It will be nice
+
+• Creativity: original or innovative thinking
+Wide Thinker
+Used many approaches
+- Not Applicable -
+
+• Things you did well:
+
+Was able to solve the problem and come up with some elegant code designs and watch out for corner cases etc.
+
+• Things you should work on:
+
+A certain level of naivete was evident (am talking about spelling out the space complexity of a recursive program cannot be constant). I guess that is understandable from a fresher.
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Good
+That person was helpful
+
+comments:   I think the peer pointed out a corner case that I missed a bit early. I woulve liked for them to wait and see if I had found it myself before pointing it out.
+
+------------------------------------------------------------------------------------------------
+Problem Solving:answering correctly, without much help or hints
+Strong
+Got it with only few hints
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Strong
+Works but not quite readable, reusable or maintainable
+
+• Communication: clarity of your answers and line of reasoning
+Very Good
+Communicated well
+
+• Working Together: peer's motivation to be your colleague
+Hell YES!
+Can I work where that person works?
+
+• Creativity: original or innovative thinking
+Wide Thinker
+Used many approaches
+
+• Things you did well:
+
+starting to solve the problem on an example, various approaches to problem, thinking aloud
+
+• Things you should work on:
+
+it's better not to go into deep details while discussing your solution. that will save time for coding. watch out how you initialize your data stuctures. try to avoid nested if/for/while statements when it is possible, this will increase readability of your code.
+You as an interviewer
+
+• Overall: functioning as a professional interviewer
+Good
+That person was helpful
+
+comments:   provided me with hints whenever I needed them
+
+
+------------------------------------------------------------------------------------------------
+Problem Solving:answering correctly, without much help or hints
+Okay
+Got a brute force solution
+
+• Coding: bug-less, clean, readable, reusable and maintainable code
+Very Weak
+Could only code a few lines
+
+• Communication: clarity of your answers and line of reasoning
+Very Good
+Communicated well
+
+• Working Together: peer's motivation to be your colleague
+Okay
+I'll manage to get along
+
+• Creativity: original or innovative thinking
+Creative
+Did something differently
+
+• Things you did well:
+
+peer explain the answers in a good way and the communication is also good
+
+• Things you should work on:
+
+peer should wait for another question answer sessions.so that i can help him/her to improve the lacuna
+You as an interviewer
