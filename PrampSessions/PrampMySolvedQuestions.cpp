@@ -2,7 +2,7 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
-#include <algorithm>        // sort
+#include <algorithm>        // sort, binary_search
 using namespace std;
 
 /*
@@ -36,16 +36,16 @@ using namespace std;
  *
  */
 
-void printVectorInt(vector<int> nums)
+template<typename T>
+void printVector(vector<T> nums)
 {
-    for (int i : nums)
+    for (T i : nums)
     {
         cout << i << ", ";
     }
     cout << endl;
 }
  
-
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 1. Island Count Iterative
 // https://www.pramp.com/question/yZm60L6d5juM7K38KYZ6
@@ -382,54 +382,149 @@ void reverseWordsInSentence(string& str)
 // PROBLEM 8. Time Planner
 // https://www.pramp.com/question/3QnxW6xoPLTNl5jX5Lg1
 // Session11_2016_07_08.cpp
+//
+// |     |               |  -> B completely lies outside A
+// |
+// |         |           |  -> B.end goes outside A
+// |           |   |        -> B completely lies within A
+// |     |         |        -> B.start goes outside A
+// |--------------------------------------------------------------
+// |        |         |     -> A
+//
+// Use std::chrono time
+// http://stackoverflow.com/questions/25136657/how-do-i-use-tm-structure-to-add-minutes-to-current-time
 // ------------------------------------------------------------------------------------------------
-meetingScheduler()
+pair<uint32_t, uint32_t> meetingScheduler(const vector<pair<uint32_t, uint32_t> >& availA, const vector<pair<uint32_t, uint32_t> >& availB, uint32_t dur)
 {
+    pair<uint32_t, uint32_t> result;
+
+    uint32_t i = 0;
+    uint32_t j = 0;
+    while (i < availA.size() && j < availB.size())
+    {
+        // Check if there is overlap and if we should increment 'i' or 'j'
+        if (availA[i].first <= availB[j].first &&
+            availB[j].first + dur > availA[i].first &&
+            availB[j].first + dur <= availA[i].second &&
+            availB[j].first + dur <= availB[j].second)
+        {
+            result = make_pair(availB[j].first, availB[j].first + dur);
+            return result;
+        }
+        else if (availB[j].first <= availA[i].first &&
+                 availA[i].first + dur > availB[j].first &&
+                 availA[i].first + dur <= availA[i].second &&
+                 availA[i].first + dur <= availB[j].second)
+        {
+            result = make_pair(availA[i].first, availA[i].first + dur);
+            return result;
+        }
+        else
+        {
+            // We don't have an answer. We have to increment either i or j
+            if (availA[i].second == availB[j].second)
+            {
+                i++;
+                j++;
+            }
+            else if (availA[i].second < availB[j].second)
+            {
+                i++;
+            }
+            else if (availA[i].second > availB[j].second)
+            {
+                j++;
+            }
+        }
+    }
+
+    return result;
 }
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 9. Flatten a Dictionary
 // https://www.pramp.com/question/AMypWAprdmUlaP2gPVLZ
 // Session12_2016_07_09.cpp
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 10. Merging 2 Packages
 // https://www.pramp.com/question/L3wQBnQYAEh5K97W9ONK
 // Session13_2016_07_10.cpp
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
+pair<int, int> mergePackages(const vector<uint32_t>& weights, uint32_t sum)
+{
+    unordered_map<uint32_t, uint32_t> sumMap;
+    pair<int, int> result = make_pair(-1, -1);
+
+    for (uint32_t i = 0; i <weights.size(); i++)
+    {
+        auto itr = sumMap.find(weights[i]);
+
+        if (itr != sumMap.end())
+        {
+            result = make_pair(itr->second, i);
+        }
+        else
+        {
+            sumMap[sum - weights[i]] = i;
+        }
+    }
+
+    return result;
+}
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 11. Find The Duplicates
 // https://www.pramp.com/question/15oxrQx6LjtQj9JK9XlA
 // Session14_2016_07_11.cpp
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
+//
+// Complexity: O(n log m). Better than O(n + m) when M >> N
+// If m and n are of same size use hash table approach. Don't have to sort
 // ------------------------------------------------------------------------------------------------
+//vector<int> findDuplicatesOptimized(const vector<int>& arr1, const vector<int>& arr2)
+vector<int> findDuplicatesOptimized(const vector<int>& arr1, const vector<int>& arr2)
+{
+   vector<int> uniqPersons;
+   vector<int> tmp;
 
- // ------------------------------------------------------------------------------------------------
+   // As Arr2 is smaller, find if each element in arr2 is present in arr1
+   // If so, add it to the result
+   if (arr1.size() > arr2.size())
+   {
+       for (uint32_t j = 0; j < arr2.size(); j++)
+       {
+           if (binary_search(arr1.begin(), arr1.end(), arr2[j]))
+           {
+               uniqPersons.push_back(arr2[j]);
+           }
+       }
+   }
+   else
+   {
+       for (uint32_t j = 0; j < arr1.size(); j++)
+       {
+           if (binary_search(arr2.begin(), arr2.end(), arr1[j]))
+           {
+               uniqPersons.push_back(arr1[j]);
+           }
+       }
+
+   }
+   
+   return uniqPersons;
+}
+
+// ------------------------------------------------------------------------------------------------
 // PROBLEM 12. Getting a Different Number
 // https://www.pramp.com/question/aK6V5GVZ9MSPqvG1vwQp
 // Session15_2016_07_12.cpp
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 13. Drone Flight Planner
 // https://www.pramp.com/question/BrLMj8M2dVUoY95A9x3X
 // Session16_2016_07_13.cpp
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
 
  // ------------------------------------------------------------------------------------------------
@@ -437,16 +532,6 @@ meetingScheduler()
 // https://www.pramp.com/question/W5EJq2Jld3t2ny9jyZXG
 // http://stackoverflow.com/questions/9333333/c-split-string-with-space-and-punctuation-chars
 // Session17_2016_07_14.cpp
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
-// ------------------------------------------------------------------------------------------------
-
- // ------------------------------------------------------------------------------------------------
-// PROBLEM 15. 
-//            hexllo
-//            Ans: x
-// Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
 
 int main()
@@ -474,7 +559,7 @@ int main()
         vector<int> nums = {1, 2, 5, 7, 15, 20, 25};
         vector<int> result = quadCombination(nums, 30);
 
-        printVectorInt(result);
+        printVector(result);
         cout << endl << endl;
     }
 
@@ -484,7 +569,7 @@ int main()
         vector<int> nums = {1, 2, 3, 4, 5};
         vector<int> result = arryOfProds(nums);
 
-        printVectorInt(result);
+        printVector(result);
         cout << endl << endl;
     }
 
@@ -494,7 +579,7 @@ int main()
         vector<int> nums = {8, 10, 3, 7, 15, 20, 13};
 
         kMessedArraySort(nums, 2);
-        printVectorInt(nums);
+        printVector(nums);
 
         cout << endl << endl;
     }
@@ -538,11 +623,32 @@ int main()
     // PROBLEM 8. Time Planner
     {
         cout << "PROBLEM 8. Time Planner" << endl;
-        vector<pair<uint32_t uint32_t> > availA = {{900, 930},
-                                                   {, }};
-        vector<pair<uint32_t uint32_t> > availB = {{900, 930},
-                                                   {, }};
-        pair<uint32_t, uint32_t> meetTime = meetingScheduler(30, timesA, timesB);
+
+        // Ans: 1615 - 1715
+        // Assumption: Can combine times like the one we have in the example
+        // 1615 - 1715 and again free from 1715 - 1800
+        vector<pair<uint32_t, uint32_t> > availA1 = {{900, 930}, {1015, 1115}, {1200, 1400},
+                                                     {1445, 1500}, {1600, 1800}, {1900, 2000}};
+        vector<pair<uint32_t, uint32_t> > availB1 = {{915, 945}, {950, 1030}, {1430, 1530},
+                                                     {1615, 1715}, {1715, 1800}};
+
+        /*
+        // Ans: 1600 - 1630
+        vector<pair<uint32_t uint32_t> > availA2 = {{900, 930}, {1015, 1115}, {1200, 1400}
+                                                   {1445, 1500}, {1600, 1800}, {1900, 2000}};
+        vector<pair<uint32_t uint32_t> > availB2 = {{915, 945}, {950, 1030}, {1430, 1530}
+                                                   {1515, 1715}, {1715, 1800}};
+        */
+
+        /*
+        // Ans: 1715 - 1745
+        vector<pair<uint32_t uint32_t> > availA3 = {{900, 930}, {1015, 1115}, {1200, 1400}
+                                                   {1445, 1500}, {1600, 1800}, {1900, 2000}};
+        vector<pair<uint32_t uint32_t> > availB3 = {{915, 945}, {950, 1030}, {1430, 1530}
+                                                   {1515, 1555}, {1715, 1900}};
+        */
+
+        pair<uint32_t, uint32_t> meetTime = meetingScheduler(availA1, availB1, 30);
         cout << "Meeting: " << meetTime.first << " - " << meetTime.second << endl;
 
         cout << endl << endl;
@@ -552,30 +658,32 @@ int main()
     {
         cout << "PROBLEM 9. Flatten a Dictionary" << endl;
 
-
         cout << endl << endl;
     }
 
     // PROBLEM 10. Merging 2 Packages
     {
         cout << "PROBLEM 10. Merging 2 Packages" << endl;
-
-
+        vector<uint32_t> weights = {20, 30, 40, 50, 60, 65, 75, 85};
+        pair<int, int> tmp = mergePackages(weights, 100);
+        cout << tmp.first << ", " << tmp.second << endl;
         cout << endl << endl;
     }
 
     // PROBLEM 11. Find The Duplicates
     {
         cout << "PROBLEM 11. Find The Duplicates" << endl;
+        vector<int> arrA = {5, 8, 10, 20, 30, 40, 50, 60};
+        vector<int> arrB = {8, 15, 20};
 
-
+        vector<int> result = findDuplicatesOptimized(arrA, arrB);
+        printVector(result);
         cout << endl << endl;
     }
 
     // PROBLEM 12. Getting a Different Number
     {
         cout << "PROBLEM 12. Getting a Different Number" << endl;
-
 
         cout << endl << endl;
     }
@@ -584,7 +692,6 @@ int main()
     {
         cout << "PROBLEM 13. Drone Flight Planner" << endl;
 
-
         cout << endl << endl;
     }
 
@@ -592,18 +699,7 @@ int main()
     {
         cout << "PROBLEM 14. Word Count Engine" << endl;
 
-
         cout << endl << endl;
-    }
-
-    // PROBLEM 15. 
-    {
-
-    }
-
-    // PROBLEM 16. 
-    {
-
     }
 
     return 0;
