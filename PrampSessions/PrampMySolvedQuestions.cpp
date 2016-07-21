@@ -3,6 +3,8 @@
 #include <queue>
 #include <unordered_map>
 #include <algorithm>        // sort, binary_search
+#include <bitset>
+#include <functional>   // Contains function for std::hash
 using namespace std;
 
 /*
@@ -157,7 +159,7 @@ vector<int> quadCombination(const vector<int>& nums, int sum)
     unordered_map<int, pair<int, int> > sumMap;
     vector<int> result;
 
-    for (uint32_t i = 0; i < nums.size(); i++)
+    for (uint32_t i = 0; i < nums.size() - 1; i++) // IMP: as j start from i + 1
     {
         for (uint32_t j = i+1; j < nums.size(); j++)
         {
@@ -517,15 +519,165 @@ vector<int> findDuplicatesOptimized(const vector<int>& arr1, const vector<int>& 
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 12. Getting a Different Number
+//             Find a number not present in the array
 // https://www.pramp.com/question/aK6V5GVZ9MSPqvG1vwQp
+// http://stackoverflow.com/questions/27449831/create-a-large-bitset
 // Session15_2016_07_12.cpp
 // ------------------------------------------------------------------------------------------------
+uint32_t differentNumber(vector<uint32_t> nums)
+{
+    bitset<400000000UL>& bitsVec = *(new bitset<400000000UL>());
+    uint32_t uniqNum = 0;
 
- // ------------------------------------------------------------------------------------------------
+    cout << bitsVec[0] << " ";
+    cout << bitsVec[1] << endl;
+
+    for (uint32_t num : nums)
+    {
+        size_t t = std::hash<uint32_t>()(num);
+        bitsVec[num] = 1;
+    }
+
+    cout << bitsVec.size() << endl;
+    for (uint32_t i = 0; i < bitsVec.size(); i++)
+    {
+        if (bitsVec[i] == 1)
+        {
+            cout << i << ", ";
+        }
+        else
+        {
+            break;
+        }
+    }
+    cout << endl;
+
+    delete &bitsVec;
+    return uniqNum;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Find an integer not among four billion given ones
+// http://stackoverflow.com/questions/7153659/find-an-integer-not-among-four-billion-given-ones?page=1&tab=votes#tab-top
+// Logic:
+//      Use 16 bits, i.e. 65536.
+//      For any 32bit number, check the first 16bits and count the numbers that have the same
+//      1st 16bits.
+//
+//      For one possible 16bit prefix, we should have 65535 numbers.
+//      If any 16bit prefix's COUNT is less than 65535, ---> (A)
+//      Then that prefix has a vacant spot.
+//
+//      Scan the input file again and for all 65535 combination that matches (A)
+//
+//      Say numbers are:
+//      00 00   01 00   10 00   11 00
+//         01      01      01      01
+//         10      10      10      10
+//         11      11      11      11
+//
+//      Say 1010 is mission. So Count of '10' will be 3. While other high bits will have 4.
+//
+//      Now we have found 10 as the high bit.
+//      Then take the low bits and do a count of it. So 00, 01, 11 will have count 1.
+//
+//      Go over all the cobinations and find the one that has 0 count.
+// ------------------------------------------------------------------------------------------------
+uint32_t findUniqueNumber(const vector<uint32_t>& nums)
+{
+    uint32_t uniqNum = 0;
+    uint32_t highBit = 0;
+    uint32_t lowBit = 0;
+    vector<uint16_t> bitMap (65535, 0);
+
+    cout << bitMap.size() << endl;
+
+    // 1st pass. Compute count of all numbers by looking at higher 16 bits
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        bitMap[nums[i] >> 16]++;
+    }
+
+    for (uint32_t i = 0; i < bitMap.size(); i++)
+    {
+        if (bitMap[i] < 65536)
+        {
+            highBit = i;
+            break; // Very IMP. Break once we have found a gap
+        }
+    }
+    cout << "HighBit: " << highBit << endl;
+
+    // Rest all elements in bitMap back to 0.
+    // We can now use the same vector to count the lower 16 bits
+    std::fill(bitMap.begin(), bitMap.end(), 0);
+
+    // 2nd pass. For all numbers that have THE specific higher 16 bits, count the lower 16
+    // bits and find which is missing
+    // Combinaiton of highBit and LowBit is the answer
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        uint32_t t = nums[i] >> 16;
+
+        // Take the lower 16bits of the numbers whose higher 16 bits are same as HIGH BIT
+        // Compare with highBit
+
+        if (t == highBit)
+        {
+            uint16_t x = nums[i] & 0xFFFF;
+            cout << "Lower Bits: " << x << endl;
+            bitMap[nums[i] & 0xFFFF]++;
+        }
+    }
+
+    for (uint32_t i = 0; i < bitMap.size(); i++)
+    {
+        if (bitMap[i] == 0) // Place where we don't have the low bit set
+        {
+            lowBit = i;
+            break; // Very IMP. Break once we have found a gap
+        }
+    }
+    cout << "LowBit: " << lowBit << endl;
+
+    uniqNum = highBit << 16;
+    uniqNum |= lowBit;
+
+    return uniqNum;
+}
+
+// ------------------------------------------------------------------------------------------------
 // PROBLEM 13. Drone Flight Planner
 // https://www.pramp.com/question/BrLMj8M2dVUoY95A9x3X
+//             [{x:0, y:2, z:10}, {x:3, y:5, z:0}, {x:9, y:20, z:6}, {x:10, y:12, z:15}, {x:10, y:10, z:8}]
 // Session16_2016_07_13.cpp
 // ------------------------------------------------------------------------------------------------
+struct CoOrd
+{
+    uint32_t x;
+    uint32_t y;
+    uint32_t z;
+};
+
+uint32_t findMinFuelReq(vector<CoOrd> points)
+{
+    if (points.size() < 2)
+    {
+        return 0;
+    }
+
+    uint32_t maxHeight = points[0].z;
+
+    for (uint32_t i = 1; i < points.size(); i++)
+    {
+        if (points[i].z > maxHeight)
+        {
+            maxHeight = points[i].z;
+        }
+    }
+
+    return maxHeight - points[0].z;
+}
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 14. Word Count Engine
@@ -684,6 +836,9 @@ int main()
     // PROBLEM 12. Getting a Different Number
     {
         cout << "PROBLEM 12. Getting a Different Number" << endl;
+        vector<uint32_t> arrA = {0, 8, 1, 2, 3, 4, 5, 6};
+        //cout << "Uniq Num: " << differentNumber(arrA);
+        cout << "Uniq Num: " << findUniqueNumber(arrA);
 
         cout << endl << endl;
     }
@@ -691,7 +846,9 @@ int main()
     // PROBLEM 13. Drone Flight Planner
     {
         cout << "PROBLEM 13. Drone Flight Planner" << endl;
+        vector<CoOrd> points = {{0, 2, 10}, {3, 5, 0}, {9, 20, 6}, {10, 12, 15}, {10, 10, 8}};
 
+        cout << "Min Fuel Req: " << findMinFuelReq(points);
         cout << endl << endl;
     }
 
