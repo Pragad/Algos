@@ -64,14 +64,14 @@ namespace
 }
 
 // Procedure to do the DFS search Recursively
-void dfsCountIslands(vector<vector <uint32_t> >& twoDMat, uint32_t curRow, uint32_t curCol)
+void dfsCountIslands(vector<vector <uint32_t> >& twoDMat, int32_t curRow, int32_t curCol)
 {
     twoDMat[curRow][curCol] = 2;
 
     for (uint32_t i = 0; i < 8; i++)
     {
-        uint32_t newRow = curRow + ROWPOS[i];
-        uint32_t newCol = curCol + COLPOS[i];
+        int32_t newRow = curRow + ROWPOS[i];
+        int32_t newCol = curCol + COLPOS[i];
 
         if (newRow >=0 && newRow < twoDMat.size() &&
             newCol >=0 && newCol < twoDMat[0].size() &&
@@ -87,8 +87,8 @@ void dfsCountIslandsIterative(vector<vector <uint32_t> >& twoDMat, uint32_t curR
 {
     // Create a queue
     // Put the current valid element into the queue
-    queue<pair<uint32_t, uint32_t> > dfsQueue;
-    dfsQueue.push(pair<uint32_t, uint32_t> {curRow, curCol});
+    queue<pair<int32_t, int32_t> > dfsQueue;
+    dfsQueue.push(pair<int32_t, int32_t> {curRow, curCol});
 
     // While the queue is not empty take the top element
     // Scan all its neighbors and add valid elements (1s) to the queue
@@ -101,17 +101,16 @@ void dfsCountIslandsIterative(vector<vector <uint32_t> >& twoDMat, uint32_t curR
 
         for (uint32_t i = 0; i < 8; i++)
         {
-            uint32_t newRow = tmp.first + ROWPOS[i];
-            uint32_t newCol = tmp.second + COLPOS[i];
+            int32_t newRow = tmp.first + ROWPOS[i];
+            int32_t newCol = tmp.second + COLPOS[i];
 
             if (newRow >=0 && newRow < twoDMat.size() &&
                 newCol >=0 && newCol < twoDMat[0].size() &&
                 twoDMat[newRow][newCol] == 1)
             {
-                dfsQueue.push(pair<uint32_t, uint32_t> {newRow, newCol});
+                dfsQueue.push(pair<int32_t, int32_t> {newRow, newCol});
             }
         }
-
     }
 }
 
@@ -600,7 +599,7 @@ uint32_t findUniqueNumber(const vector<uint32_t>& nums)
 
     for (uint32_t i = 0; i < bitMap.size(); i++)
     {
-        if (bitMap[i] < 65536)
+        if (bitMap[i] < 65535)
         {
             highBit = i;
             break; // Very IMP. Break once we have found a gap
@@ -625,7 +624,6 @@ uint32_t findUniqueNumber(const vector<uint32_t>& nums)
         if (t == highBit)
         {
             uint16_t x = nums[i] & 0xFFFF;
-            cout << "Lower Bits: " << x << endl;
             bitMap[nums[i] & 0xFFFF]++;
         }
     }
@@ -751,8 +749,9 @@ int main()
                                      {20160105, 9, "enter"},
                                      {20120919, 7, "enter"} };
 
-        sort(mallData.begin(), mallData.end()); // Method 1
-        //sort(mallData.begin(), mallData.end(), compMallData); // Method 2
+        // Method 1 gives compilation error
+        //std::sort(mallData.begin(), mallData.end()); // Method 1
+        sort(mallData.begin(), mallData.end(), compMallData); // Method 2
         //sort(mallData.begin(), mallData.end(), obMyComp); // Method 3
         printMallData(mallData);
         pair<uint32_t, uint32_t> busyTime = findBusiestPeriod(mallData);
