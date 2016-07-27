@@ -6,6 +6,8 @@
 4c. Set, Unset, Clear, Toggle a Bit
 4d. Absolute Value of a number
 4e. Reverse Bits in a number
+4f. Find leftmost set bit in a number
+4g. Find rightmost set bit in a number
 5. String Search:
 6. Given 2 sorted arrays of integers, find the nth largest number in sublinear time
 7. k'th smallest in Union of Two arrays:
@@ -275,6 +277,53 @@ http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-n
         // swap 2-byte long pairs
         v = ( v >> 16             ) | ( v               << 16);
 
+4f.
+Find leftmost set bit in a number
+http://stackoverflow.com/questions/53161/find-the-highest-order-bit-in-c
+
+    1 << ( int) log2( x)
+
+    int hibit(unsigned int n)
+    {
+        n |= (n >>  1);
+        n |= (n >>  2);
+        n |= (n >>  4);
+        n |= (n >>  8);
+        n |= (n >> 16);
+        return n - (n >> 1);
+    }
+
+    int hob (int num)
+    {
+        if (!num)
+            return 0;
+
+        int ret = 1;
+
+        while (num >>= 1)
+            ret <<= 1;
+
+        return ret;
+    }
+
+    hob(1234) returns 1024
+    hob(1024) returns 1024
+    hob(1023) returns 512
+
+4g.
+Find rightmost set bit in a number
+http://algorithmsandme.in/2013/10/fun-with-bits-find-rightmost-bit-set-in-given-number/
+http://www.geeksforgeeks.org/position-of-rightmost-set-bit/
+
+    unsigned int getFirstSetBitPos(int n)
+    {
+       return log2(n&-n)+1;
+    }
+    
+    x & ~(x-1)
+
+To Clear rightmost set bit just do
+    x & (x-1)
 5.
 String Search:
 

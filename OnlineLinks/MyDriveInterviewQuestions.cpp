@@ -75,7 +75,7 @@ using namespace std;
  *
  * PROBLEM 16. 2 missing numbers
  * void findTwoMissing(vector<int> nums, uint32_t totalNums)
- *
+ 
  * PROBLEM 17. Find minimum number of conference room required
  * uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
  *
@@ -1206,7 +1206,6 @@ void printThreeNumClosestSum(int arr[], uint32_t num, int sum)
             }
         }
     }
-
 
     cout << "Closest Sum: " << arr[x] << " " << arr[y] << " " << arr[z] << endl;
 }
