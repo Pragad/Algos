@@ -204,7 +204,6 @@ vector<int> arryOfProds(const vector<int>& nums)
 {
     // Fill in the vector with 1s
     vector<int> result(nums.size(), 1);
-
     uint32_t curProd = 1;
     
     for (uint32_t i = 0; i < nums.size(); i++)
@@ -556,7 +555,7 @@ uint32_t differentNumber(vector<uint32_t> nums)
 }
 
 // ------------------------------------------------------------------------------------------------
-// Find an integer not among four billion given ones
+// PROBLEM 12. Find an integer not among four billion given ones
 // http://stackoverflow.com/questions/7153659/find-an-integer-not-among-four-billion-given-ones?page=1&tab=votes#tab-top
 // Logic:
 //      Use 16 bits, i.e. 65536.
@@ -682,7 +681,98 @@ uint32_t findMinFuelReq(vector<CoOrd> points)
 // https://www.pramp.com/question/W5EJq2Jld3t2ny9jyZXG
 // http://stackoverflow.com/questions/9333333/c-split-string-with-space-and-punctuation-chars
 // Session17_2016_07_14.cpp
+//
+// http://www.cplusplus.com/reference/algorithm/transform/
+// http://www.cplusplus.com/reference/string/string/substr/
+// http://en.cppreference.com/w/cpp/string/byte/ispunct
+// http://www.cplusplus.com/reference/string/string/find_first_not_of/
 // ------------------------------------------------------------------------------------------------
+void printUnorderedMap(const unordered_map<string, uint32_t>& myMap)
+{
+    for (auto i : myMap)
+    {
+        cout << i.first << "-" << i.second << endl;
+    }
+    cout << endl;
+}
+
+void printVectorPairs(const vector< pair <string, uint32_t> >& myVec)
+{
+    for (auto i : myVec)
+    {
+        cout << i.first << "-" << i.second << endl;
+    }
+    cout << endl;
+}
+
+vector< pair< string, uint32_t > > convertUnorderedMapToVector(const unordered_map<string, uint32_t>& myMap)
+{
+    vector< pair< string, uint32_t > > result;
+
+    for (auto i : myMap)
+    {
+        result.push_back({i.first, i.second});
+    }
+
+    return result;
+}
+
+string getNextWord(const string& str, uint32_t& startIdx)
+{
+    string result = "";
+    uint32_t idx = 0;
+
+    if (startIdx == str.length() - 1)
+    {
+        return result;
+    }
+
+    for (idx = startIdx; idx < str.length();)
+    {
+        if (str[idx] == ' ' || ispunct(str[idx]))
+        {
+            if (startIdx != idx)
+            {
+                result = str.substr(startIdx, idx - startIdx);
+                startIdx = idx + 1;
+                return result;
+            }
+            startIdx++;
+            idx++;
+        }
+        else
+        {
+            idx++;
+        }
+    }
+
+    if (startIdx < idx)
+    {
+        result = str.substr(startIdx, idx - startIdx);
+        startIdx = idx + 1;
+    }
+
+    return result;
+}
+
+vector< pair< string, uint32_t > > wordCount(const string& str)
+{
+    vector< pair< string, uint32_t > > result;
+    unordered_map<string, uint32_t> wrdCntMap;
+
+    for (uint32_t idx = 0; idx < str.length();)
+    {
+        string tmp = getNextWord(str, idx);
+        if (!tmp.empty())
+        {
+            std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+            wrdCntMap[tmp]++;
+        }
+    }
+
+    result = convertUnorderedMapToVector(wrdCntMap);
+    return result;
+}
 
 int main()
 {
@@ -854,10 +944,12 @@ int main()
     // PROBLEM 14. Word Count Engine
     {
         cout << "PROBLEM 14. Word Count Engine" << endl;
+        string str = "  Hello.   World!! Hi.there!how are?you.  You!hI HI, world ??";
+        vector< pair <string, uint32_t> > result = wordCount(str);
+        printVectorPairs(result);
 
-        cout << endl << endl;
+        cout << endl;
     }
 
     return 0;
 }
-
