@@ -81,11 +81,7 @@ int getNth(node* head, int index)
         temp++;
     }
 
-    // the given index is not valid
-    if (index >= temp)
-    {
-        return -1;
-    }
+    return -1;
 }
 
 // Q3: Delete the complete list
@@ -485,6 +481,43 @@ void minimumNode(node* head)
     cout << minNode->data << endl;
 }
 
+// Delte Nodes that have a certain value
+void removeNode(node*& head, int val)
+{
+    if (head == NULL)
+    {
+        return;
+    }
+
+    node* cur = head;
+
+    while (cur != NULL && cur->data == val)
+    {
+        node* tmp = cur->next;
+        delete cur;
+        head = tmp;
+        cur = tmp;
+    }
+
+    struct node* curNext = cur->next;
+    while(curNext != NULL)
+    {
+        if(curNext->data == val)
+        {
+            cur->next = curNext->next;
+            delete curNext;
+
+            curNext = cur->next;
+        }
+
+        else
+        {
+            cur = cur->next;
+            curNext = cur->next;
+        }
+    }
+}
+
 // Main Function
 int main()
 {
@@ -643,6 +676,25 @@ int main()
         printList(merged);
         minimumNode(merged);
     }
+
+    // Delete nodes containing a Value
+    {
+        node* head = NULL;
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 3);
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 5);
+        insertNth(head, 0, 5);
+
+
+        cout << endl << "Delete Node" << endl;
+        int val = 5;
+        removeNode(head, val);
+        printList(head);
+    }
+
     cout << endl;
     return 0;
 }
