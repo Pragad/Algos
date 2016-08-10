@@ -77,9 +77,10 @@
  * Problem 25 In Order Successor in Binary Search Tree
  * tree* InorderSuccessorWithParent(treeWithParent* node)
  *
- * Problem 26. Iterative Inorder Traversal
+ * Problem 26. Iterative Inorder, Preorder, Postorder Traversal
  * void printTreeInorderIterative(tree* root)
- *
+ * void printTreePreorderIterative(tree* root)
+ * void printTreePostorderIterative(tree* root)
  *
  */
 
@@ -1153,6 +1154,54 @@ void printTreeInorderIterative(tree* root)
     cout << endl;
 }
 
+// ------------------------------------------------------------------------------------------------
+// Problem 27. Iterative Preorder Traversal
+//      Iterative Preorder Traversal of a Tree
+//      http://www.geeksforgeeks.org/iterative-preorder-traversal/
+// ------------------------------------------------------------------------------------------------
+void printTreePreorderIterative(tree* root)
+{
+    stack<tree*> preRecStack;
+    if (root == null)
+    {
+        return;
+    }
+
+    preRecStack.push(root);
+    while (!preRecStack.empty())
+    {
+        root = preRecStack.top();
+        cout << root->data << ", ";
+
+        if (root->right != NULL)
+        {
+            preRecStack.push(root->right);
+        }
+        if (root->left != NULL)
+        {
+            preRecStack.push(root->left);
+        }
+    }
+
+    cout << endl;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 28. Iterative Postorder Traversal
+//      Iterative Postorder Traversal of a Tree
+//      http://www.geeksforgeeks.org/iterative-postorder-traversal/
+//      http://www.geeksforgeeks.org/iterative-postorder-traversal-using-stack/
+// ------------------------------------------------------------------------------------------------
+void printTreePostorderIterative(tree* root)
+{
+    stack<tree*> postRecStack;
+    if (root == null)
+    {
+        return;
+    }
+
+    cout << endl;
+}
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -1402,7 +1451,7 @@ int main()
         cout << root->right->right->data << "**" << result->data << ", ";
     }
 
-    // Problem 26. Iterative Inorder Traversal
+    // Problem 26. Iterative Inorder, Preorder, Postorder Traversal
     {
         root = newNode(20);
         root->left = newNode(10);
@@ -1420,6 +1469,10 @@ int main()
 
         cout << endl << endl << "Iterative Inorder Traversal" << endl;
         printTreeInorderIterative(root);
+
+        cout << endl << endl << "Iterative Preorder Traversal" << endl;
+        printTreePreorderIterative(root);
+
         cout << endl;
     }
 

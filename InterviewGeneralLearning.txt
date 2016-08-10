@@ -65,6 +65,8 @@ OS NOTES
 NETWORKS
 1. How TCP/IP Network works
 1b. How Internet Works
+1c. TCP vs UDP
+1d. Can two applications listen to the same port
 2. Why is MAC address required    
 3. Switch vs Hub vs Router
 4. How NTLM Authentication Works
@@ -73,8 +75,11 @@ NETWORKS
 6. What happens when I click the Stop button on the browser
 7. what happens when you type in a URL in browser
 8. What is DHCP and how it works
-9. How WiFi works
-
+9. How WiFi (802.11) works
+10. DNS and how it works
+11. What is NTP and SNTP
+12. What is TLS and SSL
+13. What is DHCP
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
 0.
@@ -624,6 +629,7 @@ Types of Polymorphism
 22.
 Compiler vs Interpretor
 http://stackoverflow.com/questions/3996651/what-is-compiler-linker-loader
+
     Compiler:
         Takes a high level language and converts it into Machine Code
         The machine code is put in memory for execution
@@ -644,7 +650,6 @@ http://stackoverflow.com/questions/3996651/what-is-compiler-linker-loader
         the resulting code is some sort of intermediate code
         the resulting code is interpreted by another program
         program execution is relatively slow
-
 
     =====> COMPILATION PROCESS <======
                          |
@@ -1498,6 +1503,7 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
               ------------TCP Layer-------------
 
         - APPLICATION LAYER TALKS TO TRANSPORT LAYER THROUGH PORT NUMBER.
+        - Eg HTTP
 
     2. Transport Layer / Network Layer:
         - TCP and UDP comes here.
@@ -1534,8 +1540,58 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
         c. Physical
             - Switches come in this layer.
         
-1b. How Internet Works
+1b.
+How Internet Works
 http://www.theshulers.com/whitepapers/internet_whitepaper/index.html
+
+1c.
+TCP vs UDP
+https://www.youtube.com/watch?v=Vdc8TCESIg8
+
+    IMP:
+    TRANSPORT LAYER:
+        - Facilitates multiple applications to use the SAME network connection
+        - It creates 65536 PORTS for a single connection
+        - One application can also use multiple ports
+
+        - Say Application 1 uses port 12347 to send a message to Port 80 on another machine
+        - Application layer creates a message and sends to TRANSPORT LAYER.
+        - Transport layer wraps the message with SOURCE PORT and DESTINATION port and creates a segment
+        - It is then sent to Network Layer
+
+    UDP Advantages:
+        - UDP packet sizes are smaller.
+        - UDP Header is 8 bytes while TCP is 20 bytes
+        - More control over when data is sent out
+            - A primitive form of Error Detection
+        - Doesn't account for ORDERING of PACKING
+        - A packet gets sent only once
+        - Don't need to establish a connection
+        - No congestion control
+        Eg: Multimedia Streaming
+            DNS Lookups
+            UDP is used when speed is desirable and error correction isn’t necessary.
+            For example, UDP is frequently used for live broadcasts and online games.
+
+    TCP:
+        - Can maintain ORDERING of packets
+        - Congestion control
+        Eg: Remote Access and File Transfers
+
+1d.
+Can two applications listen to the same port
+http://stackoverflow.com/questions/1694144/can-two-applications-listen-to-the-same-port
+
+    For TCP, no. You can only have one application listening on a single port at one time. Now if you had 2 network cards, you could have one application listen on the first IP and the second one on the second IP using the same port number.
+
+    For UDP (Multicasts), multiple applications can subscribe to the same port.
+
+    It's not written in stone; but it's the way all APIs are written: the app opens a port, gets a handle to it, and the OS notifies it (via that handle) when a client connection (or a packet in UDP case) arrives.
+
+    If the OS allowed two apps to open the same port, how would it know which one to notify?
+
+    But... there are ways around it:
+        As Jed noted, you could write a 'master' process, which would be the only one that really listens on the port and notifies others, using any logic it wants to separate client requests.
 
 2.
 Why is MAC address required    
@@ -1779,4 +1835,92 @@ http://whatismyipaddress.com/dhcp
     Typically, a DHCP server renews your lease automatically, without you (or even a network administrator) having to do anything. However, if that IP address's lease expires, you'll be assigned a new IP address using the same DHCP protocols.
 
 9.
-How WiFi works
+How WiFi (802.11) works
+http://computer.howstuffworks.com/wireless-network.htm
+
+    - A computer's wireless adapter translates data into a radio signal and transmits it using an antenna.
+    - A wireless router receives the signal and decodes it. The router sends the information to the Internet using a physical, wired Ethernet connection.
+
+10.
+DNS and how it works
+http://dyn.com/blog/dns-why-its-important-how-it-works/
+
+    - A directory of domain names and translate them to Internet Protocol (IP) addresses.
+    - Information from all the domain name servers across the Internet are gathered together and housed at the Central Registry.
+    - Host companies and Internet Service Providers interact with the Central Registry on a regular schedule to get updated DNS information. 
+
+    When you visit a domain such as dyn.com, your computer follows a series of steps to turn the human-readable web address into a machine-readable IP address.
+    This happens every time you use a domain name, whether you are viewing websites, sending email or listening to Internet radio stations like Pandora.
+
+    Step 1: Request information
+        - The process begins when you ask your computer to resolve a hostname, such as visiting http://dyn.com.
+        - The first place your computer looks is its local DNS cache, which stores information that your computer has recently retrieved.
+- 
+        If your computer doesn’t already know the answer, it needs to perform a DNS query to find out.
+
+    Step 2: Ask the recursive DNS servers
+        - If the information is not stored locally, your computer queries (contacts) your ISP’s recursive DNS servers.
+        - These specialized computers perform the legwork of a DNS query on your behalf.
+        - Recursive servers have their own caches, so the process usually ends here and the information is returned to the user.
+
+    Step 3: Ask the root nameservers
+        - If the recursive servers don’t have the answer, they query the root nameservers.
+        - A nameserver is a computer that answers questions about domain names, such as IP addresses.
+        - The thirteen root nameservers act as a kind of telephone switchboard for DNS.
+        - They don’t know the answer, but they can direct our query to someone that knows where to find it.
+
+    Step 4: Ask the TLD nameservers
+        - The root nameservers will look at the first part of our request, reading from right to left — www.dyn.com — and direct our query to the Top-Level Domain (TLD) nameservers for .com.
+        - Each TLD, such as .com, .org, and .us, have their own set of nameservers, which act like a receptionist for each TLD.
+        - These servers don’t have the information we need, but they can refer us directly to the servers that do have the information.
+
+    Step 5: Ask the authoritative DNS servers
+        - The TLD nameservers review the next part of our request — www.dyn.com — and direct our query to the nameservers responsible for this specific domain.
+        - These authoritative nameservers are responsible for knowing all the information about a specific domain, which are stored in DNS records.
+        - There are many types of records, which each contain a different kind of information.
+        - In this example, we want to know the IP address for www.dyndns.com, so we ask the authoritative nameserver for the Address Record (A).
+
+    Step 6: Retrieve the record
+        - The recursive server retrieves the A record for dyn.com from the authoritative nameservers and stores the record in its local cache.
+        - If anyone else requests the host record for dyn.com, the recursive servers will already have the answer and will not need to go through the lookup process again.
+        - All records have a time-to-live value, which is like an expiration date.
+        - After a while, the recursive server will need to ask for a new copy of the record to make sure the information doesn’t become out-of-date.
+
+    Step 7: Receive the answer
+        - Armed with the answer, recursive server returns the A record back to your computer.
+        - Your computer stores the record in its cache, reads the IP address from the record, then passes this information to your browser.
+        - The browser then opens a connection to the webserver and receives the website.
+
+    This entire process, from start to finish, takes only milliseconds to complete.
+
+11.
+What is NTP and SNTP
+http://www.ntp.org/ntpfaq/NTP-s-def.htm#AEN1422
+
+    4.1.1. What is NTP?
+    NTP stands for Network Time Protocol, and it is an Internet protocol used to synchronize the clocks of computers to some time reference. NTP is an Internet standard protocol originally developed by Professor David L. Mills at the University of Delaware.
+
+    4.1.2. What is SNTP?
+    SNTP (Simple Network Time Protocol) is basically also NTP, but lacks some internal algorithms that are not needed for all types of servers. See Q: 9.4. for more and detailed information.
+
+    As a full implementation of the NTP protocol seemed too complicated for many systems, a simplified version of the protocol, namely SNTP had been defined.
+
+    NTP needs some reference clock that defines the true time to operate. All clocks are set towards that true time. (It will not just make all systems agree on some time, but will make them agree upon the true time as defined by some standard.)
+
+    NTP uses UTC as reference time.
+
+12.
+What is TLS and SSL
+
+    Transport Layer Security (TLS) is a protocol that ensures privacy between communicating applications and their users on the Internet.
+    When a server and client communicate, TLS ensures that no third party may eavesdrop or tamper with any message.
+    TLS is the successor to the Secure Sockets Layer (SSL).
+
+13.
+What is DHCP
+
+    - A protocol for configuring IP addresses
+    - DHCP is a client server application.
+    - It uses UDP ports
+    - Client sends a BROADCAST message to find the DHCP server
+
