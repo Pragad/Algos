@@ -38,6 +38,8 @@ class BST
 
         BST() : _root(nullptr),
                 _length(0) { }
+
+        ~BST() { delete _root; }
 };
 
 bool
@@ -148,6 +150,15 @@ int main()
 {
     {
         cout << "Binary Search Tree" << endl;
+
+        BST* root = new BST();
+        root->insert(5);
+        cout<< "Len: " << root->getLength() << endl;
+        root->insert(6);
+        root->insert(2);
+        root->insert(8);
+        cout<< "Len: " << root->getLength() << endl;
+        root->printInorder();
     }
 
     cout << endl;

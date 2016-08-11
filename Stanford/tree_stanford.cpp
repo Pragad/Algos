@@ -88,6 +88,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+//#include <cmath>
 #include <queue>
 #include <stack>
 #include <map>
@@ -240,6 +241,8 @@ int minValue(tree* root)
         }
         return minValue(root->left);
     }
+
+    return -1;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -469,7 +472,7 @@ bool isTreeBalanced(tree* root)
     return ((root == NULL) ||
             ((isTreeBalanced(root->left)) &&
             (isTreeBalanced(root->right)) &&
-            (abs(computeHeight(root->left) - computeHeight(root->right)) <= 1)));
+            (std::abs((double)computeHeight(root->left) - (double)computeHeight(root->right)) <= 1)));
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1162,7 +1165,7 @@ void printTreeInorderIterative(tree* root)
 void printTreePreorderIterative(tree* root)
 {
     stack<tree*> preRecStack;
-    if (root == null)
+    if (root == NULL)
     {
         return;
     }
@@ -1171,6 +1174,7 @@ void printTreePreorderIterative(tree* root)
     while (!preRecStack.empty())
     {
         root = preRecStack.top();
+        preRecStack.pop();
         cout << root->data << ", ";
 
         if (root->right != NULL)
@@ -1195,7 +1199,7 @@ void printTreePreorderIterative(tree* root)
 void printTreePostorderIterative(tree* root)
 {
     stack<tree*> postRecStack;
-    if (root == null)
+    if (root == NULL)
     {
         return;
     }
