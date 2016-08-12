@@ -9,6 +9,8 @@
 #include <cmath>            // ciel
 #include <cstring>          // memset
 #include <functional>       // std::function
+#define __STDC_LIMIT_MACROS
+#include <cstdint>
 using namespace std;
 
 /*
@@ -254,7 +256,7 @@ char findUniqueChar(string str)
         return str[0];
     }
 
-    uint32_t minIndex = INT_MAX;
+    uint32_t minIndex = std::numeric_limits<std::int32_t>::max();
     unordered_map<char, uniqChar> charMap;
 
     for (uint32_t i = 0; i < str.length(); i++)
@@ -520,7 +522,7 @@ int maxSumSubArray(int arr[], int num)
     int curSum = 0;
 
     // VERY IMP. Else it will fail when just {-1} is passed.
-    int maxSum = INT_MIN;
+    int maxSum = std::numeric_limits<std::int32_t>::min();
 
     for (uint32_t i = 0; i < num; i++)
     {
@@ -1170,8 +1172,8 @@ void printThreeNumClosestSum(int arr[], uint32_t num, int sum)
 
     uint32_t i = 0;
 
-    int closestSum = INT_MAX;
-    int tmpClosest = INT_MAX;
+    int closestSum = std::numeric_limits<std::int32_t>::max();
+    int tmpClosest = std::numeric_limits<std::int32_t>::max();
     uint32_t x, y, z;
 
     for (; i < num; i++)
@@ -1992,15 +1994,16 @@ uint32_t minWindowContainingString(string str1, string str2)
     unordered_map<char, uint32_t> hasToFindMap;
     unordered_map<char, uint32_t> foundMap;
     uint32_t countFoundChars = 0;
-    uint32_t minWindowSize = INT_MAX;
+    uint32_t minWindowSize = std::numeric_limits<std::int32_t>::max();
     uint32_t windowBegIdx = 0;
     uint32_t windowEndIdx = 0;
     uint32_t startPos = 0;
 
     // Update Count of each character in a HasToFindMap
-    ++hasToFindMap[c];
     for (char c : str2)
     {
+        // The below line takes care of the entire block
+        // ++hasToFindMap[c];
         auto itr = hasToFindMap.find(c);
         if (itr != hasToFindMap.end())
         {
