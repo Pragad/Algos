@@ -247,6 +247,7 @@ Reverse Bits in a number
 http://stackoverflow.com/questions/845772/how-to-check-if-the-binary-representation-of-an-integer-is-a-palindrome
 http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-number/
 
+    unsigned m = 0;
     for(unsigned tmp = n; tmp; tmp >>= 1)
     	m = (m << 1) | (tmp & 1);
 
