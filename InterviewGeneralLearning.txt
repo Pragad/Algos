@@ -1749,7 +1749,6 @@ https://technet.microsoft.com/en-us/library/cc780469(v=ws.10).aspx
     KDC/user session key.
     The KDC and the user share a secret encryption key as well, which is used, for example, to encrypt the message to the client containing a session key.
 
-
 5b.
 NTLM vs Kerberos
 http://sharepoint.stackexchange.com/questions/13400/ntlm-vs-kerberos
