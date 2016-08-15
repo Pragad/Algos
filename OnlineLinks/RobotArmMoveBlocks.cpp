@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <stack>
@@ -115,7 +115,9 @@ int main()
 {
     string str;
     unordered_map<uint32_t, uint32_t> blockIndex;
-    vector< stack<uint32_t> > robotWorld;
+
+    // IMP: Give the size for the vector so that it can be accessed using Index
+    vector< stack<uint32_t> > robotWorld (8);
 
     string line;
     while (getline(cin, line))
