@@ -5,7 +5,15 @@
 #include <string>
 using namespace std;
 
-void parseInput(string command, uint32_t& a, uint32_t& b)
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
+void parseInput(const string& command, uint32_t& a, uint32_t& b)
 {
     // Since the input will be on the exact format without incorrect commands
     // Assumption: Directly accessing the corresponding to the index
@@ -13,6 +21,24 @@ void parseInput(string command, uint32_t& a, uint32_t& b)
     // Convert character to number
     a = command[5] - '0';
     b = command[command.length() - 1] - '0'; 
+}
+
+void printBoard(vector< stack<uint32_t> >& robotWorld)
+{
+    cout << endl << "Robot World" << endl;
+    for (uint32_t i = 0; i < robotWorld.size(); i++)
+    {
+        cout << i << ": ";
+        // Have to empty the stack for printing it
+        while(!robotWorld[i].empty())
+        {
+            cout << robotWorld[i].top() << ", ";
+            robotWorld[i].pop();
+        }
+        cout << endl;
+    }
+
+    cout << endl;
 }
 
 bool isAandBonSameStack(unordered_map<uint32_t, uint32_t>& blockIndex,
@@ -47,6 +73,22 @@ bool isAandBonSameStack(unordered_map<uint32_t, uint32_t>& blockIndex,
     return (aIdx == bIdx);
 }
 
+void moveOtherBlocksToInitialPosition(vector< stack<uint32_t> >& robotWorld,
+                                      unordered_map<uint32_t, uint32_t>& blockIndex,
+                                      uint32_t num,
+                                      uint32_t numIdx)
+{
+    while (!robotWorld[numIdx].empty() > 0 && robotWorld[numIdx].top() != num)
+    {
+        // Move the element that is on the top of stack to its initial position
+        uint32_t tmp = robotWorld[numIdx].top();
+        robotWorld[tmp].push(tmp);
+        blockIndex[tmp] = tmp;
+
+        robotWorld[numIdx].pop();
+    }
+}
+
 void moveBlock(vector< stack<uint32_t> >& robotWorld,
                unordered_map<uint32_t, uint32_t>& blockIndex,
                uint32_t a,
@@ -59,27 +101,26 @@ void moveBlock(vector< stack<uint32_t> >& robotWorld,
     // Once a and b are at the top, move a ontop b
 
     // TODO: Cleanup code in the form of a function
-    cout << "Top A: " << robotWorld[aIdx].top() << "; a: " << a << endl;
-    while (robotWorld[aIdx].top() != a)
+    // Check if the Vector is empty before checking the top(). This could result in SEG Fault
+    DEBUG_MSG("1. a: " << a << "; " << aIdx << "; b: " << b << "; bIdx: " << bIdx << endl);
+
+    moveOtherBlocksToInitialPosition(robotWorld, blockIndex, a, aIdx);
+    moveOtherBlocksToInitialPosition(robotWorld, blockIndex, b, bIdx);
+
+    // We have made sure 'a' and 'b' are on the top of the stack
+    // Time to move 'a' onto 'b'
+    // Also update the hash table by Restting 'aIdx' and updating 'bIdx' with 'a'
+    // Eg: move 4 onto 7
+    //     1. Find where '7' is present and push 4 there
+    //     2. Update '4's map to point to 7
+    robotWorld[bIdx].push(a);
+    blockIndex[a] = bIdx;
+
+    if (!robotWorld[aIdx].empty())
     {
-        uint32_t tmp = robotWorld[aIdx].top();
-        robotWorld[tmp].push(tmp);
-
-        blockIndex[tmp] = tmp;
+        robotWorld[aIdx].pop();
     }
-
-    cout << "Top B: " << robotWorld[bIdx].top() << "; b: " << b << endl;
-    while (robotWorld[bIdx].top() != b)
-    {
-        uint32_t tmp = robotWorld[bIdx].top();
-        robotWorld[tmp].push(tmp);
-
-        blockIndex[tmp] = tmp;
-    }
-
-    // We have made sure A and B are on the top of the stack
-    // Time to move A onto B
-    cout << "Time to move" << endl;
+    DEBUG_MSG("5. a: " << a << "; " << aIdx << "; b: " << b << "; bIdx: " << bIdx << endl);
 }
 
 void startGame(const string& str,
@@ -97,62 +138,67 @@ void startGame(const string& str,
 
     // Check if 'a' and 'b' are on the same stack
     isSameStack = isAandBonSameStack(blockIndex, a, b, aIdx, bIdx);
-    cout << "Str: " << str << "; a: " << str[5] << "; b: " << str[str.length() - 1] << "; aIdx: " << aIdx << "; bIdx: " << bIdx  << "; Same Stack: " << isSameStack << endl;
+
+    // If 'a' and 'b' are on the same stack, then it is a No Op
     if (!isSameStack)
     {
-        cout << "Let's move" << endl;
         moveBlock(robotWorld, blockIndex, a, b, aIdx, bIdx);
-        cout << "move over" << endl;
     }
-    else
+}
+
+void initializeRobotWorld(vector< stack<uint32_t> >& robotWorld,
+                          unordered_map<uint32_t, uint32_t>& blockIndex)
+{
+    for (uint32_t i = 0; i < robotWorld.size(); i++)
     {
-        // 'a' and 'b' are on the same stack. So No Op
+        robotWorld[i].push(i);
+        blockIndex[i] = i;
     }
-    cout << "Done Move Fn" << endl;
 }
 
 int main()
 {
     string str;
-    unordered_map<uint32_t, uint32_t> blockIndex;
+    string line;
 
     // IMP: Give the size for the vector so that it can be accessed using Index
     vector< stack<uint32_t> > robotWorld (8);
+    unordered_map<uint32_t, uint32_t> blockIndex;
 
-    string line;
-    while (getline(cin, line))
+    initializeRobotWorld(robotWorld, blockIndex);
+    // Discard the leading whitespace
+    while (getline(cin >> std::ws, line))
     {
         if (line != "quit")
         {
-            cout << "Start Game" << endl;
             startGame(line,  robotWorld, blockIndex);
-            cout << "Done Game" << endl;
+            DEBUG_MSG("Done Game" << endl);
         }
         else
         {
-            cout << "Quit Game" << endl;
+            DEBUG_MSG("Quit Game" << endl);
             break;
         }
-
-        cin.clear();
-        cin.ignore(10000,'\n'); 
     }
 
     // Go through the Vector, format and print it as output
-    cout << endl;
+    printBoard(robotWorld);
 
     /*
     {
         // Test Case:
         // Change blockIndex robotWorld
-        startGame("move 5 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
-        startGame("move 7 onto 1", blockIndex, robotWorld);
+        startGame("move 7 onto 1", robotWorld, blockIndex);
+        startGame("move 4 onto 7", robotWorld, blockIndex);
+        startGame("move 2 onto 3", robotWorld, blockIndex);
+        startGame("move 7 onto 5", robotWorld, blockIndex);
+        startGame("move 0 onto 5", robotWorld, blockIndex);
+        startGame("move 6 onto 2", robotWorld, blockIndex);
+        startGame("move 3 onto 6", robotWorld, blockIndex);
+        startGame("move 5 onto 3", robotWorld, blockIndex);
     }
     */
+
+    cout << endl;
+    return 0;
 }
