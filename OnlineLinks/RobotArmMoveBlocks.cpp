@@ -1,3 +1,7 @@
+/*
+ * Author: Pragad Thiru
+ */
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
@@ -5,7 +9,8 @@
 #include <string>
 using namespace std;
 
-#define DEBUG
+// Used to print out additionals log messages
+// #define DEBUG
 
 #ifdef DEBUG
 #define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
@@ -13,6 +18,11 @@ using namespace std;
 #define DEBUG_MSG(str) do { } while ( false )
 #endif
 
+// ------------------------------------------------------------------------------------------------
+// This function parses the input and gets the 'a' and 'b' value
+// Assumption: The input string matches the syntax "move a onto b" where 
+// 'a' and 'b' are valid numbers
+// ------------------------------------------------------------------------------------------------
 void parseInput(const string& command, uint32_t& a, uint32_t& b)
 {
     // Since the input will be on the exact format without incorrect commands
@@ -23,24 +33,41 @@ void parseInput(const string& command, uint32_t& a, uint32_t& b)
     b = command[command.length() - 1] - '0'; 
 }
 
+// ------------------------------------------------------------------------------------------------
+// This function prints the final result. This pops the element of the Vector
+// It prints and extra ',' at the end.
+// ------------------------------------------------------------------------------------------------
 void printBoard(vector< stack<uint32_t> >& robotWorld)
 {
-    cout << endl << "Robot World" << endl;
+    DEBUG_MSG("Robot World" << endl);
     for (uint32_t i = 0; i < robotWorld.size(); i++)
     {
         cout << i << ": ";
         // Have to empty the stack for printing it
-        while(!robotWorld[i].empty())
+        
+        // Taking care of the last ',' by print the first element and then adding
+        // ',' to the front and print the rest of the elements
+        if (!robotWorld[i].empty())
         {
-            cout << robotWorld[i].top() << ", ";
+            cout << robotWorld[i].top();
             robotWorld[i].pop();
         }
+
+        while(!robotWorld[i].empty())
+        {
+            cout << ", " << robotWorld[i].top();
+            robotWorld[i].pop();
+        }
+
         cout << endl;
     }
 
     cout << endl;
 }
 
+// ------------------------------------------------------------------------------------------------
+// This function checks whether 'a' and 'b' are on the same Stack to decide if it is No Op.
+// ------------------------------------------------------------------------------------------------
 bool isAandBonSameStack(unordered_map<uint32_t, uint32_t>& blockIndex,
                         uint32_t a,
                         uint32_t b,
@@ -73,6 +100,9 @@ bool isAandBonSameStack(unordered_map<uint32_t, uint32_t>& blockIndex,
     return (aIdx == bIdx);
 }
 
+// ------------------------------------------------------------------------------------------------
+// This function moves extra block back to their original position
+// ------------------------------------------------------------------------------------------------
 void moveOtherBlocksToInitialPosition(vector< stack<uint32_t> >& robotWorld,
                                       unordered_map<uint32_t, uint32_t>& blockIndex,
                                       uint32_t num,
@@ -89,6 +119,9 @@ void moveOtherBlocksToInitialPosition(vector< stack<uint32_t> >& robotWorld,
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// This function performs the actual moving of the blocks
+// ------------------------------------------------------------------------------------------------
 void moveBlock(vector< stack<uint32_t> >& robotWorld,
                unordered_map<uint32_t, uint32_t>& blockIndex,
                uint32_t a,
@@ -100,7 +133,6 @@ void moveBlock(vector< stack<uint32_t> >& robotWorld,
     // If not on top, move to respective index and update hash till a and b comes to top
     // Once a and b are at the top, move a ontop b
 
-    // TODO: Cleanup code in the form of a function
     // Check if the Vector is empty before checking the top(). This could result in SEG Fault
     DEBUG_MSG("1. a: " << a << "; " << aIdx << "; b: " << b << "; bIdx: " << bIdx << endl);
 
@@ -123,6 +155,9 @@ void moveBlock(vector< stack<uint32_t> >& robotWorld,
     DEBUG_MSG("5. a: " << a << "; " << aIdx << "; b: " << b << "; bIdx: " << bIdx << endl);
 }
 
+// ------------------------------------------------------------------------------------------------
+// This is the main functions that performs the Robot move of the blocks
+// ------------------------------------------------------------------------------------------------
 void startGame(const string& str,
                vector< stack<uint32_t> >& robotWorld,
                unordered_map<uint32_t, uint32_t>& blockIndex)
@@ -146,6 +181,9 @@ void startGame(const string& str,
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// This function initializes the Vector with initial values.
+// ------------------------------------------------------------------------------------------------
 void initializeRobotWorld(vector< stack<uint32_t> >& robotWorld,
                           unordered_map<uint32_t, uint32_t>& blockIndex)
 {
@@ -156,6 +194,9 @@ void initializeRobotWorld(vector< stack<uint32_t> >& robotWorld,
     }
 }
 
+// ------------------------------------------------------------------------------------------------
+// Main function 
+// ------------------------------------------------------------------------------------------------
 int main()
 {
     string str;

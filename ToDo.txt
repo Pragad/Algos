@@ -1,0 +1,20 @@
+1. Two Bit problems
+2. Binary Tree with Iterators ++
+    Balancing a BST
+    AVL and Red Black Trees
+3. Spin Locks and Coursera
+4. Dynamic Programming
+5. Graphs BFS and DFS
+6. Multi threading
+7. Smart Pointers
+8. Concurrency and Non blocking IO
+9. IPC and Parallel Programming
+10. Draw stack / heap of a program run
+
+
+http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
+1) Find Cycle in a Graph
+2) Find a sub matrix that sums to a value
+3) implementing a function that can concatenate two null terminated strings together in C
+4) build a simple regex matcher
+5) write code that finds the set of all sub-sets of a set
