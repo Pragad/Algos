@@ -1,3 +1,7 @@
+#include <iostream>
+using namespace std;
+
+/*
 void bfs(vertex st)
 {
     vector <vertex> vertQue;
@@ -32,4 +36,22 @@ void dfs(vertex st)
             dfs(itr);
         }
     }
+}
+*/
+
+struct Node
+{
+    int data;
+    vector<Node*> links;
+};
+
+class Graph
+{
+    vector<Node*> nodes;
+};
+
+int main()
+{
+    cout << endl;
+    return 0;
 }
