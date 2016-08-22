@@ -18,3 +18,5 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 3) implementing a function that can concatenate two null terminated strings together in C
 4) build a simple regex matcher
 5) write code that finds the set of all sub-sets of a set
+6) FizzBuzz
+7) Functors
