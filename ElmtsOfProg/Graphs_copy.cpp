@@ -3,54 +3,71 @@
 using namespace std;
 
 // This is a Bi-Directional Graph
+// http://stackoverflow.com/questions/39095527/how-to-achieve-forward-declaration-of-template-class
+
+template <typename E>
 class Graph
 {
     private:
+        template<typename T>
         class Vertex; // Forward Declaration
 
-        vector<Vertex> vertices;
+        vector<Vertex <E> > vertices;
 
         class Edge
         {
             public:
-                Vertex& _orig;
+                Vertex<E>& _orig;
 
-                Vertex& _dest;
+                Vertex<E>& _dest;
                 uint32_t _weight;
 
-                Edge(Vertex& orig, Vertex& dest, uint32_t weight) : _orig(orig),
-                                                                    _dest(dest),
-                                                                    _weight(weight) { }
+                Edge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight) : _orig(orig),
+                                                                          _dest(dest),
+                                                                          _weight(weight) { }
 
-                Vertex& getOrig() { return _orig; }
-                Vertex& getDest() { return _dest; }
+                Vertex<E>& getOrig() { return _orig; }
+                Vertex<E>& getDest() { return _dest; }
                 uint32_t getWeight() { return _weight; }
         };
 
+        template<typename T>
         class Vertex
         {
             public:
-                uint32_t _id;
-                string _data;
+                T _data;
                 vector<Edge> _edges;
 
-                Vertex(uint32_t id) : _id(id) { }
+                Vertex(T data) : _data(data) { }
 
                 void addEdgeToVertex(Edge& edge)
                 {
                     _edges.push_back(edge);
                 }
+
+                void printEdgesOfVertex()
+                {
+                    cout << _data << ":" << endl;
+                    for(Edge e : _edges)
+                    {
+                        cout << endl;
+                    }
+                }
         };
 
     public:
-        void addEdge(Vertex& orig, Vertex& dest, uint32_t weight)
+        void addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight)
         {
             Edge edge(orig, dest, weight);
             orig.addEdgeToVertex(edge);
             dest.addEdgeToVertex(edge);
         }
-};
 
+        void printEdges(Vertex<E>& vert)
+        {
+            vert.printEdgesOfVertex();
+        }
+};
 
 int main()
 {

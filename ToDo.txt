@@ -20,3 +20,7 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 5) write code that finds the set of all sub-sets of a set
 6) FizzBuzz
 7) Functors
+
+VIM:
+1. FuzzySearch for all files
+2. Easier way to fill function names
