@@ -121,10 +121,46 @@ class Graph
 
         void addEdge(E& orig, E& dest, uint32_t weight)
         {
-            // Compute the Hash in the constructor
-            Vertex<E> v1(orig);
-            Vertex<E> v2(dest);
+            Vertex<E> v1;
+            Vertex<E> v2;
 
+            // Get Vertex from 'orig'
+            uint32_t hashVal1 = std::hash<E>()(orig);
+            auto itr1 = _verticesMap.find(hashVal1);
+            if (itr1 != _verticesMap.end())
+            {
+                v1 = _vertices[itr1->second];
+            }
+            else
+            {
+                // We don't have this Vertex. So add this Vertex first
+                DEBUG_MSG("Adding Vertex 1 to Graph" << endl);
+                addVertex(orig);
+
+                // The new Vertex will be the last element in the Vector
+                addEdge(orig, dest, weight);
+                v1 = _vertices[_vertices.size() - 1];
+            }
+
+            // Get Vertex from 'dest'
+            uint32_t hashVal2 = std::hash<E>()(dest);
+            auto itr2 = _verticesMap.find(hashVal2);
+            if (itr2 != _verticesMap.end())
+            {
+                v2 = _vertices[itr2->second];
+            }
+            else
+            {
+                // We don't have this Vertex. So add this Vertex first
+                DEBUG_MSG("Adding Vertex 2 to Graph" << endl);
+                addVertex(dest);
+
+                // The new Vertex will be the last element in the Vector
+                addEdge(orig, dest, weight);
+                v2 = _vertices[_vertices.size() - 1];
+            }
+
+            // If we are here, we will have both v1 and v2
             addEdge(v1, v2, weight);
         }
 
