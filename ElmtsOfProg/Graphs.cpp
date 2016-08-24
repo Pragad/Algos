@@ -13,21 +13,16 @@ using namespace std;
 #define DEBUG_MSG(str) do { } while ( false )
 #endif
 
-// This is a Bi-Directional Graph
+// This is a Undirected Graph
+// Link on how to make use of "template"s
 // http://stackoverflow.com/questions/39095527/how-to-achieve-forward-declaration-of-template-class
 //      If you use Graph like Graph<std::string> g;, then the template parameter E will be std::string, the member vertices will be vector<Vertex<std::string>>.
 //      Then in Vertex, _data will be std::string, _edges will be vector<Edge<std::string>>
 
-template <typename E>
-class Graph
-{
-    private:
-        template<typename T>
-        class Vertex; // Forward Declaration
-
+// Graph Class
         // Have a vector to store all Vertices of the Graph
         // MAP:
-        //      The map is used to quickly tell if a Vertices is present or not based on the the
+        //      The map is used to quickly tell if Vertex is present or not based on the the
         //      data. 
         //      Key: hash(data) given to Vertex
         //      Val: Place where Vertex is stored on the Vector
@@ -37,7 +32,14 @@ class Graph
         //
         // The map also gives where the Vertex is stored in the vector
 // http://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
-// Check the above link for properly doing it
+// TODO: Check the above link for properly doing it
+template <typename E>
+class Graph
+{
+    private:
+        template<typename T>
+        class Vertex; // Forward Declaration
+
         vector<Vertex <E> > _vertices;
         unordered_map<uint32_t, uint32_t> _verticesMap;
 
@@ -91,17 +93,19 @@ class Graph
                 Vertex(uint32_t id, T data) : _id(id),
                                               _data(data) { }
 
+                // This function adds an Edge to the given vertex
                 void addEdgeToVertex(Edge& edge)
                 {
                     _edges.push_back(edge);
                 }
 
+                // This utility function prints all edges of a Vertex
                 void printEdgesOfVertex()
                 {
-                    cout << _data << ":" << endl;
+                    cout << "NODE: " << _data << "'s EDGES:" << endl;
                     for(Edge e : _edges)
                     {
-                        cout << e.getDest()._data << " : " << e.getWeight() << endl;
+                        cout << e.getOrig()._data << "--" << e.getDest()._data << "::" << e.getWeight() << endl;
                     }
                 }
         };
@@ -112,75 +116,43 @@ class Graph
         //      - print all Edges of a Vertex
         //      - print the Graph
     public:
+        // AddEdge() when we have both the Vertices
         void addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight)
         {
-            Edge edge(orig, dest, weight);
-            orig.addEdgeToVertex(edge);
-            dest.addEdgeToVertex(edge);
+            //DEBUG_MSG("AddEdge(): Orig: " << orig._data << "; Dest: " << dest._data << endl);
+            Edge edge1(orig, dest, weight);
+            orig.addEdgeToVertex(edge1);
+
+            Edge edge2(dest, orig, weight);
+            dest.addEdgeToVertex(edge2);
         }
 
+        // AddEdge() when we just have the data of Vertices
         void addEdge(E& orig, E& dest, uint32_t weight)
         {
-            Vertex<E> v1;
-            Vertex<E> v2;
-
-            // Get Vertex from 'orig'
-            uint32_t hashVal1 = std::hash<E>()(orig);
-            auto itr1 = _verticesMap.find(hashVal1);
-            if (itr1 != _verticesMap.end())
-            {
-                v1 = _vertices[itr1->second];
-            }
-            else
-            {
-                // We don't have this Vertex. So add this Vertex first
-                DEBUG_MSG("Adding Vertex 1 to Graph" << endl);
-                addVertex(orig);
-
-                // The new Vertex will be the last element in the Vector
-                addEdge(orig, dest, weight);
-                v1 = _vertices[_vertices.size() - 1];
-            }
-
-            // Get Vertex from 'dest'
-            uint32_t hashVal2 = std::hash<E>()(dest);
-            auto itr2 = _verticesMap.find(hashVal2);
-            if (itr2 != _verticesMap.end())
-            {
-                v2 = _vertices[itr2->second];
-            }
-            else
-            {
-                // We don't have this Vertex. So add this Vertex first
-                DEBUG_MSG("Adding Vertex 2 to Graph" << endl);
-                addVertex(dest);
-
-                // The new Vertex will be the last element in the Vector
-                addEdge(orig, dest, weight);
-                v2 = _vertices[_vertices.size() - 1];
-            }
-
-            // If we are here, we will have both v1 and v2
-            addEdge(v1, v2, weight);
+            addEdge(_vertices[addVertex(orig)], _vertices[addVertex(dest)], weight);
         }
 
         // IMP: Add template arguement
-        void addVertex(E data)
+        // This functions returns the index of the vertex
+        uint32_t addVertex(E data)
         {
             uint32_t hashVal = std::hash<E>()(data);
             auto itr = _verticesMap.find(hashVal);
 
             if (itr != _verticesMap.end())
             {
-                DEBUG_MSG("Node Already Present at: " << itr->second << endl);
-                return;
+                //DEBUG_MSG("Node Already Present at: " << itr->second << endl);
+                return itr->second;
             }
 
             Vertex<E> vert(hashVal, data);
             _vertices.push_back(vert);
 
-            DEBUG_MSG("Hash Val for: " << data << " : " << hashVal << endl);
+            //DEBUG_MSG("Hash Val for: " << data << " : " << hashVal << endl);
             _verticesMap[hashVal] =  _vertices.size() - 1;
+
+            return _vertices.size() - 1;
         }
 
         void printEdges(Vertex<E>& vert)
@@ -188,6 +160,7 @@ class Graph
             vert.printEdgesOfVertex();
         }
 
+        // Utility function to print the complete graph
         void printGraph()
         {
             for (auto vert : _vertices)
@@ -199,16 +172,53 @@ class Graph
 
 int main()
 {
+    /*
+     *      b ----- d ------- f
+     *    /       /  \       /
+     *  a       /      \    /
+     *    \   /         \  /
+     *      c ---------- e
+     */
+
     Graph<string> g;
     g.addVertex("A");
     g.addVertex("B");
     g.addVertex("C");
     g.addVertex("D");
+    g.addVertex("E");
+    g.addVertex("F");
 
     string a1 = "A";
     string b1 = "B";
     g.addEdge(a1, b1, 1);
 
+    string a2 = "A";
+    string b2 = "C";
+    g.addEdge(a2, b2, 2);
+
+    string a3 = "B";
+    string b3 = "D";
+    g.addEdge(a3, b3, 3);
+
+    string a4 = "C";
+    string b4 = "D";
+    g.addEdge(a4, b4, 4);
+
+    string a5 = "C";
+    string b5 = "E";
+    g.addEdge(a5, b5, 5);
+
+    string a6 = "D";
+    string b6 = "E";
+    g.addEdge(a6, b6, 6);
+
+    string a7 = "D";
+    string b7 = "F";
+    g.addEdge(a7, b7, 7);
+
+    string a8 = "E";
+    string b8 = "F";
+    g.addEdge(a8, b8, 8);
 
     g.printGraph();
     cout << endl;
