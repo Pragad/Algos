@@ -14,6 +14,9 @@ using namespace std;
 #endif
 
 // This is a Undirected Graph
+// http://codereview.stackexchange.com/questions/36464/coding-and-printing-a-graph
+// http://stackoverflow.com/questions/5493474/graph-implementation-c
+//
 // Link on how to make use of "template"s
 // http://stackoverflow.com/questions/39095527/how-to-achieve-forward-declaration-of-template-class
 //      If you use Graph like Graph<std::string> g;, then the template parameter E will be std::string, the member vertices will be vector<Vertex<std::string>>.
@@ -155,6 +158,27 @@ class Graph
             return _vertices.size() - 1;
         }
 
+        uint32_t getIdOfVertex(const E& data)
+        {
+            return std::hash<E>()(data);
+        }
+
+        // TODO: This should be return by pointer instead of value
+        Vertex<E> getVertex(const E& data)
+        {
+            auto itr = _verticesMap.find(getIdOfVertex(data));
+
+            if (itr != _verticesMap.end())
+            {
+                return _vertices[itr->second];
+            }
+            else
+            {
+                Vertex<E> vert(data);
+                return vert;
+            }
+        }
+
         void printEdges(Vertex<E>& vert)
         {
             vert.printEdgesOfVertex();
@@ -169,6 +193,18 @@ class Graph
             }
         }
 };
+
+//void printGraphBFS(const Graph& graph, const Vertex& st)
+void printGraphBFS(const Graph& graph)
+{
+
+}
+
+//void printGraphDFS(const Graph& graph, const Vertex& st)
+void printGraphDFS(const Graph& graph)
+{
+
+}
 
 int main()
 {
@@ -221,6 +257,11 @@ int main()
     g.addEdge(a8, b8, 8);
 
     g.printGraph();
+
+    
+    printGraphBFS(g, );
+    printGraphDFS(g, );
+
     cout << endl;
     return 0;
 }
