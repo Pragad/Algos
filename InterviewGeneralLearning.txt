@@ -80,6 +80,10 @@ NETWORKS
 11. What is NTP and SNTP
 12. What is TLS and SSL
 13. What is DHCP
+14. Sliding Window Protocol
+15. What is LDAP
+16. What is Samba
+17. What is SMB
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
 0.
@@ -1749,6 +1753,8 @@ https://technet.microsoft.com/en-us/library/cc780469(v=ws.10).aspx
     KDC/user session key.
     The KDC and the user share a secret encryption key as well, which is used, for example, to encrypt the message to the client containing a session key.
 
+http://sprabhu.blogspot.com/2013/04/ntlmauthentication-and-signing.html
+
 5b.
 NTLM vs Kerberos
 http://sharepoint.stackexchange.com/questions/13400/ntlm-vs-kerberos
@@ -1923,3 +1929,67 @@ What is DHCP
     - It uses UDP ports
     - Client sends a BROADCAST message to find the DHCP server
 
+14.
+Sliding Window Protocol
+http://computing.dcu.ie/~humphrys/Notes/Networks/data.sliding.html
+https://www.techopedia.com/definition/869/sliding-window
+https://www.youtube.com/watch?v=EHaSQBOrYDI
+
+    Sliding window is a technique for controlling transmitted data packets between two network computers where reliable and sequential delivery of data packets is required, such as when using the Data Link Layer (OSI model) or Transmission Control Protocol (TCP).
+
+    In the sliding window technique, each data packet (for most data link layers) and byte (in TCP) includes a unique consecutive sequence number, which is used by the receiving computer to place data in the correct order.
+    The objective of the sliding window technique is to use the sequence numbers to avoid duplicate data and to request missing data.
+
+15.
+What is LDAP
+http://stackoverflow.com/questions/239385/what-is-ldap-used-for
+
+    Ldap Server + Ldap Protocol is a data store, or a database.
+    It's not relational, but it's just a place to store data, and it's optimized to be efficient at reads more than writes.
+
+    Why LDAP?
+        When you have a task that requires ¿write/update once, read/query many times¿, you might consider using LDAP.
+        LDAP is designed to provide extremely fast read/query performance for a large scale of dataset.
+        Typically you want to store only a small piece of information for each entry.rThe add/delete/update performance is relatively slower compared with read/query because the assumption is that you don¿t do ¿update¿ that often.
+
+        Imagine you have a website that has a million registered users with thousands of page requests per second.
+        Without LDAP, every time users click a page, even for static page viewing, you will probably need to interact with your database to validate the user ID and its digital signature for this login session.
+        Obviously, the query to your database for user-validation will become your bottleneck.
+        By using LDAP, you can easily offload the user validation and gain significant performance improvement.
+        Essentially, in this example, LDAP is another optimization layer outside your database to enhance performance, not replacing any database functions. 
+
+16.
+What is Samba
+https://www.samba.org/samba/what_is_samba.html
+
+    "Samba is an Open Source/Free Software suite that provides seamless file and print services to SMB/CIFS clients."
+    Samba is freely available, unlike other SMB/CIFS implementations, and allows for interoperability between Linux/Unix servers and Windows-based clients.
+
+17.
+What is SMB
+https://www.samba.org/cifs/docs/what-is-smb.html
+
+    SMB is a protocol for sharing files, printers, serial ports, and communications abstractions such as named pipes and mail slots between computers. 
+
+    Clients connect to servers using TCP/IP (actually NetBIOS over TCP/IP as specified in RFC1001 and RFC1002), NetBEUI or IPX/SPX. Once they have established a connection, clients can then send commands (SMBs) to the server that allow them to access shares, open files, read and write files, and generally do all the sort of things that you want to do with a file system.
+
+AN EXAMPLE SMB EXCHANGE
+     - The protocol elements (requests and responses) that clients and servers exchange are called SMBs.
+     - They have a specific format that is very similar for both requests and responses. Each consists of a fixed size header portion, followed by a variable sized parameter and data portion.
+
+     NEGOTIATE:
+        - The client sends a negprot SMB to the server, listing the protocol dialects that it understands.
+        - The server responds with the index of the dialect that it wants to use, or 0xFFFF if none of the dialects was acceptable.
+
+     SESSION SETUP:
+        - The client can proceed to logon to the server, if required.
+        - They do this with a sesssetupX SMB.
+        - The response indicates whether or not they have supplied a valid username password pair and if so, can provide additional information.
+        - One of the most important aspects of the response is the UID of the logged on user.
+        - This UID must be submitted with all subsequent SMBs on that connection to the server
+
+     TREE CONNECT:
+        - Once the client has logged on (and in older protocols-Core and CorePlus-you cannot logon), the client can proceed to connect to a tree.
+        - The client sends a tcon or tconX SMB specifying the network name of the share that they wish to connect to, and if all is kosher, the server responds with a TID that the client will use in all future SMBs relating to that share.
+
+     Having connected to a tree, the client can now open a file with an open SMB, followed by reading it with read SMBs, writing it with write SMBs, and closing it with close SMBs. 
