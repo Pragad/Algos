@@ -28,6 +28,7 @@ using namespace std;
  *
  * PROBLEM 5. Find the max sub array sum
  * int      maxSumSubArray(int arr[], int num)
+ * void     maxSumSubSequence(int arr[], int num)
  *
  * PROBLEM 5b. Find the max sub array product
  * int maxProduct(vector<int>& nums)
@@ -531,6 +532,39 @@ int maxSumSubArray(int arr[], int num)
     }
 
     return maxSum;
+}
+
+void maxSumSubSequence(int arr[], int num)
+{
+    // This can be Zero as we always do curSum + arr[i] Before comparing with max
+    int curSum = 0;
+    int stIdx = 0;
+    int stIdx2 = 0;
+    int endIdx = 0;
+
+    // VERY IMP. Else it will fail when just {-1} is passed.
+    int maxSum = std::numeric_limits<std::int32_t>::min();
+
+    for (uint32_t i = 0; i < num; i++)
+    {
+        if (arr[i] > (arr[i] + curSum))
+        {
+            stIdx = i;
+            curSum = arr[i];
+        }
+        else
+        {
+            curSum = arr[i] + curSum;
+        }
+                
+        if (maxSum < curSum)
+        {
+            stIdx2 = stIdx;
+            endIdx = i;
+            maxSum = curSum;
+        }
+    }
+    cout << "StIdx: " << stIdx2 << "; EndIdx: " << endIdx << endl;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2774,14 +2808,16 @@ int main()
 
     // Problem 5: Subarrays and Sum
     {
-        //int arr1[] = {-2,-3,4,-1,-2,1,5,-3};
-        int arr1[] = {-2,-3,-4,-1,-2,-1,-5,-3};
+        int arr1[] = {-2,-3,4,-1,-2,1,5,-3};
+        //int arr1[] = {-2,-3,-4,-1,-2,-1,-5,-3};
         int arr2[] = {15, 2, 4, 8, 9, 5, 10, 13, 23};
         int arr3[] = {5, 6, 1, -2, -4, 3, 1, 5};
         int arr4[] = {4, 1, -3, 2, 6 , -5};
         vector<int> arr5 = {6, 5, 10, 40, 50, 35};
 
         cout << "Max Sum: " << maxSumSubArray(arr1, sizeof(arr1) / sizeof(arr1[0])) << endl;
+        cout << "Max Sum SubSeq:: " << endl;
+        maxSumSubSequence(arr1, sizeof(arr1) / sizeof(arr1[0]));
         cout << "Max Prod: " << maxProduct(std::vector<int> (arr1, arr1 + sizeof arr1 / sizeof arr1[0])) << endl;
 
         subArrayWithSum(arr2, sizeof(arr2) / sizeof(arr2[0]), 23);
@@ -2805,11 +2841,9 @@ int main()
                           {9, 10, 11, 12},
                           {13, 14, 15, 16},
                           {17, 18, 19, 20}};
-        /*
-        int twoD[3][3] = {{1, 2, 3},
-                          {4, 5, 6},
-                          {7, 8, 9}};
-                          */
+        //int twoD[3][3] = {{1, 2, 3},
+        //                  {4, 5, 6},
+        //                  {7, 8, 9}};
 
         printMatrixDiagonally(twoD);
         cout << endl;
@@ -2838,13 +2872,11 @@ int main()
     // Problem 9: Remove duplicate int from a number
     {
         cout << largestNumByRemovingDup(122334) << endl;
-        /*
-        cout << largestNumByRemovingDup(433221) << endl << endl;
-        cout << largestNumByRemovingDup(122334) << endl;
-        cout << largestNumByRemovingDup(43332221) << endl << endl;
-        cout << largestNumByRemovingDup(122334) << endl;
-        cout << largestNumByRemovingDup(4333222) << endl;
-        */
+        //cout << largestNumByRemovingDup(433221) << endl << endl;
+        //cout << largestNumByRemovingDup(122334) << endl;
+        //cout << largestNumByRemovingDup(43332221) << endl << endl;
+        //cout << largestNumByRemovingDup(122334) << endl;
+        //cout << largestNumByRemovingDup(4333222) << endl;
     }
 
     // Problem 10. Find equilibrium Index
@@ -3112,6 +3144,7 @@ int main()
         cout << findAngleBtwnHourMinute(7, 40) << endl;
         cout << findAngleBtwnHourMinute(7, 20) << endl;
     }
+
     cout << endl;
     return 0;
 }
