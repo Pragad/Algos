@@ -32,6 +32,7 @@ Genral Programming / OOPS Concepts
 25. Problems with Multiple Inheritence
 26. Static Linking vs Dynamic Linking
 27. How to resolve Hash Collisions
+28. Multithreading Best Practices
 -----------------------------------------------
 UML / DESIGN Questions
 1. PArking lot  
@@ -60,7 +61,7 @@ OS NOTES
 6. Multi Processor vs Multi Core System
 7. What is a File descriptor
 8. Why can't RAM be replaced by Cache memory
-
+9. How to avoid deadlocks
 -----------------------------------------------
 NETWORKS
 1. How TCP/IP Network works
@@ -84,6 +85,13 @@ NETWORKS
 15. What is LDAP
 16. What is Samba
 17. What is SMB
+18. Ports vs Socket
+-----------------------------------------------
+MISC
+1. What is REST Servcie
+1b. GET vs POST
+2. What is a Websocket
+
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
 0.
@@ -913,6 +921,29 @@ How to resolve Hash Collisions
        - If element present, use a second hash function. 
        - Say first hash function gave (5) and element is present. Second hash function gave 8
          Next go to 13, 21, 29 etc to find the first free spot
+
+28.
+Multithreading Best Practices
+stackoverflow.com/questions/660621/threading-best-practices
+
+    Immutability is great for multi-threading. Functional programming works well concurrently partly due to the emphasis on immutability.
+    Use locks when you access mutable shared data, both for reads and writes.
+    Don't try to go lock-free unless you really have to. Locks are expensive, but rarely the bottleneck.
+    Monitor.Wait should almost always be part of a condition loop, waiting for a condition to become true and waiting again if it's not.
+    Try to avoid holding locks for longer than you need to.
+    If you ever need to acquire two locks at once, document the ordering thoroughly and make sure you always use the same order.
+    Document the thread-safety of your types. Most types don't need to be thread-safe, they just need to not be thread hostile (i.e. "you can use them from multiple threads, but it's your responsible for taking out locks if you want to share them)
+    Don't access the UI (except in documented thread-safe ways) from a non-UI thread. In Windows Forms, use Control.Invoke/BeginInvoke
+
+    So the first step is: replace the implementation with one that doesn't use multiple threads at all.
+
+    Then carefully put threading back in if, and only if, you discover a genuine need for it, when you've figured out some very simple safe ways to do so. A non-threaded implementation that works reliably is far better than a broken threaded implementation.
+
+    When you're ready to start, favour designs that use thread-safe queues to transfer work items between threads and take care to ensure that those work items are accessed only by one thread at a time.
+
+    Try to avoid just spraying lock blocks around your code in the hope that it will become thread-safe. It doesn't work. Eventually, two code paths will acquire the same locks in a different order, and everything will grind to a halt (once every two weeks, on a customer's server). This is especially likely if you combine threads with firing events, and you hold the lock while you fire the event - the handler may take out another lock, and now you have a pair of locks held in a particular order. What if they're taken out in the opposite order in some other situation?
+
+    In short, this is such a big and difficult subject that I think it is potentially misleading to give a few pointers in a short answer and say "Off you go!" - I'm sure that's not the intention of the many learned people giving answers here, but that is the impression many get from summarised advice.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 1. PArking lot  
@@ -1468,6 +1499,25 @@ https://www.quora.com/Why-cant-RAM-be-replaced-by-Cache-memory
     Then there's the logistics of fitting all that memory on the die of the CPU.
     Part of the reason why CPU cache memory is so fast is because it's directly accessible by the CPU, and doesn't have to be bussed, unlike RAM or HDD/SSD memory.
     Increasing cache size also proportionally increases latency, which defeats the advantage of the cache.
+
+9.
+How to avoid deadlocks
+http://stackoverflow.com/questions/1057054/how-to-avoid-deadlocks
+
+    One way is to use a hierarchy of critical sections.
+    If you ensure that a parent critical section is never entered within one of its children, deadlocks cannot happen.
+    The difficulty is to enforce this hierarchy.
+
+    1. Mutual exclusion condition: a resource that cannot be used by more than one process at a time
+        A limited number of a particular resource. In the case of a monitor in C# (what you use when you employ the lock keyword), this limited number is one, since a monitor is a mutual-exclusion lock (meaning only one thread can own a monitor at a time). 
+
+    2. Hold and wait condition: processes already holding resources may request new resources
+    3. No preemption condition: No resource can be forcibly removed from a process holding it, resources can be released only by the explicit action of the process
+         this means that one thread can't force another thread to release a lock. 
+
+    4. Circular wait condition: two or more processes form a circular chain where each process waits for a resource that the next process in the chain holds
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 NETWORKS:
 1.
@@ -1661,16 +1711,17 @@ https://www.youtube.com/watch?v=kp5d8Yv3-0c
     1. Client attempts to logon into the network.
         a. Client creates an AUTHENTICATOR with client's info. 
            It is valid for a short time
+           IMP: This prevents from someone get hold of the AUTHENTICATOR and using it
         b. A portion of AUTHENTICATOR is unencrypted.
         c. A portion is ENCRYPTED using USER's PWD
+           User's Pwd is used as an ENCRYPTION Key
         d. VERY IMP: PASSWORD is not sent. Instead it is used as a key
 
-    2. Client sends  the AUTHENTICATOR to KDC
+    2. Client sends the AUTHENTICATOR to KDC
     3. KDC sees the username and uses the PASSWORD that KDC has to decrpt the secured portion
        of the Authenticator
     4. If SUCCESS, then NO NEED for AUTHENTICATOR any more
     5. Use KDC's key and generate a TGC (Ticket Granting Ticket).
-       TG
        Only KDC knows the key. So no one can decrypt it.
     6. Send the TGC to client.
 
@@ -1686,6 +1737,7 @@ https://www.youtube.com/watch?v=kp5d8Yv3-0c
 
 https://www.youtube.com/watch?v=kp5d8Yv3-0c
     - Can be used only when DOMAIN is used
+    - The client and the server should be on the same domain
     - If we directly use the IP address then the CLIENT does not go to the DC to resolve
       the Domain's IP address. Instead it goes directly to the Server and KDC does not
       come in the picture
@@ -1993,3 +2045,72 @@ AN EXAMPLE SMB EXCHANGE
         - The client sends a tcon or tconX SMB specifying the network name of the share that they wish to connect to, and if all is kosher, the server responds with a TID that the client will use in all future SMBs relating to that share.
 
      Having connected to a tree, the client can now open a file with an open SMB, followed by reading it with read SMBs, writing it with write SMBs, and closing it with close SMBs. 
+
+18.
+Ports vs Socket
+http://stackoverflow.com/questions/152457/what-is-the-difference-between-a-port-and-a-socket
+
+    Think of your machine as an apartment building:
+        A port is an apartment number.
+        A socket is the door of an apartment. 
+
+    A socket represents a single connection between two network applications.
+    A socket is one end-point of a two-way communication link between two programs running on the network
+    SOCKET:
+    - A network socket is an endpoint of a connection across a computer network.
+
+    PORT:
+    - A port represents an endpoint or "channel" for network communications.
+      Port numbers allow different applications on the same computer to utilize network resources without interfering with each other.
+
+      A port is part of the address in the TCP and UDP protocols.
+      It is used to help the OS identify which application should get the data that is received.
+      An OS has to support ports to support TCP and UDP because ports are an intrinsic part of TCP and UDP.
+
+    A socket consists of three things:
+        An IP address
+        A transport protocol
+        A port number
+
+    A port is a number between 1 and 65535 inclusive that signifies a logical gate in a device. Every connection between a client and server requires a unique socket.
+
+    For example:
+        1030 is a port.
+        (10.1.1.2 , TCP , port 1030) is a socket.
+
+
+
+-----------------------------------------------
+MISC
+1.
+What is REST Servcie
+
+A REST API defines a set of functions which developers can perform requests and receive responses via HTTP protocol such as GET and POST.
+
+An API can be considered “RESTful” if it has the following features (not a complete list just the main ones):
+    - Client–server – The client handles the front end the server handles the backend and can both be replaced independently of each other.
+    - Stateless – No client data is stored on the server between requests and session state is stored on the client.
+    - Cacheable – Clients can cache response (just like browsers caching static elements of a web page) to improve performance.
+
+1b.
+GET vs POST
+http://stackoverflow.com/questions/11229206/difference-between-get-and-post-method-in-comparision-with-http-and-rest
+
+    GET should be used to retrieve a resource. This operation should be idempotent, meaning it should not change any state on the server.
+
+    POST should be used to add new information to the server. This is usually performed on a URL that represents a "container" of resources. The POST will add a new resource to this container.
+
+    PUT should be used to update an existing resource.
+
+    DELETE should be obvious.
+
+2.
+What is a Websocket
+http://stackoverflow.com/questions/2681267/what-is-the-fundamental-difference-between-websockets-and-pure-tcp
+
+    It's easier to communicate via TCP sockets when you're working within an intranet boundary, since you likely have control over the machines on that network and can open ports suitable for making the TCP connections.
+
+    Over the internet, you're communicating with someone else's server on the other end. They are extremely unlikely to have any old socket open for connections. Usually they will have only a few standard ones such as port 80 for HTTP or 443 for HTTPS. So, to communicate with the server you are obliged to connect using one of those ports.
+
+    Given that these are standard ports for web servers that generally speak HTTP, you're therefore obliged to conform to the HTTP protocol, otherwise the server won't talk to you. The purpose of web sockets is to allow you to initiate a connection via HTTP, but then negotiate to use the web sockets protocol (assuming the server is capable of doing so) to allow a more "TCP socket"-like communication stream.
+

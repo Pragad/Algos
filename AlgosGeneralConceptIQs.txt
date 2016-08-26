@@ -27,6 +27,10 @@
 21. Merge Overlapping intervals
 22. Finding all subsets of a Vector of Vector
 23. Converting Recursive Algorithm to Iterative
+24. Balancing Binary Search Trees
+25. Balancing a Heap
+26. n way merge
+----------------------------------------------------------------------------------------------------
 
 1.
 Merge Sort vs Quick Sort
@@ -562,4 +566,99 @@ http://programmers.stackexchange.com/questions/194646/what-methods-are-there-to-
 
         stack.push(second);
         stack.push(first);
+
+24.
+Balancing Binary Search Trees on a whole
+http://stackoverflow.com/questions/14001676/balancing-a-bst
+
+    Day-Stout-Warren:
+    1. Using tree rotations, convert the tree into a degenerate linked list.
+    2. By applying selective rotations to the linked list, convert the list back into a completely balanced tree.
+
+
+    The solution is simple - build an "empty" complete binary tree, and iterate the new tree and the input tree (simultaneously) in inorder-traversal to fill the complete tree.
+    When you are done, you have the most balanced tree you can get, and time complexity of this approach is O(n)
+
+24b.
+Balancing Binary Search Trees after each insertion
+How AVL trees gets self balanced
+http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
+
+    Left Rotation and Right Rotation
+        Following are two basic operations that can be performed to re-balance a BST without violating the BST property (keys(left) < key(root) < keys(right)).
+        1) Left Rotation
+        2) Right Rotation
+
+        T1, T2 and T3 are subtrees of the tree rooted with y (on left side) 
+        or x (on right side)           
+                        y                               x
+                       / \     Right Rotation          /  \
+                      x   T3   – – – – – – – >        T1   y 
+                     / \       < - - - - - - -            / \
+                    T1  T2     Left Rotation            T2  T3
+        Keys in both of the above trees follow the following order 
+              keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
+        So BST property is not violated anywhere.
+
+24c.
+B+ Tree vsRed Black Trees vs AVL trees
+http://stackoverflow.com/questions/13852870/red-black-tree-over-avl-tree
+http://stackoverflow.com/questions/1589556/when-to-choose-rb-tree-b-tree-or-avl-tree
+
+    - B-tree when you're managing more than thousands of items and you're paging them from a disk or some slow storage medium.
+    - RB tree when you're doing fairly frequent inserts, deletes and retrievals on the tree.
+    - AVL tree when your inserts and deletes are infrequent relative to your retrievals.
+
+    1. What's the main aim we are chossing Red black tree instead of Avl tree?
+        Both red-black trees and AVL trees are the most commonly used balanced binary search trees and they support insertion, deletion and look-up in guaranteed O(logN) time.
+        However, there are following points of comparison between the two:
+
+            1. AVL trees are more rigidly balanced and hence provide faster look-ups. Thus for a look-up intensive task use an AVL tree.
+            2. For an insert intensive taks, use a Red-Black tree.
+            3. AVL trees store the balance factor at each node.
+               This takes O(N) extra space.
+               However, if we know that the keys that will be inserted in the tree will always be greater than zero, we can use the sign bit of the keys to store the colour information of a red-black tree.
+               Thus, in such cases red-black tree takes O(1) extra space.
+            4. In general, the rotations for an AVL tree are harder to implement and debug than that for a Red-Black tree.
+
+http://stackoverflow.com/questions/16257761/difference-between-red-black-trees-and-avl-trees
+        IMP:
+        - AVL trees maintain a more rigid balance than red-black trees.
+        - The path from the root to the deepest leaf in an AVL tree is at most ~1.44 lg(n+2), while in red black trees it's at most ~2 lg (n+1).
+
+        - As a result, lookup in an AVL tree is typically faster, but this comes at the cost of slower insertion and deletion due to more rotation operations.
+        - So use an AVL tree if you expect the number of lookups to dominate the number of updates to the tree.
+
+    2. What are the application of Red black tree?
+        Red-black trees are more general purpose.
+        They do relatively well on add, remove, and look-up but AVL trees have faster look-ups at the cost of slower add/remove.
+        Red-black tree is used in the following:
+            - Java: java.util.TreeMap , java.util.TreeSet .
+            - C++ STL: map, multimap, multiset.
+            - Linux kernel: completely fair scheduler, linux/rbtree.h
+
+    LARGE DATA vs SMALL DATA: AVL vs RB Tree:
+        For small data:
+        1. insert:
+           RB tree & avl tree has constant number of max rotation but RB tree will be faster because on average RB tree use less rotation.
+        2. lookup:
+           AVL tree is faster, because AVL tree has less depth.
+        3. delete:
+           RB tree has constant number of max rotation but AVL tree can have O(log N) times of rotation as worst. and on average RB tree also has less number of rotation thus RB tree is faster.
+
+        for large data:
+        1. insert:
+           AVL tree is faster. because you need to lookup for a particular node before insertion. as you have more data the time difference on looking up the particular node grows proportional to O(log N). but AVL tree & RB tree still only need constant number of rotation at the worst case. Thus the bottle neck will become the time you lookup for that particular node.
+        2. lookup:
+           AVL tree is faster. (same as in small data case)
+        3. delete:
+           AVL tree is faster on average, but in worst case RB tree is faster. because you also need to lookup for a very deep node to swap before removal (similar to the reason of insertion). on average both trees has constant number of rotation. but RB tree has a constant upper bound for rotation.
+
+25.
+Balancing a Heap
+
+
+26.
+n way merge
+
 
