@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <stack>
+#include <queue>
 #include <functional>   // Contains function for hash
 using namespace std;
 
@@ -84,6 +86,7 @@ class Graph
                 uint32_t _id;   // A unique identifier for each node
                 T _data;
                 vector<Edge> _edges;
+                bool _isVisited;
 
                 Vertex(T data)
                 {
@@ -91,10 +94,14 @@ class Graph
 
                     _id = hashVal;
                     _data = data;
+                    _isVisited = false;
                 }
 
                 Vertex(uint32_t id, T data) : _id(id),
-                                              _data(data) { }
+                                              _data(data),
+                                              _isVisited(false) { }
+
+                uint32_t getId() { return _id; }
 
                 // This function adds an Edge to the given vertex
                 void addEdgeToVertex(Edge& edge)
@@ -111,6 +118,11 @@ class Graph
                         cout << e.getOrig()._data << "--" << e.getDest()._data << "::" << e.getWeight() << endl;
                     }
                 }
+
+                void clearVisited()
+                {
+                    _isVisited = false;
+                }
         };
 
         // From a Graph class you can,
@@ -119,91 +131,179 @@ class Graph
         //      - print all Edges of a Vertex
         //      - print the Graph
     public:
+        void printGraphBFS(const E& data);
+        void printGraphDFS(const E& data);
+        uint32_t getVertexId(const E& vertexData);
+        void addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight);
+        void addEdge(E& orig, E& dest, uint32_t weight);
+        uint32_t addVertex(E data);
+        uint32_t getIdOfVertex(const E& data);
+        void printEdges(Vertex<E>& vert);
+        void printGraph();
+        void clearVisitedGraph();
+
         // AddEdge() when we have both the Vertices
-        void addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight)
-        {
-            //DEBUG_MSG("AddEdge(): Orig: " << orig._data << "; Dest: " << dest._data << endl);
-            Edge edge1(orig, dest, weight);
-            orig.addEdgeToVertex(edge1);
-
-            Edge edge2(dest, orig, weight);
-            dest.addEdgeToVertex(edge2);
-        }
-
-        // AddEdge() when we just have the data of Vertices
-        void addEdge(E& orig, E& dest, uint32_t weight)
-        {
-            addEdge(_vertices[addVertex(orig)], _vertices[addVertex(dest)], weight);
-        }
-
-        // IMP: Add template arguement
-        // This functions returns the index of the vertex
-        uint32_t addVertex(E data)
-        {
-            uint32_t hashVal = std::hash<E>()(data);
-            auto itr = _verticesMap.find(hashVal);
-
-            if (itr != _verticesMap.end())
-            {
-                //DEBUG_MSG("Node Already Present at: " << itr->second << endl);
-                return itr->second;
-            }
-
-            Vertex<E> vert(hashVal, data);
-            _vertices.push_back(vert);
-
-            //DEBUG_MSG("Hash Val for: " << data << " : " << hashVal << endl);
-            _verticesMap[hashVal] =  _vertices.size() - 1;
-
-            return _vertices.size() - 1;
-        }
-
-        uint32_t getIdOfVertex(const E& data)
-        {
-            return std::hash<E>()(data);
-        }
-
-        // TODO: This should be return by pointer instead of value
-        Vertex<E> getVertex(const E& data)
+        // Assumption: Vertex is present
+        Vertex<E>* getVertex(const E& data)
         {
             auto itr = _verticesMap.find(getIdOfVertex(data));
 
             if (itr != _verticesMap.end())
             {
-                return _vertices[itr->second];
+                return &(_vertices[itr->second]);
             }
             else
             {
-                Vertex<E> vert(data);
-                return vert;
-            }
-        }
-
-        void printEdges(Vertex<E>& vert)
-        {
-            vert.printEdgesOfVertex();
-        }
-
-        // Utility function to print the complete graph
-        void printGraph()
-        {
-            for (auto vert : _vertices)
-            {
-                vert.printEdgesOfVertex();
+                return nullptr;
             }
         }
 };
 
-//void printGraphBFS(const Graph& graph, const Vertex& st)
-void printGraphBFS(const Graph& graph)
+// AddEdge() when we have both the Vertices
+template <typename E>
+void
+Graph<E>::addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight)
 {
+    //DEBUG_MSG("AddEdge(): Orig: " << orig._data << "; Dest: " << dest._data << endl);
+    Edge edge1(orig, dest, weight);
+    orig.addEdgeToVertex(edge1);
 
+    Edge edge2(dest, orig, weight);
+    dest.addEdgeToVertex(edge2);
 }
 
-//void printGraphDFS(const Graph& graph, const Vertex& st)
-void printGraphDFS(const Graph& graph)
+// AddEdge() when we just have the data of Vertices
+template <typename E>
+void
+Graph<E>::addEdge(E& orig, E& dest, uint32_t weight)
 {
+    addEdge(_vertices[addVertex(orig)], _vertices[addVertex(dest)], weight);
+}
 
+// IMP: Add template arguement
+// This functions returns the index of the vertex
+template <typename E>
+uint32_t
+Graph<E>::addVertex(E data)
+{
+    uint32_t hashVal = std::hash<E>()(data);
+    auto itr = _verticesMap.find(hashVal);
+
+    if (itr != _verticesMap.end())
+    {
+        //DEBUG_MSG("Node Already Present at: " << itr->second << endl);
+        return itr->second;
+    }
+
+    Vertex<E> vert(hashVal, data);
+    _vertices.push_back(vert);
+
+    //DEBUG_MSG("Hash Val for: " << data << " : " << hashVal << endl);
+    _verticesMap[hashVal] =  _vertices.size() - 1;
+
+    return _vertices.size() - 1;
+}
+
+template <typename E>
+uint32_t
+Graph<E>::getIdOfVertex(const E& data)
+{
+    return std::hash<E>()(data);
+}
+
+template <typename E>
+void
+Graph<E>::printEdges(Vertex<E>& vert)
+{
+    vert.printEdgesOfVertex();
+}
+
+// Utility function to print the complete graph
+template <typename E>
+void
+Graph<E>::printGraph()
+{
+    for (auto vert : _vertices)
+    {
+        vert.printEdgesOfVertex();
+    }
+}
+
+// Utility function to clear Visited on each Vertex
+template <typename E>
+void
+Graph<E>::clearVisitedGraph()
+{
+    for (auto vert : _vertices)
+    {
+        vert.clearVisited();
+    }
+}
+
+template <typename E>
+uint32_t
+Graph<E>::getVertexId(const E& vertexData)
+{
+    Vertex<E> v(vertexData);    
+    uint32_t vertexId = v.getId();
+    return vertexId;
+}
+
+template <typename E>
+void
+Graph<E>::printGraphBFS(const E& data)
+{
+    Vertex<E>* v = getVertex(data);
+    queue<Vertex<E> *> bfsQueue;
+
+    v->_isVisited = true;
+    bfsQueue.push(v);
+
+    while(!bfsQueue.empty())
+    {
+        Vertex<E>* tmpVert = bfsQueue.front();
+        bfsQueue.pop();
+        
+        cout << "BFS: " << tmpVert->_data << "; " << tmpVert->_edges.size() << endl;
+        for (Edge e : tmpVert->_edges)
+        {
+            // Only if the destination is not visited add it to the queue
+            if (!((e.getDest())._isVisited))
+            {
+                e.getDest()._isVisited = true;
+                cout << "\t; Dest: " << e.getDest()._data << endl;
+                bfsQueue.push(&e.getDest());
+            }
+        }
+    }
+}
+
+template <typename E>
+void
+Graph<E>::printGraphDFS(const E& data)
+{
+    Vertex<E>* v = getVertex(data);
+    stack<Vertex<E> *> dfsStack;
+
+    v->_isVisited = true;
+    dfsStack.push(v);
+
+    while(!dfsStack.empty())
+    {
+        Vertex<E>* tmpVert = dfsStack.top();
+        dfsStack.pop();
+        
+        cout << "DFS: " << tmpVert->_data << "; " << tmpVert->_edges.size() << endl;
+        for (Edge e : tmpVert->_edges)
+        {
+            if (!((e.getDest())._isVisited))
+            {
+                e.getDest()._isVisited = true;
+                cout << "\t; Dest: " << e.getDest()._data << endl;
+                dfsStack.push(&e.getDest());
+            }
+        }
+    }
 }
 
 int main()
@@ -258,49 +358,15 @@ int main()
 
     g.printGraph();
 
-    
-    printGraphBFS(g, );
-    printGraphDFS(g, );
+    string bfs1 = "A";
+    //g.printGraphBFS(bfs1);
+    //g.clearVisitedGraph();
+
+    cout << endl;
+    g.printGraphDFS(bfs1);
+    g.clearVisitedGraph();
 
     cout << endl;
     return 0;
 }
-
-/*
-void bfs(vertex st)
-{
-    vector <vertex> vertQue;
-    vertQue.push(st);
-    st.setVisited(true);
-
-    while (!vertQue.empty())
-    {
-        vertex temp = vertQue.front();
-        vertQue.pop();
-
-        for(auto itr = temp.begin(); itr != temp.end(); itr.getNext())
-        {
-            if (!itr.getVisited())
-            {
-                vertQue.push(itr);
-                temp.setVisted(true);
-            }
-        }
-
-    }
-}
-
-void dfs(vertex st)
-{
-    st.setVisited(true);
-
-    for (auto itr = st.begin(); itr != st.end(); itr.getNext())
-    {
-        if (!itr.getVisited())
-        {
-            dfs(itr);
-        }
-    }
-}
-*/
 
