@@ -50,19 +50,62 @@ class BSTIterator
         Node* _cur;
 
     public:
-        BSTIterator(Node * root)
+        BSTIterator(Node* root)
         {
+            cout << "BST Iter Ctr: " << root->getData() << endl;
             _cur = root;
         }
 
         Node* operator++();
-        Node* getCurrent() { return _cur; } 
+        Node* getCurrent()
+        {
+            cout << "BST Iter Cur: " << _cur->getData() << endl;
+            return _cur;
+        } 
 };
 
 Node*
 BSTIterator::operator++ ()
 {
-    return getCurrent();    
+    Node* node = getCurrent();
+
+    cout << "1. " << node->getData() << endl;
+    if (node->_right != nullptr)
+    {
+        cout << "2. " << node->getData() << endl;
+        node = node->_right;
+        cout << "3. " << node->getData() << endl;
+
+        while (node->_left != nullptr)
+        {
+            cout << "4. " << node->getData() << endl;
+            node = node->_left;
+        }
+    }
+    else if(node->_parent != nullptr)
+    {
+        cout << "5. " << node->getData() << endl;
+        Node* tmp = node->_parent;
+        while (tmp->_right == node)
+        {
+            cout << "6. " << node->getData() << endl;
+            node = tmp;
+            tmp = tmp->_parent;
+        }
+
+        if (tmp->_left == node)
+        {
+            cout << "7. " << node->getData() << endl;
+            node = tmp;
+        }
+    }
+    else
+    {
+        cout << "8. " << node->getData() << endl;
+        return nullptr;
+    }
+
+    return node;    
 }
 
 class BST
@@ -75,7 +118,7 @@ class BST
         bool isPresent(const int data);
         void insert(const int data);
         bool remove(const int data);
-        void printInorder();
+        void printInorderIterative();
 
         size_t getLength() { return _length; }
 
@@ -84,8 +127,11 @@ class BST
 
         ~BST() { delete _root; }
 
-        BST& operator++();
-        BST& begin();
+        Node* getRoot()
+        {
+            cout << "0. " << _root->getData() << endl;
+            return _root;
+        }
 };
 
 bool
@@ -162,7 +208,7 @@ BST::remove(const int data)
 }
 
 void
-BST::printInorder()
+BST::printInorderIterative()
 {
     stack<Node*> recStack;
 
@@ -206,8 +252,11 @@ int main()
         root->insert(2);
         root->insert(8);
         cout<< "Len: " << root->getLength() << endl;
-        root->printInorder();
+        // root->printInorderIterative();
 
+        BSTIterator* bst = new BSTIterator(root->getRoot());
+        cout << "Iter: " << bst->getCurrent()->getData() << endl;
+        ++bst;
         /*
          ob = root.begin();
          cout << ob->data;
