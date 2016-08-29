@@ -3,30 +3,73 @@
 using namespace std;
 
 // http://codereview.stackexchange.com/questions/61671/binary-search-tree-c-implementation
+
+class Node
+{
+    public:
+        int _data;
+        Node* _left;
+        Node* _right;
+        Node* _parent;
+
+        Node() : _left(nullptr),
+                 _right(nullptr),
+                 _parent(nullptr),
+                 _data(0) { }
+                 
+        Node(int data) : _left(nullptr),
+                         _right(nullptr),
+                         _parent(nullptr),
+                         _data(data) { }
+
+        int getData() { return _data; }
+        int getParentData()
+        {
+            if (_parent != nullptr)
+            {
+                return _parent->_data;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+};
+
+// TODO: Implement iterator this way
+/*
+class iterator : public std::iterator<std::forward_iterator_tag, Node*>
+{
+
+};
+*/
+
+class BSTIterator
+{
+    private:
+        Node* _cur;
+
+    public:
+        BSTIterator(Node * root)
+        {
+            _cur = root;
+        }
+
+        Node* operator++();
+        Node* getCurrent() { return _cur; } 
+};
+
+Node*
+BSTIterator::operator++ ()
+{
+    return getCurrent();    
+}
+
 class BST
 {
     private:
-        class Node; // Forward declaration
         Node* _root;
         size_t _length;
-
-        class Node
-        {
-            public:
-                int _data;
-                Node* _left;
-                Node* _right;
-
-                Node() : _left(nullptr),
-                         _right(nullptr),
-                         _data(0) { }
-                         
-                Node(int data) : _left(nullptr),
-                                 _right(nullptr),
-                                 _data(data) { }
-
-                int getData() { return _data; }
-        };
 
     public:
         bool isPresent(const int data);
@@ -42,13 +85,8 @@ class BST
         ~BST() { delete _root; }
 
         BST& operator++();
+        BST& begin();
 };
-
-BST&
-BST::operator++ ()
-{
-    
-}
 
 bool
 BST::isPresent(const int data)
@@ -96,6 +134,7 @@ BST::insert(const int data)
                 if (curNode->_right == nullptr)
                 {
                     curNode->_right = tmp;
+                    tmp->_parent = curNode;
                     ++_length;
                     return;
                 }
@@ -106,6 +145,7 @@ BST::insert(const int data)
                 if (curNode->_left == nullptr)
                 {
                     curNode->_left = tmp;
+                    tmp->_parent = curNode;
                     ++_length;
                     return;
                 }
@@ -146,7 +186,7 @@ BST::printInorder()
 
         _root = recStack.top();
         recStack.pop();
-        cout << _root->getData() << ", ";
+        cout << _root->getData() << " : " << _root->getParentData() << " , ";
 
         _root = _root->_right;
     } while (!recStack.empty() || _root != nullptr);
@@ -167,6 +207,13 @@ int main()
         root->insert(8);
         cout<< "Len: " << root->getLength() << endl;
         root->printInorder();
+
+        /*
+         ob = root.begin();
+         cout << ob->data;
+         ob++;
+         cout << ob->data;
+         */
     }
 
     cout << endl;

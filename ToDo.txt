@@ -4,7 +4,7 @@
     AVL and Red Black Trees
 3. Spin Locks and Coursera
 4. Dynamic Programming
-5. Graphs BFS and DFS
+    5. Graphs BFS and DFS
 6. Multi threading
 7. Smart Pointers
 8. Concurrency and Non blocking IO
@@ -20,6 +20,42 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 5) write code that finds the set of all sub-sets of a set
 6) FizzBuzz
 7) Functors
+
+MEETUP: Tech Interview Whiteboard Session
+    1) Activity Selection Problem / Find all NON overlapping intervals
+       {{10,20}, {15,18}, {15,25}, {20,40}, {25, 30}}
+       ANS: {{10, 20}, {20, 40}},
+            {{10, 20}, {25, 30}},
+            {{15, 18}, {20, 40}},
+            {{15, 18}, {25, 30}},
+            {{15, 25}, {25, 30}}
+
+        HINT: Sort by end time
+
+    2) 
+    Add two numbers represented as a linked list
+        a) Without using Additional Memory
+        b) Using Recursion
+
+    3)
+    Non blocking Linked List
+
+    4)
+    Multi-threading problem
+        Thread 1:   COST, GOOG, NTAP, FB
+        Thread 2:   140,  750,  33,   160
+
+        T1 should print SYMBOL and give control to T2
+        T2 should print VALUE and give constrol to T1
+
+        HINTS: If you consider with Callback, how will you break the cycle
+               wait(), notify(), notifyAll()
+               FIND WHAT IS TRAMPOLINE
+
+        This can be real time and streaming. As you get each SYMBOL / VALUE print it and give control to the other thread
+    5)
+    Matix of 1s and 0s. Find area of the largest square matrix with all 1's
+        a) How to do using multi-threading
 
 VIM:
 1. FuzzySearch for all files
