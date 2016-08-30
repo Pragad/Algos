@@ -1,10 +1,14 @@
 #include <iostream>
+#include <cassert>  // assert
 #include <stack>
 using namespace std;
 
 // http://www2.lawrence.edu/fast/GREGGJ/CMSC270/tree_iterators.html
 // http://cseweb.ucsd.edu/~kube/cls/100/Lectures/lec3/lec3.pdf
 // http://codereview.stackexchange.com/questions/61671/binary-search-tree-c-implementation
+// ----------------------------------------------------------------------------------------------
+// Class Node
+// ----------------------------------------------------------------------------------------------
 class Node
 {
     public:
@@ -13,30 +17,46 @@ class Node
         Node* _right;
         Node* _parent;
 
-        Node() : _left(nullptr),
-                 _right(nullptr),
-                 _parent(nullptr),
-                 _data(0) { }
-                 
-        Node(int data) : _left(nullptr),
-                         _right(nullptr),
-                         _parent(nullptr),
-                         _data(data) { }
+        Node();
+        Node(int data);
 
-        int getData() { return _data; }
-        int getParentData()
-        {
-            if (_parent != nullptr)
-            {
-                return _parent->_data;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        int getData();
+        int getParentData();
 };
 
+Node::Node() : _left(nullptr),
+               _right(nullptr),
+               _parent(nullptr),
+               _data(0) { }
+                 
+Node::Node(int data) : _left(nullptr),
+                       _right(nullptr),
+                       _parent(nullptr),
+                       _data(data) { }
+
+int
+Node::getData()
+{
+    return _data;
+}
+
+int
+Node::getParentData()
+{
+    if (_parent != nullptr)
+    {
+        return _parent->_data;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+// ----------------------------------------------------------------------------------------------
+// Class BSTIterator:
+//      This is the iterator for the BST
+// ----------------------------------------------------------------------------------------------
 class BSTIterator
 {
     private:
@@ -45,32 +65,53 @@ class BSTIterator
     public:
         BSTIterator(Node* root) : _cur(root) { }
 
-        BSTIterator operator++();
-        int operator*();
-        bool operator!=(const BSTIterator& comp);
+        int operator * () const;
+        int operator -> () const;
+        bool operator != (const BSTIterator& rhs) const;
+        bool operator == (const BSTIterator& rhs) const;
+        BSTIterator operator ++ ();
+        BSTIterator operator ++ (int); // Post Increment
 
         // IMP: Return by reference
-        Node*& getCurrent()
-        {
-            return _cur;
-        } 
+        Node*& getCurrent();
 };
 
 int
-BSTIterator::operator*()
+BSTIterator::operator * () const
 {
+    assert(_cur != nullptr && "Dereferencing NULL Iterator");
+    return _cur->getData();
+}
+
+int
+BSTIterator::operator -> () const
+{
+    assert(_cur != nullptr && "Dereferencing NULL Iterator");
     return _cur->getData();
 }
 
 bool
-BSTIterator::operator!=(const BSTIterator& comp)
+BSTIterator::operator != (const BSTIterator& rhs) const
 {
-    return _cur == comp._cur;
+    return _cur != rhs._cur;
 }
 
-BSTIterator
-BSTIterator::operator++ ()
+bool
+BSTIterator::operator == (const BSTIterator& rhs) const
 {
+    return _cur == rhs._cur;
+}
+
+Node*&
+BSTIterator::getCurrent()
+{
+    return _cur;
+} 
+
+BSTIterator
+BSTIterator::operator ++ ()
+{
+    assert(_cur != nullptr && "Increment on NULL Iterator");
     Node*& node = getCurrent();
 
     if (node->_right != nullptr)
@@ -85,27 +126,45 @@ BSTIterator::operator++ ()
     else if(node->_parent != nullptr)
     {
         Node* tmp = node->_parent;
-        while (tmp->_right == node)
+
+        // IMP: Make sure tmp is not NULL
+        while (tmp != nullptr && tmp->_right == node)
         {
             node = tmp;
             tmp = tmp->_parent;
         }
 
-        if (tmp->_left == node)
+        if (tmp != nullptr && tmp->_left == node)
         {
             node = tmp;
+        }
+
+        // IMP: Make the node point to NULL when we don't have SUCCESSOR
+        else if (tmp == nullptr)
+        {
+            node = nullptr;
         }
     }
     else
     {
-        cout << "8. " << node->getData() << endl;
-        //return nullptr;
+        node = nullptr;
     }
 
-    //return node;    
     return *this;
 }
 
+BSTIterator
+BSTIterator::operator ++ (int)
+{
+    BSTIterator tmp(*this);
+    operator++();   // Perform Prefix Increment
+    return tmp;     // Return value before Increment
+}
+
+// ----------------------------------------------------------------------------------------------
+// Class BST:
+//      This is the Binary Search Tree data structure
+// ----------------------------------------------------------------------------------------------
 class BST
 {
     private:
@@ -113,6 +172,11 @@ class BST
         size_t _length;
 
     public:
+        BST() : _root(nullptr),
+                _length(0) { }
+
+        ~BST() { delete _root; }
+
         bool isPresent(const int data);
         void insert(const int data);
         bool remove(const int data);
@@ -121,17 +185,7 @@ class BST
         BSTIterator end();
 
         size_t getLength() { return _length; }
-
-        BST() : _root(nullptr),
-                _length(0) { }
-
-        ~BST() { delete _root; }
-
-        Node* getRoot()
-        {
-            cout << "0. " << _root->getData() << endl;
-            return _root;
-        }
+        Node* getRoot() { return _root; }
 };
 
 BSTIterator
@@ -294,6 +348,17 @@ int main()
         root->insert(18);
 
         BSTIterator bsi = root->begin();
+
+        //while (bsi != root->end())
+        while (bsi != nullptr)
+        {
+            cout << "ITER: " << *bsi << endl;
+            ++bsi;
+        }
+
+        /*
+        cout << "ITER: " << *bsi << endl;
+        bsi++;
         cout << "ITER: " << *bsi << endl;
         ++bsi;
         cout << "ITER: " << *bsi << endl;
@@ -317,12 +382,13 @@ int main()
         cout << "ITER: " << *bsi << endl;
         ++bsi;
         cout << "ITER: " << *bsi << endl;
-        ++bsi;
+        bsi++;
         cout << "ITER: " << *bsi << endl;
-        ++bsi;
+        bsi++;
         cout << "ITER: " << *bsi << endl;
-        ++bsi;
+        bsi++;
         cout << "ITER: " << *bsi << endl;
+        */
 
         BSTIterator bse = root->end();
         cout << "End ITER: " << *bse << endl;
