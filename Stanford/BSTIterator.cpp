@@ -56,7 +56,9 @@ class BSTIterator
             _cur = root;
         }
 
-        Node* operator++();
+        //Node* operator++();
+        BSTIterator operator++();
+        int operator*() { return _cur->getData(); }
         Node* getCurrent()
         {
             cout << "BST Iter Cur: " << _cur->getData() << endl;
@@ -64,7 +66,7 @@ class BSTIterator
         } 
 };
 
-Node*
+BSTIterator
 BSTIterator::operator++ ()
 {
     Node* node = getCurrent();
@@ -102,10 +104,11 @@ BSTIterator::operator++ ()
     else
     {
         cout << "8. " << node->getData() << endl;
-        return nullptr;
+        //return nullptr;
     }
 
-    return node;    
+    //return node;    
+    return *this;
 }
 
 class BST
@@ -119,6 +122,7 @@ class BST
         void insert(const int data);
         bool remove(const int data);
         void printInorderIterative();
+        BSTIterator begin();
 
         size_t getLength() { return _length; }
 
@@ -133,6 +137,12 @@ class BST
             return _root;
         }
 };
+
+BSTIterator
+BST::begin()
+{
+    return BSTIterator(_root);
+}
 
 bool
 BST::isPresent(const int data)
@@ -254,15 +264,9 @@ int main()
         cout<< "Len: " << root->getLength() << endl;
         // root->printInorderIterative();
 
-        BSTIterator* bst = new BSTIterator(root->getRoot());
-        cout << "Iter: " << bst->getCurrent()->getData() << endl;
-        ++bst;
-        /*
-         ob = root.begin();
-         cout << ob->data;
-         ob++;
-         cout << ob->data;
-         */
+        BSTIterator bsi = root->begin();
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
     }
 
     cout << endl;
