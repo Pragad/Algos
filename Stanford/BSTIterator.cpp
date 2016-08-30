@@ -2,8 +2,9 @@
 #include <stack>
 using namespace std;
 
+// http://www2.lawrence.edu/fast/GREGGJ/CMSC270/tree_iterators.html
+// http://cseweb.ucsd.edu/~kube/cls/100/Lectures/lec3/lec3.pdf
 // http://codereview.stackexchange.com/questions/61671/binary-search-tree-c-implementation
-
 class Node
 {
     public:
@@ -36,68 +37,62 @@ class Node
         }
 };
 
-// TODO: Implement iterator this way
-/*
-class iterator : public std::iterator<std::forward_iterator_tag, Node*>
-{
-
-};
-*/
-
 class BSTIterator
 {
     private:
         Node* _cur;
 
     public:
-        BSTIterator(Node* root)
-        {
-            cout << "BST Iter Ctr: " << root->getData() << endl;
-            _cur = root;
-        }
+        BSTIterator(Node* root) : _cur(root) { }
 
-        //Node* operator++();
         BSTIterator operator++();
-        int operator*() { return _cur->getData(); }
-        Node* getCurrent()
+        int operator*();
+        bool operator!=(const BSTIterator& comp);
+
+        // IMP: Return by reference
+        Node*& getCurrent()
         {
-            cout << "BST Iter Cur: " << _cur->getData() << endl;
             return _cur;
         } 
 };
 
+int
+BSTIterator::operator*()
+{
+    return _cur->getData();
+}
+
+bool
+BSTIterator::operator!=(const BSTIterator& comp)
+{
+    return _cur == comp._cur;
+}
+
 BSTIterator
 BSTIterator::operator++ ()
 {
-    Node* node = getCurrent();
+    Node*& node = getCurrent();
 
-    cout << "1. " << node->getData() << endl;
     if (node->_right != nullptr)
     {
-        cout << "2. " << node->getData() << endl;
         node = node->_right;
-        cout << "3. " << node->getData() << endl;
 
         while (node->_left != nullptr)
         {
-            cout << "4. " << node->getData() << endl;
             node = node->_left;
         }
     }
     else if(node->_parent != nullptr)
     {
-        cout << "5. " << node->getData() << endl;
         Node* tmp = node->_parent;
         while (tmp->_right == node)
         {
-            cout << "6. " << node->getData() << endl;
             node = tmp;
             tmp = tmp->_parent;
         }
 
         if (tmp->_left == node)
         {
-            cout << "7. " << node->getData() << endl;
             node = tmp;
         }
     }
@@ -123,6 +118,7 @@ class BST
         bool remove(const int data);
         void printInorderIterative();
         BSTIterator begin();
+        BSTIterator end();
 
         size_t getLength() { return _length; }
 
@@ -141,7 +137,26 @@ class BST
 BSTIterator
 BST::begin()
 {
-    return BSTIterator(_root);
+    Node* tmpRoot = _root;
+    // Instead of returning root, we should returning the smallest element
+    while (tmpRoot->_left != nullptr)
+    {
+        tmpRoot = tmpRoot->_left;
+    }
+
+    return BSTIterator(tmpRoot);
+}
+
+BSTIterator
+BST::end()
+{
+    Node* tmpRoot = _root;
+    while(tmpRoot->_right != nullptr)
+    {
+        tmpRoot = tmpRoot->_right;
+    }
+
+    return BSTIterator(tmpRoot);
 }
 
 bool
@@ -256,17 +271,61 @@ int main()
         cout << "Binary Search Tree" << endl;
 
         BST* root = new BST();
+        root->insert(10);
+
+        // Level 1
         root->insert(5);
-        cout<< "Len: " << root->getLength() << endl;
-        root->insert(6);
+        root->insert(15);
+
+        // Level 2
         root->insert(2);
+        root->insert(7);
+        root->insert(12);
+        root->insert(17);
+
+        // Level 3
+        root->insert(1);
+        root->insert(3);
+        root->insert(6);
         root->insert(8);
-        cout<< "Len: " << root->getLength() << endl;
-        // root->printInorderIterative();
+        root->insert(11);
+        root->insert(13);
+        root->insert(16);
+        root->insert(18);
 
         BSTIterator bsi = root->begin();
         cout << "ITER: " << *bsi << endl;
         ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+        ++bsi;
+        cout << "ITER: " << *bsi << endl;
+
+        BSTIterator bse = root->end();
+        cout << "End ITER: " << *bse << endl;
     }
 
     cout << endl;
