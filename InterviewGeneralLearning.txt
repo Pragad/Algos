@@ -15,6 +15,7 @@ Genral Programming / OOPS Concepts
 10. External Linkage vs Internal Linkage
 11. Early binding vs Late Binding
 12. Segmentation Fault:
+12b. How to create a Segmentation Fault
 13. Interrupts vs Exception
 14. Callback Functions:
 15. Asynchronous Programming:
@@ -33,6 +34,7 @@ Genral Programming / OOPS Concepts
 26. Static Linking vs Dynamic Linking
 27. How to resolve Hash Collisions
 28. Multithreading Best Practices
+29. What is Amdhal's law
 -----------------------------------------------
 UML / DESIGN Questions
 1. Parking lot  
@@ -438,6 +440,22 @@ Segmentation Fault:
 
     Still, SEGMENTATION FAULT CAN OCCUR IN CASE OF ACCESSING OUR OWN (PROCESS) MEMORY IN IMPROPER WAY (for instance trying to write to non-writable space).
     But the most common reason for it is the access to the part of the virtual address space that is not mapped to physical one at all.
+
+
+12b.
+How to create a Segmentation Fault
+http://stackoverflow.com/questions/2045314/why-cant-i-cause-a-seg-fault
+
+    It impossable to try and reliable do it dereferencing pointers.
+    This is because how the application handles memory can vary from compiler to compiler also across the same compiler with different options (debug/release mode handeled differently).
+
+    What you can do is explicitly raise the segfault using a signal:
+        #include <signal.h>
+        int main()
+        {
+            raise(SIGSEGV);
+        }
+
 
 13.
 Interrupts vs Exception
@@ -976,6 +994,12 @@ stackoverflow.com/questions/660621/threading-best-practices
     Try to avoid just spraying lock blocks around your code in the hope that it will become thread-safe. It doesn't work. Eventually, two code paths will acquire the same locks in a different order, and everything will grind to a halt (once every two weeks, on a customer's server). This is especially likely if you combine threads with firing events, and you hold the lock while you fire the event - the handler may take out another lock, and now you have a pair of locks held in a particular order. What if they're taken out in the opposite order in some other situation?
 
     In short, this is such a big and difficult subject that I think it is potentially misleading to give a few pointers in a short answer and say "Off you go!" - I'm sure that's not the intention of the many learned people giving answers here, but that is the impression many get from summarised advice.
+
+29.
+What is Amdhal's law
+
+    In computer programming, Amdahl's law is that, in a program with parallel processing , a relatively few instruction s that have to be performed in sequence will have a limiting factor on program speedup such that adding more processor s may not make the program run faster. 
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 1. PArking lot  
