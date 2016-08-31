@@ -35,7 +35,7 @@ Genral Programming / OOPS Concepts
 28. Multithreading Best Practices
 -----------------------------------------------
 UML / DESIGN Questions
-1. PArking lot  
+1. Parking lot  
 2. Coffee Maker
 3. Deck of Cards
 4. What is Cardinality
@@ -119,10 +119,9 @@ What is Polymorphism:
 VERY IMP:
 http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
 http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction-a-real-time-example-bid-wvGh8f5F89208310.html
-    Abstraction is achieved by making class abstract having one or more methods abstract. Which is nothing but essential characteristic which should be implemented by the class extending it.
+    Abstraction is achieved by making class abstract having one or more methods abstract.
+    Which is nothing but essential characteristic which should be implemented by the class extending it.
     e.g. when you inventing/designing a car you define a characteristics like car should have 4 doors, break, steering wheel etc… so anyone uses this design should include this characteristics.
-    Implementation is not the head each of abstraction. It will just define characteristics which should be included.
-
     Encapsulation:
         Example 1.
         A cell phone is a great example.
@@ -152,23 +151,16 @@ http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction
 
         Abstraction is hiding the implementation details by providing a layer over the basic functionality.
 
+INFORMATION HIDING, ENCAPSULATION and ABSTRACTION:
         Information Hiding is hiding the data which is being affected by that implementation. Use of private and public comes under this. For example, hiding the variables of the classes.
 
         Encapsulation is just grouping all similar data and functions into a group e.g Class in programming; Packet in networking.
 
-        Putting data and behavior together is what I understand from encapsulation. Hiding complexity is abstraction. Information should remain unseen is what information hiding is. Very famous three sentences. To understand the above statements better, lets take some examples:
-
-        Encapsulation:
-        ATM (Automated Teller Machine), in which the data is money and the behavior is how it will be processed. That is how data will behave in different scenarios. If user asks for the balance in his account, ATM machine will behave differently with that data, it will just tell the balance. If user asks for paying bill, it will pay bill and will tell the user the updated balance and many other behaviors. That was all encapsulation because ATM is encapsulating the money and the behavior or the functions performed on that money together.
-
-        Abstraction on other hand is hiding complexity that what behind the scenes is ATM functioning with the money and I don't want to care about that (if nothing wrong happened and my account balance stays fine.. :P ).
-        In this example, funny part is for information hiding. You hide the important information which is money by locking the ATM. That was something not good, although money will be safe until someone breaks it :D. ATM connects to your account by some mechanism and downloads your data which is very important and is available to you and to you only. But the functionality which does that is hidden from the world so nobody can just access it.
-        That was the easiest example I could thought of.
-        For all these, there are many real life example. You take your mind. Your information is hidden in your mind. That is information hiding. Some stranger cant know you until you tell him who are you.
+        - Putting data and behavior together is what I understand from encapsulation.
+        - Hiding complexity is abstraction.
+        - Information should remain unseen is what information hiding is. Very famous three sentences.
 
     http://stackoverflow.com/questions/742341/difference-between-abstraction-and-encapsulation
-        A priori, they've got nothing in common.
-
         Most answers here focus on OOP but encapsulation begins much earlier; every method is an encapsulation:
 
         point x = { 1, 4 };
@@ -355,8 +347,9 @@ http://stackoverflow.com/questions/4921150/when-to-use-static-member-function?lq
     Static Function:
         PRotected static function.
         Good uses of static member functions:
-
-            Meta-programming. Real-world example is template std::char_traits. All member functions are static
+            Meta-programming: writing code that writes code; Metaprogramming refers to a variety of ways a program has knowledge of itself or can manipulate itself.
+                
+            Real-world example is template std::char_traits. All member functions are static
             Making it a static member function gives it access to private members of the class, although a friend would suffice here too
             A protected static member function thus is accessible only to the class and classes derived from it.
 
@@ -367,7 +360,6 @@ http://stackoverflow.com/questions/2671496/java-when-to-use-static-methods
     But void setMileage(double mpg) (which sets the efficiency of one particular Car) can't be static since it's inconceivable to call the method before any Car has been constructed.
 
     Define static methods in the following scenarios only:
-
         1. If you are writing utility classes and they are not supposed to be changed.
         2. If the method is not using any instance variable.
         3. If any operation is not dependent on instance creation.
@@ -432,8 +424,12 @@ Segmentation Fault:
 
     - generates SIGSEGV event
     - Segmentation fault is a specific kind of error caused by accessing memory that “does not belong to you.
-        int *p = NULL;
-        *p = 1;
+            int *p = NULL;
+            *p = 1;
+
+        Another segfault happens when you try to write to a portion of memory that was marked as read-only:
+            char *str = "Foo"; // Compiler marks the constant string as read-only
+            *str = 'b'; // Which means this is illegal and results in a segfault
 
     It would be worth noting that segmentation fault isn't caused by directly accessing another process memory, as it is simply not possible.
     With virtual memory every process has its own virtual address space and there is no way to access another one using any value of pointer.
@@ -623,9 +619,39 @@ http://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap?l
 Boxing and Unboxing
 http://stackoverflow.com/questions/2111857/why-do-we-need-boxing-and-unboxing-in-c
     
+    Language C#:
+        double e = 2.718281828459045;
+        object o = e; // box
+        int ee = (int)(double)o; //unbox
+
+    First we have to explicitly unbox the double ((double)o) and then cast that to an int
+    
 19.
 Shadowing and Overriding
 http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overriding-in-c
+
+    class A
+    {
+        public int Foo(){ return 5;}
+        public virtual int Bar(){return 5;}
+    }
+    class B : A{
+        public new int Foo() { return 1;}     //shadow
+        public override int Bar() {return 1;} //override
+    }
+
+    then when you call this:
+        A clA = new A();
+        B clB = new B();
+
+        Console.WriteLine(clA.Foo()); // output 5
+        Console.WriteLine(clA.Bar()); // output 5
+        Console.WriteLine(clB.Foo()); // output 1
+        Console.WriteLine(clB.Bar()); // output 1
+
+        //now let's cast B to an A class
+        Console.WriteLine(((A)clB).Foo()); // output 5 <<<--
+        Console.WriteLine(((A)clB).Bar()); // output 1
 
 20.
 Agile Model
@@ -870,6 +896,15 @@ https://kb.iu.edu/d/akqn
 http://stackoverflow.com/questions/311882/what-do-statically-linked-and-dynamically-linked-mean
 http://cs-fundamentals.com/tech-interview/c/difference-between-static-and-dynamic-linking.php
 
+    Statically-linked files are 'locked' to the executable at link time so they never change.
+    A dynamically linked file referenced by an executable can change just by replacing the file on the disk.
+
+    This allows updates to functionality without having to re-link the code;
+    the loader re-links every time you run it.
+
+    This is both good and bad - on one hand, it allows easier updates and bug fixes,
+    on the other it can lead to programs ceasing to work if the updates are incompatible - this is sometimes responsible for the dreaded "DLL hell" that some people mention in that applications can be broken if you replace a dynamically linked library with one that's not compatible (developers who do this should expect to be hunted down and punished severely, by the way).
+
     When you compile some C code (for instance), it is translated to machine language. Just a sequence of bytes which, when run, causes the processor to add, subtract, compare, "goto", read memory, write memory, that sort of thing. This stuff is stored in object (.o) files.
 
     Now, a long time ago, computer scientists invented this "subroutine" thing. Execute-this-chunk-of-code-and-return-here. It wasn't too long before they realised that the most useful subroutines could be stored in a special place and used by any program that needed them.
@@ -884,26 +919,23 @@ http://cs-fundamentals.com/tech-interview/c/difference-between-static-and-dynami
 
     It's common for programs to call some functions which will be statically linked (standard library functions like printf are usually statically linked) and other functions which are dynamically linked. The static ones "become part" of the executable and the dynamic ones "join in" when the executable is run.
 
-    Static linking is the result of the linker copying all library routines used in the program into the executable image.
-    This may require more disk space and memory than dynamic linking, but is both faster and more portable, since it does not require the presence of the library on the system where it is run.
+    STATIC LINKING:
+    - Static linking is the result of the linker copying all library routines used in the program into the executable image.
+    - Require more disk space and memory than dynamic linking,
+    - but is both faster and more portable, since it does not require the presence of the library on the system where it is run.
+    - When you statically link a file into an executable, the contents of that file are included at link time.
+    - In other words, the contents of the file are physically inserted into the executable that you will run.
 
-    Dynamic linking is accomplished by placing the name of a sharable library in the executable image.
-    Actual linking with the library routines does not occur until the image is run, when both the executable and the library are placed in memory.
-    An advantage of dynamic linking is that multiple programs can share a single copy of the library.
+    DYNAMIC LINKING:
+    - Dynamic linking is accomplished by placing the name of a sharable library in the executable image.
+    - Actual linking with the library routines does not occur until the image is run, when both the executable and the library are placed in memory.
+    - An advantage of dynamic linking is that multiple programs can share a single copy of the library.
 
-    The distinction is made for, among other things, allowing third party libraries to be included in your executable without you seeing their source code (such as libraries for database access, network communications and graphical user interfaces), or for compiling code in different languages (C and assembly code for example) and then linking them all together.
+    - The distinction is made for, among other things, allowing third party libraries to be included in your executable without you seeing their source code (such as libraries for database access, network communications and graphical user interfaces), or for compiling code in different languages (C and assembly code for example) and then linking them all together.
 
-    When you statically link a file into an executable, the contents of that file are included at link time. In other words, the contents of the file are physically inserted into the executable that you will run.
-
-    When you link dynamically, a pointer to the file being linked in (the file name of the file, for example) is included in the executable and the contents of said file are not included at link time. It's only when you later run the executable that these dynamically linked files are bought in and they're only bought into the in-memory copy of the executable, not the one on disk.
+    - When you link dynamically, a pointer to the file being linked in (the file name of the file, for example) is included in the executable and the contents of said file are not included at link time. It's only when you later run the executable that these dynamically linked files are bought in and they're only bought into the in-memory copy of the executable, not the one on disk.
 
     It's basically a method of deferred linking. There's an even more deferred method (called late binding on some systems) that won't bring in the dynamically linked file until you actually try to call a function within it.
-
-    Statically-linked files are 'locked' to the executable at link time so they never change. A dynamically linked file referenced by an executable can change just by replacing the file on the disk.
-
-    This allows updates to functionality without having to re-link the code; the loader re-links every time you run it.
-
-    This is both good and bad - on one hand, it allows easier updates and bug fixes, on the other it can lead to programs ceasing to work if the updates are incompatible - this is sometimes responsible for the dreaded "DLL hell" that some people mention in that applications can be broken if you replace a dynamically linked library with one that's not compatible (developers who do this should expect to be hunted down and punished severely, by the way).
 
 27.
 How to resolve Hash Collisions

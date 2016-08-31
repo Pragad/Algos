@@ -29,26 +29,20 @@ class BST
         };
 
     public:
-        bool isPresent(const int data);
-        void insert(const int data);
-        bool remove(const int data);
-        void printInorder();
-
-        size_t getLength() { return _length; }
-
         BST() : _root(nullptr),
                 _length(0) { }
 
         ~BST() { delete _root; }
 
-        BST& operator++();
-};
+        bool isPresent(const int data);
+        void insert(const int data);
+        void balancedInsert(const int data);
+        bool remove(const int data);
+        int height(const Node* node);
+        void printInorder();
 
-BST&
-BST::operator++ ()
-{
-    
-}
+        size_t getLength() { return _length; }
+};
 
 bool
 BST::isPresent(const int data)
@@ -115,6 +109,68 @@ BST::insert(const int data)
     }
 }
 
+int
+BST::height(const Node* node)
+{
+    if (node == nullptr)
+    {
+        return 0;
+    }
+
+    int lh = 1 + height(node->_left);
+    int rh = 1 + height(node->_right);
+
+    return max(lh, rh);
+}
+
+void
+BST::balancedInsert(const int data)
+{
+    Node* tmp = new Node(data);
+
+    if (_root == nullptr)
+    {
+        _root = tmp;
+        ++_length;
+
+        return;
+    }
+    else
+    {
+        Node* curNode = _root;
+
+        while (curNode)
+        {
+            if (curNode->getData() < data)
+            {
+                if (curNode->_right == nullptr)
+                {
+                    curNode->_right = tmp;
+                    ++_length;
+
+                    break;
+                }
+                curNode = curNode->_right;
+            }
+            else if (curNode->getData() >= data)
+            {
+                if (curNode->_left == nullptr)
+                {
+                    curNode->_left = tmp;
+                    ++_length;
+
+                    break;
+                }
+                curNode = curNode->_left;
+            }
+        }
+
+        int leftHeight =  height(curNode->_left);
+        int rightHeight =  height(curNode->_right);
+        cout << "LH: " << leftHeight << "; RH: " << rightHeight << endl;
+    }
+}
+
 bool
 BST::remove(const int data)
 {
@@ -160,11 +216,29 @@ int main()
         cout << "Binary Search Tree" << endl;
 
         BST* root = new BST();
-        root->insert(5);
-        cout<< "Len: " << root->getLength() << endl;
-        root->insert(6);
-        root->insert(2);
-        root->insert(8);
+        root->balancedInsert(10);
+
+        // Level 1
+        root->balancedInsert(5);
+
+        // Level 2
+        root->balancedInsert(2);
+        root->balancedInsert(7);
+        root->balancedInsert(12);
+        /*
+        root->balancedInsert(17);
+
+        // Level 3
+        root->balancedInsert(1);
+        root->balancedInsert(3);
+        root->balancedInsert(6);
+        root->balancedInsert(8);
+        root->balancedInsert(11);
+        root->balancedInsert(13);
+        root->balancedInsert(16);
+        root->balancedInsert(18);
+        */
+
         cout<< "Len: " << root->getLength() << endl;
         root->printInorder();
     }

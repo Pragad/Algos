@@ -1,7 +1,8 @@
+0. Virtual Address and Physical Address Mapping
 1. Two Bit problems
-2. Binary Tree with Iterators ++
-    Balancing a BST
-    AVL and Red Black Trees
+    2. Binary Tree with Iterators ++
+Balancing a BST
+AVL and Red Black Trees
 3. Spin Locks and Coursera
 4. Dynamic Programming
     5. Graphs BFS and DFS
@@ -11,7 +12,7 @@
 9. IPC and Parallel Programming
 10. Draw stack / heap of a program run
 
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 1) Find Cycle in a Graph
 2) Find a sub matrix that sums to a value
@@ -21,6 +22,7 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 6) FizzBuzz
 7) Functors
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     1) Activity Selection Problem / Find all NON overlapping intervals
        {{10,20}, {15,18}, {15,25}, {20,40}, {25, 30}}
@@ -56,7 +58,7 @@ MEETUP: Tech Interview Whiteboard Session
     5)
     Matix of 1s and 0s. Find area of the largest square matrix with all 1's
         a) How to do using multi-threading
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VIM:
 1. FuzzySearch for all files
 2. Easier way to fill function names

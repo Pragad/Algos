@@ -11,11 +11,14 @@ using namespace std;
 // ----------------------------------------------------------------------------------------------
 class Node
 {
-    public:
+    // Everything is private as User should not have access to Node
+    private:
         int _data;
         Node* _left;
         Node* _right;
         Node* _parent;
+        friend class BSTIterator;
+        friend class BST;
 
         Node();
         Node(int data);
@@ -62,6 +65,9 @@ class BSTIterator
     private:
         Node* _cur;
 
+        // IMP: Return by reference
+        Node*& getCurrent();
+
     public:
         BSTIterator(Node* root) : _cur(root) { }
 
@@ -71,9 +77,6 @@ class BSTIterator
         bool operator == (const BSTIterator& rhs) const;
         BSTIterator operator ++ ();
         BSTIterator operator ++ (int); // Post Increment
-
-        // IMP: Return by reference
-        Node*& getCurrent();
 };
 
 int
