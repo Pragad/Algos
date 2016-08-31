@@ -111,7 +111,7 @@ What is Encapsulation:
 2.
 What is Polymorphism:
     - Polymorphism is the ability to an object to decide what it should.
-   - Simple example would be to consider "Shapes" class. And the class has methods like Area and Cirumferance.
+    - Simple example would be to consider "Shapes" class. And the class has methods like Area and Cirumferance.
     - We can have subclasses like Square, Rectangle.
     - To find the area of all the shapes, we can just give Shapes.area(). Based on what shape it is, we will get the respective Area.
 
