@@ -1,3 +1,14 @@
+09/02: Trees, Meetup Qs
+09/03: Trees, Arrays, Strings, Meetup Qs
+09/04: All Meetup Qs, All Old Qs (Trees, Arrays, Strings, Pramp)
+09/05: Buffer (Graph Cycle)
+09/06: AVL Trees, Threads
+09/07: DP
+09/08: All threading questions (Producer/Consumer, Reader Writer etc)
+09/09: Buffer
+09/10: Buffer
+09/11: Buffer
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 0. Virtual Address and Physical Address Mapping
 1. Two Bit problems
     2. Binary Tree with Iterators ++
@@ -11,9 +22,9 @@ AVL and Red Black Trees
 8. Concurrency and Non blocking IO
 9. IPC and Parallel Programming
 10. Draw stack / heap of a program run
-
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
+0) Quick Select k'th smallest element
 1) Find Cycle in a Graph
 2) Find a sub matrix that sums to a value
 3) implementing a function that can concatenate two null terminated strings together in C
@@ -21,7 +32,7 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 5) write code that finds the set of all sub-sets of a set
 6) FizzBuzz
 7) Functors
-
+8) Large number multiplication
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     1) Activity Selection Problem / Find all NON overlapping intervals

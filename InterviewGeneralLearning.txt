@@ -1,3 +1,9 @@
+1. Don't Jump into Coding
+2. First Do Algo Reasoning
+3. Clarify all statements
+4. Debugging
+5. How you approach the solution
+-----------------------------------------------
 Genral Programming / OOPS Concepts
 0. What is Abstraction:
 1. What is Encapsulation:
@@ -52,7 +58,7 @@ OS NOTES
 1. What is a Race Condition
 2. Mutex vs Semaphores:
 3. Spin Locks vs Mutex:
-3a. Mutex Moniotr and Semaphore
+3a. Mutex Monitor and Semaphore
 3b. Spin Lock in a Uniprocessor System
 3c. Lock Monitor Mutex and Semaphore
 3d. Monitor vs Semaphore
@@ -66,6 +72,7 @@ OS NOTES
 9. How to avoid deadlocks
 -----------------------------------------------
 NETWORKS
+0. How TCP Works:
 1. How TCP/IP Network works
 1b. How Internet Works
 1c. TCP vs UDP
@@ -1178,7 +1185,6 @@ http://stackoverflow.com/questions/34510/what-is-a-race-condition
     Semaphore is signaling mechanism (“I am done, you can carry on” kind of signal).
     For example, if you are listening songs (assume it as one task) on your mobile and at the same time your friend called you, an interrupt will be triggered upon which an interrupt service routine (ISR) will signal the call processing task to wakeup.
 
-
     Mutex can be released only by thread that had acquired it, while you can signal semaphore from any other thread (or process), so semaphores are more suitable for some synchronization problems like producer-consumer.
 
     So, if you have a number of instances of a resource (say three tape drives), you could use a semaphore with a count of 3. Note that this doesn't tell you which of those tape drives you have, just that you have a certain number.
@@ -1222,10 +1228,24 @@ http://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instea
     If in doubt, use mutexes, they are usually the better choice and most modern systems will allow them to spinlock for a very short amount of time, if this seems beneficial. Using spinlocks can sometimes improve performance, but only under certain conditions and the fact that you are in doubt rather tells me, that you are not working on any project currently where a spinlock might be beneficial. You might consider using your own "lock object", that can either use a spinlock or a mutex internally (e.g. this behavior could be configurable when creating such an object), initially use mutexes everywhere and if you think that using a spinlock somewhere might really help, give it a try and compare the results (e.g. using a profiler), but be sure to test both cases, a single-core and a multi-core system before you jump to conclusions (and possibly different operating systems, if your code will be cross-platform).
 
 3a
-Mutex Moniotr and Semaphore
+Mutex Monitor and Semaphore
+http://www.programmerinterview.com/index.php/operating-systems/monitors-vs-semaphores/
+
+    MONITOR:
+    - A monitor is a set of multiple routines which are protected by a mutual exclusion lock.
+    - None of the routines in the monitor can be executed by a thread until that thread acquires the lock.
+    - This means that only ONE thread can execute within the monitor at a time.
+    - Any other threads must wait for the thread that’s currently executing to give up control of the lock.
+
+    - However, a thread can actually suspend itself inside a monitor and then wait for an event to occur.
+    - If this happens, then another thread is given the opportunity to enter the monitor.
+    - The thread that was suspended will eventually be notified that the event it was waiting for has now occurred, which means it can wake up and reacquire the lock.
+
+    SEMAPHORE?
+    - A semaphore is a simpler construct than a monitor because it’s just a lock that protects a shared resource – and not a set of routines like a monitor.
+    - The application must acquire the lock before using that shared resource protected by a semaphore.
 
     - Use a Monitor unless you need to synchroize across process boundaries
-
     MONITOR:
         - Simpler to use than Semaphores
         - Handles all the details of lock acquisition and release
@@ -1242,6 +1262,7 @@ Mutex Moniotr and Semaphore
         - Synchronize threads across process
         - Can be shared across processes
         - Much more heavy-weight than a Monitor
+        - Unlike monitors, however, a mutex can be used to synchronize threads across processes.
 
 3b. 
 Spin Lock in a Uniprocessor System
@@ -1268,7 +1289,8 @@ http://stackoverflow.com/questions/301160/what-are-the-differences-between-vario
     Mutex, Semaphores are OS-level concepts. e.g with a NAMED MUTEX you could synchronize across multiple (managed) exes (ensuring that only one instance of your application is running on the machine.)
 
     MUTEX:
-    Unlike monitors, however, a mutex can be used to synchronize threads across processes.
+    IMP:
+    - Unlike monitors, however, a mutex can be used to synchronize threads across processes.
     When used for inter-process synchronization, a mutex is called a named mutex because it is to be used in another application, and therefore it cannot be shared by means of a global or static variable.
     It must be given a name so that both applications can access the same mutex object.
     In contrast, the Mutex class is a wrapper to a Win32 construct.
@@ -1311,22 +1333,6 @@ http://www.programmerinterview.com/index.php/operating-systems/monitors-vs-semap
     Another difference when using semaphores is that every routine accessing a shared resource has to explicitly acquire a a lock before using the resource.
     This can be easily forgotten when coding the routines dealing with multithreading . Monitors, unlike semaphores, automatically acquire the necessary locks.
 
-    MONITOR:
-        A monitor is a set of multiple routines which are protected by a mutual exclusion lock.
-        None of the routines in the monitor can be executed by a thread until that thread acquires the lock.
-        This means that only ONE thread can execute within the monitor at a time.
-        Any other threads must wait for the thread that’s currently executing to give up control of the lock.
-
-        However, a thread can actually suspend itself inside a monitor and then wait for an event to occur.
-        If this happens, then another thread is given the opportunity to enter the monitor.
-        The thread that was suspended will eventually be notified that the event it was waiting for has now occurred, which means it can wake up and reacquire the lock.
-        IMP: Monitor is limited to Current Application Domain.
-
-    SEMAPHORE:
-        A semaphore is a simpler construct than a monitor because it’s just a lock that protects a shared resource – and not a set of routines like a monitor.
-        Semaphore you can call its an advance version of mutex with additional features.
-        Semaphore is also helps us to work with external threads and identifying whether an application is acquired by an external thread or not.
-
     MUTEX:
         Mutex helps us to identify whether an application is acquired by an external thread or not and It allows only one single thread to enter to execute a particular task.
         It means mutex allows only one single external thread to enter and execute its task and same ensuring thread safety.
@@ -1355,7 +1361,8 @@ http://stackoverflow.com/questions/1164038/monitor-vs-mutex-in-c-sharp
 
     Use a Monitor unless you need to synchronize across process boundaries.
 
-4. Multi-threaded programming in C++
+4.
+Multi-threaded programming in C++
 http://stackoverflow.com/questions/266168/simple-example-of-threading-in-c
     Create a function that you want the thread to execute. I'll demonstrate with a trivial example:
 
@@ -1404,7 +1411,8 @@ http://stackoverflow.com/questions/266168/simple-example-of-threading-in-c
 Thread Join vs Detach
     If a thread is detached then the Main thread does not wait for the thread to finish its execution
 
-5. Hard Link vs Soft Link
+5.
+Hard Link vs Soft Link
     http://stackoverflow.com/questions/185899/what-is-the-difference-between-a-symbolic-link-and-a-hard-link
 
     Underneath the file system files are represented by inodes (or is it multiple inodes not sure)
@@ -1431,8 +1439,6 @@ Thread Join vs Detach
     Enter some Data into them:
         $ echo "Cat" > blah1
         $ echo "Dog" > blah2
-
-    (Actually, I could have used echo in the first place, as it creates the files if they don't exist... but never mind that.)
 
     And as expected:
         $cat blah1; cat blah2
@@ -1497,9 +1503,9 @@ A file system can run out of space in two ways :
 Super block:
     All iNodes are stored in the iNode table which is the Superblock
 
-What doesn't iNode have the File name
+Why doesn't iNode have the File name
     Multiple file names can map to the same file.
-    File name is stores in the respective Directory.
+    File name is stored in the respective Directory.
 
 Filesytem Basics
     - In unix everything is a file
@@ -1514,6 +1520,7 @@ http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
 6.
 Multi Processor vs Multi Core System
 http://superuser.com/questions/13107/whats-the-difference-between-multicore-proc-and-multiproc-system
+http://theydiffer.com/difference-between-multicore-and-multiprocessor-systems/
 
     Multiple processors let your computer do literally two things at once (instead of only seemingly doing two things at once, but actually just swapping between tasks extremely rapidly).
 
@@ -1576,6 +1583,10 @@ http://stackoverflow.com/questions/1057054/how-to-avoid-deadlocks
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 NETWORKS:
+0. 
+How TCP Works:
+
+
 1.
 How TCP/IP Network works.
 http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
@@ -1596,7 +1607,6 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
   Header   Header 
                 |
                 |
-
 
     1. Application Layer:
         - Application parses the request and sends to the Transport Layer.
@@ -1622,7 +1632,7 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
         - Puts back the packet in orders
         - Sending ACK back to the sender / receiver
         - Header will include information like,
-            a. Port Number (Source and destination)
+            a. Socket: Port Number (Source and destination)
             b. Sequence Number ( for ordering)
             c. Checksum (if data is intact)
 
@@ -1898,6 +1908,7 @@ http://stackoverflow.com/questions/138116/what-happens-when-i-click-the-stop-but
 
 7.
 what happens when you type in a URL in browser
+https://github.com/alex/what-happens-when/blob/master/README.rst
 http://stackoverflow.com/questions/2092527/what-happens-when-you-type-in-a-url-in-browser
 http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/
 
@@ -2133,8 +2144,6 @@ http://stackoverflow.com/questions/152457/what-is-the-difference-between-a-port-
     For example:
         1030 is a port.
         (10.1.1.2 , TCP , port 1030) is a socket.
-
-
 
 -----------------------------------------------
 MISC

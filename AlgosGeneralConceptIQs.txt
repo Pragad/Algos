@@ -29,7 +29,9 @@
 23. Converting Recursive Algorithm to Iterative
 24. Balancing Binary Search Trees
 25. Balancing a Heap
-26. n way merge
+26. Why is Heapify O(n)
+26b. SiftUp vs SiftDown
+27. n way merge
 ----------------------------------------------------------------------------------------------------
 
 1.
@@ -659,6 +661,30 @@ Balancing a Heap
 
 
 26.
+Why is Heapify O(n)
+http://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity
+
+    When heapify is called, the running time depends on how far an element might move down in tree before the process terminates.
+    In other words, it depends on the height of the element in the heap.
+    In the worst case, the element might go down all the way to the leaf level.
+
+    Let us count the work done level by level.
+    At the bottommost level, there are 2^(h)nodes, but we do not call heapify on any of these, so the work is 0.
+    At the next to level there are 2^(h - 1) nodes, and each might move down by 1 level.
+    At the 3rd level from the bottom, there are 2^(h - 2) nodes, and each might move down by 2 levels.
+
+    As you can see not all heapify operations are O(log n), this is why you are getting O(n)
+
+26b.
+SiftUp vs SiftDown
+
+    Heapify is O(n) when done with siftDown but O(n log n) when done with siftUp.
+    The actual sorting (pulling items from heap one by one) has to be done with siftUp so is therefore O(n log n)
+
+    - siftDown swaps a node that is too small with its largest child (thereby moving it down) until it is at least as large as both nodes below it.
+    - siftUp swaps a node that is too large with its parent (thereby moving it up) until it is no larger than the node above it.
+    
+27.
 n way merge
 
 

@@ -380,6 +380,7 @@ void reverseWordsInSentence(string& str)
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 8. Time Planner
+// Implement a meeting planner that can schedule meetings between two persons at a time.
 // https://www.pramp.com/question/3QnxW6xoPLTNl5jX5Lg1
 // Session11_2016_07_08.cpp
 //

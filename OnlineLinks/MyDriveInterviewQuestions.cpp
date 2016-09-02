@@ -416,8 +416,11 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 4: Given a input stream of numbers, compute the median after each entry
-//            hlllhabcdedcba
-//            Ans: e
+//
+// HEAPS can be used only if everything can be fit in memory
+// Another approach is to use Counting sort
+// http://www.geeksforgeeks.org/counting-sort/
+// http://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers
 // ------------------------------------------------------------------------------------------------
 
 template <typename T>
@@ -469,7 +472,7 @@ int medianOfStreams(int numbers[], uint32_t size)
 
     if (size < 2)
     {
-        return 0;
+        return numbers[0];
     }
 
     if (numbers[0] > numbers[1])
