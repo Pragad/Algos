@@ -15,5 +15,11 @@ void printArray(int arr[], int num)
 
 int main()
 {
-    cout << endl;
+    int a = 5;
+    int b = 6;
+    int c = a + b;
+    c--;
+
+    cout << c << endl;
+    return 0;
 }

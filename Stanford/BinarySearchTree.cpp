@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <queue>
 using namespace std;
 
 // http://codereview.stackexchange.com/questions/61671/binary-search-tree-c-implementation
@@ -37,9 +38,13 @@ class BST
         bool isPresent(const int data);
         void insert(const int data);
         void balancedInsert(const int data);
+        void balancedInsertRec(Node*& node, const int data);
         bool remove(const int data);
         int height(const Node* node);
-        void printInorder();
+        void printInorderIterative();
+        void printLevelOrder();
+        void rightRotate(Node*& node);
+        void leftRotate(Node*& node);
 
         size_t getLength() { return _length; }
 };
@@ -123,52 +128,120 @@ BST::height(const Node* node)
     return max(lh, rh);
 }
 
+/*
+        x
+    y
+z   
+*/
+void
+BST::rightRotate(Node*& node)
+{
+    Node* a = node->_left;
+    Node* b = a->_right;
+
+    a->_right = node;
+    node->_left = b;
+
+    node = a;
+}
+
+void
+BST::leftRotate(Node*& node)
+{
+    Node* a = node->_right;
+    Node* b = a->_left;
+
+    a->_left = node;
+    node->_right = b;
+
+    node = a;
+}
+
+void
+BST::balancedInsertRec(Node*& node, int data)
+{
+    // If ROOT is null, insert and give back the root
+    if (node == nullptr)
+    {
+        node = new Node(data);
+        ++_length;
+        return;
+    }
+
+    // If data is greater, then it should be inserted on the right
+    if (data > node->_data)
+    {
+        if (node->_right == nullptr)
+        {
+            node->_right = new Node(data);
+            ++_length;
+        }
+        else
+        {
+            balancedInsertRec(node->_right, data);
+        }
+
+    }
+    // If data is lesser, then it should be inserted on the left
+    else
+    {
+        if (node->_left == nullptr)
+        {
+            node->_left = new Node(data);
+            ++_length;
+        }
+        else
+        {
+            balancedInsertRec(node->_left, data);
+        }
+    }
+
+    // Now a node would have been inserted either as left child or as right child
+    int lh = height(node->_left);
+    int rh = height(node->_right);
+    cout << data << "; H: " << 1 + max(lh, rh) << "; H->L: " << lh << "; H->R: " << rh << endl;
+
+    if (abs(lh - rh)  > 1)
+    {
+        // Tree in unbalanced. So balance it
+        if (lh > rh) 
+        {
+            // Because Equal elements will get inserted to the left child
+            if (data <= node->_left->_data)
+            {
+                // Do a right rotate
+                rightRotate(node);
+            }
+            else
+            {
+                // Do a left rotate and then a right rotate
+                leftRotate(node->_left);
+                rightRotate(node);
+            }
+
+            return;
+        }
+        else if (lh < rh)
+        {
+            if(data <= node->_right->_data)
+            {
+                // Do a right rotate and then a left rotate
+                rightRotate(node->_right);
+                leftRotate(node);
+            }
+            else
+            {
+                // Do a left rotate
+                leftRotate(node);
+            }
+        }
+    }
+}
+
 void
 BST::balancedInsert(const int data)
 {
-    Node* tmp = new Node(data);
-
-    if (_root == nullptr)
-    {
-        _root = tmp;
-        ++_length;
-
-        return;
-    }
-    else
-    {
-        Node* curNode = _root;
-
-        while (curNode)
-        {
-            if (curNode->getData() < data)
-            {
-                if (curNode->_right == nullptr)
-                {
-                    curNode->_right = tmp;
-                    ++_length;
-
-                    break;
-                }
-                curNode = curNode->_right;
-            }
-            else if (curNode->getData() >= data)
-            {
-                if (curNode->_left == nullptr)
-                {
-                    curNode->_left = tmp;
-                    ++_length;
-
-                    break;
-                }
-                curNode = curNode->_left;
-            }
-        }
-
-        int leftHeight =  height(curNode->_left);
-        int rightHeight =  height(curNode->_right);
-        cout << "LH: " << leftHeight << "; RH: " << rightHeight << endl;
-    }
+    balancedInsertRec(_root, data);
 }
 
 bool
@@ -178,34 +251,83 @@ BST::remove(const int data)
 }
 
 void
-BST::printInorder()
+BST::printLevelOrder()
 {
+    uint32_t level = 0;
+    uint32_t nextLevel = 0;
+    queue<Node*> levelQueue;
+    
+    if (_root == nullptr)
+    {
+        return;
+    }
+
+    levelQueue.push(_root);
+    level++;
+
+    cout << "Level Order Traversal" << endl;
+    while(!levelQueue.empty())
+    {
+        Node* tmp = levelQueue.front();
+        levelQueue.pop();
+        level--;
+        cout << tmp->_data << ", ";
+
+        if (tmp->_left != nullptr)
+        {
+            levelQueue.push(tmp->_left);
+            nextLevel++;
+        }
+
+        if (tmp->_right != nullptr)
+        {
+            levelQueue.push(tmp->_right);
+            nextLevel++;
+        }
+
+        if (level == 0)
+        {
+            cout << endl;
+            level = nextLevel;
+            nextLevel = 0;
+        }
+    }
+
+    cout << endl;
+}
+
+void
+BST::printInorderIterative()
+{
+    Node* tmpRoot = _root;
+
+    cout << "Inorder Traversal" << endl;
     stack<Node*> recStack;
 
-    if (_root == nullptr)
+    if (tmpRoot == nullptr)
     {
         return;
     }
 
     do
     {
-        if (_root != nullptr)
+        if (tmpRoot != nullptr)
         {
-            recStack.push(_root);
+            recStack.push(tmpRoot);
 
-            while (_root->_left != nullptr)
+            while (tmpRoot->_left != nullptr)
             {
-                recStack.push(_root->_left);
-                _root = _root->_left;
+                recStack.push(tmpRoot->_left);
+                tmpRoot = tmpRoot->_left;
             }
         }
 
-        _root = recStack.top();
+        tmpRoot = recStack.top();
         recStack.pop();
-        cout << _root->getData() << ", ";
+        cout << tmpRoot->getData() << ", ";
 
-        _root = _root->_right;
-    } while (!recStack.empty() || _root != nullptr);
+        tmpRoot = tmpRoot->_right;
+    } while (!recStack.empty() || tmpRoot != nullptr);
 
     cout << endl;
 }
@@ -224,12 +346,15 @@ int main()
         // Level 2
         root->balancedInsert(2);
         root->balancedInsert(7);
-        root->balancedInsert(12);
-        /*
-        root->balancedInsert(17);
+        root->balancedInsert(6);
+        root->balancedInsert(3);
+        root->balancedInsert(4);
 
-        // Level 3
-        root->balancedInsert(1);
+        root->balancedInsert(30);
+        root->balancedInsert(20);
+        root->balancedInsert(25);
+        root->balancedInsert(27);
+        /*
         root->balancedInsert(3);
         root->balancedInsert(6);
         root->balancedInsert(8);
@@ -240,7 +365,8 @@ int main()
         */
 
         cout<< "Len: " << root->getLength() << endl;
-        root->printInorder();
+        root->printInorderIterative();
+        root->printLevelOrder();
     }
 
     cout << endl;

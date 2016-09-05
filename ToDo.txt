@@ -12,7 +12,7 @@
 0. Virtual Address and Physical Address Mapping
 1. Two Bit problems
     2. Binary Tree with Iterators ++
-Balancing a BST
+    Balancing a BST
 AVL and Red Black Trees
 3. Spin Locks and Coursera
 4. Dynamic Programming
@@ -35,40 +35,69 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 8) Large number multiplication
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
-    1) Activity Selection Problem / Find all NON overlapping intervals
-       {{10,20}, {15,18}, {15,25}, {20,40}, {25, 30}}
-       ANS: {{10, 20}, {20, 40}},
-            {{10, 20}, {25, 30}},
-            {{15, 18}, {20, 40}},
-            {{15, 18}, {25, 30}},
-            {{15, 25}, {25, 30}}
+    2016/09/04:
+        1) Implement BigInt class
+        2) Copy a linked list with random pointers
+        3) Print Vertical Sum of a tree
 
-        HINT: Sort by end time
+    2016/08/28:
+        1)
+        Activity Selection Problem / Find all NON overlapping intervals
+           {{10,20}, {15,18}, {15,25}, {20,40}, {25, 30}}
+           ANS: {{10, 20}, {20, 40}},
+                {{10, 20}, {25, 30}},
+                {{15, 18}, {20, 40}},
+                {{15, 18}, {25, 30}},
+                {{15, 25}, {25, 30}}
 
-    2) 
-    Add two numbers represented as a linked list
-        a) Without using Additional Memory
-        b) Using Recursion
+            HINT: Sort by end time
 
-    3)
-    Non blocking Linked List
+        2) 
+        Add two numbers represented as a linked list
+            a) Without using Additional Memory
+            b) Using Recursion
 
-    4)
-    Multi-threading problem
-        Thread 1:   COST, GOOG, NTAP, FB
-        Thread 2:   140,  750,  33,   160
+        3)
+        Non blocking Linked List
 
-        T1 should print SYMBOL and give control to T2
-        T2 should print VALUE and give constrol to T1
+        4)
+        Multi-threading problem
+            Thread 1:   COST, GOOG, NTAP, FB
+            Thread 2:   140,  750,  33,   160
 
-        HINTS: If you consider with Callback, how will you break the cycle
-               wait(), notify(), notifyAll()
-               FIND WHAT IS TRAMPOLINE
+            T1 should print SYMBOL and give control to T2
+            T2 should print VALUE and give constrol to T1
 
-        This can be real time and streaming. As you get each SYMBOL / VALUE print it and give control to the other thread
-    5)
-    Matix of 1s and 0s. Find area of the largest square matrix with all 1's
-        a) How to do using multi-threading
+            HINTS: If you consider with Callback, how will you break the cycle
+                   wait(), notify(), notifyAll()
+                   FIND WHAT IS TRAMPOLINE
+
+            This can be real time and streaming. As you get each SYMBOL / VALUE print it and give control to the other thread
+        5)
+        Matix of 1s and 0s. Find area of the largest square matrix with all 1's
+            a) How to do using multi-threading
+
+    2016/08/21:
+        1) Calculate Moving or Running Average
+           http://photos2.meetupstatic.com/photos/event/8/9/c/8/highres_453335272.jpeg
+        2) In a 2D matrix, find longest increasing path
+            http://photos2.meetupstatic.com/photos/event/9/0/a/7/highres_453337031.jpeg
+        3) Convert a Binary Tree into a Linked List (in-order form) without additional space
+            http://photos4.meetupstatic.com/photos/event/9/9/7/0/highres_453339280.jpeg
+        4) Read 4k block from disk
+            http://photos3.meetupstatic.com/photos/event/9/b/8/8/highres_453339816.jpeg
+        5) DeQueue using HashMap
+            http://photos1.meetupstatic.com/photos/event/a/4/1/6/highres_453342006.jpeg
+
+    2016/08/14:
+        1) Linked List Front Back Split
+           I/p: 1->2->3->4->5
+           O/p: 1->5->2->4->3
+            http://photos2.meetupstatic.com/photos/event/b/e/c/1/highres_453108833.jpeg
+        2)
+            http://photos4.meetupstatic.com/photos/event/c/4/c/d/highres_453110381.jpeg
+        3)
+            http://photos2.meetupstatic.com/photos/event/d/1/b/7/highres_453113687.jpeg
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VIM:
 1. FuzzySearch for all files
