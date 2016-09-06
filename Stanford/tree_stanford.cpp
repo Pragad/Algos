@@ -935,7 +935,37 @@ void printVerticalOrder(tree* root)
 // ------------------------------------------------------------------------------------------------
 // Problem 21
 //      Find the nearest element that is lesser than the given key
+//      A simpler approach
 // ------------------------------------------------------------------------------------------------
+void nearestLesserElmt(tree* root, int key, int& minElmt)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->data == key)
+    {
+        if (root->left != NULL)
+        {
+            minElmt = root->left->data;
+        }
+
+        return;
+    }
+
+    if (key > root->data)
+    {
+        minElmt = root->data;
+        nearestLesserElmt(root->right, key, minElmt);
+    }
+    else
+    {
+        nearestLesserElmt(root->left, key, minElmt);
+    }
+}
+
+/*
 int nearestLesserElmt(tree* root, int key, int& minElmt)
 {
     if (root == NULL)
@@ -964,6 +994,7 @@ int nearestLesserElmt(tree* root, int key, int& minElmt)
         return nearestLesserElmt(root->left, key, minElmt);
     }
 }
+*/
 
 // ------------------------------------------------------------------------------------------------
 // Problem 22
@@ -1004,8 +1035,21 @@ int findLargestNumSmallerThanKeyRec(tree* root, int elmt)
     else
     {
         int result1 = root->data;
+
+        // If root->right != NULL then result2 WILL Be > result1
         int result2 = findLargestNumSmallerThanKeyRec(root->right, elmt);
         return max(result1, result2);
+
+        // Approach 2:
+        /*
+         int result1 = root->data;
+
+         if (root->right != NULL)
+         {
+             result1 = findLargestNumSmallerThanKeyRec(root->right, elmt);
+         }
+         return result1;
+         */
     }
 }
 
@@ -1376,7 +1420,30 @@ int main()
         printTreeLevelOrder(root);
         cout << endl;
 
+        nearestLesserElmt(root, 5, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+        nearestLesserElmt(root, 10, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+        nearestLesserElmt(root, 15, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+        nearestLesserElmt(root, 20, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+        nearestLesserElmt(root, 25, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+        nearestLesserElmt(root, 30, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+        nearestLesserElmt(root, 35, minElement);
+        cout << "Problem 21: Nearest Lower Element: " << minElement << endl;
+
+        /*
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 5, minElement) << endl;
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 10, minElement) << endl;
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 15, minElement) << endl;
         cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 20, minElement) << endl;
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 25, minElement) << endl;
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 30, minElement) << endl;
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 35, minElement) << endl;
+        */
     }
 
     // Problem 22,23 Find largest element smaller than K in a BST
