@@ -32,7 +32,11 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 5) write code that finds the set of all sub-sets of a set
 6) FizzBuzz
 7) Functors
-8) Large number multiplication
+8) Large number multiplication without using *
+9) Square Root of a number
+10) LRU Cache
+11) Distance between siblings in a tree
+12) Tree Serialize and Deserialize
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     2016/09/04:
