@@ -53,17 +53,17 @@
  * Problem 17. print-the-longest-leaf-to-leaf-path-in-a-binary-tree-and-its-length
  * uint32_t longPathLength(tree* root)
  *
- * Problem 18. Find the nearest element that is lesser than the given key
- * int nearestLesserElmt(tree* root, int key, int& minElmt)
- *
- * Problem 19. Print Tree in Level Order
+ * Problem 18. Print Tree in Level Order
  * void printTreeLevelOrder(tree* root)
  *
- * Problem 20. Print Tree in Spiral Order
+ * Problem 19. Print Tree in Spiral Order
  * void printSpiralOrder(tree* root)
  *
- * Problem 21. Print Tree in Vertical Order
+ * Problem 20. Print Tree in Vertical Order
  * void printVerticalOrder(tree* root)
+ *
+ * Problem 21. Find the nearest element that is lesser than the given key
+ * int nearestLesserElmt(tree* root, int key, int& minElmt)
  *
  * Problem 22. Find largest element smaller than K in a BST
  * int findLargestNumSmallerThanKey(tree* root, int elmt)
@@ -131,7 +131,7 @@ treeWithParent* newNodeParent(int data)
     return node;
 }
 
-void printTree(tree* root)
+void printTreePreorder(tree* root)
 {
     if (root == NULL)
     {
@@ -140,8 +140,8 @@ void printTree(tree* root)
     else
     {
         cout << root->data << "  ";
-        printTree(root->left);
-        printTree(root->right);
+        printTreePreorder(root->left);
+        printTreePreorder(root->right);
     }
 }
 
@@ -565,6 +565,7 @@ void maxSumLeafToRootPath(tree* root, int curSum, int& maxSum)
     // http://stackoverflow.com/questions/16767345/invalid-initialization-of-non-const-reference-of-type-int-from-a-temporary-of
     // VERY IMP: Can't pass a VALUE directly to a reference. It should be put in a 
     // variable before doing so.
+    // curSum is being passed as value. So we can skip the temp variable
     int temp = root->data + curSum;
 
     maxSumLeafToRootPath(root->left, temp, maxSum);
@@ -614,6 +615,10 @@ int maxSumLeafToLeafRec(tree* root, int& maxLeafToLeaf)
 
     if (root->left != NULL && root->right != NULL)
     {
+        // VERY IMP:
+        // This should be the ONLY place where we update maxLeafToLeaf.
+        // Two leaves should exist in the Binary Tree. For that there should be a NODE whose
+        // left and right is NOT null
         maxLeafToLeaf = max(maxLeafToLeaf, leftMaxSum + rightMaxSum + root->data);
 
         // Return the max value from current node to its leaves
@@ -621,9 +626,14 @@ int maxSumLeafToLeafRec(tree* root, int& maxLeafToLeaf)
     }
 
     // VERY IMP: This should be ELSE IF. Otherwise the above IF as well as the below IF will get executed
-    if (root->left != NULL)
+    else if (root->left != NULL)
     {
-
+        // Don't update maxLeafToLeaf here
+        // Consider the following tree
+        //      10          10
+        //     /               \
+        //    5                 2
+        // The above trees DON't have a leaf to leaf path
         return leftMaxSum + root->data;
     }
     else
@@ -753,39 +763,6 @@ uint32_t longPathLength(tree* root)
 
 // ------------------------------------------------------------------------------------------------
 // Problem 18
-//      Find the nearest element that is lesser than the given key
-// ------------------------------------------------------------------------------------------------
-int nearestLesserElmt(tree* root, int key, int& minElmt)
-{
-    if (root == NULL)
-    {
-        return INT_MAX;
-    }
-
-    if (root->data == key)
-    {
-        if (root->left != NULL)
-        {
-            // If both are present return the number that is JUST smaller than key.
-            // So larger of the two minimum numbers
-            return max(minElmt, root->left->data);
-        }
-        return minElmt;
-    }
-
-    if (key > root->data)
-    {
-        minElmt = root->data;
-        return nearestLesserElmt(root->right, key, minElmt);
-    }
-    else
-    {
-        return nearestLesserElmt(root->left, key, minElmt);
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-// Problem 19
 //      Print Tree in Level Order
 // ------------------------------------------------------------------------------------------------
 void printTreeLevelOrder(tree* root)
@@ -829,7 +806,7 @@ void printTreeLevelOrder(tree* root)
 }
 
 // ------------------------------------------------------------------------------------------------
-// Problem 20
+// Problem 19
 //      Print Tree in Spiral Order
 // ------------------------------------------------------------------------------------------------
 void printSpiralOrder(tree* root)
@@ -902,7 +879,7 @@ void printSpiralOrder(tree* root)
 }
 
 // ------------------------------------------------------------------------------------------------
-// Problem 21
+// Problem 20
 //      Print Tree in Vertical Order
 // http://stackoverflow.com/questions/14485255/vertical-sum-in-a-given-binary-tree?lq=1
 // http://stackoverflow.com/questions/20521098/print-a-tree-vertically
@@ -952,6 +929,39 @@ void printVerticalOrder(tree* root)
             cout << data << ", ";
         }
         cout << endl;
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 21
+//      Find the nearest element that is lesser than the given key
+// ------------------------------------------------------------------------------------------------
+int nearestLesserElmt(tree* root, int key, int& minElmt)
+{
+    if (root == NULL)
+    {
+        return INT_MAX;
+    }
+
+    if (root->data == key)
+    {
+        if (root->left != NULL)
+        {
+            // If both are present return the number that is JUST smaller than key.
+            // So larger of the two minimum numbers
+            return max(minElmt, root->left->data);
+        }
+        return minElmt;
+    }
+
+    if (key > root->data)
+    {
+        minElmt = root->data;
+        return nearestLesserElmt(root->right, key, minElmt);
+    }
+    else
+    {
+        return nearestLesserElmt(root->left, key, minElmt);
     }
 }
 
@@ -1215,38 +1225,39 @@ int main()
     cout << "TREE" << endl;
     struct tree* root = NULL;
     root = build123();
-    printTree(root);
+    printTreePreorder(root);
     cout << endl;
 
-    cout << "Size: " << size(root) << endl;
-    cout << "Max Depth: " << maxDepth(root) << endl;
-    cout << "Has Path Sum: " << hasPathSum(root, 12) << endl;
-    cout << "Has Path Sum: " << hasPathSum(root, 18) << endl;
-    cout << "Has Path Sum: " << hasPathSum(root, 5) << endl;
+    cout << "Probelm 1: Size: " << size(root) << endl;
+    cout << "Probelm 2: Max Depth: " << maxDepth(root) << endl;
+    cout << "Probelm 3: Min Value: " << minValue(root) << endl;
 
-    cout << "Min Value: " << minValue(root) << endl;
-    cout << "Paths: ";
+    cout << "Probelm 4: Has Path Sum: " << hasPathSum(root, 12) << endl;
+    cout << "Probelm 4: Has Path Sum: " << hasPathSum(root, 18) << endl;
+    cout << "Probelm 4: Has Path Sum: " << hasPathSum(root, 5) << endl;
+
+    cout << "Probelm 5: Paths: ";
     printPaths(root);
 
-    cout << "Paths Using Vectors: ";
+    cout << "Probelm 6: Paths Using Vectors: ";
     printPathsVec(root);
 
-    cout << "Mirror of a Node" << endl;
-    printTree(root);
+    cout << "Probelm 7: Mirror of a Node" << endl;
+    printTreePreorder(root);
     /*
     cout << endl;
     mirror(root);
-    printTree(root);
+    printTreePreorder(root);
     cout << endl;
 
-    cout << "Doubling a tree" << endl;
+    cout << "Probelm 8: Doubling a tree" << endl;
     doubleTree(root);
-    printTree(root);
+    printTreePreorder(root);
     */
 
     // Find LCA
     {
-        cout << endl << "LCA" << endl;
+        cout << endl << "Probelm 13: LCA" << endl;
         cout << findLCANum(root) << endl;
     }
 
@@ -1273,19 +1284,19 @@ int main()
         root1->left->right = newNode(-1);
         root1->right->right = newNode(-25);
         root1->right->right->left = newNode(17);
-        root1->right->right->right = newNode(4);
+        //root1->right->right->right = newNode(4);
 
-        printTree(root);
+        printTreePreorder(root);
         cout << endl;
 
-        printTreeInorder(root);
+        printTreeLevelOrder(root1);
         cout << endl;
 
-        cout << "Max Root to Leaf: " << maxSumLeafToRoot(root1) << endl;
+        cout << "Probelm 14: Max Root to Leaf: " << maxSumLeafToRoot(root1) << endl;
 
-        cout << "Max Leaf to Leaf: " << maxSumLeafToLeaf(root1) << endl;
+        cout << "Probelm 15: Max Leaf to Leaf: " << maxSumLeafToLeaf(root1) << endl;
 
-        cout << "Max Node to Node: " << maxSumNodeToNode(root1) << endl;
+        cout << "Probelm 16: Max Node to Node: " << maxSumNodeToNode(root1) << endl;
     }
 
     // Max Length of Path
@@ -1298,23 +1309,10 @@ int main()
         root->left->right->right = newNode(6);
         root->left->left->left->left = newNode(7);
 
-        cout << "Max Length of Path: " << longPathLength(root) << endl;
+        cout << "Probelm 17: Max Length of Path: " << longPathLength(root) << endl;
     }
 
-    // Find element that is lesser and closest to a given key
-    {
-        int minElement = INT_MIN;
-
-        printTree(root);
-        cout << endl;
-
-        printTreeInorder(root);
-        cout << endl;
-
-        cout << "Nearest Lower Element: " << nearestLesserElmt(root, 4, minElement) << endl;
-    }
-
-    // Problem 19,20 Print Tree in Level and Spiral Order
+    // Problem 18,19 Print Tree in Level and Spiral Order
     {
         struct tree* root = newNode(1);
         root->left = newNode(10);
@@ -1324,7 +1322,6 @@ int main()
         root->left->right = newNode(101);
         root->right->left = newNode(102);
         root->right->right = newNode(103);
-
 
         root->left->left->left = newNode(200);
         root->left->left->right = newNode(201);
@@ -1340,18 +1337,17 @@ int main()
         root->left->left->right->left = newNode(302);
         root->left->left->right->right = newNode(303);
 
-
-        cout << "Tree in Level Order" << endl;
+        cout << "Probelm 18: Tree in Level Order" << endl;
         printTreeLevelOrder(root);
         cout << endl;
 
-        cout << "Tree in Spiral Order" << endl;
+        cout << "Probelm 19: Tree in Spiral Order" << endl;
         printSpiralOrder(root);
     }
 
-    // Problem 21 Vertical Order of a Binary Tree
+    // Problem 20 Vertical Order of a Binary Tree
     {
-        cout << endl << "Print Tree in Vertical Order" << endl;
+        cout << endl << "Probelm 20: Print Tree in Vertical Order" << endl;
         struct tree* root = newNode(1);
         root->left = newNode(10);
         root->right = newNode(11);
@@ -1372,9 +1368,20 @@ int main()
     root->left->right = newNode(15);
     root->right->left = newNode(25);
     root->right->right = newNode(35);
+
+    // Problem 21 Find element that is lesser and closest to a given key
+    {
+        int minElement = INT_MIN;
+
+        printTreeLevelOrder(root);
+        cout << endl;
+
+        cout << "Probelm 21: Nearest Lower Element: " << nearestLesserElmt(root, 20, minElement) << endl;
+    }
+
     // Problem 22,23 Find largest element smaller than K in a BST
     {
-        cout << endl << "Find largest element smaller than K in a BST" << endl;
+        cout << endl << "Probelm 22,23: Find largest element smaller than K in a BST" << endl;
         cout << "Normal: " << findLargestNumSmallerThanKey(root, 30) << endl;
         cout << "Recursion: " << findLargestNumSmallerThanKeyRec(root, 30) << endl;
         cout << "Normal: " << findLargestNumSmallerThanKey(root, 5) << endl;
@@ -1396,7 +1403,7 @@ int main()
 
     // Problem 24 Nth largest element in a binary search tree
     {
-        cout << endl << "Nth largest element in a binary search tree" << endl;
+        cout << endl << "Probelm 24: Nth largest element in a binary search tree" << endl;
         uint32_t n = 1;
         int32_t result = 0;
         NthLargestInBST(root, n, result); cout << result << ", ";
@@ -1432,7 +1439,7 @@ int main()
         root->right->right = newNodeParent(35);
         root->right->right->parent = root->right;
 
-        cout << endl << "In Order Successor in Binary Search Tree" << endl;
+        cout << endl << "Probelm 25: In Order Successor in Binary Search Tree" << endl;
         treeWithParent* result = InorderSuccessorWithParent(root);
         cout << root->data << "**" << result->data << ", ";
 
@@ -1471,12 +1478,11 @@ int main()
         root->right->left->right = newNode(28);
         root->right->right->left = newNode(33);
 
-        cout << endl << endl << "Iterative Inorder Traversal" << endl;
+        cout << endl << endl << "Probelm 26: Iterative Inorder Traversal" << endl;
         printTreeInorderIterative(root);
 
-        cout << endl << endl << "Iterative Preorder Traversal" << endl;
+        cout << endl << endl << "Probelm 26: Iterative Preorder Traversal" << endl;
         printTreePreorderIterative(root);
-
         cout << endl;
     }
 
