@@ -41,6 +41,7 @@ Genral Programming / OOPS Concepts
 27. How to resolve Hash Collisions
 28. Multithreading Best Practices
 29. What is Amdhal's law
+30. UCS-2 vs UTF-8/16/32
 -----------------------------------------------
 UML / DESIGN Questions
 1. Parking lot  
@@ -1006,6 +1007,27 @@ stackoverflow.com/questions/660621/threading-best-practices
 What is Amdhal's law
 
     In computer programming, Amdahl's law is that, in a program with parallel processing , a relatively few instruction s that have to be performed in sequence will have a limiting factor on program speedup such that adding more processor s may not make the program run faster. 
+
+30.
+UCS-2 vs UTF-8/16/32
+http://stackoverflow.com/questions/3473295/utf-8-or-utf-16-or-utf-32-or-ucs-2
+
+    Use UTF-8 when the assumption of 8-bit code units is important.
+
+    This applies to:
+        Filenames and related OS calls on Unix systems, which had an established tradition of allowing variable-width encodings, but can't accept '\x00 bytes within strings and thus can't use UTF-16 or UTF-32. In fact, UTF-8 was originally designed for a Unix-based OS (Plan 9).
+        Communications protocols designed around streams of octets.
+        Anything that requires binary compatibility with US-ASCII but gives no special treatment to byte values above 127.
+
+    First of all, forget about UCS-2: it is obsolete.
+    It contains only a subset of Unicode characters.
+    Forget about UTF-32 too: it is very large and very redundant. It is not useful for data transmission.
+
+    UCS-2 is obsolete and has since been replaced with UTF-16
+    UCS-2 is a fixed width encoding scheme while UTF-16 is a variable width encoding scheme
+    UTF-16 capable applications can read UCS-2 files but not the other way around
+    UTF-16 supports right to let scripts while UCS-2 does not
+    UTF-16 supports normalization while UCS-2 does not
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
