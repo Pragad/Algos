@@ -41,6 +41,9 @@
  * Problem 13. Compute the LCA of a tree
  * tree* findLCA(tree* root, tree* a, tree* b)
  *
+ * Problem 13b. Find Distance Between Siblings in a Binary Tree
+ * int distanceBetweenKeys(tree* root, int a, int b)
+ *
  * Problem 14. Given a Binary Tree, find the maximum sum path from a leaf to root.
  * int maxSumLeafToRoot(tree* root)
  *
@@ -79,7 +82,11 @@
  *
  * Problem 26. Iterative Inorder, Preorder, Postorder Traversal
  * void printTreeInorderIterative(tree* root)
+ *
+ * Problem 27. Iterative Inorder, Preorder, Postorder Traversal
  * void printTreePreorderIterative(tree* root)
+ *
+ * Problem 28. Iterative Inorder, Preorder, Postorder Traversal
  * void printTreePostorderIterative(tree* root)
  *
  */
@@ -529,6 +536,90 @@ int findLCANum(tree* root)
     result = findLCA(root, root, root);
     //result = findLCA(root, root->right->right->left, root->left);
     return result->data;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 13b. Find Distance Between Siblings/Key in a Binary Tree
+//      http://www.geeksforgeeks.org/find-distance-two-given-nodes/
+// ------------------------------------------------------------------------------------------------
+int findLevel(const tree* root, int a, int lvl)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    if (root->data == a)
+    {
+        return lvl;
+    }
+
+    return findLevel(root->left, a, lvl + 1);
+    return findLevel(root->right, a, lvl + 1);
+}
+
+tree* findLCAwithLevel(tree* root, int a, int b, int& lvlOfA, int& lvlOfB, int& totDist, int lvl)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+
+    if (root->data == a)
+    {
+        lvlOfA = lvl;
+        return root;
+    }
+    else if (root->data == b)
+    {
+        lvlOfB = lvl;
+        return root;
+    }
+
+    tree* la = findLCAwithLevel(root->left, a, b, lvlOfA, lvlOfB, totDist, lvl + 1);
+    tree* ra = findLCAwithLevel(root->right, a, b, lvlOfA, lvlOfB, totDist, lvl + 1);
+
+    if (la != NULL && ra != NULL)
+    {
+        // Both lvlOfA and lvlOfB will have some values
+        totDist = (lvlOfA - lvl) + (lvlOfB - lvl);
+        return root;
+    }
+    else if (la != NULL)
+    {
+        return la;
+    }
+    else
+    {
+        return ra;
+    }
+}
+
+int distanceBetweenKeys(tree* root, int a, int b)
+{
+    int lvlOfA = -1;
+    int lvlOfB = -1;
+    int totDist = -1;
+    tree* lca = findLCAwithLevel(root, a, b, lvlOfA, lvlOfB, totDist, 0);
+
+    if (lvlOfA != -1 && lvlOfB != -1)
+    {
+        return totDist;
+    }
+    else if (lvlOfA != -1)
+    {
+        // Now A is the ancestor. Find level of B located from A
+        int bLvl = findLevel(lca, b, lvlOfA);
+
+        return bLvl - lvlOfA;
+    }
+    else
+    {
+        // Now B is the ancestor. Find level of A from B
+        int aLvl = findLevel(lca, a, lvlOfB);
+
+        return aLvl - lvlOfB;
+    }
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1299,13 +1390,36 @@ int main()
     printTreePreorder(root);
     */
 
-    // Find LCA
+    // Problem 13. Find LCA
     {
         cout << endl << "Probelm 13: LCA" << endl;
         cout << findLCANum(root) << endl;
     }
 
-    // Find Max root to leaf path
+    // Problem 13b. Find Distance Between Siblings/Key in a Binary Tree
+    {
+        root = newNode(1);
+        root->left = newNode(2);
+        root->right = newNode(3);
+
+        root->left->left = newNode(4);
+        root->left->right = newNode(5);
+        root->right->left = newNode(6);
+        root->right->right = newNode(7);
+
+        root->left->left->left = newNode(8);
+        root->left->right->right = newNode(9);
+        root->right->left->right = newNode(10);
+        root->right->right->left = newNode(11);
+
+        cout << endl << "Problem 13b. Dist : " << distanceBetweenKeys(root, 4, 5) << endl;
+        cout << endl << "Problem 13b. Dist : " << distanceBetweenKeys(root, 4, 6) << endl;
+        cout << endl << "Problem 13b. Dist : " << distanceBetweenKeys(root, 3, 4) << endl;
+        cout << endl << "Problem 13b. Dist : " << distanceBetweenKeys(root, 2, 4) << endl;
+        cout << endl << "Problem 13b. Dist : " << distanceBetweenKeys(root, 10, 5) << endl;
+    }
+
+    // Problem 14. Find Max root to leaf path
     {
         struct tree* root = newNode(-15);
         root->left = newNode(5);
@@ -1330,9 +1444,11 @@ int main()
         root1->right->right->left = newNode(17);
         //root1->right->right->right = newNode(4);
 
+        cout << endl << "Preorder Traversal" << endl;
         printTreePreorder(root);
         cout << endl;
 
+        cout << endl << "Level Order Traversal" << endl;
         printTreeLevelOrder(root1);
         cout << endl;
 
@@ -1381,17 +1497,15 @@ int main()
         root->left->left->right->left = newNode(302);
         root->left->left->right->right = newNode(303);
 
-        cout << "Probelm 18: Tree in Level Order" << endl;
+        cout << endl << "Probelm 18: Tree in Level Order" << endl;
         printTreeLevelOrder(root);
-        cout << endl;
 
-        cout << "Probelm 19: Tree in Spiral Order" << endl;
+        cout << endl << "Probelm 19: Tree in Spiral Order" << endl;
         printSpiralOrder(root);
     }
 
     // Problem 20 Vertical Order of a Binary Tree
     {
-        cout << endl << "Probelm 20: Print Tree in Vertical Order" << endl;
         struct tree* root = newNode(1);
         root->left = newNode(10);
         root->right = newNode(11);
@@ -1401,6 +1515,7 @@ int main()
         root->right->left = newNode(102);
         root->right->right = newNode(103);
 
+        cout << endl << "Probelm 20: Print Tree in Vertical Order" << endl;
         printVerticalOrder(root);
     }
 
@@ -1417,6 +1532,7 @@ int main()
     {
         int minElement = INT_MIN;
 
+        cout << endl << "Level Order Traversal" << endl;
         printTreeLevelOrder(root);
         cout << endl;
 
@@ -1529,28 +1645,32 @@ int main()
         cout << root->right->right->data << "**" << result->data << ", ";
     }
 
-    // Problem 26. Iterative Inorder, Preorder, Postorder Traversal
+    root = newNode(20);
+    root->left = newNode(10);
+    root->right = newNode(30);
+
+    root->left->left = newNode(5);
+    root->left->right = newNode(15);
+    root->right->left = newNode(25);
+    root->right->right = newNode(35);
+
+    /*
+    root->left->left->left = newNode(1);
+    root->left->right->right = newNode(17);
+    root->right->left->right = newNode(28);
+    root->right->right->left = newNode(33);
+    */
+
+    // Problem 26,27,28. Iterative Inorder, Preorder, Postorder Traversal
     {
-        root = newNode(20);
-        root->left = newNode(10);
-        root->right = newNode(30);
-
-        root->left->left = newNode(5);
-        root->left->right = newNode(15);
-        root->right->left = newNode(25);
-        root->right->right = newNode(35);
-
-        root->left->left->left = newNode(1);
-        root->left->right->right = newNode(17);
-        root->right->left->right = newNode(28);
-        root->right->right->left = newNode(33);
-
         cout << endl << endl << "Probelm 26: Iterative Inorder Traversal" << endl;
         printTreeInorderIterative(root);
 
-        cout << endl << endl << "Probelm 26: Iterative Preorder Traversal" << endl;
+        cout << endl << "Probelm 27: Iterative Preorder Traversal" << endl;
         printTreePreorderIterative(root);
-        cout << endl;
+
+        cout << endl << "Probelm 28: Iterative Postorder Traversal" << endl;
+        printTreePostorderIterative(root);
     }
 
     cout << endl;

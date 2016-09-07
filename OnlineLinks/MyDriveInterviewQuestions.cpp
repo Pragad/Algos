@@ -1814,9 +1814,51 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
 //
 // http://stackoverflow.com/questions/251781/how-to-find-the-kth-largest-element-in-an-unsorted-array-of-length-n-in-on
 // ------------------------------------------------------------------------------------------------
-int kthSmallQuickSelect(vector<int> nums, uint32_t k)
+void mySwap(int& a, int &b)
+{
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int threeWayQuickSortPartition(vector<int> nums)
 {
 
+}
+
+int quickSortPartition(vector<int> nums)
+{
+    int pivot = nums[0];
+    uint32_t low = 0;
+    uint32_t high = nums.size() - 1;
+
+    while (low < high)
+    {
+        while (nums[low] <= pivot)
+        {
+            low++;
+        }
+
+        while (nums[high] > pivot)
+        {
+            high--;
+        }
+
+        if (low < high)
+        {
+            mySwap(nums[low], nums[high]);
+        }
+    }
+
+    mySwap(nums[0], nums[high]);
+
+    // Pivot is at high
+    return high;
+}
+
+int kthSmallQuickSelect(const vector<int>& nums, uint32_t k)
+{
+    
 }
 
 // ------------------------------------------------------------------------------------------------
