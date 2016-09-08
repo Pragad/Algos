@@ -16,7 +16,7 @@
 10. STOCK PROBLEMS:
 11. Sorted Rotated Array:
 12. Find all subsets of a set
-13. Multiplication of two numers
+13. Multiplication of two numers (without using *)
 14. Spiral Level Order traversal of a tree
 15. Space Complexity for Tree Traversal.
 16. Memoization vs Tabulation in Dynamic Programming
@@ -331,9 +331,9 @@ http://www.geeksforgeeks.org/position-of-rightmost-set-bit/
 
 To Clear rightmost set bit just do
     x & (x-1)
+
 5.
 String Search:
-
     Bayer More:
     http://www.geeksforgeeks.org/pattern-searching-set-7-boyer-moore-algorithm-bad-character-heuristic/
 
@@ -403,11 +403,14 @@ http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-faste
     }
 
 13.
-Multiplication of two numers
+Multiplication of two numers (without using *)
 http://stackoverflow.com/questions/28888068/time-complexity-of-russian-peasant-multiplication-algorithm
 
-    Use bit shifting AKA 
+    Using LOG:
+        10^(log10(A) + log10(B))
+        i.e. pow(10, log10(A) + log10(B)
 
+    Use bit shifting AKA 
     https://en.wikipedia.org/wiki/Multiplication_algorithm#Peasant_or_binary_multiplication
 
     Decimal:     Binary:

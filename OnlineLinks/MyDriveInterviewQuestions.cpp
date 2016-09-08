@@ -105,6 +105,13 @@ using namespace std;
  * PROBLEM 23. Multiplication of two very large numbers
  * int largeNumberMultiplication(int arr[], uint32_t num, uint32_t k)
  *
+ * PROBLEM 23b. Binary Decimal Conversions
+ * void convertDecimalNumToBinaryStrRec(uint32_t num, string strBin)
+ * string convertDecimalNumToBinaryStr(uint32_t num)
+ * string convertDecimalStrToBinaryStr(string strDec)
+ * string convertBinaryStrToDecimalStr(string strBin)
+ * uint32_t convertBinaryStrToDecimalNum(string strBin)
+ *
  * PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
  * uint32_t minWindowContainingString(string str1, string str2)
  *
@@ -422,7 +429,6 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
 // http://www.geeksforgeeks.org/counting-sort/
 // http://stackoverflow.com/questions/10657503/find-running-median-from-a-stream-of-integers
 // ------------------------------------------------------------------------------------------------
-
 template <typename T>
 void printHeap(T myHeap)
 {
@@ -434,7 +440,7 @@ void printHeap(T myHeap)
     cout << endl;
 }
 
-int medianOfStreamsHeap(int element, priority_queue<int>& desHeap, priority_queue<int, std::vector<int>, std::greater<int> >& ascHeap)
+void medianOfStreamsHeap(int element, priority_queue<int>& desHeap, priority_queue<int, std::vector<int>, std::greater<int> >& ascHeap)
 {
     int topDesHeap = desHeap.top();
     int topAscHeap = ascHeap.top();
@@ -1014,6 +1020,9 @@ int largestNumByRemovingDup(int number)
             }
         }
     }
+
+    // Control should not reach here
+    return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1758,7 +1767,7 @@ int kthSmallestElementRec(int arr1[], uint32_t index1, uint32_t num1,
         index2 = step2;
     }
 
-    kthSmallestElementRec(arr1, index1, num1, arr2, index2, num2, k);
+    return kthSmallestElementRec(arr1, index1, num1, arr2, index2, num2, k);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1823,7 +1832,7 @@ void mySwap(int& a, int &b)
 
 int threeWayQuickSortPartition(vector<int> nums)
 {
-
+    return 0;    
 }
 
 int quickSortPartition(vector<int> nums)
@@ -1858,7 +1867,7 @@ int quickSortPartition(vector<int> nums)
 
 int kthSmallQuickSelect(const vector<int>& nums, uint32_t k)
 {
-    
+    return 0;    
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2015,9 +2024,9 @@ string addStringNumbers(string s1, string s2)
 // Assuming str1 and str2 in binary. Do the multiplication
 string largeNumberBinaryMultStr(string str1, string str2)
 {
-    /*
     string result;
 
+    /*
     while (str1)
     {
         if ((str1[str1.length() - 1]) != '0')
@@ -2027,30 +2036,66 @@ string largeNumberBinaryMultStr(string str1, string str2)
         num2 = num2 << 1;
         num1 = num1 >> 1;
     }
+    */
 
     return result;
-    */
-}
-
-// Conver a string number to Binary
-string convertStrNumToBin(string num1)
-{
-    // Take the first character
-    uint32_t temp = num1[0] - '0';
-
-    for (uint32_t i = 1; i < num1.length(); i++)
-    {
-        temp = (temp * 10) + (num1[i] - '0');
-        
-    }
 }
 
 string largeNumberMultiplicationString(string str1, string str2)
 {
-    string binStr1 = convertStrNumToBin(str1);
-    string binStr2 = convertStrNumToBin(str2);
+    //string binStr1 = convertStrNumToBin(str1);
+    //string binStr2 = convertStrNumToBin(str2);
 
-    cout << largeNumberBinaryMultStr(binStr1, binStr2);
+    //cout << largeNumberBinaryMultStr(binStr1, binStr2);
+    return "";
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 23b. PROBLEM 23b. Binary Decimal Conversions
+// ------------------------------------------------------------------------------------------------
+// Recursion: Decimal Number to Binary String
+void convertDecimalNumToBinaryStrRec(uint32_t num, string& strBin)
+{
+    if (num / 2 != 0)
+    {
+        convertDecimalNumToBinaryStrRec(num / 2, strBin);
+    }
+
+    strBin += (num % 2) + '0';
+}
+
+// Decimal Number to Binary String
+string convertDecimalNumToBinaryStr(uint32_t num)
+{
+    string strBin;
+
+    while (num / 2 != 0)
+    {
+        strBin += (num % 2) + '0';
+        num = num / 2;
+    }
+    strBin += num % 2 + '0';
+
+    std::reverse(strBin.begin(), strBin.end());
+    return strBin;
+}
+
+// Decimal String to Binary String
+string convertDecimalStrToBinaryStr(string strDec)
+{
+    return "";
+}
+
+// Binary String to Decimal String
+string convertBinaryStrToDecimalStr(string strBin)
+{
+    return "";
+}
+
+// Binary String to Decimal Number
+uint32_t convertBinaryStrToDecimalNum(string strBin)
+{
+    return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2406,7 +2451,7 @@ double findGrantsCapModified(vector<uint32_t> grants, uint32_t budget)
 // https://www.careercup.com/question?id=11903257
 //             Complexity: O(n).
 // ------------------------------------------------------------------------------------------------
-bool isDivisible(uint32_t i, uint32_t num, uint32_t& rem)
+void isDivisible(uint32_t i, uint32_t num, uint32_t& rem)
 {
     rem = (rem * 2 + i) % num;
 }
@@ -2819,11 +2864,11 @@ int main()
                                 {0, 1, 0},
                                 {1, 0, 0} };
                                 */
-        int twoD[rows][cols] = {{1, 1, 0, 0, 0},
-                                {0, 1, 0, 0, 1},
-                                {1, 0, 0, 1, 1},
-                                {0, 0, 0, 0, 0},
-                                {1, 0, 1, 0, 1}};
+        vector< vector<int> > twoD = {{1, 1, 0, 0, 0},
+                                      {0, 1, 0, 0, 1},
+                                      {1, 0, 0, 1, 1},
+                                      {0, 0, 0, 0, 0},
+                                      {1, 0, 1, 0, 1}};
 
         int **arrayTwoD = new int *[rows];
         for (uint32_t i = 0; i < rows; i++)
@@ -3067,6 +3112,21 @@ int main()
         cout << largeNumberMultiplication(s1, s2) << endl;
 
         addStringNumbers(s1, s2);
+    }
+
+    // PROBLEM 23b. PROBLEM 23b. Binary Decimal Conversions
+    {
+        cout << endl << "Binary Decimal Conversions" << endl;
+        string strBin;
+        uint32_t num = 110;
+        convertDecimalNumToBinaryStrRec(num, strBin);
+        cout << num << " in binary: " << strBin << endl;
+        cout << num << " in binary: " << convertDecimalNumToBinaryStr(num) << endl;
+        /*
+        convertDecimalStrToBinaryStr();
+        convertBinaryStrToDecimalStr();
+        convertBinaryStrToDecimalStr();
+        */
     }
 
     // PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T

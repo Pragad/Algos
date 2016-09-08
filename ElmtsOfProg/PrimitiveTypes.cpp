@@ -173,7 +173,7 @@ int main()
     cout << "Divide Opt: " << numDivision(16, 3) << endl;
     cout << "Divide Opt: " << numDivision(18, 3) << endl;
 
-    cout << "Conver Base: " << convertBase("FE12D", 16, 8) << endl;
+    cout << "Convert Base: " << convertBase("FE12D", 16, 8) << endl;
     cout << endl;
     return 0;
 }
