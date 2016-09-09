@@ -149,50 +149,75 @@ int main()
 
     // Problem 3:
     {
-		uint64_t arrSize;
-		uint64_t numOps;
-		uint64_t stPos;
-		uint64_t endPos;
-		uint64_t value;
-		uint64_t maxValue = 0;
-		vector<uint64_t> arrList;
-        cout << "Enter Array Size and Num Ops" << endl;
-		cin >> arrSize;
-		cin >> numOps;
-		
-		if (arrSize >= 3 && arrSize <= 10000000 &&
-			numOps >= 1 && numOps <= 200000)
-		{
-			arrList.resize(arrSize, 0);
-		}
-		else
-		{
-			// Error. So return.
-			cout << 0;
-		}
-	   
-        cout << "Enter Start Position End Position and Value" << endl;
-		for (uint64_t i = 0; i < numOps; i++)
-		{
-			cin >> stPos;
-			cin >> endPos;
-			cin >> value;
-			
-			if (stPos >= 1 && stPos <= endPos &&
-				endPos >= stPos && endPos <= arrSize &&
-				value <= 1000000000)
-			{
-				addValToList(arrList, stPos, endPos, value, maxValue);
-			}
-			else
-			{
-				// Error. So return.
-				cout << 0;
-			}
-		}
-		
-		maxValue = max(maxValue, findMaxList(arrList));
-		cout << "Max Value: " << maxValue << endl;
+        uint64_t arrSize;
+        uint64_t numOps;
+        uint64_t stPos;
+        uint64_t endPos;
+        uint64_t value;
+        uint64_t maxValue = 0;
+        string line;
+        vector<uint64_t> arrList;
+        ifstream testCaseFile;
+        uint64_t expectedOutput = 0;
+
+        testCaseFile.open("ListOperations_Amazon_TC0.txt");
+        if(testCaseFile.is_open())
+        {
+            while (!testCaseFile.eof())
+            {
+                // VERY IMP: Each time we will have a line that should be split into words
+                vector<string> words;
+                getline(testCaseFile, line);
+                splitString(line, ' ', words);
+
+                if ((words.size()) == 1)
+                {
+                    expectedOutput = stoul(words[0]);
+                }
+                else if ((words.size()) == 2)
+                {
+                    arrSize = stoul(words[0]);
+                    numOps = stoul(words[1]);
+
+                    if (arrSize >= 3 && arrSize <= 10000000 &&
+                        numOps >= 1 && numOps <= 200000)
+                    {
+                        arrList.resize(arrSize, 0);
+                    }
+                    else
+                    {
+                        // Error. So return.
+                        return 0;
+                    }
+                }
+                else if  ((words.size()) == 3)
+                {
+                    stPos = stoul(words[0]);
+                    endPos = stoul(words[1]);
+                    value = stoul(words[2]);
+
+                    if (stPos >= 1 && stPos <= endPos &&
+                        endPos >= stPos && endPos <= arrSize &&
+                        value <= 1000000000)
+                    {
+                        addValToList(arrList, stPos, endPos, value, maxValue);
+                        maxValue = max(maxValue, findMaxList(arrList));
+                    }
+                    else
+                    {
+                        // Error. So return.
+                        return 0;
+                    }
+                }
+            }
+
+            cout << "Exp Out: " << expectedOutput << endl;
+            cout << "Max Val: " << maxValue << endl;
+            cout << "Result: " << (expectedOutput == maxValue) << endl;
+
+            // As we have reached the EOF, time to close the file
+            testCaseFile.close();
+        }
     }
 
     return 0;

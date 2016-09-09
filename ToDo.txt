@@ -1,42 +1,55 @@
-09/02: Trees, Meetup Qs
-09/03: Trees, Arrays, Strings, Meetup Qs
-09/04: All Meetup Qs, All Old Qs (Trees, Arrays, Strings, Pramp)
-09/05: Buffer (Graph Cycle)
-09/06: AVL Trees, Threads
-09/07: DP
-09/08: All threading questions (Producer/Consumer, Reader Writer etc)
-09/09: Buffer
-09/10: Buffer
+Arrays
+Strings
+Pramp Qs
+Threads
+    Producer Consumer
+    Reader Writer
+    Simple Threading
+DP
+Graph Cycle
+
+All Interview
+All Tree
+Graph
+BST Iterator
+
+09/09: All GENERIC QUESTIONs about netapp and others, Interview General, Cpp Tips, Algos General
+09/10: MZ
 09/11: Buffer
+
+09/12: 
+09/13:
+09/14: 
+09/15: 
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-1. Netapp Related
 0. Virtual Address and Physical Address Mapping
-1. Two Bit problems
-    2. Binary Tree with Iterators ++
-    Balancing a BST
-AVL and Red Black Trees
-3. Spin Locks and Coursera
-4. Dynamic Programming
-    5. Graphs BFS and DFS
-6. Multi threading
-7. Smart Pointers
-8. Concurrency and Non blocking IO
-9. IPC and Parallel Programming
-10. Draw stack / heap of a program run
+1. AVL and Red Black Trees
+2. Dynamic Programming
+3. Square Root of a number
+4. Smart Pointers
+5. Concurrency and Non blocking IO
+6. IPC and Parallel Programming
+7. Draw stack / heap of a program run
+8. Functors
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
+-1) Meetup Qs
 0) Quick Select k'th smallest element
 1) Find Cycle in a Graph
 2) Find a sub matrix that sums to a value
-3) implementing a function that can concatenate two null terminated strings together in C
-4) build a simple regex matcher
-5) write code that finds the set of all sub-sets of a set
+3) Implementing a function that can concatenate two null terminated strings together in C
+4) Build a simple regex matcher
+5) Write code that finds the set of all sub-sets of a set
 6) FizzBuzz
-7) Functors
 8) Large number multiplication without using *
-9) Square Root of a number
 10) LRU Cache
-11) Distance between siblings in a tree
 12) Tree Serialize and Deserialize
+13) Uber Question
+14) Simple Multi threading problem
+15) Two Bit Problems from Interview Bit
+16) Reader Write problem
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     2016/09/04:
