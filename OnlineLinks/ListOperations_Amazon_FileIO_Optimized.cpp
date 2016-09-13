@@ -1,3 +1,5 @@
+// http://codereview.stackexchange.com/questions/95755/algorithmic-crush-problem-hitting-timeout-errors
+
 #include <vector>
 #include <iostream>
 #include <climits>

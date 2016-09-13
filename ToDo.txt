@@ -50,6 +50,10 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 14) Simple Multi threading problem
 15) Two Bit Problems from Interview Bit
 16) Reader Write problem
+17) Amazon Linked List Palindrome
+18) Amazon All Pair of ints that sum to a number
+19) Design Question
+20) Design some other similar class or a project that you did
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     2016/09/04:

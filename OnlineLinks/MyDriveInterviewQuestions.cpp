@@ -1859,14 +1859,44 @@ int quickSortPartition(vector<int> nums)
         }
     }
 
-    mySwap(nums[0], nums[high]);
+    if ()
+    {
+        mySwap(nums[0], nums[high]);
+    }
 
     // Pivot is at high
     return high;
 }
 
+int kthSmallQuickSelectRec(const vector<int>& nums, uint32_t stIdx, uint32_t endIdx, uint32_t k)
+{
+    uint32_t pivotPos = 0;
+    if (k < nums.size())
+    {
+        // Each time we call partition, we will get some random smallest element.
+        // Check if we get the element returned is actually 'k' until the array gets sorted.
+        // Once the array is sorted, we just return 'k' th element by directly accessing it
+        pivotPos = quickSortPartition(nums);
+
+        if (pivotPos == k)
+        {
+            return nums[k];
+        }
+        else if (pivotPos > k)
+        {
+            // K lies in the first half
+            kthSmallQuickSelect(nums, k);
+        }
+        else
+        {
+        }
+    }
+}
+
 int kthSmallQuickSelect(const vector<int>& nums, uint32_t k)
 {
+    // Make sure 'k' is less than the list of elements
+    uint32_t pivotPos = 0;
     return 0;    
 }
 
