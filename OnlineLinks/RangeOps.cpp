@@ -2,6 +2,9 @@
 #include <vector>
 #include <unordered_map>
 #include <bitset>
+#include <climits>              // INT_MAX, INT_MIN, numeric_limits
+
+#define MASK 0x00000000ffffffff
 
 class RangeOps
 {
@@ -28,11 +31,11 @@ private:
             // 3. Do a shift to accomodate space for EndRange
             // 4. EndRange Bitwise & MASK will clear the upper four bits
             // 5. Do an XOR of above with rangekey
-            int MASK = 0x0f;
             _rangeKey = stRng;
-            _rangeKey = _rangeKey & MASK;
+            _rangeKey = _rangeKey & (MASK);
 
-            _rangeKey <<= sizeof(int);
+            // 1 Byte = 8 bits. So multiply the size by 8
+            _rangeKey <<= (sizeof(int) * 8);
             _rangeKey ^= (enRng & MASK);
         }
 
@@ -48,6 +51,7 @@ public:
     bool queryRange(int stRng, int enRng);
     bool deleteRange(int stRng, int enRng);
     void printRanges();
+    void printMap();
 };
 
 bool 
@@ -122,10 +126,12 @@ RangeOps::deleteRange(int stRng, int enRng)
 
         // Push the last element to the position where element should be deleted
         _rangeList[itr->second] = tmp;
+
         _rangeMap[tmp.getRangeKey()] = itr->second;
 
-        // Erase the last element from the vector
+        // Erase the last element from the vector as well as from the map
         _rangeList.pop_back();
+        _rangeMap.erase(itr->first);
 
         return true;
     }
@@ -138,7 +144,7 @@ RangeOps::deleteRange(int stRng, int enRng)
 void
 RangeOps::printRanges()
 {
-    std::cout << "Ranges List" << "\n";
+    std::cout << "\n\nRanges List\n";
     for (auto item : _rangeList)
     {
         std::cout << item._startRange << " : " << item._endRange << " : " << item._rangeKey << "\n";
@@ -147,7 +153,18 @@ RangeOps::printRanges()
         std::bitset<64> k(item._rangeKey);
         std::cout << s << " : " << e << " : " << k << "\n";
     }
-    std::cout << "\n\n";
+    std::cout << "\n";
+}
+
+void
+RangeOps::printMap()
+{
+    std::cout << "\n\nRanges Map\n";
+    for (auto itr = _rangeMap.begin(); itr != _rangeMap.end(); itr++)
+    {
+        std::cout << itr->first << " : " << itr->second << "\n";
+    }
+    std::cout << "\n";
 }
 
 int main()
@@ -172,6 +189,7 @@ int main()
     std::cout << "AR 2: " << ob.addRange(a2, b2) << "\n";
     std::cout << "AR 3: " << ob.addRange(a3, b3) << "\n";
     ob.printRanges();
+    ob.printMap();
 
     std::cout << "QR 1: " << ob.queryRange(a1, b1) << "\n";
     std::cout << "QR 2: " << ob.queryRange(a2, b1) << "\n";
@@ -181,15 +199,18 @@ int main()
     std::cout << "DR 2: " << ob.deleteRange(a1, b1) << "\n";
     std::cout << "DR 3: " << ob.deleteRange(a2, b2) << "\n";
     ob.printRanges();
+    ob.printMap();
 
     std::cout << "AR 4: " << ob.addRange(a2, b2) << "\n";
     std::cout << "AR 5: " << ob.addRange(a4, b4) << "\n";
     std::cout << "AR 6: " << ob.addRange(a5, b5) << "\n";
     ob.printRanges();
+    ob.printMap();
 
     std::cout << "DR 4: " << ob.deleteRange(a1, b1) << "\n";
     std::cout << "DR 5: " << ob.deleteRange(a2, b2) << "\n";
     ob.printRanges();
+    ob.printMap();
 
     return 0;
 }
