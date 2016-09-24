@@ -3170,9 +3170,12 @@ int main()
     {
         cout << endl << "Problem 21b" << endl;
         vector<int> nums = {3, 5, 2, 1, 8, 4, 6};
-        printVectorInt(nums);
-        quickSortPartition(nums, 0, nums.size() - 1);
-        printVectorInt(nums);
+        vector<int> nums2 = {3, 3, 5, 1, 3, 2, 3, 1, 3, 8, 0, 3, 4, 3, 6};
+        printVectorInt(nums2);
+        quickSortPartition(nums2, 0, nums2.size() - 1);
+        //threeWayQuickSortPartition(nums2, 0, nums2.size() - 1);
+        printVectorInt(nums2);
+
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 0) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 1) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 2) << endl;
