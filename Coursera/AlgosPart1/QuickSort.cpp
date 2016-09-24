@@ -27,6 +27,41 @@ void printArrayRange(int a[], uint32_t startIndex, uint32_t endIndex)
     cout << endl;
 }
 
+uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
+{
+    int pivot = nums[stIdx];
+    uint32_t low = stIdx;
+    uint32_t high = endIdx;
+
+    while (low < high)
+    {
+        while (nums[low] <= pivot)
+        {
+            low++;
+        }
+
+        while (nums[high] > pivot)
+        {
+            high--;
+        }
+
+        if (low < high)
+        {
+            mySwap(nums[low], nums[high]);
+        }
+    }
+
+    // If partition has happened then we would be at a HIGH which will be the actual pivot's
+    // position. So num[high] will be < pivot.
+    if (nums[high] < pivot)
+    {
+        mySwap(nums[stIdx], nums[high]);
+    }
+
+    // Pivot is at high
+    return high;
+}
+
 void partition(int a[], uint32_t n)
 {
     if (n < 2)

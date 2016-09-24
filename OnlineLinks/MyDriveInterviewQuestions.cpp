@@ -1688,7 +1688,7 @@ int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uin
 // We maintain i + j = k, and find such i and j so that a[i-1] < b[j-1] < a[i] (or the other way round).
 // Now since there are i elements in 'a' smaller than b[j-1], and j-1 elements in 'b' smaller than b[j-1], b[j-1] is the i + j-1 + 1 = kth smallest element.
 // I'll assume that N and M are > k, so the complexity here is O(log k), which is O(log N + log M)
-int kthSmallestElementTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
+int kthSmallestElementIterativeTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
 {
     if (k > num1 + num2)
     {
@@ -1830,16 +1830,57 @@ void mySwap(int& a, int &b)
     b = temp;
 }
 
-int threeWayQuickSortPartition(vector<int> nums)
+int threeWayQuickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
 {
-    return 0;    
+    int pivot = nums[stIdx];
+    uint32_t low = stIdx;
+    uint32_t mid = stIdx;
+    uint32_t high = endIdx;
+
+    while (mid < high)
+    {
+        while (nums[mid] == pivot)
+        {
+            mid++;
+        }
+
+        while (nums[high] > pivot)
+        {
+            high--;
+        }
+
+        if (nums[mid] < pivot)
+        {
+            // Low will be having an element EQUAL to pivot.
+            mySwap(nums[low], nums[mid]);
+            low++;
+        }
+        else if (nums[mid] > pivot)
+        {
+            mySwap(nums[high], nums[mid]);
+            high--;
+        }
+
+    }
+
+    // If partition has happened then we would be at a HIGH which will be the actual pivot's
+    // position. So num[high] will be < pivot.
+    if (nums[high] < pivot)
+    {
+        mySwap(nums[stIdx], nums[high]);
+    }
+
+    // Pivot is at high
+    return high;
+
 }
 
-int quickSortPartition(vector<int> nums)
+uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
 {
-    int pivot = nums[0];
-    uint32_t low = 0;
-    uint32_t high = nums.size() - 1;
+    // Pivot can be a number not present in the array. So start low from 0
+    int pivot = nums[stIdx];
+    uint32_t low = stIdx;
+    uint32_t high = endIdx;
 
     while (low < high)
     {
@@ -1859,45 +1900,45 @@ int quickSortPartition(vector<int> nums)
         }
     }
 
-    if ()
+    // If partition has happened then we would be at a HIGH which will be the actual pivot's
+    // position. So num[high] will be < pivot.
+    if (nums[high] < pivot)
     {
-        mySwap(nums[0], nums[high]);
+        mySwap(nums[stIdx], nums[high]);
     }
 
     // Pivot is at high
     return high;
 }
 
-int kthSmallQuickSelectRec(const vector<int>& nums, uint32_t stIdx, uint32_t endIdx, uint32_t k)
+int quickSortRec(const vector<int>& nums, uint32_t stIdx, uint32_t endIdx, uint32_t k)
 {
-    uint32_t pivotPos = 0;
-    if (k < nums.size())
-    {
-        // Each time we call partition, we will get some random smallest element.
-        // Check if we get the element returned is actually 'k' until the array gets sorted.
-        // Once the array is sorted, we just return 'k' th element by directly accessing it
-        pivotPos = quickSortPartition(nums);
 
-        if (pivotPos == k)
-        {
-            return nums[k];
-        }
-        else if (pivotPos > k)
-        {
-            // K lies in the first half
-            kthSmallQuickSelect(nums, k);
-        }
-        else
-        {
-        }
-    }
 }
 
-int kthSmallQuickSelect(const vector<int>& nums, uint32_t k)
+int kthSmallQuickSelect(vector<int>& nums, uint32_t k)
 {
     // Make sure 'k' is less than the list of elements
     uint32_t pivotPos = 0;
-    return 0;    
+
+    if (k < nums.size())
+    {
+        pivotPos = quickSortPartition(nums, 0, nums.size() - 1);
+
+        while (k != pivotPos)
+        {
+            if (k > pivotPos)
+            {
+                pivotPos = quickSortPartition(nums, pivotPos + 1, nums.size() - 1);
+            }
+            else if (k < pivotPos)
+            {
+                pivotPos = quickSortPartition(nums, 0, pivotPos - 1);
+            }
+        }
+    }
+
+    return nums[pivotPos];    
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2864,8 +2905,9 @@ void printBusiestPeriod(vector<doorData> mallData)
 // ------------------------------------------------------------------------------------------------
 int main()
 {
-    // Problem 1:
+    // Problem 1.
     {
+        cout << endl << "Problem 1" << endl;
         string s1 = "hexlloahao";
         string s2 = "hexlloab";
         char result;
@@ -2879,14 +2921,16 @@ int main()
         }
     }
 
-    // Problem 2:
+    // Problem 2.
     {
+        cout << endl << "Problem 2" << endl;
         string s1 = "hlllhabcdedcba";
         cout << "Unique Char: " << findUniqueChar(s1) << endl;
     }
 
-    // Problem 3:
+    // Problem 3.
     {
+        cout << endl << "Problem 3" << endl;
         uint32_t rows = 5;
         uint32_t cols = 5;
         /*
@@ -2918,16 +2962,18 @@ int main()
         cout << "Num Islands: " << countConnectedIslands(arrayTwoD, rows, cols) << endl;
     }
         
-    // Problem 4: Median of Streams
+    // Problem 4. Median of Streams
     {
+        cout << endl << "Problem 4" << endl;
         int a[] = {5, 2, 4, 7, 2, 9, 1, 15, -3, 8, 13, -1, 3, 1, 6};
         //int a[] = {5, 2, 4, 7};
         cout << "Median of Stream: ";
         cout << medianOfStreams(a, sizeof(a) / sizeof(int)) << endl;
     }
 
-    // Problem 5: Subarrays and Sum
+    // Problem 5. Subarrays and Sum
     {
+        cout << endl << "Problem 5" << endl;
         int arr1[] = {-2,-3,4,-1,-2,1,5,-3};
         //int arr1[] = {-2,-3,-4,-1,-2,-1,-5,-3};
         int arr2[] = {15, 2, 4, 8, 9, 5, 10, 13, 23};
@@ -2947,14 +2993,16 @@ int main()
         cout << "Max Sum Not Adjacent: " << maxLengthSubArraySum(arr5) << endl;
     }
 
-    // Problem 6: Find greatest sum divisble by a number
+    // Problem 6. Find greatest sum divisble by a number
     {
+        cout << endl << "Problem 6" << endl;
         vector<int> nums = {1, 6, 2, 9};
         cout << endl << "Greatest Sum Divisble by a number: " << greatestSumOfSubarrayDivisibleByK(nums, 9) << endl;
     }
 
-    // Problem 7: Print Matrix Diagonally
+    // Problem 7. Print Matrix Diagonally
     {
+        cout << endl << "Problem 7" << endl;
         cout << endl << "Print Matrix Diagonally" << endl;
         int twoD[5][4] = {{1, 2, 3, 4},
                           {5, 6, 7, 8},
@@ -2970,8 +3018,9 @@ int main()
         //printMatrixDiagonally(twoD, 3, 3);
     }
 
-    // Problem 7: Print Matrix Spirally
+    // Problem 7. Print Matrix Spirally
     {
+        cout << endl << "Problem 7" << endl;
         cout << endl << "Print Matrix Spirally" << endl;
         vector< vector <int> > twoDMatrix = {{1, 2, 3, 4},
                                              {5, 6, 7, 8},
@@ -2983,14 +3032,16 @@ int main()
         cout << endl;
     }
 
-    // Problem 8: Combination of 1s and 0s
+    // Problem 8. Combination of 1s and 0s
     {
+        cout << endl << "Problem 8" << endl;
         string str = "10?0";
         findLastQMark(str);
     }
 
-    // Problem 9: Remove duplicate int from a number
+    // Problem 9. Remove duplicate int from a number
     {
+        cout << endl << "Problem 9" << endl;
         cout << largestNumByRemovingDup(122334) << endl;
         //cout << largestNumByRemovingDup(433221) << endl << endl;
         //cout << largestNumByRemovingDup(122334) << endl;
@@ -3001,18 +3052,21 @@ int main()
 
     // Problem 10. Find equilibrium Index
     {
+        cout << endl << "Problem 10" << endl;
         vector<int> nums = {-7, 1, 5, 2, -4, 3, 0};
         cout << "Eq Idx: " << equilibriumIndex(nums) << endl;
     }
 
     // Problem 11. Generalized abbreviation
     {
+        cout << endl << "Problem 11" << endl;
         string word = "word";
         generalizedAbbrevation(word);
     }
 
     // Problem 12. If two rectangles overlap
     {
+        cout << endl << "Problem 12" << endl;
         Point a1 = {0, 10};
         Point a2 = {10, 0};
         Point b1 = {15, 5};
@@ -3023,6 +3077,7 @@ int main()
 
     // Problem 13. Largest Subarray with equal number of 0s and 1s
     {
+        cout << endl << "Problem 13" << endl;
         cout << endl << "Largest Subarray with equal 0s and 1s" << endl;
         int arr[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0};
         printLargestSubArrayZeroOne(arr, sizeof(arr) / sizeof(arr[0]));
@@ -3031,6 +3086,7 @@ int main()
 
     // Problem 14. 3 number sum closest
     {
+        cout << endl << "Problem 14" << endl;
         int arr[] = {1, 4, 6, 8, 10, 45};
         printThreeNumSum(arr, sizeof(arr)/sizeof(arr[0]), 22);
         printThreeNumClosestSum(arr, sizeof(arr)/sizeof(arr[0]), 21);
@@ -3038,24 +3094,28 @@ int main()
 
     // Problem 15. 1 Element Missing and 1 element Duplicate
     {
+        cout << endl << "Problem 15" << endl;
         vector<int> v1 = {1, 2, 2, 3};
         findMissingAndDuplicate(v1);
     }
 
     // Problem 16. Two numbers missing
     {
+        cout << endl << "Problem 16" << endl;
         vector<int> v1 = {3,1,2,5,7,8};
         findTwoMissing(v1, v1.size() + 2);
     }
 
     // Problem 17. Minimum number of conference rooms
     {
+        cout << endl << "Problem 17" << endl;
         vector<struct MeetingTime> meetings = {{9, 10}, {14, 16}, {8, 12},  {12, 16},  {10, 12}};
         cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings) << endl;
     }
 
     // Problem 18. Median of two equal size sorted arrays
     {
+        cout << endl << "Problem 18" << endl;
         int arr1[] = {1, 2, 3};
         int arr2[] = {4, 6, 8};
         cout << endl << "Median 1: " << medianTwoSortedSameSizeArrays(arr1, arr2, sizeof(arr1) / sizeof(arr1[0])) << endl;
@@ -3063,6 +3123,7 @@ int main()
 
     // Problem 19. Median of two sorted UNEQUAL arrays
     {
+        cout << endl << "Problem 19" << endl;
         //int A[] = {900};
         //int B[] = {5, 8, 10, 20};
 	
@@ -3079,6 +3140,7 @@ int main()
 
     // Problem 20. Kth smallest Element
     {
+        cout << endl << "Problem 20" << endl;
         //int A[] = {1, 2, 6, 8};
         //int B[] = {3, 5};
         int A[] = {1, 2, 6, 8, 9, 15, 20};
@@ -3093,24 +3155,36 @@ int main()
         uint32_t index2 = 0;
         cout << "Kth Smallest Rec: " << kthSmallestElementRec(A, index1, N, B, index2, M, 4) << endl;
 
-        cout << "Kth Smallest Two: " << kthSmallestElementTwo(A, N, B, M, 4) << endl;
+        cout << "Kth Smallest Two: " << kthSmallestElementIterativeTwo(A, N, B, M, 4) << endl;
 
     }
 
     // Problem 21. Kth Smallest Element in Unsorted Array
     {
+        cout << endl << "Problem 21" << endl;
         int arr[] = {3, 5, 2, 1, 8, 4, 6};
         cout << endl << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
     }
 
     // Problem 21b. Kth Smallest Element in Unsorted Array using QuickSelect
     {
+        cout << endl << "Problem 21b" << endl;
         vector<int> nums = {3, 5, 2, 1, 8, 4, 6};
+        printVectorInt(nums);
+        quickSortPartition(nums, 0, nums.size() - 1);
+        printVectorInt(nums);
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 0) << endl;
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 1) << endl;
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 2) << endl;
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 3) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 4) << endl;
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 5) << endl;
+        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 6) << endl;
     }
 
     // Problem 22. Find if an element is present in a row column sorted matrix
     {
+        cout << endl << "Problem 22" << endl;
         cout << endl << "Is element present in row column matrix" << ": ";
         vector< vector <int> > twoD = {{1,  4,  7, 11, 15},
                                        {2,  5,  8, 12, 19},
@@ -3136,6 +3210,7 @@ int main()
 
     // Problem 23. Multiplication of two very large numbers
     {
+        cout << endl << "Problem 23" << endl;
         cout << endl << "Multiplication of large numbers using Bit operation" << endl;
         string s1 = "5830";
         string s2 = "23958233";
@@ -3146,6 +3221,7 @@ int main()
 
     // PROBLEM 23b. PROBLEM 23b. Binary Decimal Conversions
     {
+        cout << endl << "PROBLEM 23b" << endl;
         cout << endl << "Binary Decimal Conversions" << endl;
         string strBin;
         uint32_t num = 110;
@@ -3161,6 +3237,7 @@ int main()
 
     // PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
     {
+        cout << endl << "PROBLEM 24" << endl;
         cout << endl << "Minimum Window containing characters" << endl;
         string str1 = "ADOBECOEBANCD";
         string str2 = "ABC";
@@ -3172,6 +3249,7 @@ int main()
 
     // Problem 25. Find if an element is present in a rotated sorted array
     {
+        cout << endl << "Problem 25" << endl;
         cout << endl << "Binary Search and Rotated Sorted Array" << endl;
         vector<int> nums = {2, 3, 17, 19, 22, 46, 82};
         cout << binarySearch(nums, 2) << " ";
@@ -3204,6 +3282,7 @@ int main()
 
     // PROBLEM 25b. Find Index where array is rotated
     {
+        cout << endl << "PROBLEM 25b" << endl;
         cout << endl << "Find Index where array is rotated" << endl;
         vector<int> nums = {17, 19, 22, 46, 82, 2, 3};
         cout << IndexOfRotatedSortedArray(nums) << endl;
@@ -3211,6 +3290,7 @@ int main()
 
     // PROBLEM 26. Find Award Budget Cuts Problem
     {
+        cout << endl << "PROBLEM 26" << endl;
         cout << endl << "Award Cuts Problem" << endl;
         vector<uint32_t> grants = {40, 50, 50, 100, 160, 200, 325, 500, 1075, 1500};
         cout << findGrantsCap(grants, 2000) << endl;
@@ -3219,6 +3299,7 @@ int main()
 
     // PROBLEM 27. Find if a Bit Stream is divisible by 3
     {
+        cout << endl << "PROBLEM 27" << endl;
         cout << endl << "Is Bit Stream Divisble by 3" << endl;
         string stream = "111";
         cout << isBitStreamDivsible(stream, 3) << endl;
@@ -3226,6 +3307,7 @@ int main()
 
     // PROBLEM 28. Sort an array of 0s, 1s and 2s{
     {
+        cout << endl << "PROBLEM 28" << endl;
         cout << endl << "Sort an array of 0s 1s and 2s" << endl;
         vector <int> nums = {0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 1};
         printVectorInt(nums);
@@ -3235,6 +3317,7 @@ int main()
 
     // PROBLEM 29. Find majority element in an array
     {
+        cout << endl << "PROBLEM 29" << endl;
         cout << endl << "Find Majority Element"<< endl;
         vector <int> nums = {0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 1};
         cout << isMajorityElementPresent(nums) << endl;
@@ -3242,6 +3325,7 @@ int main()
 
     // PROBLEM 30. Sorting almost sorted array misplaced by k elements
     {
+        cout << endl << "PROBLEM 30" << endl;
         cout << endl << "Sorting almost sorted array misplaced by k elements" << endl;
         vector <int> nums = {2, 6, 3, 12, 56, 8};
         printVectorInt(nums);
@@ -3251,6 +3335,7 @@ int main()
 
     // PROBLEM 31. Given N points, find k points closest to 0,0
     {
+        cout << endl << "PROBLEM 31" << endl;
         cout << endl << "Given N points, find k points closest to Origin: " << endl;
         vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
         findKclosestPoints(pointsList, 3);
@@ -3258,6 +3343,7 @@ int main()
 
     // PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
     {
+        cout << endl << "PROBLEM 32" << endl;
         cout << endl << "Move even numbers to front and odd numbers to back with Order preserved" << endl;
         vector <int> nums = {5, 6, 8, 3, 7, 1, 2, 9};
         printVectorInt(nums);
@@ -3267,6 +3353,7 @@ int main()
 
     // PROBLEM 33. Given list of software dependencies. Find order of software installation
     {
+        cout << endl << "PROBLEM 33" << endl;
         //cout << endl << "Find order of software installation" << endl;
         vector<std::pair<char, char> > softwareList = {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}; 
         //findSoftwareInstallationOrder(softwareList);
@@ -3274,6 +3361,7 @@ int main()
 
     // PROBLEM 34. Find angle between hour and minute hand of clock
     {
+        cout << endl << "PROBLEM 34" << endl;
         cout << endl << "Find angle between hour and minute hand of clock" << endl;
         cout << findAngleBtwnHourMinute(3, 30) << endl;
         cout << findAngleBtwnHourMinute(7, 40) << endl;
