@@ -1860,7 +1860,6 @@ int threeWayQuickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endId
             mySwap(nums[high], nums[mid]);
             high--;
         }
-
     }
 
     // If partition has happened then we would be at a HIGH which will be the actual pivot's
