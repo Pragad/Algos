@@ -1,5 +1,15 @@
 #include <iostream>
+#include <vector>
 using namespace std;
+
+// Used to print out additionals log messages
+// #define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
 
 void printArray(int a[], uint32_t n)
 {
@@ -8,13 +18,6 @@ void printArray(int a[], uint32_t n)
         cout << a[i] << "  ";
     }
     cout << endl;
-}
-
-void swapInt(int& a, int& b)
-{
-    a = a ^ b;
-    b = a ^ b;
-    a = a ^ b;
 }
 
 void printArrayRange(int a[], uint32_t startIndex, uint32_t endIndex)
@@ -27,17 +30,46 @@ void printArrayRange(int a[], uint32_t startIndex, uint32_t endIndex)
     cout << endl;
 }
 
-uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
+void printVectorInt(vector<int> nums)
 {
-    int pivot = nums[stIdx];
-    uint32_t low = stIdx;
-    uint32_t high = endIdx;
-
-    while (low < high)
+    for (int num : nums)
     {
-        while (nums[low] <= pivot)
+        cout << num << ", ";
+    }
+    cout << endl;
+}
+
+void swapInt(int& a, int& b)
+{
+    a = a ^ b;
+    b = a ^ b;
+    a = a ^ b;
+}
+
+void mySwap(int& a, int &b)
+{
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+pair<int32_t, int32_t> threeWayQuickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+{
+    DEBUG_MSG("Pivot: " << nums[stIdx] << "; stIdx: " << stIdx << "; endIdx: " << endIdx << endl);
+    int pivot = nums[stIdx];
+    int32_t low = stIdx;
+    int32_t mid = stIdx;
+    int32_t high = endIdx;
+    pair<int32_t, int32_t> pivotPos;
+
+    while (mid < high)
+    {
+        // As long as mid is same as pivot, increment it.
+        // Finally mid can either be greater than pivot or lesser than pivot.
+        // If it is lesser, swap with low. If it is greater, swap with high
+        while (nums[mid] == pivot)
         {
-            low++;
+            mid++;
         }
 
         while (nums[high] > pivot)
@@ -45,9 +77,22 @@ uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
             high--;
         }
 
-        if (low < high)
+        // IMP: If we have a mid that is more than high then break and do not do any swapping
+        if (mid > high)
         {
-            mySwap(nums[low], nums[high]);
+            break;
+        }
+
+        if (nums[mid] < pivot)
+        {
+            // Low will be having an element EQUAL to pivot.
+            mySwap(nums[low], nums[mid]);
+            low++;
+        }
+        else if (nums[mid] > pivot)
+        {
+            mySwap(nums[high], nums[mid]);
+            high--;
         }
     }
 
@@ -58,8 +103,81 @@ uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
         mySwap(nums[stIdx], nums[high]);
     }
 
+    // Start Pivot is at Low + 1 and End Pivot is at high
+    pivotPos = make_pair(low, high);
+    return pivotPos;
+}
+
+int32_t quickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+{
+    // Pivot can be a number not present in the array. So start low from 0
+    //cout << "0. StIdx: " << stIdx << "; EndIdx: " << endIdx << endl;
+    int pivot = nums[stIdx];
+    int32_t low = stIdx;
+    int32_t high = endIdx;
+
+    DEBUG_MSG("1. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
+    while (low < high)
+    {
+        while (nums[low] <= pivot)
+        {
+            low++;
+        }
+        DEBUG_MSG("2. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
+
+        while (nums[high] > pivot)
+        {
+            high--;
+        }
+        DEBUG_MSG("3. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
+
+        if (low < high)
+        {
+            mySwap(nums[low], nums[high]);
+        }
+    }
+
+    // If partition has happened then we would be at a HIGH which will be the actual pivot's
+    // position. So num[high] will be < pivot.
+    DEBUG_MSG("4. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
+    if (nums[high] < pivot)
+    {
+        mySwap(nums[stIdx], nums[high]);
+    }
+
     // Pivot is at high
     return high;
+}
+
+// VERY IMP: Everything should be SIGNED INT
+void quickSortRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+{
+    if (stIdx < endIdx)
+    {
+        int32_t pivot = quickSortPartition(nums, stIdx, endIdx);
+        DEBUG_MSG("PivotPos: " << pivot << endl << endl);
+        quickSortRec(nums, stIdx, pivot - 1);
+        quickSortRec(nums, pivot + 1, endIdx);
+    }
+    else
+    {
+        return;
+    }
+}
+
+void quickSortThreeWayRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+{
+    if (stIdx < endIdx)
+    {
+        pair<int32_t, int32_t> pivot = threeWayQuickSortPartition(nums, stIdx, endIdx);
+        DEBUG_MSG("Pivot Start: " << pivot.first  << "; Pivot End: " << pivot.second << endl << endl);
+        quickSortThreeWayRec(nums, stIdx, pivot.first - 1);
+        quickSortThreeWayRec(nums, pivot.second + 1, endIdx);
+    }
+    else
+    {
+        return;
+    }
 }
 
 void partition(int a[], uint32_t n)
@@ -300,6 +418,18 @@ int main()
         printArray(a, sizeof(a) / sizeof(a[0]));
         cout << partitionType2(a, 0, 4) << endl;
         printArray(a, sizeof(a) / sizeof(a[0]));
+    }
+
+    {
+        vector<int> nums = {3, 5, 2, 1, 8, 4, 6};
+        vector<int> nums2 = {3, 3, 5, 1, 3, 2, 3, 1, 3, 8, 0, 3, 4, 3, 6};
+        printVectorInt(nums2);
+        //quickSortPartition(nums2, 0, nums2.size() - 1);
+        //threeWayQuickSortPartition(nums2, 0, nums2.size() - 1);
+
+        //quickSortRec(nums2, 0, nums2.size() - 1);
+        quickSortThreeWayRec(nums2, 0, nums2.size() - 1);
+        printVectorInt(nums2);
     }
 
     cout << endl;

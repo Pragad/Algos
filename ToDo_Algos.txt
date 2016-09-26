@@ -57,6 +57,10 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 21) Cracking the coding Interview - Recursion
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
+    2016/09/26:
+        1. Longest Palindrome in a String
+        2. Number of nodes in a complete BST
+
     2016/09/04:
         1) Implement BigInt class
         2) Copy a linked list with random pointers

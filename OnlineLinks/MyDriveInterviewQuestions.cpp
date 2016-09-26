@@ -104,7 +104,12 @@ using namespace std;
  * int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
  *
  * PROBLEM 21b. Kth Smallest Element in Unsorted Array using QuickSelect
+ * PROBLEM 21c. Simple Quick Sort and Three way Quick Sort
  * int kthSmallQuickSelect(vector<int> nums, uint32_t k)
+ * pair<int32_t, int32_t> threeWayQuickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+ * int32_t quickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+ * void quickSortRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+ * void quickSortThreeWayRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
  *
  * PROBLEM 22. Find if an element is present in a row column sorted matrix
  * int findFirstSmallerIndex(vector< vector< int > > twoD, int elmt)
@@ -1839,13 +1844,14 @@ void mySwap(int& a, int &b)
     b = temp;
 }
 
-pair<uint32_t, uint32_t> threeWayQuickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
+pair<int32_t, int32_t> threeWayQuickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
 {
+    DEBUG_MSG("Pivot: " << nums[stIdx] << "; stIdx: " << stIdx << "; endIdx: " << endIdx << endl);
     int pivot = nums[stIdx];
-    uint32_t low = stIdx;
-    uint32_t mid = stIdx;
-    uint32_t high = endIdx;
-    pair<uint32_t, uint32_t> pivotPos;
+    int32_t low = stIdx;
+    int32_t mid = stIdx;
+    int32_t high = endIdx;
+    pair<int32_t, int32_t> pivotPos;
 
     while (mid < high)
     {
@@ -1860,6 +1866,12 @@ pair<uint32_t, uint32_t> threeWayQuickSortPartition(vector<int>& nums, uint32_t 
         while (nums[high] > pivot)
         {
             high--;
+        }
+
+        // IMP: If we have a mid that is more than high then break and do not do any swapping
+        if (mid > high)
+        {
+            break;
         }
 
         if (nums[mid] < pivot)
@@ -1883,7 +1895,6 @@ pair<uint32_t, uint32_t> threeWayQuickSortPartition(vector<int>& nums, uint32_t 
     }
 
     // Start Pivot is at Low + 1 and End Pivot is at high
-    cout << "Pivot Start: " << low  << "; Pivot End: " << high << endl;
     pivotPos = make_pair(low, high);
     return pivotPos;
 
@@ -1950,17 +1961,16 @@ void quickSortThreeWayRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
 {
     if (stIdx < endIdx)
     {
-        int32_t pivot = quickSortPartition(nums, stIdx, endIdx);
-        DEBUG_MSG("PivotPos: " << pivot << endl << endl);
-        quickSortThreeWayRec(nums, stIdx, pivot - 1);
-        quickSortThreeWayRec(nums, pivot + 1, endIdx);
+        pair<int32_t, int32_t> pivot = threeWayQuickSortPartition(nums, stIdx, endIdx);
+        DEBUG_MSG("Pivot Start: " << pivot.first  << "; Pivot End: " << pivot.second << endl << endl);
+        quickSortThreeWayRec(nums, stIdx, pivot.first - 1);
+        quickSortThreeWayRec(nums, pivot.second + 1, endIdx);
     }
     else
     {
         return;
     }
 }
-
 
 int kthSmallQuickSelect(vector<int>& nums, uint32_t k)
 {
@@ -3222,10 +3232,9 @@ int main()
         //threeWayQuickSortPartition(nums2, 0, nums2.size() - 1);
 
         //quickSortRec(nums2, 0, nums2.size() - 1);
-        //quickSortThreeWayRec(nums2, 0, nums2.size() - 1);
+        quickSortThreeWayRec(nums2, 0, nums2.size() - 1);
         printVectorInt(nums2);
 
-        /*
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 0) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 1) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 2) << endl;
@@ -3233,7 +3242,6 @@ int main()
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 4) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 5) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 6) << endl;
-        */
     }
 
     // Problem 22. Find if an element is present in a row column sorted matrix
