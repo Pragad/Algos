@@ -13,6 +13,15 @@
 #include <cstdint>
 using namespace std;
 
+// Used to print out additionals log messages
+// #define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
+#else
+#define DEBUG_MSG(str) do { } while ( false )
+#endif
+
 /*
  * PROBLEM 1. Given two strings, find the first non matching character
  * bool     findFirstNonMatchingChar(string s1, string s2, char& result)
@@ -1830,15 +1839,19 @@ void mySwap(int& a, int &b)
     b = temp;
 }
 
-int threeWayQuickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
+pair<uint32_t, uint32_t> threeWayQuickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
 {
     int pivot = nums[stIdx];
     uint32_t low = stIdx;
     uint32_t mid = stIdx;
     uint32_t high = endIdx;
+    pair<uint32_t, uint32_t> pivotPos;
 
     while (mid < high)
     {
+        // As long as mid is same as pivot, increment it.
+        // Finally mid can either be greater than pivot or lesser than pivot.
+        // If it is lesser, swap with low. If it is greater, swap with high
         while (nums[mid] == pivot)
         {
             mid++;
@@ -1869,29 +1882,35 @@ int threeWayQuickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endId
         mySwap(nums[stIdx], nums[high]);
     }
 
-    // Pivot is at high
-    return high;
+    // Start Pivot is at Low + 1 and End Pivot is at high
+    cout << "Pivot Start: " << low  << "; Pivot End: " << high << endl;
+    pivotPos = make_pair(low, high);
+    return pivotPos;
 
 }
 
-uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
+int32_t quickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
 {
     // Pivot can be a number not present in the array. So start low from 0
+    //cout << "0. StIdx: " << stIdx << "; EndIdx: " << endIdx << endl;
     int pivot = nums[stIdx];
-    uint32_t low = stIdx;
-    uint32_t high = endIdx;
+    int32_t low = stIdx;
+    int32_t high = endIdx;
 
+    DEBUG_MSG("1. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
     while (low < high)
     {
         while (nums[low] <= pivot)
         {
             low++;
         }
+        DEBUG_MSG("2. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
 
         while (nums[high] > pivot)
         {
             high--;
         }
+        DEBUG_MSG("3. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
 
         if (low < high)
         {
@@ -1901,6 +1920,7 @@ uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
 
     // If partition has happened then we would be at a HIGH which will be the actual pivot's
     // position. So num[high] will be < pivot.
+    DEBUG_MSG("4. Pivot: " << pivot << "; Low: " << low << "; High: " << high << endl);
     if (nums[high] < pivot)
     {
         mySwap(nums[stIdx], nums[high]);
@@ -1910,10 +1930,37 @@ uint32_t quickSortPartition(vector<int>& nums, uint32_t stIdx, uint32_t endIdx)
     return high;
 }
 
-int quickSortRec(const vector<int>& nums, uint32_t stIdx, uint32_t endIdx, uint32_t k)
+// VERY IMP: Everything should be SIGNED INT
+void quickSortRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
 {
-
+    if (stIdx < endIdx)
+    {
+        int32_t pivot = quickSortPartition(nums, stIdx, endIdx);
+        DEBUG_MSG("PivotPos: " << pivot << endl << endl);
+        quickSortRec(nums, stIdx, pivot - 1);
+        quickSortRec(nums, pivot + 1, endIdx);
+    }
+    else
+    {
+        return;
+    }
 }
+
+void quickSortThreeWayRec(vector<int>& nums, int32_t stIdx, int32_t endIdx)
+{
+    if (stIdx < endIdx)
+    {
+        int32_t pivot = quickSortPartition(nums, stIdx, endIdx);
+        DEBUG_MSG("PivotPos: " << pivot << endl << endl);
+        quickSortThreeWayRec(nums, stIdx, pivot - 1);
+        quickSortThreeWayRec(nums, pivot + 1, endIdx);
+    }
+    else
+    {
+        return;
+    }
+}
+
 
 int kthSmallQuickSelect(vector<int>& nums, uint32_t k)
 {
@@ -3171,10 +3218,14 @@ int main()
         vector<int> nums = {3, 5, 2, 1, 8, 4, 6};
         vector<int> nums2 = {3, 3, 5, 1, 3, 2, 3, 1, 3, 8, 0, 3, 4, 3, 6};
         printVectorInt(nums2);
-        quickSortPartition(nums2, 0, nums2.size() - 1);
+        //quickSortPartition(nums2, 0, nums2.size() - 1);
         //threeWayQuickSortPartition(nums2, 0, nums2.size() - 1);
+
+        //quickSortRec(nums2, 0, nums2.size() - 1);
+        //quickSortThreeWayRec(nums2, 0, nums2.size() - 1);
         printVectorInt(nums2);
 
+        /*
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 0) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 1) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 2) << endl;
@@ -3182,6 +3233,7 @@ int main()
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 4) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 5) << endl;
         cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 6) << endl;
+        */
     }
 
     // Problem 22. Find if an element is present in a row column sorted matrix
