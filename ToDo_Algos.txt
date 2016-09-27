@@ -49,9 +49,9 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 13) Uber Question
 14) Simple Multi threading problem
 15) Two Bit Problems from Interview Bit
-16) Reader Write problem
-17) Amazon Linked List Palindrome
-18) Amazon All Pair of ints that sum to a number
+16) Reader Writer problem
+    17) Amazon Linked List Palindrome
+    18) Amazon All Pair of ints that sum to a number
 19) Design Question
 20) Design some other similar class or a project that you did
 21) Cracking the coding Interview - Recursion

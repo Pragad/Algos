@@ -1,3 +1,62 @@
+/*
+ * PROBLEM 1. Finding length of the linked list.
+ * unsigned int getLength(node* head)
+ * 
+ * PROBLEM 2. Get Nth node
+ * int getNth(node* head, int index)
+ *
+ * PROBLEM 3. Delete the complete list
+ * void deleteList(node*& headRef)
+ *
+ * PROBLEM 4. Pop function
+ * int pop(node*& head)
+ *
+ * PROBLEM 5. InsertNth to insert at any place
+ *            InsertNth to insert at any place using Push
+ * void insertNth(struct node*& head, unsigned int index, int value)
+ *
+ * PROBLEM 6. Sorted Insert
+ * void sortedInsert(node*& headRef, node* node)
+ *
+ * PROBLEM 7. Insertion Sort
+ * void insertionSort(node*& headRef)
+ *
+ * PROBLEM 8. Append two lists
+ * void appendLists(node*& list1, node*& list2)
+ *
+ * PROBLEM 9. Front Back Split
+ * void frontBackSplit(node* original, node*& frontList, node*& backList)
+ *
+ * PROBLEM 10. Remove Duplicates
+ * void removeDuplicates(node* head)
+ *
+ * PROBLEM 11. Move Node
+ * void moveNode(node*& dstList, node*&srcList)
+ *
+ * PROBLEM 12. Alternating Split
+ * void alternatingSplit(node* src, node*& aRef, node*& bRef)
+ *
+ * PROBLEM 13. ShuffleMerge
+ * node* shuffleMerge(node* a, node* b)
+ *
+ * PROBLEM 14. Bloomber Problem Reverse Last 5 nodes
+ * void reverseLast5Node(struct node*& head)
+ *
+ * PROBLEM 15. Minimum node in a linked list
+ * void minimumNode(node* head)
+ *
+ * PROBLEM 16. Delete Nodes that have a certain value
+ * void removeNode(node*& head, int val)
+ *
+ * PROBLEM 17. Check if a linked list is a palindrome without using extra space.
+ * bool isListPalindrome(node*& head)
+ *
+ * PROBLEM 18. Reverse a list Recursive and Iterative way
+ * void reverseList(node*& head)
+ * void reverseListRecursive(node*& head)
+ *
+ */
+
 #include <iostream>
 #include <climits>              // INT_MAX, INT_MIN, numeric_limits
 using namespace std;
@@ -42,11 +101,13 @@ void build123()
     Push(head, 3);
 }
 
+// -----------------------------------------------------------------------------------------
 // Q1: Finding length of the linked list.
 // P1. Don't use head pointer to traverse the list as head should always point to the First Entry
 // P2: Function argument can just be "node* head" instead of "struct node* head"
 // http://stackoverflow.com/questions/6526225/struct-keyword-in-function-parameter-and-const-correctness
 // http://stackoverflow.com/questions/1675351/typedef-struct-vs-struct-definitions
+// -----------------------------------------------------------------------------------------
 unsigned int getLength(node* head)
 {
     unsigned int length = 0;
@@ -60,7 +121,9 @@ unsigned int getLength(node* head)
     return length;
 }
 
-// Q2: 
+// -----------------------------------------------------------------------------------------
+// Q2: Get Nth node
+// -----------------------------------------------------------------------------------------
 int getNth(node* head, int index)
 {
     int temp = 0;
@@ -85,7 +148,9 @@ int getNth(node* head, int index)
     return -1;
 }
 
+// -----------------------------------------------------------------------------------------
 // Q3: Delete the complete list
+// -----------------------------------------------------------------------------------------
 void deleteList(node*& headRef)
 {
     struct node* temp;
@@ -101,7 +166,9 @@ void deleteList(node*& headRef)
     headRef = NULL;
 }
 
+// -----------------------------------------------------------------------------------------
 // Q4. Pop function
+// -----------------------------------------------------------------------------------------
 int pop(node*& head)
 {
     struct node*  temp;
@@ -122,7 +189,9 @@ int pop(node*& head)
     return data;
 }
 
+// -----------------------------------------------------------------------------------------
 // Q5. InsertNth to insert at any place
+// -----------------------------------------------------------------------------------------
 void insertNth(struct node*& head, unsigned int index, int value)
 {
     unsigned int tmpCount = 0;
@@ -187,7 +256,9 @@ void insertNth(struct node*& head, unsigned int index, int value)
 }
 */
 
-// Q6:
+// -----------------------------------------------------------------------------------------
+// Q6: Sorted Insert
+// -----------------------------------------------------------------------------------------
 void sortedInsert(node*& headRef, node* node)
 {
     struct node* tmpHead = headRef;
@@ -234,7 +305,9 @@ void sortedInsert(node*& headRef, node* node)
     tmpHead->next = node;
 }
 
-// Q7:
+// -----------------------------------------------------------------------------------------
+// Q7: Insertion Sort
+// -----------------------------------------------------------------------------------------
 void insertionSort(node*& headRef)
 {
     node* tmpHead = headRef;
@@ -253,7 +326,9 @@ void insertionSort(node*& headRef)
     headRef = result;
 }
 
-//  Q8:
+// -----------------------------------------------------------------------------------------
+//  Q8: Append two lists
+// -----------------------------------------------------------------------------------------
 void appendLists(node*& list1, node*& list2)
 {
     if (list1 == NULL)
@@ -273,7 +348,11 @@ void appendLists(node*& list1, node*& list2)
     }
 }
 
-// Q9:
+// -----------------------------------------------------------------------------------------
+// Q9: Front Back Split
+// Given a list, split it into two sublists — one for the front half, and one for the back half.
+// If the number of elements is odd, the extra element should go in the front list.
+// -----------------------------------------------------------------------------------------
 void frontBackSplit(node* original, node*& frontList, node*& backList)
 {
     unsigned int count = 0;
@@ -295,7 +374,10 @@ void frontBackSplit(node* original, node*& frontList, node*& backList)
     frontList->next = NULL;
 }
 
-// Q10:
+// -----------------------------------------------------------------------------------------
+// Q10: Remove Duplicated nodes
+// Take a list sorted in increasing order and delete any duplicate nodes from the list
+// -----------------------------------------------------------------------------------------
 void removeDuplicates(node* head)
 {
     node* tmpHead = head;
@@ -331,7 +413,12 @@ void removeDuplicates(node* head)
     }
 }
 
+// -----------------------------------------------------------------------------------------
 // Q11: Move Node
+// Instead of creating a new node and pushing it onto the given list,
+// MoveNode() takes two lists, removes the front node from the second list and
+// pushes it onto the front of the first
+// -----------------------------------------------------------------------------------------
 void moveNode(node*& dstList, node*&srcList)
 {
     if (srcList == NULL)
@@ -347,7 +434,13 @@ void moveNode(node*& dstList, node*&srcList)
 
 }
 
+// -----------------------------------------------------------------------------------------
 // Q12 Alternating Split
+// AlternatingSplit() that takes one list and divides up its nodes to make two smaller lists.
+// The sublists should be made from alternating elements in the original list.
+// So if the original list is {a, b, a, b, a}, then one sublist should be {a, a, a} and the
+// other should be {b, b}. You may want to use MoveNode() as a helper.
+// -----------------------------------------------------------------------------------------
 void alternatingSplit(node* src, node*& aRef, node*& bRef)
 {
     node* tmpSrc = src;
@@ -361,7 +454,13 @@ void alternatingSplit(node* src, node*& aRef, node*& bRef)
     }
 }
 
-//Q13: ShuffleMerge
+// -----------------------------------------------------------------------------------------
+// Q13: ShuffleMerge
+// Given two lists, merge their nodes together to make one list, taking nodes alternately
+// between the two lists.
+// So ShuffleMerge() with {1, 2, 3} and {7, 13, 1} should yield {1, 7,
+// 2, 13, 3, 1}. If either list runs out, all the nodes should be taken from the other list.
+// -----------------------------------------------------------------------------------------
 node* shuffleMerge(node* a, node* b)
 {
     node* srcMerged = NULL;
@@ -389,8 +488,10 @@ node* shuffleMerge(node* a, node* b)
     return srcMerged;
 }
 
+// -----------------------------------------------------------------------------------------
 // Helper routine to move first node from node b to node a
 // This rountine when called on a linked list will reverse the complete list.
+// -----------------------------------------------------------------------------------------
 void moveNode2(struct node*& a, struct node*& b)
 {
     if (b != NULL)
@@ -402,6 +503,7 @@ void moveNode2(struct node*& a, struct node*& b)
     }
 }
 
+// -----------------------------------------------------------------------------------------
 // Bloomberg Coding Prep 2.
 // Problem 1: 
 //      Given the root node to a singly linked list, reverse the last 5
@@ -414,6 +516,7 @@ void moveNode2(struct node*& a, struct node*& b)
 //      Now we will have head pointing to last but 5 nodes.
 //
 // Complexity: O(N)
+// -----------------------------------------------------------------------------------------
 void reverseLast5Node(struct node*& head)
 {
     // We will never move the position of head.
@@ -461,7 +564,9 @@ void reverseLast5Node(struct node*& head)
     }
 }
 
-// Minimum node in a linked list
+// -----------------------------------------------------------------------------------------
+// PROBLEM 15. Minimum node in a linked list
+// -----------------------------------------------------------------------------------------
 void minimumNode(node* head)
 {
     struct node* minNode = new node();
@@ -482,7 +587,9 @@ void minimumNode(node* head)
     cout << minNode->data << endl;
 }
 
-// Delte Nodes that have a certain value
+// -----------------------------------------------------------------------------------------
+// PROBLEM 16. Delete Nodes that have a certain value
+// -----------------------------------------------------------------------------------------
 void removeNode(node*& head, int val)
 {
     if (head == NULL)
@@ -519,8 +626,10 @@ void removeNode(node*& head, int val)
     }
 }
 
-// Check if a linked list is a palindrome without using extra space.
+// -----------------------------------------------------------------------------------------
+// PROBLEM 17. Check if a linked list is a palindrome without using extra space.
 // Original list can be modified
+// -----------------------------------------------------------------------------------------
 bool isListPalindrome(node*& head)
 {
     uint32_t listLength = getLength(head);
@@ -547,8 +656,22 @@ bool isListPalindrome(node*& head)
     // return areListsSamePalindrome(fastHead);
     return false;
 }
+// -----------------------------------------------------------------------------------------
+// PROBLEM 18. Reverse a list Recursive and Iterative way
+// -----------------------------------------------------------------------------------------
+void reverseList(node*& head)
+{
 
+}
+
+void reverseListRecursive(node*& head)
+{
+
+}
+
+// -----------------------------------------------------------------------------------------
 // Main Function
+// -----------------------------------------------------------------------------------------
 int main()
 {
     cout << "Stanford Linked List Problems" << endl;
@@ -725,7 +848,7 @@ int main()
         printList(head);
     }
 
-    // Check if a linked list is a palindrome without using extra space.
+    // PROBLEM 17. Check if a linked list is a palindrome without using extra space.
     // Original list can be modified
     {
         cout << endl << "Is list Palindrome" << endl;
@@ -739,6 +862,11 @@ int main()
         insertNth(head, 6, 5);
 
         cout << isListPalindrome(head) << endl;
+    }
+
+    // PROBLEM 18. Reverse a list Recursive and Iterative way
+    {
+
     }
 
     cout << endl;
