@@ -1,4 +1,5 @@
 #include <iostream>
+#include <climits>              // INT_MAX, INT_MIN, numeric_limits
 using namespace std;
 
 struct node
@@ -518,6 +519,35 @@ void removeNode(node*& head, int val)
     }
 }
 
+// Check if a linked list is a palindrome without using extra space.
+// Original list can be modified
+bool isListPalindrome(node*& head)
+{
+    uint32_t listLength = getLength(head);
+    cout << listLength << endl;
+
+    struct node* slowHead = head;
+    struct node* fastHead = head;
+
+    while (fastHead != NULL)
+    {
+        if (fastHead->next != NULL)
+        {
+            fastHead = fastHead->next->next;
+            slowHead = slowHead->next;
+        }
+        else
+        {
+            slowHead = slowHead->next;
+        }
+    }
+
+    fastHead = head;
+
+    // return areListsSamePalindrome(fastHead);
+    return false;
+}
+
 // Main Function
 int main()
 {
@@ -693,6 +723,22 @@ int main()
         int val = 5;
         removeNode(head, val);
         printList(head);
+    }
+
+    // Check if a linked list is a palindrome without using extra space.
+    // Original list can be modified
+    {
+        cout << endl << "Is list Palindrome" << endl;
+        node* head = NULL;
+        insertNth(head, 0, 5);
+        insertNth(head, 1, 3);
+        insertNth(head, 2, 7);
+        insertNth(head, 3, 1);
+        insertNth(head, 4, 7);
+        insertNth(head, 5, 3);
+        insertNth(head, 6, 5);
+
+        cout << isListPalindrome(head) << endl;
     }
 
     cout << endl;

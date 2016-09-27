@@ -161,11 +161,12 @@ using namespace std;
  * PROBLEM 34. Find angle between hour and minute hand of clock
  * uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
  *
- * PROBLEM 35. Find busiest time in a mall
- * void printBusiestPeriod(vector<doorData> mallData)
+ * PROBLEM 35. Find all pairs of numbers that add to a sum
+ * void findPairsAddingToSum(const vector<int>& nums, int sum)
  *
  * PROBLEM 36. 
- * uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
+ *
+ * PROBLEM 37. 
  */
 
 // Structure to define a x-axis y-axis point
@@ -2940,21 +2941,41 @@ uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 35. Find busiest time in a mall
-//
-//      https://www.pramp.com/question/2WBx3Axln1t7JQ2jQq96
+// PROBLEM 35. Find all pairs of numbers that add to a sum
+//                    Idx:  0, 1,  2, 3, 4, 5, 6, 7,  8, 9, 10, 11
+//      vector<int> nums = {5, 3, -2, 4, 3, 6, 5, 5, -1, 3, 10, 2};
 // ------------------------------------------------------------------------------------------------
+void findPairsAddingToSum(const vector<int>& nums, int sum)
+{
+    // Key: Array Element, Value: Index
+    unordered_map<int, vector<int>> mapDiff;
+    
+    for(int i = 0; i < nums.size(); i++)
+    {
+        auto itr = mapDiff.find(nums[i]);
+        if (itr != mapDiff.end())
+        {
+            //cout << nums[itr->second] << ", " << nums[i] << endl;
+            for (uint32_t m = 0; m < itr->second.size(); m++)
+            {
+                cout << itr->second[m] << " - " << i << "; " << nums[itr->second[m]] \
+                     << " - " << nums[i] << endl;
+            }
+            mapDiff[sum - nums[i]].push_back(i);     
+        }
+        
+        // Store the difference in the map and Value will be the index
+        else
+        {
+            mapDiff[sum - nums[i]].push_back(i);     
+        }
+    }
+}
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 36. 
 //
 // ------------------------------------------------------------------------------------------------
-/*
-void printBusiestPeriod(vector<doorData> mallData)
-{
-
-}
-*/
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -3428,6 +3449,12 @@ int main()
         cout << findAngleBtwnHourMinute(3, 30) << endl;
         cout << findAngleBtwnHourMinute(7, 40) << endl;
         cout << findAngleBtwnHourMinute(7, 20) << endl;
+    }
+
+    // PROBLEM 35. Find all pairs of numbers that add to a sum
+    {
+        vector<int> nums = {5, 3, -2, 4, 3, 6, 5, 5, -1, 3, 10, 2};
+        findPairsAddingToSum(nums, 8);
     }
 
     cout << endl;
