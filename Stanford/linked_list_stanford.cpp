@@ -661,12 +661,44 @@ bool isListPalindrome(node*& head)
 // -----------------------------------------------------------------------------------------
 void reverseList(node*& head)
 {
+    node* prev = NULL;
+    node* current = head;
+    node* curNext = NULL;
 
+    while (current != NULL)
+    {
+        curNext = current->next;
+        current->next = prev;
+        prev = current;
+        current = curNext;
+    }
+
+    head = prev;
 }
 
 void reverseListRecursive(node*& head)
 {
+    if (NULL == head)
+    {
+        return;
+    }
+    
+    Node* first = head;
+    Node* rest = head->next;
 
+    if (NULL == rest)
+    {
+        return;
+    }
+
+    reverseListRecursive(rest);
+
+    first->next->next = first;
+    first->next = NULL;
+
+    head = rest;
+
+    head = NULL;
 }
 
 // -----------------------------------------------------------------------------------------
