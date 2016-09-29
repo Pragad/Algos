@@ -26,6 +26,7 @@
  *
  * PROBLEM 9. Front Back Split
  * void frontBackSplit(node* original, node*& frontList, node*& backList)
+ * void frontBackSplitWithoutLength(node* original, node*& frontList, node*& backList)
  *
  * PROBLEM 10. Remove Duplicates
  * void removeDuplicates(node* head)
@@ -374,6 +375,27 @@ void frontBackSplit(node* original, node*& frontList, node*& backList)
     frontList->next = NULL;
 }
 
+void frontBackSplitWithoutLength(node* original, node*& frontList, node*& backList)
+{
+    node* slowHead = original;
+    node* fastHead = original;
+
+    while (fastHead != NULL)
+    {
+        if (fastHead->next != NULL)
+        {
+            fastHead = fastHead->next->next;
+            slowHead = slowHead->next;
+        }
+        else
+        {
+            slowHead = slowHead->next;
+        }
+    }
+
+    fastHead = original;
+}
+
 // -----------------------------------------------------------------------------------------
 // Q10: Remove Duplicated nodes
 // Take a list sorted in increasing order and delete any duplicate nodes from the list
@@ -635,25 +657,6 @@ bool isListPalindrome(node*& head)
     uint32_t listLength = getLength(head);
     cout << listLength << endl;
 
-    struct node* slowHead = head;
-    struct node* fastHead = head;
-
-    while (fastHead != NULL)
-    {
-        if (fastHead->next != NULL)
-        {
-            fastHead = fastHead->next->next;
-            slowHead = slowHead->next;
-        }
-        else
-        {
-            slowHead = slowHead->next;
-        }
-    }
-
-    fastHead = head;
-
-    // return areListsSamePalindrome(fastHead);
     return false;
 }
 // -----------------------------------------------------------------------------------------
@@ -683,8 +686,8 @@ void reverseListRecursive(node*& head)
         return;
     }
     
-    Node* first = head;
-    Node* rest = head->next;
+    node* first = head;
+    node* rest = head->next;
 
     if (NULL == rest)
     {
