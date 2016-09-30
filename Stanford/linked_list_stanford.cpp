@@ -60,6 +60,7 @@
 
 #include <iostream>
 #include <climits>              // INT_MAX, INT_MIN, numeric_limits
+#include <cmath>                // ciel
 using namespace std;
 
 struct node
@@ -356,8 +357,13 @@ void appendLists(node*& list1, node*& list2)
 // -----------------------------------------------------------------------------------------
 void frontBackSplit(node* original, node*& frontList, node*& backList)
 {
-    unsigned int count = 0;
-    unsigned int half = (getLength(original) / 2) + 1;
+    // VERY IMP: Should start from 1
+    // Consider Length = 2.
+    // Half Length = 1. If we start from 0, then we can't split it.
+    unsigned int count = 1;
+
+    // VERY IMP. Make it a double
+    unsigned int half = ceil(getLength(original) / 2.0);
 
     if (original == NULL || original->next == NULL)
     {
@@ -369,31 +375,77 @@ void frontBackSplit(node* original, node*& frontList, node*& backList)
     while (count < half)
     {
         frontList = frontList->next;
+        count++;
     }
 
     backList = frontList->next ; 
     frontList->next = NULL;
+
+    // Finally make front list point to original list
+    frontList = original;
 }
 
 void frontBackSplitWithoutLength(node* original, node*& frontList, node*& backList)
 {
+    frontList = original;
+    backList = original;
+
     node* slowHead = original;
     node* fastHead = original;
+
+    if (fastHead == NULL || fastHead->next == NULL)
+    {
+        backList = NULL;
+        return;
+    }
 
     while (fastHead != NULL)
     {
         if (fastHead->next != NULL)
         {
             fastHead = fastHead->next->next;
-            slowHead = slowHead->next;
+
+            if (fastHead != NULL)
+            {
+                slowHead = slowHead->next;
+            }
+            else
+            {
+                break;
+            }
         }
         else
         {
-            slowHead = slowHead->next;
+            break;
         }
     }
 
-    fastHead = original;
+    backList = slowHead->next;
+    slowHead->next = NULL;
+}
+
+//From MS Stanford material
+void FrontBackSplitStanford(struct node* source, struct node** frontRef, struct node** backRef)
+{
+    int len = getLength(source);
+    int i;
+    struct node* current = source;
+    if (len < 2)
+    {
+        *frontRef = source;
+        *backRef = NULL;
+    }
+    else
+    {
+        int hopCount = (len-1)/2; //(figured these with a few drawings)
+        for (i = 0; i<hopCount; i++) {
+            current = current->next;
+        }
+        // Now cut at current
+        *frontRef = source;
+        *backRef = current->next;
+        current->next = NULL;
+    }
 }
 
 // -----------------------------------------------------------------------------------------
@@ -649,18 +701,7 @@ void removeNode(node*& head, int val)
 }
 
 // -----------------------------------------------------------------------------------------
-// PROBLEM 17. Check if a linked list is a palindrome without using extra space.
-// Original list can be modified
-// -----------------------------------------------------------------------------------------
-bool isListPalindrome(node*& head)
-{
-    uint32_t listLength = getLength(head);
-    cout << listLength << endl;
-
-    return false;
-}
-// -----------------------------------------------------------------------------------------
-// PROBLEM 18. Reverse a list Recursive and Iterative way
+// PROBLEM 17. Reverse a list Recursive and Iterative way
 // -----------------------------------------------------------------------------------------
 void reverseList(node*& head)
 {
@@ -700,8 +741,61 @@ void reverseListRecursive(node*& head)
     first->next = NULL;
 
     head = rest;
+}
 
+// -----------------------------------------------------------------------------------------
+// PROBLEM 18. Check if a linked list is a palindrome without using extra space.
+// Original list can be modified
+// -----------------------------------------------------------------------------------------
+bool compareLists(node* list1, node* list2)
+{
+    while (list1 != NULL && list2 != NULL)
+    {
+        if (list1->data != list2->data)
+        {
+            return false;
+        }
+
+        list1 = list1->next;
+        list2 = list2->next;
+    }
+
+    return true;
+}
+
+bool isListPalindrome(node* head)
+{
+    node* list1 = NULL;
+    node* list2 = NULL;
+    //printList(head);
+    frontBackSplitWithoutLength(head, list1, list2);
+    reverseList(list2);
+    //printList(list1);
+    //printList(list2);
+
+    return compareLists(list1, list2);
+}
+
+// When passed by pointer
+//      - ONLY the object that the pointer points gets modified. Not the pointer itself
+// When pointer is passed by reference then,
+//      - The pointer itself gets modified
+//
+// Head 1: 0xfc1008
+// Addr 1: 0x61fef0
+// Head 2: 0xfc1008
+// Addr 2: 0x61fed0
+void samp(node* head)
+{
+    cout << "Head 2: " << head << endl;
+    cout << "Addr 2: " << &head << endl;
+    /*
+    node* b = head;
+    b->next = NULL;
+    */
+    head = head->next;
     head = NULL;
+    // head->next = NULL;
 }
 
 // -----------------------------------------------------------------------------------------
@@ -715,7 +809,7 @@ int main()
     node* head = new node();
     head = NULL;
 
-//    node* head2 = new node();
+    // node* head2 = new node();
     node* head2 = NULL;
 
     // Fill in values
@@ -748,28 +842,30 @@ int main()
         //printList(head2);
     }
 
-    // Get Nth Element
+    // PROBLEM 2. Get Nth Element
     {
-        cout << "Get Nth Element: " << endl;
+        cout << "PROBLEM 2. Get Nth Element: " << endl;
         cout << getNth(head, 0) << endl;
         cout << getNth(head, 1) << endl;
         cout << getNth(head, 2) << endl;
     }
 
+    // PROBLEM 3. Delete the complete list
     //deleteList(head);
     printList(head);
 
-    // Pop
+    // PROBLEM 4. Pop
     {
-        cout << "Pop: " << endl;
+        cout << "PROBLEM 4. Pop: " << endl;
         cout << pop(head) << endl;
         cout << pop(head) << endl;
         cout << pop(head) << endl;
         cout << pop(head) << endl;
     }
 
-    // InsertNth
+    // PROBLEM 5. InsertNth
     {
+        cout << endl << "PROBLEM 5. Insert Nth" << endl;
         head = NULL;
         insertNth(head, 0, 5);
         insertNth(head, 0, 10);
@@ -785,11 +881,10 @@ int main()
         insertNth(head, 3, 6);
         insertNth(head, 2, 3);
 
-        cout << endl << "Insert Nth" << endl;
         printList(head);
     }
 
-    // Sorted Insert
+    // PROBLEM 6. Sorted Insert
     {
         node* temp2 = new node();
         temp2->next = NULL;
@@ -810,16 +905,36 @@ int main()
         //printList(head);
     }
 
-    // Insertion Sort
+    // PROBLEM 7. Insertion Sort
     {
-        cout << endl <<  "Insertion Sort" << endl;
+        cout << endl <<  "PROBLEM 7. Insertion Sort" << endl;
         insertionSort(head);
         printList(head);
     }
 
-    // Remove Duplicates
+    // PROBLEM 9. Front Back Split
     {
-        cout << endl <<  "Remove Duplicates" << endl;
+        cout << endl <<  "PROBLEM 9. Front Back Split" << endl;
+        node* list1 = NULL;
+        node* list2 = NULL;
+        printList(head);
+        // frontBackSplit(head, list1, list2);
+        //frontBackSplitWithoutLength(head, list1, list2);
+        FrontBackSplitStanford(head, &list1, &list2);
+        printList(head);
+        //printList(list1);
+        //printList(list2);
+
+    // PROBLEM 8. Append two lists
+
+        cout << endl <<  "PROBLEM 8. Append two lists" << endl;
+        appendLists(list1, list2);
+        printList(list1);
+    }
+
+    // PROBLEM 10. Remove Duplicates
+    {
+        cout << endl <<  "PROBLEM 10. Remove Duplicates" << endl;
         removeDuplicates(head);
         printList(head);
     }
@@ -827,9 +942,9 @@ int main()
     cout << "Another List" << endl;
     printList(head2);
 
-    // Move Node
+    // PROBLEM 11. Move Node
     {
-        cout << endl <<  "Move Node" << endl;
+        cout << endl <<  "PROBLEM 11. Move Node" << endl;
         moveNode(head, head2);
         printList(head);
         printList(head2);
@@ -840,33 +955,34 @@ int main()
         printList(head2);
     }
 
-    // Alternating Split
+    // PROBLEM 12. Alternating Split
     node* aRef = NULL;
     node* bRef = NULL;
     {
-        cout << endl << "Alternating Split" << endl;
+        cout << endl << "PROBLEM 12. Alternating Split" << endl;
         alternatingSplit(head, aRef, bRef);
         printList(aRef);
         printList(bRef);
     }
 
-    // Shuffle Merge
+    // PROBLEM 13. Shuffle Merge
     node* merged = NULL;
     {
-        cout << endl << "Shuffle Merge" << endl;
+        cout << endl << "PROBLEM 13. Shuffle Merge" << endl;
         merged = shuffleMerge(aRef, bRef);
         printList(merged);
     }
 
-    // Minimum Node in the list
+    // PROBLEM 15. Minimum Node in the list
     {
-        cout << endl << "Minimum Node" << endl;
+        cout << endl << "PROBLEM 15. Minimum Node" << endl;
         printList(merged);
         minimumNode(merged);
     }
 
-    // Delete nodes containing a Value
+    // PROBLEM 16. Delete nodes containing a Value
     {
+        cout << endl << "PROBLEM 16. Delete Nodes Having a Value" << endl;
         node* head = NULL;
         insertNth(head, 0, 5);
         insertNth(head, 0, 5);
@@ -877,31 +993,43 @@ int main()
         insertNth(head, 0, 5);
 
 
-        cout << endl << "Delete Node" << endl;
         int val = 5;
         removeNode(head, val);
         printList(head);
     }
 
-    // PROBLEM 17. Check if a linked list is a palindrome without using extra space.
-    // Original list can be modified
-    {
-        cout << endl << "Is list Palindrome" << endl;
-        node* head = NULL;
-        insertNth(head, 0, 5);
-        insertNth(head, 1, 3);
-        insertNth(head, 2, 7);
-        insertNth(head, 3, 1);
-        insertNth(head, 4, 7);
-        insertNth(head, 5, 3);
-        insertNth(head, 6, 5);
+    node* head1 = NULL;
+    insertNth(head1, 0, 5);
+    insertNth(head1, 1, 3);
+    insertNth(head1, 2, 7);
+    insertNth(head1, 3, 1);
+    insertNth(head1, 4, 7);
+    insertNth(head1, 5, 3);
+    insertNth(head1, 6, 5);
 
-        cout << isListPalindrome(head) << endl;
+    // PROBLEM 17. Reverse a list Recursive and Iterative way
+    {
+        cout << endl << "PROBLEM 18. Reverse List" << endl;
+        reverseList(head1);
+        printList(head1);
+        reverseListRecursive(head1);
+        printList(head1);
     }
 
-    // PROBLEM 18. Reverse a list Recursive and Iterative way
+    // Passing by Pointer and Passing Pointer by Reference
     {
+        node* list1 = NULL;
+        node* list2 = NULL;
+        //printList(head1);
+        //samp(head1);
+        //printList(head1);
+    }
 
+    // PROBLEM 18. Check if a linked list is a palindrome without using extra space.
+    // Original list can be modified
+    {
+        cout << endl << "PROBLEM 17. Is list Palindrome" << endl;
+        cout << isListPalindrome(head1) << endl;
     }
 
     cout << endl;
