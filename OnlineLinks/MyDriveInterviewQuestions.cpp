@@ -2974,8 +2974,30 @@ void findPairsAddingToSum(const vector<int>& nums, int sum)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 36. 
-//
+//      A function with inclusion times and exclusion times
+//      ab  start   10
+//      de  start   15
+//      fg  start   17
+//      fg  end     19  -> (19 - 17) = 2
+//      hi  start   19
+//      hi  end     22  -> (22 - 19) = 3
+//      de  end     25  -> (25 - 17) = 8
+//      ab  end     28  -> ((15 - 10) + (28 - 25)) = 8; (28 - 10 - (25 - 15)) = 8
 // ------------------------------------------------------------------------------------------------
+struct functionTime
+{
+    string funcName;
+    string timeTag;
+    uint32_t startEndTime;
+};
+
+pair<uint32_t, uint32_t> findInclusiveExclusiveTimeOfFunction(const vector<functionTime>& funcTimes)
+{
+    pair<uint32_t, uint32_t> result = {0, 0};
+    result.first = funcTimes[funcTimes.size() - 1].startEndTime - funcTimes[0].startEndTime;
+
+    return result;
+}
 
 // ------------------------------------------------------------------------------------------------
 // Main Function
@@ -3074,13 +3096,13 @@ int main()
     {
         cout << endl << "Problem 6" << endl;
         vector<int> nums = {1, 6, 2, 9};
-        cout << endl << "Greatest Sum Divisble by a number: " << greatestSumOfSubarrayDivisibleByK(nums, 9) << endl;
+        cout << "Greatest Sum Divisble by a number: " << greatestSumOfSubarrayDivisibleByK(nums, 9) << endl;
     }
 
     // Problem 7. Print Matrix Diagonally
     {
         cout << endl << "Problem 7" << endl;
-        cout << endl << "Print Matrix Diagonally" << endl;
+        cout << "Print Matrix Diagonally" << endl;
         int twoD[5][4] = {{1, 2, 3, 4},
                           {5, 6, 7, 8},
                           {9, 10, 11, 12},
@@ -3098,7 +3120,7 @@ int main()
     // Problem 7. Print Matrix Spirally
     {
         cout << endl << "Problem 7" << endl;
-        cout << endl << "Print Matrix Spirally" << endl;
+        cout << "Print Matrix Spirally" << endl;
         vector< vector <int> > twoDMatrix = {{1, 2, 3, 4},
                                              {5, 6, 7, 8},
                                              {9, 10, 11, 12},
@@ -3155,7 +3177,7 @@ int main()
     // Problem 13. Largest Subarray with equal number of 0s and 1s
     {
         cout << endl << "Problem 13" << endl;
-        cout << endl << "Largest Subarray with equal 0s and 1s" << endl;
+        cout << "Largest Subarray with equal 0s and 1s" << endl;
         int arr[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0};
         printLargestSubArrayZeroOne(arr, sizeof(arr) / sizeof(arr[0]));
         cout << endl;
@@ -3195,7 +3217,7 @@ int main()
         cout << endl << "Problem 18" << endl;
         int arr1[] = {1, 2, 3};
         int arr2[] = {4, 6, 8};
-        cout << endl << "Median 1: " << medianTwoSortedSameSizeArrays(arr1, arr2, sizeof(arr1) / sizeof(arr1[0])) << endl;
+        cout << "Median 1: " << medianTwoSortedSameSizeArrays(arr1, arr2, sizeof(arr1) / sizeof(arr1[0])) << endl;
     }
 
     // Problem 19. Median of two sorted UNEQUAL arrays
@@ -3240,7 +3262,7 @@ int main()
     {
         cout << endl << "Problem 21" << endl;
         int arr[] = {3, 5, 2, 1, 8, 4, 6};
-        cout << endl << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
+        cout << "Kth Smallest Unsorted: " << kthSmalledInUnsorted(arr, sizeof(arr) / sizeof(arr[0]), 4) << endl;
     }
 
     // Problem 21b. Kth Smallest Element in Unsorted Array using QuickSelect
@@ -3256,19 +3278,19 @@ int main()
         quickSortThreeWayRec(nums2, 0, nums2.size() - 1);
         printVectorInt(nums2);
 
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 0) << endl;
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 1) << endl;
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 2) << endl;
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 3) << endl;
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 4) << endl;
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 5) << endl;
-        cout << endl << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 6) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 0) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 1) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 2) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 3) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 4) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 5) << endl;
+        cout << "Kth Smallest Unsorted Quick Select: " << kthSmallQuickSelect(nums, 6) << endl;
     }
 
     // Problem 22. Find if an element is present in a row column sorted matrix
     {
         cout << endl << "Problem 22" << endl;
-        cout << endl << "Is element present in row column matrix" << ": ";
+        cout << "Is element present in row column matrix" << ": ";
         vector< vector <int> > twoD = {{1,  4,  7, 11, 15},
                                        {2,  5,  8, 12, 19},
                                        {3,  6,  9, 16, 22},
@@ -3294,7 +3316,7 @@ int main()
     // Problem 23. Multiplication of two very large numbers
     {
         cout << endl << "Problem 23" << endl;
-        cout << endl << "Multiplication of large numbers using Bit operation" << endl;
+        cout << "Multiplication of large numbers using Bit operation" << endl;
         string s1 = "5830";
         string s2 = "23958233";
         cout << largeNumberMultiplication(s1, s2) << endl;
@@ -3305,7 +3327,7 @@ int main()
     // PROBLEM 23b. PROBLEM 23b. Binary Decimal Conversions
     {
         cout << endl << "PROBLEM 23b" << endl;
-        cout << endl << "Binary Decimal Conversions" << endl;
+        cout << "Binary Decimal Conversions" << endl;
         string strBin;
         uint32_t num = 110;
         convertDecimalNumToBinaryStrRec(num, strBin);
@@ -3321,7 +3343,7 @@ int main()
     // PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
     {
         cout << endl << "PROBLEM 24" << endl;
-        cout << endl << "Minimum Window containing characters" << endl;
+        cout << "Minimum Window containing characters" << endl;
         string str1 = "ADOBECOEBANCD";
         string str2 = "ABC";
         string str3 = "acbbaca";
@@ -3333,7 +3355,7 @@ int main()
     // Problem 25. Find if an element is present in a rotated sorted array
     {
         cout << endl << "Problem 25" << endl;
-        cout << endl << "Binary Search and Rotated Sorted Array" << endl;
+        cout << "Binary Search and Rotated Sorted Array" << endl;
         vector<int> nums = {2, 3, 17, 19, 22, 46, 82};
         cout << binarySearch(nums, 2) << " ";
         cout << binarySearch(nums, 3) << " ";
@@ -3366,7 +3388,7 @@ int main()
     // PROBLEM 25b. Find Index where array is rotated
     {
         cout << endl << "PROBLEM 25b" << endl;
-        cout << endl << "Find Index where array is rotated" << endl;
+        cout << "Find Index where array is rotated" << endl;
         vector<int> nums = {17, 19, 22, 46, 82, 2, 3};
         cout << IndexOfRotatedSortedArray(nums) << endl;
     }
@@ -3374,7 +3396,7 @@ int main()
     // PROBLEM 26. Find Award Budget Cuts Problem
     {
         cout << endl << "PROBLEM 26" << endl;
-        cout << endl << "Award Cuts Problem" << endl;
+        cout << "Award Cuts Problem" << endl;
         vector<uint32_t> grants = {40, 50, 50, 100, 160, 200, 325, 500, 1075, 1500};
         cout << findGrantsCap(grants, 2000) << endl;
         cout << findGrantsCapModified(grants, 2000) << endl;
@@ -3383,7 +3405,7 @@ int main()
     // PROBLEM 27. Find if a Bit Stream is divisible by 3
     {
         cout << endl << "PROBLEM 27" << endl;
-        cout << endl << "Is Bit Stream Divisble by 3" << endl;
+        cout << "Is Bit Stream Divisble by 3" << endl;
         string stream = "111";
         cout << isBitStreamDivsible(stream, 3) << endl;
     }
@@ -3391,7 +3413,7 @@ int main()
     // PROBLEM 28. Sort an array of 0s, 1s and 2s{
     {
         cout << endl << "PROBLEM 28" << endl;
-        cout << endl << "Sort an array of 0s 1s and 2s" << endl;
+        cout << "Sort an array of 0s 1s and 2s" << endl;
         vector <int> nums = {0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 1};
         printVectorInt(nums);
         sortZeroOneTwoDutchFlag(nums);
@@ -3401,7 +3423,7 @@ int main()
     // PROBLEM 29. Find majority element in an array
     {
         cout << endl << "PROBLEM 29" << endl;
-        cout << endl << "Find Majority Element"<< endl;
+        cout << "Find Majority Element"<< endl;
         vector <int> nums = {0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 1};
         cout << isMajorityElementPresent(nums) << endl;
     }
@@ -3409,7 +3431,7 @@ int main()
     // PROBLEM 30. Sorting almost sorted array misplaced by k elements
     {
         cout << endl << "PROBLEM 30" << endl;
-        cout << endl << "Sorting almost sorted array misplaced by k elements" << endl;
+        cout << "Sorting almost sorted array misplaced by k elements" << endl;
         vector <int> nums = {2, 6, 3, 12, 56, 8};
         printVectorInt(nums);
         sortKsortedArray(nums, 3);
@@ -3419,7 +3441,7 @@ int main()
     // PROBLEM 31. Given N points, find k points closest to 0,0
     {
         cout << endl << "PROBLEM 31" << endl;
-        cout << endl << "Given N points, find k points closest to Origin: " << endl;
+        cout << "Given N points, find k points closest to Origin: " << endl;
         vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
         findKclosestPoints(pointsList, 3);
     }
@@ -3427,7 +3449,7 @@ int main()
     // PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
     {
         cout << endl << "PROBLEM 32" << endl;
-        cout << endl << "Move even numbers to front and odd numbers to back with Order preserved" << endl;
+        cout << "Move even numbers to front and odd numbers to back with Order preserved" << endl;
         vector <int> nums = {5, 6, 8, 3, 7, 1, 2, 9};
         printVectorInt(nums);
         moveEvenNosOddNosWithOrder(nums);
@@ -3437,7 +3459,7 @@ int main()
     // PROBLEM 33. Given list of software dependencies. Find order of software installation
     {
         cout << endl << "PROBLEM 33" << endl;
-        //cout << endl << "Find order of software installation" << endl;
+        //cout << "Find order of software installation" << endl;
         vector<std::pair<char, char> > softwareList = {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}; 
         //findSoftwareInstallationOrder(softwareList);
     }
@@ -3445,7 +3467,7 @@ int main()
     // PROBLEM 34. Find angle between hour and minute hand of clock
     {
         cout << endl << "PROBLEM 34" << endl;
-        cout << endl << "Find angle between hour and minute hand of clock" << endl;
+        cout << "Find angle between hour and minute hand of clock" << endl;
         cout << findAngleBtwnHourMinute(3, 30) << endl;
         cout << findAngleBtwnHourMinute(7, 40) << endl;
         cout << findAngleBtwnHourMinute(7, 20) << endl;
@@ -3453,8 +3475,22 @@ int main()
 
     // PROBLEM 35. Find all pairs of numbers that add to a sum
     {
+        cout << endl << "PROBLEM 35" << endl;
+        cout << "Find all pairs that add to a sum" << endl;
         vector<int> nums = {5, 3, -2, 4, 3, 6, 5, 5, -1, 3, 10, 2};
         findPairsAddingToSum(nums, 8);
+    }
+
+    {
+        cout << endl << "PROBLEM 36" << endl;
+        cout << "Find inclusive and exclusive times of a function" << endl;
+        vector<functionTime> funcTimes = {{"ab", "start", 10}, {"de", "start", 15}, \
+                                          {"fg", "start", 17}, {"fg", "end", 19}, \
+                                          {"hi", "start", 19}, {"hi", "end", 22}, \
+                                          {"de", "end", 25}, {"ab", "end", 28}};
+
+        pair<uint32_t, uint32_t> res = findInclusiveExclusiveTimeOfFunction(funcTimes);
+        cout << "Inclusive Time: " << res.first << "; ExclusiveTime: " << res.second << endl;
     }
 
     cout << endl;
