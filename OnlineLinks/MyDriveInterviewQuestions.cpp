@@ -164,7 +164,8 @@ using namespace std;
  * PROBLEM 35. Find all pairs of numbers that add to a sum
  * void findPairsAddingToSum(const vector<int>& nums, int sum)
  *
- * PROBLEM 36. 
+ * PROBLEM 36. A function with inclusion times and exclusion times
+ * pair<uint32_t, uint32_t> findInclusiveExclusiveTimeOfFunction(const vector<functionDetails>& funcTimes, string funcName)
  *
  * PROBLEM 37. 
  */
@@ -2975,26 +2976,94 @@ void findPairsAddingToSum(const vector<int>& nums, int sum)
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 36. 
 //      A function with inclusion times and exclusion times
+//      ab()            de()        hi()
+//      {               {           {
+//          de();           fg();       lo();
+//          hi();       }               qw();
+//      }                           }
+//
+//      Logic:
+//          Get A's start time ---> (0)
+//          For each entry after A() start,
+//              Take next function's(X) start time ---> (1)
+//              Till you get next function's(X) end time
+//                  Skip all inbetween entries
+//              Store next function's(X) end time ---> (2)
+//              Result += (2) - (1)
+//          Get A's end time ---> (3)
+//          Inclusive time = (3) - (0)
+//          Exclusive time = (3) - (0) - (Result)
+//
 //      ab  start   10
 //      de  start   15
 //      fg  start   17
-//      fg  end     19  -> (19 - 17) = 2
-//      hi  start   19
-//      hi  end     22  -> (22 - 19) = 3
-//      de  end     25  -> (25 - 17) = 8
-//      ab  end     28  -> ((15 - 10) + (28 - 25)) = 8; (28 - 10 - (25 - 15)) = 8
+//      fg  end     19
+//      de  end     19  --> 19 - 15 = 4
+//
+//      hi  start   22 
+//      lo  start   27
+//      qw  start   31
+//      qw  end     37
+//      lo  end     38
+//      hi  end     43  --> 43 - 22 = 21
+//      ab  end     45  --> Inc Time: 45 - 10 = 35; Exc Time: 35 - (4 + 21) = 10
 // ------------------------------------------------------------------------------------------------
-struct functionTime
+struct functionDetails
 {
-    string funcName;
+    string name;
     string timeTag;
     uint32_t startEndTime;
 };
 
-pair<uint32_t, uint32_t> findInclusiveExclusiveTimeOfFunction(const vector<functionTime>& funcTimes)
+// This is a utility function
+pair<uint32_t, uint32_t> computeIncExcTime(const vector<functionDetails>& funcDetails, uint32_t i)
+{
+    string funcName = funcDetails[i].name;
+    uint32_t funcStart = funcDetails[i].startEndTime;
+    uint32_t funcOthersTime = 0;
+    pair<uint32_t, uint32_t> result = {0, 0};
+    uint32_t x = i + 1;
+    
+    // Go on till the end of list or until you get the END of funcName
+    // ASSUMPTION: All entries are valid. You don't get same funcName with another START
+    // tag again
+    for (; x < funcDetails.size() && funcDetails[x].name != funcName; x++)
+    {
+        if (funcDetails[x].timeTag == "start")
+        {
+            string tmpFuncName = funcDetails[x].name;
+            uint32_t tmpFuncStartTime = funcDetails[x].startEndTime;
+
+            x++;
+            while (funcDetails[x].name != tmpFuncName && x < funcDetails.size())
+            {
+                x++;
+            }
+
+            // Assumption: There is NOT another entry with tmpFuncName and START tag.
+            uint32_t tmpFuncEndTime = funcDetails[x].startEndTime;
+            funcOthersTime += tmpFuncEndTime - tmpFuncStartTime;
+        }
+    }
+
+    uint32_t funcEnd = funcDetails[x].startEndTime;
+    result = make_pair((funcEnd - funcStart), (funcEnd - funcStart - (funcOthersTime)));
+
+    return result;
+}
+
+pair<uint32_t, uint32_t> findInclusiveExclusiveTimeOfFunction(const vector<functionDetails>& funcDetails, string funcName)
 {
     pair<uint32_t, uint32_t> result = {0, 0};
-    result.first = funcTimes[funcTimes.size() - 1].startEndTime - funcTimes[0].startEndTime;
+    result.first = funcDetails[funcDetails.size() - 1].startEndTime - funcDetails[0].startEndTime;
+
+    for (uint32_t i = 0; i < funcDetails.size(); i++)
+    {
+        if (funcDetails[i].name == funcName && "start" == funcDetails[i].timeTag)
+        {
+            return computeIncExcTime(funcDetails, i);
+        }
+    }
 
     return result;
 }
@@ -3480,16 +3549,25 @@ int main()
         vector<int> nums = {5, 3, -2, 4, 3, 6, 5, 5, -1, 3, 10, 2};
         findPairsAddingToSum(nums, 8);
     }
+            
 
     {
         cout << endl << "PROBLEM 36" << endl;
         cout << "Find inclusive and exclusive times of a function" << endl;
-        vector<functionTime> funcTimes = {{"ab", "start", 10}, {"de", "start", 15}, \
+        vector<functionDetails> funcTimes = {{"ab", "start", 10}, {"de", "start", 15}, \
                                           {"fg", "start", 17}, {"fg", "end", 19}, \
                                           {"hi", "start", 19}, {"hi", "end", 22}, \
                                           {"de", "end", 25}, {"ab", "end", 28}};
 
-        pair<uint32_t, uint32_t> res = findInclusiveExclusiveTimeOfFunction(funcTimes);
+        vector<functionDetails> funcTimes2 = {{"ab", "start", 10}, {"de", "start", 15}, \
+                                           {"fg", "start", 17}, {"fg", "end", 19}, \
+                                           {"de", "end", 19}, {"hi", "start", 22}, \
+                                           {"lo", "start", 27}, {"qw", "start", 31}, \
+                                           {"qw", "end", 37}, {"lo", "end", 38}, \
+                                           {"hi", "end", 43}, {"ab", "end", 45}};
+        string funcName = "ab";
+
+        pair<uint32_t, uint32_t> res = findInclusiveExclusiveTimeOfFunction(funcTimes2, funcName);
         cout << "Inclusive Time: " << res.first << "; ExclusiveTime: " << res.second << endl;
     }
 

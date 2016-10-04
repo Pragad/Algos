@@ -36,7 +36,7 @@ BST Iterator
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 -1) Meetup Qs
-0) Quick Select k'th smallest element
+    0) Quick Select k'th smallest element
 1) Find Cycle in a Graph
 2) Find a sub matrix that sums to a value
 3) Implementing a function that can concatenate two null terminated strings together in C
@@ -46,7 +46,7 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 8) Large number multiplication without using *
 10) LRU Cache
 12) Tree Serialize and Deserialize
-13) Uber Question
+    13) Uber Question
 14) Simple Multi threading problem
 15) Two Bit Problems from Interview Bit
 16) Reader Writer problem
@@ -101,6 +101,7 @@ MEETUP: Tech Interview Whiteboard Session
                    FIND WHAT IS TRAMPOLINE
 
             This can be real time and streaming. As you get each SYMBOL / VALUE print it and give control to the other thread
+
         5)
         Matix of 1s and 0s. Find area of the largest square matrix with all 1's
             a) How to do using multi-threading

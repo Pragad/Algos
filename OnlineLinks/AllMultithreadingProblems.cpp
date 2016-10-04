@@ -7,6 +7,18 @@
 #include <condition_variable>
 using namespace std;
 
+/*
+ * PROBLEM 1. Producer Consumer Problem
+ * void producer()
+ * void consumer()
+ *
+ * PROBLEM 2: Simple Multi threading synchronization problem
+ * 
+ */
+ 
+// -----------------------------------------------------------------------------------------
+// PROBLEM 1. Producer Consumer Problem
+// -----------------------------------------------------------------------------------------
 static const int MAX_BUFFER_SIZE = 5;
 static uint32_t NUM_THREADS = 5;
 static uint32_t BUFFER[MAX_BUFFER_SIZE];
@@ -67,10 +79,16 @@ void consumer()
         }
     }
 }
+// -----------------------------------------------------------------------------------------
+// PROBLEM 2. Simple Multi threading synchronization problem
+// -----------------------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------------------
+// Main Function
+// -----------------------------------------------------------------------------------------
 int main()
 {
-    // Single Threaded Producer Consumer Problem
+    // PROBLEM 1. Single Threaded Producer Consumer Problem
     {
         cout << endl << "Single Threaded Producer Consumer Problem" << endl;
         thread prod (producer);
@@ -99,6 +117,9 @@ int main()
         }
     }
 
+    // 2. Simple Thread Synchronization Problem
+    {
+    }
     cout << endl;
     return 0;
 }
