@@ -36,6 +36,8 @@ using namespace std;
  *
  * PROBLEM 14. Word Count Engine
  *
+ * PROBLEM 15. Sudoku Solver
+ *
  */
 
 template<typename T>
@@ -775,6 +777,112 @@ vector< pair< string, uint32_t > > wordCount(const string& str)
     return result;
 }
 
+// ----------------------------------------------------------------------------------------
+// PROBLEM 15. Sudoku Solver
+// https://www.pramp.com/question/O5PGrqGEyKtq9wpgw6XP
+//
+// Write the function sudokuSolve(board) that checks whether a given sudoku board (i.e. sudoku puzzle) is solvable. 
+//
+// Assumption: Empty grid = 0
+// ----------------------------------------------------------------------------------------
+
+void findPossibleNums(int twoDMat[9][9], int i, int j, vector<int>& possibleNums)
+{
+    // 1. Go through column and remove numbers already present
+    for (int x = 0; x < 9; x++)
+    {
+        if (twoDMat[x][j] != 0)
+        {
+            possibleNums.erase(std::remove(possibleNums.begin(), possibleNums.end(), twoDMat[x][j]), possibleNums.end());
+        }
+    }
+
+    // 2. Go through row and remove numbers already present
+    for (int x = 0; x < 9; x++)
+    {
+        if (twoDMat[i][x] != 0)
+        {
+            possibleNums.erase(std::remove(possibleNums.begin(), possibleNums.end(), twoDMat[i][x]), possibleNums.end());
+        }
+    }  
+
+    // 3. Go through sub matrix and remove numbers already present
+    int startRow;
+    int startCol;
+    if (i < 3)
+    {
+        startRow = 0;
+    }
+    else if (i < 6)
+    {
+        startRow = 3;
+    }
+    else if (i < 9)
+    {
+        startRow = 6;
+    }
+
+    if (j < 3)
+    {
+        startCol = 0;
+    }
+    else if (j < 6)
+    {
+        startCol = 3;
+    }
+    else if (j < 9)
+    {
+        startCol = 6;
+    }
+
+    for (int x = startRow; x < startRow + 3; x++)
+    {
+        for (int y = startCol; y < startCol + 3; y++)
+        {
+            if (twoDMat[x][y] != 0)
+            {
+                possibleNums.erase(std::remove(possibleNums.begin(), possibleNums.end(), twoDMat[x][y]), possibleNums.end());
+            }        
+        }
+    }
+
+    return;
+}
+
+bool isSudokuBoardSolvable(int twoDMat[9][9], int stRow, int stCol)
+{
+    int i = stRow;
+    int j = stCol;
+    for ( i = stRow; i < 9; i++)
+    {
+        for ( j = stCol; j < 9; j++)
+        {
+            if (twoDMat[i][j] == 0)
+            {
+                // Empty grid. Find all possible numbers for this grid
+                vector<int> possibleNums = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+                findPossibleNums(twoDMat, i, j, possibleNums);
+
+                for (int possibleNum : possibleNums)
+                {
+                    twoDMat[i][j] = possibleNum;
+                    return isSudokuBoardSolvable(twoDMat, i, j);
+                }
+            }
+        }
+    }
+
+    if (i == 9 && j == 9)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+// -----------------------------------------------------------------------------------------
+// Main Function
+// -----------------------------------------------------------------------------------------
 int main()
 {
     // PROBLEM 1. Island Count Iterative
@@ -949,8 +1057,13 @@ int main()
         vector< pair <string, uint32_t> > result = wordCount(str);
         printVectorPairs(result);
 
-        cout << endl;
+        cout << endl << endl;
     }
 
+    // PROBLEM 15. Find if a Sudoku puzzle is solvable
+    {
+        cout << "PROBLEM 14. Word Count Engine" << endl;
+        cout << endl << endl;
+    }
     return 0;
 }
