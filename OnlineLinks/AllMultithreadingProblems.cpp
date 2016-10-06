@@ -80,21 +80,75 @@ void consumer()
     }
 }
 
-// -----------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
 // PROBLEM 2. Simple Multi threading synchronization problem
-// -----------------------------------------------------------------------------------------
+// Have two functions and two lists.
+// Thread1 should start first and print everything in list1
+// Thread2 should start after thread1 and print everything in list2
+// -----------------------------------------------------------------------------------------------
+static const vector<string> list1 = {"NTAP", "FB", "GOOG", "TSLA", "LUV", "M"};
+static const vector<uint32_t> list2 = {35, 105, 780, 250, 42, 38};
+
+std::condition_variable condVar;
+//std::mutex mtx2;
+std::atomic<bool> flag {false};
+
+void printList1()
+{
+    // Take a mutex lock
+    //unique_lock<std::mutex> stickerLock(mtx2);
+
+    cout << "1. ";
+    for (uint32_t i = 0; i < list1.size(); i++)
+    {
+        cout << list1[i] << ", ";
+        i++;
+    }
+
+    flag.store(true);
+}
+
+void printList2()
+{
+    //unique_lock<std::mutex> stockLock(mtx2);
+
+    if (!flag)
+    {
+        condVar.wait();
+    }
+
+    cout << "2. ";
+    for (uint32_t i = 0; i < list2.size(); i++)
+    {
+        cout << list2[i] << ", ";
+        i++;
+    }
+}
+
+// ----------------------------------------------------------------------------------------------
+// PROBLEM 3. Simple Multi threading synchronization problem to print Stocks and Prices
+// Have two lists, one containing stock stickers and one containing the corresponding prices
+//
+// Thread1 should start first and print One entry in StockSticker list
+// Then thread1 should pass control to thread2
+// Thread2 should print its top entry in the list
+// Then thread2 should pass control to thread1
+// ----------------------------------------------------------------------------------------------
+/*
 static const vector<string> stockSticker = {"NTAP", "FB", "GOOG", "TSLA", "LUV", "M"};
 static const vector<uint32_t> stockPrices = {35, 105, 780, 250, 42, 38};
 
 std::condition_variable condVar;
 std::mutex mtx2;
+std::atomic<bool> flag {false};
 
 void printStockSticker(uint32_t index)
 {
     // Take a mutex lock
     unique_lock<std::mutex> stickerLock(mtx2);
+    flag = true;
 
-    if (index < stockSticker.size())
+    if (flag && index < stockSticker.size())
     {
         cout << stockSticker[index] << " - ";
         index++;
@@ -110,7 +164,7 @@ void printStockPrices(uint32_t index)
 {
     unique_lock<std::mutex> stockLock(mtx2);
 
-    if (index < stockSticker.size())
+    if (flag && index < stockSticker.size())
     {
         cout << stockPrices[index] << endl;
         index++;
@@ -121,7 +175,7 @@ void printStockPrices(uint32_t index)
         condVar.wait(stockLock);
     }
 }
-
+*/
 // -----------------------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------------------
@@ -158,8 +212,11 @@ int main()
 
     // 2. Simple Thread Synchronization Problem
     {
-        printStockSticker(0);
-        printStockPrices(0);
+        thread thPrintList1 (printList1);
+        thread thPrintList2 (printList2);
+
+        printSticker.join();
+        printPrices.join();
     }
 
     cout << endl;
