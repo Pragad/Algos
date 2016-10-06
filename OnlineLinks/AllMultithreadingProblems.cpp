@@ -90,13 +90,14 @@ static const vector<string> list1 = {"NTAP", "FB", "GOOG", "TSLA", "LUV", "M"};
 static const vector<uint32_t> list2 = {35, 105, 780, 250, 42, 38};
 
 std::condition_variable condVar;
-//std::mutex mtx2;
+std::mutex mtx2;
 std::atomic<bool> flag {false};
 
 void printList1()
 {
     // Take a mutex lock
-    //unique_lock<std::mutex> stickerLock(mtx2);
+    // So when thread1 is printing List1, thread2 can't print list 2
+    unique_lock<std::mutex> list1Lock(mtx2);
 
     cout << "1. ";
     for (uint32_t i = 0; i < list1.size(); i++)
@@ -106,15 +107,21 @@ void printList1()
     }
 
     flag.store(true);
+    condVar.notify_one();
 }
 
 void printList2()
 {
-    //unique_lock<std::mutex> stockLock(mtx2);
+    // Take a mutex lock
+    // So when thread1 is printing List1, thread2 can't print list 2
+    unique_lock<std::mutex> list2Lock(mtx2);
 
+    // If the flag has not been set then wait for it
     if (!flag)
     {
-        condVar.wait();
+        // IMP: Wait will release the lock that this thread has been holding so that thread1
+        // can acquire the mutex and print list1
+        condVar.wait(list2Lock);
     }
 
     cout << "2. ";
@@ -123,6 +130,9 @@ void printList2()
         cout << list2[i] << ", ";
         i++;
     }
+
+    // Set flag back to false
+    flag.store(false);
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -134,48 +144,62 @@ void printList2()
 // Thread2 should print its top entry in the list
 // Then thread2 should pass control to thread1
 // ----------------------------------------------------------------------------------------------
-/*
 static const vector<string> stockSticker = {"NTAP", "FB", "GOOG", "TSLA", "LUV", "M"};
 static const vector<uint32_t> stockPrices = {35, 105, 780, 250, 42, 38};
 
-std::condition_variable condVar;
-std::mutex mtx2;
-std::atomic<bool> flag {false};
+std::condition_variable condVar3;
+std::mutex mtx3;
+std::atomic<bool> th1 {false};
+std::atomic<bool> th2 {false};
 
 void printStockSticker(uint32_t index)
 {
     // Take a mutex lock
-    unique_lock<std::mutex> stickerLock(mtx2);
-    flag = true;
+    unique_lock<std::mutex> stickerLock(mtx3);
 
-    if (flag && index < stockSticker.size())
+    // Make sure th2 was the last guy that was executed. Only then we should print an item
+    // from list1.
+    // Otherwise we should wait till th2 prints an item
+
+    //if (th2 && index < stockSticker.size())
+    if (index < stockSticker.size())
     {
+        th2.store(false);
         cout << stockSticker[index] << " - ";
         index++;
-        condVar.notify_one();
+
+        th1.store(true);
+        condVar3.notify_one();
     }
     else
     {
-        condVar.wait(stickerLock);
+        condVar3.wait(stickerLock);
     }
 }
 
 void printStockPrices(uint32_t index)
 {
-    unique_lock<std::mutex> stockLock(mtx2);
+    unique_lock<std::mutex> stockLock(mtx3);
 
-    if (flag && index < stockSticker.size())
+    // Make sure th1 was the last guy that was executed. Only then we should print an item
+    // from list2.
+    // Otherwise we should wait till th1 prints an item.
+
+    if (th1 && index < stockSticker.size())
     {
+        th1.store(false);
         cout << stockPrices[index] << endl;
         index++;
-        condVar.notify_one();
+
+        th2.store(true);
+        condVar3.notify_one();
     }
     else
     {
-        condVar.wait(stockLock);
+        condVar3.wait(stockLock);
     }
 }
-*/
+
 // -----------------------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------------------
