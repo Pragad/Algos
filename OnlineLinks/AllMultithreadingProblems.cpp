@@ -24,8 +24,9 @@ static uint32_t NUM_THREADS = 5;
 static uint32_t BUFFER[MAX_BUFFER_SIZE];
 static vector<uint32_t> VEC_BUFFER;
 
-mutex mtx;
-condition_variable cv;
+/*
+std::mutex mtx;
+std::condition_variable cv;
 
 void producer()
 {
@@ -79,9 +80,22 @@ void consumer()
         }
     }
 }
+*/
 // -----------------------------------------------------------------------------------------
 // PROBLEM 2. Simple Multi threading synchronization problem
 // -----------------------------------------------------------------------------------------
+static const vector<string> stockSticker = {"NTAP", "FB", "GOOG", "TSLA", "LUV", "M"};
+static const vector<uint32_t> stockPrices = {35, 105, 780, 250, 42, 38};
+
+void printStockSticker(uint32_t index)
+{
+    cout << stockSticker[index] << " - ";
+}
+
+void printStockPrices(uint32_t index)
+{
+    cout << stockPrices[index] << endl;
+}
 
 // -----------------------------------------------------------------------------------------
 // Main Function
@@ -89,6 +103,7 @@ void consumer()
 int main()
 {
     // PROBLEM 1. Single Threaded Producer Consumer Problem
+    /*
     {
         cout << endl << "Single Threaded Producer Consumer Problem" << endl;
         thread prod (producer);
@@ -116,9 +131,12 @@ int main()
             consThreads[i].join();
         }
     }
+    */
 
     // 2. Simple Thread Synchronization Problem
     {
+        printStockSticker(0);
+        printStockPrices(0);
     }
     cout << endl;
     return 0;
