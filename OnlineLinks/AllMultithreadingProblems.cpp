@@ -103,8 +103,8 @@ void printList1()
     for (uint32_t i = 0; i < list1.size(); i++)
     {
         cout << list1[i] << ", ";
-        i++;
     }
+    cout << endl;
 
     flag.store(true);
     condVar.notify_one();
@@ -128,8 +128,8 @@ void printList2()
     for (uint32_t i = 0; i < list2.size(); i++)
     {
         cout << list2[i] << ", ";
-        i++;
     }
+    cout << endl;
 
     // Set flag back to false
     flag.store(false);
@@ -160,9 +160,7 @@ void printStockSticker(uint32_t index)
     // Make sure th2 was the last guy that was executed. Only then we should print an item
     // from list1.
     // Otherwise we should wait till th2 prints an item
-
-    //if (th2 && index < stockSticker.size())
-    if (index < stockSticker.size())
+    for (uint32_t i = 0; i < stockSticker.size(); i++)
     {
         th2.store(false);
         cout << stockSticker[index] << " - ";
@@ -170,11 +168,13 @@ void printStockSticker(uint32_t index)
 
         th1.store(true);
         condVar3.notify_one();
-    }
-    else
-    {
         condVar3.wait(stickerLock);
     }
+
+    // Make sure to wake the other thread. Else it will be waiting forever
+    condVar3.notify_one();
+
+    cout << "List 1 done" << endl;
 }
 
 void printStockPrices(uint32_t index)
@@ -184,8 +184,12 @@ void printStockPrices(uint32_t index)
     // Make sure th1 was the last guy that was executed. Only then we should print an item
     // from list2.
     // Otherwise we should wait till th1 prints an item.
+    if (!th1)
+    {
+        condVar3.wait(stockLock);
+    }
 
-    if (th1 && index < stockSticker.size())
+    for (uint32_t i = 0; i < stockPrices.size(); i++)
     {
         th1.store(false);
         cout << stockPrices[index] << endl;
@@ -193,11 +197,10 @@ void printStockPrices(uint32_t index)
 
         th2.store(true);
         condVar3.notify_one();
-    }
-    else
-    {
         condVar3.wait(stockLock);
     }
+
+    cout << "List 2 done" << endl;
 }
 
 // -----------------------------------------------------------------------------------------
@@ -207,7 +210,7 @@ int main()
 {
     // PROBLEM 1. Single Threaded Producer Consumer Problem
     {
-        cout << endl << "Single Threaded Producer Consumer Problem" << endl;
+        cout << endl << "Problem 1: Single Threaded Producer Consumer Problem" << endl;
         thread prod (producer);
         thread cons (consumer);
 
@@ -217,7 +220,7 @@ int main()
 
     // Multi-threaded Producer Consumer Problem
     {
-        cout << endl << "Multi Threaded Producer Consumer Problem" << endl;
+        cout << endl << "Problem 1: Multi Threaded Producer Consumer Problem" << endl;
         thread prodThreads[NUM_THREADS];
         thread consThreads[NUM_THREADS];
 
@@ -234,13 +237,24 @@ int main()
         }
     }
 
-    // 2. Simple Thread Synchronization Problem
+    // 2. Simple Thread Synchronization Problem. Print one list fully and then another list
     {
+        cout << endl << "Problem 2: " << endl;
         thread thPrintList1 (printList1);
         thread thPrintList2 (printList2);
 
-        printSticker.join();
-        printPrices.join();
+        thPrintList1.join();
+        thPrintList2.join();
+    }
+
+    // 3. Thread Synchronization Problem. Print one entry in each list
+    {
+        cout << endl << "Problem 3: " << endl;
+        thread thPrintList3a (printStockSticker, 0);
+        thread thPrintList3b (printStockPrices, 0);
+
+        thPrintList3a.join();
+        thPrintList3b.join();
     }
 
     cout << endl;
