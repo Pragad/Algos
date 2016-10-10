@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <algorithm> // fill_n
 #include <cstring>
+#include <climits>              // INT_MAX, INT_MIN, numeric_limits
 using namespace std;
 
 /*
@@ -92,8 +93,6 @@ unsigned int fibonacciDynamic2(int n)
         a = result;
     }
 
-    cout << endl;
-
     return result;
 }
 
@@ -136,6 +135,7 @@ void appendElementToVector(vector< vector <unsigned int> > src,
 // Ladder Problem
 void ladderDynamic(int number)
 {
+    cout << "Ladder Dynamic" << endl;
     vector< vector<unsigned int> > vecNminusTwo = {{}};
     vector< vector<unsigned int> > vecNminusOne = {{1}};
     vector< vector<unsigned int> > vecResult;
@@ -162,6 +162,30 @@ void ladderDynamic(int number)
 // Algorithm: Use recursion to print the paths
 //            One call to the function is made for every single path entry.
 // http://www.geeksforgeeks.org/count-ways-reach-nth-stair/
+void ladderPathsStrRec(string strPath, unsigned int num, unsigned int recLevel)
+{
+    if (num == 0)
+    {
+        cout << strPath << endl;
+        return;
+    }
+
+    if (num >= 1)
+    {
+        // Add '1' to our paths and go one step further
+        strPath += '1';
+        ladderPathsStrRec(strPath, num - 1, recLevel + 1);
+    }
+
+    if (num >= 2)
+    {
+        // Add '2' to our paths and go two steps further
+        strPath.pop_back();
+        strPath += '2';
+        ladderPathsStrRec(strPath, num - 2, recLevel + 1);
+    }
+}
+
 void ladderPathsRec(char* strPath, unsigned int num, unsigned int recLevel)
 {
     if (num == 0)
@@ -189,14 +213,76 @@ void ladderRec(unsigned int number)
 {
     // This array will hold one valid path to reach 'N' steps.
     // So the max memory required would be 'N + 1'
-    char* strPath = new char[number + 1];
-    ladderPathsRec(strPath, number, 0);
-    delete[] strPath;
+    // Using char array
+    {
+        cout << "Ladder Paths using Char Array" << endl;
+        char* strPath = new char[number + 1];
+        ladderPathsRec(strPath, number, 0);
+        delete[] strPath;
+    }
+
+    // Using string
+    {
+        cout << "Ladder Paths using String" << endl;
+        string strPath;
+        ladderPathsStrRec(strPath, number, 0);
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 2b: Ladder Count Possibilities
+// ------------------------------------------------------------------------------------------------
+uint32_t countPossibilitiesLadderRec(uint32_t num)
+{
+    if (num <= 2)
+    {
+        return num;
+    }
+    else
+    {
+        return countPossibilitiesLadderRec(num - 1) + countPossibilitiesLadderRec(num - 2);
+    }
+}
+
+uint32_t countPossibilitiesLadderDynamic(uint32_t num)
+{
+    if (num <= 2)
+    {
+        return num;
+    }
+
+    uint32_t res = 0;
+    uint32_t a = 2;
+    uint32_t b = 1;
+    for (uint32_t i = 2; i < num; i++)
+    {
+        res = a + b;
+
+        // VERY IMP: First put a in b and the res in a
+        b = a;
+        a = res;
+    }
+
+    return res;
 }
 
 // ------------------------------------------------------------------------------------------------
 // Problem 3: Longest Increasing Subsequence
 // http://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming
+//
+// Let arr[0..n-1] be the input array and L(i) be the length of the LIS till index i such that arr[i] is part of LIS and arr[i] is the last element in LIS, then L(i) can be recursively written as.
+// L(i) = { 1 + Max ( L(j) ) } where j < i and arr[j] < arr[i] and if there is no such j then L(i) = 1
+//
+//      Complexity Recursion: O(n!)
+//      Complexity DP: O(n log(n))
+//
+//               lis(4)
+//        /        |       \
+//      lis(3)    lis(2)   lis(1)
+//     /   \        /
+//   lis(2) lis(1) lis(1)
+//   /
+// lis(1)
 // ------------------------------------------------------------------------------------------------
 uint32_t longestIncreasingSubSequenceRecUtil(int arr[], uint32_t num, uint32_t& maxVal)
 {
@@ -298,9 +384,41 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
     return maxSoFar;
 }
 
+// ------------------------------------------------------------------------------------------------
+// Dynamic Programming Approach
+// Collection of integers: 2 6 3 4 1 2 9 5 8
+// 
+// Steps:
+// 
+// 0. S = {} - Initialize S to the empty set
+// 1. S = {2} - New largest LIS
+// 2. S = {2, 6} - New largest LIS
+// 3. S = {2, 3} - Changed 6 to 3
+// 4. S = {2, 3, 4} - New largest LIS
+// 5. S = {1, 3, 4} - Changed 2 to 1
+// 6. S = {1, 2, 4} - Changed 3 to 2
+// 7. S = {1, 2, 4, 9} - New largest LIS
+// 8. S = {1, 2, 4, 5} - Changed 9 to 5
+// 9. S = {1, 2, 4, 5, 8} - New largest LIS
+
+// Collection of integers: 10,9,2,5,3,7,101,18
+// 
+// Steps:
+// 
+// 0. S = {} - Initialize S to the empty set
+// 1. S = {10} - New largest LIS
+// 2. S = {9} - Change 10 to 9
+// 3. S = {2} - Changed 9 to 2
+// 4. S = {2, 5} - New largest LIS
+// 5. S = {2, 3} - Changed 5 to 3
+// 6. S = {2, 3, 7} - New largest LIS
+// 7. S = {2, 3, 7, 101} - New largest LIS
+// 8. S = {2, 3, 7, 18} - Changed 101 to 18
+
 // Utility function to calculate LIS
 // O(n log(n)) dynamic programming approach
 // VERY IMP:
+// ------------------------------------------------------------------------------------------------
 uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
 {
     uint32_t low = 0;
@@ -681,7 +799,15 @@ int main()
 
     // Problem 2. Ladder Problem
     {
-        ladderRec(3);
+        cout << endl << "Problem 2. Ladder Problem" << endl;
+        ladderRec(5);
+        ladderDynamic(5);
+        cout << "Possibilities Rec 3: " << countPossibilitiesLadderRec(3) << endl;
+        cout << "Possibilities Rec 4: " << countPossibilitiesLadderRec(4) << endl;
+        cout << "Possibilities Rec 5: " << countPossibilitiesLadderRec(5) << endl;
+        cout << "Possibilities Dy 3: " << countPossibilitiesLadderDynamic(3) << endl;
+        cout << "Possibilities Dy 4: " << countPossibilitiesLadderDynamic(4) << endl;
+        cout << "Possibilities Dy 5: " << countPossibilitiesLadderDynamic(5) << endl;
     }
 
     // Problem 3. Longest Increasing Subsequence

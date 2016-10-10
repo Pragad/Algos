@@ -9,18 +9,18 @@ DP
 Graph Cycle
 
 All Interview
-All Tree
-Graph
-BST Iterator
+    All Tree
+    Graph
+    BST Iterator
 
 09/09: All GENERIC QUESTIONs about netapp and others, Interview General, Cpp Tips, Algos General
-09/10: MZ
-09/11: Buffer
 
-09/12: 
-09/13:
-09/14: 
-09/15: 
+10/08: DP
+10/09: All Other Old Problems
+10/10: Cpp Tips Tricks
+10/11: Python
+10/12: Python
+10/13: Revise
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -1. Netapp Related
@@ -56,7 +56,15 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 20) Design some other similar class or a project that you did
 21) Cracking the coding Interview - Recursion
 22) Soundhound Problems
+    - Auto complete of a search
 23) MZ Problem
+24) Finding if two strings are anagrams
+25) Given a char pointer to large buffer of memory, write your own version of my_malloc and my_free without using any system calls.
+    Make it as robust as possible.
+    How would you minimize memory fragmentation?
+26) Implement Singleton
+    - Think of different ways and its pros and cons
+    - Make it thread safe
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     2016/09/26:

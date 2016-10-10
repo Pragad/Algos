@@ -101,7 +101,7 @@ MISC
 1. What is REST Servcie
 1b. GET vs POST
 2. What is a Websocket
-
+3. Relational Database vs NoSQL Database
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
 0.
@@ -2208,3 +2208,59 @@ http://stackoverflow.com/questions/2681267/what-is-the-fundamental-difference-be
 
     Given that these are standard ports for web servers that generally speak HTTP, you're therefore obliged to conform to the HTTP protocol, otherwise the server won't talk to you. The purpose of web sockets is to allow you to initiate a connection via HTTP, but then negotiate to use the web sockets protocol (assuming the server is capable of doing so) to allow a more "TCP socket"-like communication stream.
 
+3. Relational Database vs NoSQL Database
+    RDBMS
+    - Scale up: By increasing the capacity of the box
+    - For storing Structured Data
+        - Already mention the number of rows and columns; type of data can go etc
+    - Can handle atomic transactions
+
+    - Examples
+        - Oracle
+        - Microsoft SQL Server
+        - DB2
+        - MySql
+        - PostGreSql
+        - MS Access
+
+    NoSql:
+    - Scale Out: By adding more boxes
+    - For storing semi-structured data
+    - Cannot handle atomic transactions
+    - Eventual Consistency
+    - Can handle Structured and Unstructured data
+
+    WHEN:
+        - don't have to store relationship between elements
+
+        1. Key Value Store
+            - Memcached
+            - Coherence
+            - Redis
+
+        2. Tabular
+            - BigTable
+            - Hbase
+            - Accumulo
+
+        3. Document Oriented
+            - MongoDB
+            - CouchDB
+            - Cloudant
+
+4. MongoDB:
+    - Data is stored in the form of JSON style objects called BSON (Binary JSON - Binary Javascript Object Notation)
+    For example, consider the following JSON document:
+      {
+       "name" : "MongoDB",
+       "type" : "database",
+       "count" : 1,
+       "versions": [ "v3.2", "v3.0", "v2.6" ],
+       "info" : { x : 203, y : 102 }
+      }
+
+     Document doc = new Document("name", "MongoDB")
+                    .append("type", "database")
+                    .append("count", 1)
+                    .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
+                    .append("info", new Document("x", 203).append("y", 102));
