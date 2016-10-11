@@ -1,4 +1,5 @@
 1. Merge Sort vs Quick Sort
+1b. Bubble Sort vs QuickSort
 2. Bubble Sort vs Selection Sort vs Insertion Sort
 3. Median of Medians:
 4. Bit twiddling Stanford material
@@ -77,6 +78,9 @@ http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quic
      - Faster when reading from Disk and not everything can be in memory
      - Mergesort is faster when data won't fit into memory or when it's expensive to get to an item.
 
+1b. Bubble Sort vs QuickSort
+    If the array is almost sorted, Bubble sort is faster than Quick Sort
+
 2.
 Bubble Sort vs Selection Sort vs Insertion Sort
 
@@ -103,6 +107,7 @@ Bubble Sort vs Selection Sort vs Insertion Sort
 
 
     BUBBLE SORT vs INSERTION SORT
+        In insertion sort elements are bubbled into the sorted section, while in bubble sort the maximums are bubbled out of the unsorted section.
         Bubble sort always takes one more pass over array to determine if it's sorted.
         On the other hand, insertion sort not need this -- once last element inserted, algorithm guarantees that array is sorted.
 
