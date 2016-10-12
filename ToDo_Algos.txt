@@ -65,6 +65,9 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
 26) Implement Singleton
     - Think of different ways and its pros and cons
     - Make it thread safe
+27) Riverbed time problem
+28) Check other interview Qs
+29) Bloomberg practise problem
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
     2016/09/26:

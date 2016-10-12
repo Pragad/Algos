@@ -405,7 +405,6 @@ uint32_t countConnectedIslands(int** twoDmat, uint32_t rows, uint32_t cols)
     }
 
     // Set all values of bool array to false;
-    int abc[100][100];
     //std::fill_n(visited, rows * cols, false);
     for (uint32_t i = 0; i < rows; i++)
     {
