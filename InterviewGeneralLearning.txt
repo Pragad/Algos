@@ -66,7 +66,8 @@ OS NOTES
 3e. Monitor vs Mutex
 4. Multi-threaded programming in C++
 4b. Thread Join vs Detach
-5. What is an Inode ?
+5. Hard Link vs Soft Link
+5b. What is an Inode ?
 6. Multi Processor vs Multi Core System
 7. What is a File descriptor
 8. Why can't RAM be replaced by Cache memory
@@ -1501,7 +1502,7 @@ Hard Link vs Soft Link
     The contents of the file could not be found because the soft link points to the name, that was changed, and not to the contents.
     Likewise, If blah1 is deleted, blah1-hard still holds the contents; if blah2 is deleted, blah2-soft is just a link to a non-existing file.
 
-5.
+5b.
 What is an Inode ?
     It is the metadata about a file.
     It is a data structure that holds all relevant information about a file.
