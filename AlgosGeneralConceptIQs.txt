@@ -33,6 +33,7 @@
 26. Why is Heapify O(n)
 26b. SiftUp vs SiftDown
 27. n way merge
+28. B Tree vs B+ Tree
 ----------------------------------------------------------------------------------------------------
 
 1.
@@ -744,3 +745,18 @@ https://www.youtube.com/watch?v=MiyLo8adrWw&feature=youtu.be
 n way merge
 
 
+28.
+B Tree vs B+ Tree
+http://stackoverflow.com/questions/870218/differences-between-b-trees-and-b-trees/12014474#12014474
+
+    The image below helps show the differences between B+ trees and B trees.
+
+    Advantages of B+ trees:
+        Because B+ trees don't have data associated with interior nodes, more keys can fit on a page of memory.
+        Therefore, it will require fewer cache misses in order to access data that is on a leaf node.
+        The leaf nodes of B+ trees are linked, so doing a full scan of all objects in a tree requires just one linear pass through all the leaf nodes.
+        A B tree, on the other hand, would require a traversal of every level in the tree.
+        This full-tree traversal will likely involve more cache misses than the linear traversal of B+ leaves.
+
+    Advantage of B trees:
+        Because B trees contain data with each key, frequently accessed nodes can lie closer to the root, and therefore can be accessed more quickly.
