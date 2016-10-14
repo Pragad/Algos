@@ -34,8 +34,7 @@
 26b. SiftUp vs SiftDown
 27. n way merge
 28. B Tree vs B+ Tree
-----------------------------------------------------------------------------------------------------
-
+--------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
 http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quick-sort-for-sorting-linked-lists?rq=1
@@ -105,7 +104,6 @@ Bubble Sort vs Selection Sort vs Insertion Sort
 
         For these reasons, and because it is also stable, insertion sort is often used as the recursive base case
         (when the problem size is small) for higher overhead divide-and-conquer sorting algorithms, such as merge sort or quick sort. 
-
 
     BUBBLE SORT vs INSERTION SORT
         In insertion sort elements are bubbled into the sorted section, while in bubble sort the maximums are bubbled out of the unsorted section.
@@ -214,6 +212,17 @@ http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in
         // Add all the number of 1s in EIGHT BITS into the highest ordered byte.
         // We want the last 8 bytes to represent the number of 1s. So right shift >> 24.
         return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+    }
+
+    unsigned int countSetBits(int n)
+    {
+        unsigned int count = 0;
+        while (n)
+        {
+          n &= (n-1) ;
+          count++;
+        }
+        return count;
     }
 
 4c.
@@ -612,7 +621,7 @@ http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
         So BST property is not violated anywhere.
 
 24c.
-B+ Tree vsRed Black Trees vs AVL trees
+B+ Tree vs Red Black Trees vs AVL trees
 http://stackoverflow.com/questions/13852870/red-black-tree-over-avl-tree
 http://stackoverflow.com/questions/1589556/when-to-choose-rb-tree-b-tree-or-avl-tree
 
@@ -724,7 +733,6 @@ https://www.youtube.com/watch?v=MiyLo8adrWw&feature=youtu.be
     At each step, the previously sifted items (the items before the current item in the array) form a valid heap, and sifting the next item up places it into a valid position in the heap.
     After sifting up each node, all items satisfy the heap property.
     The second approach goes in the opposite direction: start at the end of the array and move backwards towards the front. At each iteration, you sift an item down until it is in the correct location.
-
 
     Both of these solutions will produce a valid heap. The question is: which implementation for buildHeap is more efficient? Unsurprisingly, it is the second operation that uses siftDown. If h = log n is the height, then the work required for the siftDown approach is given by the sum
 

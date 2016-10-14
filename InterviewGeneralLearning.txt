@@ -42,6 +42,7 @@ Genral Programming / OOPS Concepts
 28. Multithreading Best Practices
 29. What is Amdhal's law
 30. UCS-2 vs UTF-8/16/32
+
 -----------------------------------------------
 UML / DESIGN Questions
 1. Parking lot  
@@ -72,6 +73,8 @@ OS NOTES
 7. What is a File descriptor
 8. Why can't RAM be replaced by Cache memory
 9. How to avoid deadlocks
+10. Latency vs Throughput
+11. What is Page Fault
 -----------------------------------------------
 NETWORKS
 0. How TCP Works:
@@ -103,6 +106,7 @@ MISC
 1b. GET vs POST
 2. What is a Websocket
 3. Relational Database vs NoSQL Database
+4. ACID Properties in DB
 -------------------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
 0.
@@ -464,7 +468,6 @@ http://stackoverflow.com/questions/2045314/why-cant-i-cause-a-seg-fault
         {
             raise(SIGSEGV);
         }
-
 
 13.
 Interrupts vs Exception
@@ -918,7 +921,8 @@ http://stackoverflow.com/questions/406081/why-should-i-avoid-multiple-inheritanc
 
         But because MI is smelly, be prepared to defend your architecture in code reviews (and defending it is a good thing, because if you're not able to defend it, then you should not do it).
 
-26. Static Linking vs Dynamic Linking
+26.
+Static Linking vs Dynamic Linking
 https://kb.iu.edu/d/akqn
 http://stackoverflow.com/questions/311882/what-do-statically-linked-and-dynamically-linked-mean
 http://cs-fundamentals.com/tech-interview/c/difference-between-static-and-dynamic-linking.php
@@ -1037,9 +1041,9 @@ http://lucumr.pocoo.org/2014/1/9/ucs-vs-utf8/
 
     In order to achieve that they came up with the concept of surrogate pairs to encode characters if they don't fit into ~16 bit. Essentially UTF-16 is now defined as an encoding that is either 2 or 4 bytes long but never more than that. The way this works is that 65.536 characters fit into just one unit. If a character is outside of that range it gets split up into two units of 16 bits each and the data is mangled in a way that makes them uniquely distinct. If you would look at one of the two surrogates in the pair separately without the knowledge of the other, it would become apparently that this is in incomplete character. For this trick to work the range D800 to DBFF are reserved for the trail surrogates and DC00 to DF00 for the lead ones. As an end result the total range of what can be encoded by UTF-16 is the lowest of all UTF formats.
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
-1. PArking lot  
+1. Parking lot  
 http://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
 
 2. Coffee Maker
@@ -1137,7 +1141,7 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
 
     Non-MVC architectures tend to be tightly integrated together. If the box, the controller and the camera were one-and-the-same-object then, we would have to pull apart and then re-build both the box and the camera each time we wanted to get a new view. Also, taking the photo would always be like trying to take a selfie - and that's not always very easy.
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
 OS NOTES:
 0.
 Differentiate Threads and Processes
@@ -1395,47 +1399,42 @@ http://stackoverflow.com/questions/1164038/monitor-vs-mutex-in-c-sharp
 Multi-threaded programming in C++
 http://stackoverflow.com/questions/266168/simple-example-of-threading-in-c
     Create a function that you want the thread to execute. I'll demonstrate with a trivial example:
-
-    void task1(std::string msg)
-    {
-        std::cout << "task1 says: " << msg;
-    }
+        void task1(std::string msg)
+        {
+            std::cout << "task1 says: " << msg;
+        }
 
     Now create the thread object that will ultimately invoke the function above like so:
-
-    std::thread t1(task1, "Hello");
+        std::thread t1(task1, "Hello");
 
     (You need to #include <thread> to access the std::thread class)
-
     As you can see, the constructor's arguments are the function the thread will execute, followed by the function's parameters.
 
     Finally, join it to your main thread of execution like so:
-
-    t1.join(); 
+        t1.join(); 
 
     (Joining means that the thread who invoked the new thread will wait for the new thread to finish execution, before it will continue it's own execution).
     The Code
+        #include <string>
+        #include <iostream>
+        #include <thread>
 
-    #include <string>
-    #include <iostream>
-    #include <thread>
+        using namespace std;
 
-    using namespace std;
+        // The function we want to execute on the new thread.
+        void task1(string msg)
+        {
+            cout << "task1 says: " << msg;
+        }
 
-    // The function we want to execute on the new thread.
-    void task1(string msg)
-    {
-        cout << "task1 says: " << msg;
-    }
+        int main()
+        {
+            // Constructs the new thread and runs it. Does not block execution.
+            thread t1(task1, "Hello");
 
-    int main()
-    {
-        // Constructs the new thread and runs it. Does not block execution.
-        thread t1(task1, "Hello");
-
-       // Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
-        t1.join();
-    }
+           // Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
+            t1.join();
+        }
 
 4b.
 Thread Join vs Detach
@@ -1521,9 +1520,8 @@ What is an Inode ?
     Apple use - Catalog FILES
 
 A file system can run out of space in two ways :
-
-    No space for adding new data is left
-    All the Inodes are consumed.
+    1. No space for adding new data is left
+    2. All the Inodes are consumed.
 
     Well, the first way is pretty obvious but we need to look at the second way.
     Yes, its possible that a case arises where we have free storage space but still we cannot add any new data in file system because all the Inodes are consumed.
@@ -1605,17 +1603,36 @@ http://stackoverflow.com/questions/1057054/how-to-avoid-deadlocks
         A limited number of a particular resource. In the case of a monitor in C# (what you use when you employ the lock keyword), this limited number is one, since a monitor is a mutual-exclusion lock (meaning only one thread can own a monitor at a time). 
 
     2. Hold and wait condition: processes already holding resources may request new resources
+
     3. No preemption condition: No resource can be forcibly removed from a process holding it, resources can be released only by the explicit action of the process
          this means that one thread can't force another thread to release a lock. 
 
     4. Circular wait condition: two or more processes form a circular chain where each process waits for a resource that the next process in the chain holds
 
+10.
+Latency vs Throughput
+https://community.cadence.com/cadence_blogs_8/b/sd/archive/2010/09/13/understanding-latency-vs-throughput
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Latency is the time required to perform some action or to produce some result.
+    Latency is measured in units of time -- hours, minutes, seconds, nanoseconds or clock periods.
+
+    Throughput is the number of such actions executed or results produced per unit of time.
+    This is measured in units of whatever is being produced (cars, motorcycles, I/O samples, memory words, iterations) per unit of time.
+
+    An assembly line is manufacturing cars.
+    It takes eight hours to manufacture a car and that the factory produces one hundred and twenty cars per day.
+
+        The latency is: 8 hours.
+        The throughput is: 120 cars / day or 5 cars / hour.
+
+11.
+What is Page Fault
+
+    A page fault (sometimes called #PF, PF or hard fault [a]) is a type of interrupt, called trap, raised by computer hardware when a running program accesses a memory page that is mapped into the virtual address space, but not actually loaded into main memory.
+---------------------------------------------------------------------------------------------
 NETWORKS:
 0. 
 How TCP Works:
-
 
 1.
 How TCP/IP Network works.
@@ -2265,3 +2282,27 @@ http://stackoverflow.com/questions/2681267/what-is-the-fundamental-difference-be
                     .append("count", 1)
                     .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
                     .append("info", new Document("x", 203).append("y", 102));
+
+4.
+ACID Properties in DB
+https://en.wikipedia.org/wiki/ACID
+
+    Atomicity
+        Atomicity requires that each transaction be "all or nothing".
+        If one part of the transaction fails, then the entire transaction fails, and the database state is left unchanged.
+        An atomic system must guarantee atomicity in each and every situation, including power failures, errors, and crashes.
+        To the outside world, a committed transaction appears (by its effects on the database) to be indivisible ("atomic"), and an aborted transaction does not happen.
+
+    Consistency
+        The consistency property ensures that any transaction will bring the database from one valid state to another.
+        Any data written to the database must be valid according to all defined rules, including constraints, cascades, triggers, and any combination thereof.
+        This does not guarantee correctness of the transaction in all ways the application programmer might have wanted (that is the responsibility of application-level code) but merely that any programming errors cannot result in the violation of any defined rules.
+
+    Isolation
+        The isolation property ensures that the concurrent execution of transactions results in a system state that would be obtained if transactions were executed serially.
+        i.e., one after the other. Providing isolation is the main goal of concurrency control. Depending on the concurrency control method (i.e., if it uses strict - as opposed to relaxed - serializability), the effects of an incomplete transaction might not even be visible to another transaction.
+
+    Durability
+        The durability property ensures that once a transaction has been committed, it will remain so, even in the event of power loss, crashes, or errors.
+        Once a group of SQL statements execute, the results need to be stored permanently (even if the database crashes immediately thereafter).
+        To defend against power loss, transactions (or their effects) must be recorded in a non-volatile memory.

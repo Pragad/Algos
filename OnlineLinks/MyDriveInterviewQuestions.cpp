@@ -1998,12 +1998,12 @@ int kthSmallQuickSelect(vector<int>& nums, uint32_t k)
     return nums[pivotPos];    
 }
 
-// ------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 // PROBLEM 22. Find if an element is present in a row column sorted matrix
 // http://articles.leetcode.com/searching-2d-sorted-matrix-part-ii/
 //
 //             Last element of a row is lesser than the first element of the next row
-// ------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 int findFirstSmallerIndex(vector< vector< int > > twoD, int elmt)
 {
     int low = 0;
