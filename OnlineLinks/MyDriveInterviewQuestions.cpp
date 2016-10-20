@@ -177,6 +177,15 @@ struct Point
     int y;
 };
 
+void printVectorInt(vector<int> nums)
+{
+    for (int num : nums)
+    {
+        cout << num << ", ";
+    }
+    cout << endl;
+}
+
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 1. Given two strings, find the first non matching character
 //            hello
@@ -738,6 +747,65 @@ bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
     return isSubArrayPresent;
 }
 
+void maxSubArraysWithLessOrEqualSumWrapper(const vector<int>& nums,
+                                           uint32_t stIdx,
+                                           const int sum,
+                                           int curSum,
+                                           uint32_t curLen,
+                                           uint32_t& maxLen)
+{
+    if (curSum > sum || stIdx == nums.size())
+    {
+        if (maxLen < curLen)
+        {
+            maxLen = curLen;
+        }
+
+        return ;
+    }
+
+    for (uint32_t i = stIdx; i < nums.size(); i++)
+    {
+        if (curSum + nums[i] <= sum)
+        {
+            maxSubArraysWithLessOrEqualSumWrapper(nums, i + 1, sum, curSum + nums[i], curLen + 1, maxLen);
+        }
+    }
+
+    return ;
+}
+
+uint32_t maxSubArraysWithLessOrEqualSumWrapperOptimized(const vector<int>& nums,
+                                                        const int sum)
+{
+    uint32_t curSum = 0;
+    uint32_t i = 0;
+
+    for (; i < nums.size(); i++)
+    {
+        curSum += nums[i];
+
+        if (curSum > sum)
+        {
+            break;
+        }
+    }
+
+    return i;
+}
+
+uint32_t maxSubArraysWithLessOrEqualSum(const vector<int>& nums, const int sum)
+{
+    uint32_t maxLen = 0;
+    // maxSubArraysWithLessOrEqualSumWrapper(nums, 0, sum, 0, 0, maxLen);
+
+    vector<int> numsCopy = nums;
+    sort(numsCopy.begin(), numsCopy.end());
+    maxLen = maxSubArraysWithLessOrEqualSumWrapperOptimized(numsCopy, sum);
+
+    return maxLen;
+}
+
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 5e. Find the max sum such that no two elements are adjacent
 // http://stackoverflow.com/questions/4487438/maximum-sum-of-non-consecutive-elements
@@ -808,15 +876,6 @@ int maxLengthSubArraySum(vector<int> nums)
 //                f[i][j] = max(f[i-1][x] + a[i], f[i-1][j]);
 //              }
 // ------------------------------------------------------------------------------------------------
-void printVectorInt(vector<int> nums)
-{
-    for (int num : nums)
-    {
-        cout << num << ", ";
-    }
-    cout << endl;
-}
-
 int greatestSumOfSubarrayDivisibleByK(vector<int> nums, uint32_t divNum)
 {
     vector<int32_t> sumArr1(divNum, 0);
@@ -3157,9 +3216,14 @@ int main()
 
         allSubArraysWithSum(arr4, sizeof(arr4) / sizeof(arr4[0]), 5);
 
+        vector <int> nums = {74, 659, 931, 273, 545, 879, 924, 710, 441, 166, 493, 43, 988, 504, 328, 730, 841, 613, 304, 170, 710, 158, 561, 934, 100, 279, 817, 336, 98, 827, 513, 268, 811, 634, 980, 150, 580, 822, 968, 673, 394, 337, 486, 746, 229, 92, 195, 358, 2, 154, 709, 945, 669, 491, 125, 197, 531, 904, 723, 667, 550};
+        cout << endl << endl;
+        cout << "Max Len Sub Array For Sum: " << maxSubArraysWithLessOrEqualSum(nums, 22337) << endl;
+
         cout << "Max Sum Not Adjacent: " << maxLengthSubArraySum(arr5) << endl;
     }
 
+#if 0
     // Problem 6. Find greatest sum divisble by a number
     {
         cout << endl << "Problem 6" << endl;
@@ -3569,6 +3633,7 @@ int main()
         pair<uint32_t, uint32_t> res = findInclusiveExclusiveTimeOfFunction(funcTimes2, funcName);
         cout << "Inclusive Time: " << res.first << "; ExclusiveTime: " << res.second << endl;
     }
+#endif
 
     cout << endl;
     return 0;
