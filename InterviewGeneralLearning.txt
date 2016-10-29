@@ -2315,6 +2315,7 @@ http://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-wha
     - Use tabs to indent the start of the line, one tab per indent level, and let everyone pick how wide they want that to be.
 
     - Use spaces if you're lining up characters within a line, so they always line up regardless of tab size.
+
     SPACES:
         - Consistent across computers
         - Tabs are not originally meant for indentation, they are meant for tabulation, and do a dreadful job at it
