@@ -55,6 +55,8 @@ UML / DESIGN Questions
 8. MVC PAttern
 -----------------------------------------------
 OS NOTES
+-1. Every program assumes it has its own memory space
+-1b. Memory allocation at compile time
 0. Differentiate Threads and Processes
 0b. Explain Multithreading to a 5year old
 1. What is a Race Condition
@@ -75,6 +77,12 @@ OS NOTES
 9. How to avoid deadlocks
 10. Latency vs Throughput
 11. What is Page Fault
+12. Why do we need Paging, Unequal Size Fixed Partitioning and Dynamic Partitioning
+12b. If we have infinite memory, then do we still be needing paging
+13. What is Virtual Memory
+14. Why do we need Virtual Memory
+15. Where is Page File / Virtual Memory Stored
+16. What is Resident Set Size (RSS) and Virtual Memory Size (VSZ)
 -----------------------------------------------
 NETWORKS
 0. How TCP Works:
@@ -1144,6 +1152,39 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
 
 ---------------------------------------------------------------------------------------------
 OS NOTES:
+-1.
+Every program assumes it has its own memory space
+-1b.
+Memory allocation at compile time
+http://stackoverflow.com/questions/21350478/what-does-memory-allocated-at-compile-time-really-mean/21350570#21350570
+
+    VERY IMP:
+    - Every program assumes that it has its own entire memory space (From 0x00000000 to 0xFFFFFFFF for example).
+
+    For example, consider a global array:
+        int array[100];
+
+    The compiler knows at compile-time the size of the array and the size of an int, so it knows the entire size of the array at compile-time.
+    Also a global variable has static storage duration by default:
+    It is allocated in the static memory area of the process memory space (.data/.bss section).
+    Given that information, the compiler decides during compilation in what address of that static memory area the array will be.
+
+    Of course that memory addresses are virtual addresses.
+    The program assumes that it has its own entire memory space (From 0x00000000 to 0xFFFFFFFF for example).
+    That's why the compiler could do assumptions like "Okay, the array will be at address 0x00A33211".
+    At runtime that addresses are translated to real/hardware addresses by the MMU and OS.
+
+    - Memory allocated at compile time simply means there will be no further allocation at run time -- no calls to malloc, new, or other dynamic allocation methods.
+    - You'll have a fixed amount of memory usage even if you don't need all of that memory all of the time.
+
+    Q: Isn't memory allocation by definition a runtime concept ?
+    A: The memory is not in use prior to run time, but immediately prior to execution starting its allocation is handled by the system.
+
+    Q: If I make a 1KB statically allocated variable in my C/C++ code, will that increase the size of the executable by the same amount ?
+    A: Simply declaring the static will not increase the size of your executable more than a few bytes.
+       Declaring it with an initial value that is non-zero will (in order to hold that initial value).
+       Rather, the linker simply adds this 1KB amount to the memory requirement that the system's loader creates for you immediately prior to execution.
+
 0.
 Differentiate Threads and Processes
 http://stackoverflow.com/questions/1762418/process-vs-thread
@@ -1630,6 +1671,137 @@ https://community.cadence.com/cadence_blogs_8/b/sd/archive/2010/09/13/understand
 What is Page Fault
 
     A page fault (sometimes called #PF, PF or hard fault [a]) is a type of interrupt, called trap, raised by computer hardware when a running program accesses a memory page that is mapped into the virtual address space, but not actually loaded into main memory.
+
+12.
+Why do we need Paging
+Unequal Size Fixed Partitioning and Dynamic Partitioning
+
+    Fixed Partitioning:
+        - Initial approach is to divide the main memory into FIXED SIZE chunk and allocate
+          them to processes
+        - PROBLEM: Wasted space in each parition, a.k.a INTERNAL FRAGMENTATION
+        - Solution: Minimize it by using Varying Size of Fixed paritions
+          So we can allocate a process to the FIRST largest block that is just large enough
+          to fit it
+
+    Dynamic Paritioning:
+        - Divide Physical Memory into Chunks exactly the size you want.
+        - So after a while, the physical memory will be completely fragmented
+        - There could be BITs of space left but still not able to fit a full process
+        - Thus resulting in EXTERNAL FRAGMENTATION
+
+    Paging:
+        Pages of process memory may be displaced from the RAM to the disk.
+        This is called swapping or paging.
+        The data is moved to the swap space, and loaded back from the swap space when it is needed
+
+        - Small blocks of EQUAL / FIXED sized partitions
+        - Also divide the process into the same size
+        - Internal Fragmentation same as Fixed Partitioning
+        - INVISIBLE to programmer
+
+        VERY IMP:
+        - OS maintains a PAGE TABLE for each Process
+        - Each Logical Address within a program consists of a PAGE NUMBER and AN OFFSET within
+          the page
+
+    Segmentation:
+        - Divide a user program into Segments of VARIABLE SIZE
+        - External Fragmentation same as Dynamic Partitioning
+        - VISIBLE TO programmer
+
+12b.
+If we have infinite memory, then do we still be needing paging
+http://stackoverflow.com/questions/14214286/if-we-have-infinite-memory-then-do-we-still-be-needing-paging
+
+    QUESTION:
+    Paging creates illusion that each process has infinite RAM by moving pages to and from disk.
+    So if we have infinite memory(in some hypothetical situation), do we still need Paging?
+
+    SOLUTION:
+    Although paging is often associated with the ability to swap pages in and out of RAM to a hard disk to conserve memory, this is merely one aspect of paging.
+
+    Here are some other reasons to have paging:
+    1. Security:
+        Paging is a method to enforce operating system security and memory protection by ensuring that a processes cannot access the memory of another process and that it cannot modify the resident kernel.
+
+    2. Multitasking:
+        Paging aids in multitasking by virtualizing the memory space, that is, address 0xFOO in Process A can be something completely different than 0xFOO in Process B
+
+    3. Memory Allocation:
+        Paging aids in memory allocation by reducing fragmentation and ensuring RAM is only allocated when accessed.
+        What this means is that although a process needs, suppose, 100MB of continuous RAM space, this need not be continuous physically.
+        Additionally, when a program requests 100MB of space, the operating system will tell the program it's safe to use that 100MB of space, yet it will not be actually allocated until the program uses that space to its fullest.
+
+13.
+What is Virtual Memory
+http://superuser.com/questions/42854/what-is-virtual-memory
+
+    Virtual memory is a layer of abstraction provided to each process.
+    The computer has, say, 2GB of physical RAM, addressed from 0 to 2G.
+    A process might see an address space of 4GB, which it has entirely to itself.
+    The mapping from virtual addresses to physical addresses is handled by a memory management unit, which is managed by the operating system.
+    Typically this is done in 4KB "pages".
+
+    This gives several features:
+    - A process can not see memory in other processes (unless the OS wants it to!)
+    - Memory at a given virtual address may not be located at the same physical address
+    - Memory at a virtual address can be "paged out" to disk, and then "paged in" when it is accessed again.
+
+http://stackoverflow.com/questions/9414565/understanding-virtual-address-and-virtual-address-space
+    - Modern architectures let multiple programs execute as if they own the entire logical address space.
+    - i.e. Several programs could write to memory location at the same address without stepping over each others' results.
+    - This is done by virtualizing the address space:
+
+    Let's say programs A and B generate a write to memory location at 0x1000.
+    - The CPU, aided by the operating system, could performs additional adjustments to the address, and map it to physical address 0x60001000 for program A, and to 0x5F001000 for program B.
+    - Both programs think that they wrote to the location at 0x1000, because they operate in a virtual address space.
+    - Their model of the memory is a contiguous block starting at 0 and continuing to 0x000100000000 (assuming that your system has 4GiB of memory available to processes).
+    - But this model works only because the CPU additionally translates their logical addresses to physical addresses, which are allocated and taken away as needed in the process of running the program.
+
+    - Because the same number representing an address means different things to a program and to a CPU, the address space of the program is called virtual, and the address space of the CPU is called physical.
+
+14.
+Why do we need Virtual Memory
+http://stackoverflow.com/questions/19349572/why-do-we-need-virtual-memory
+http://computer.howstuffworks.com/question684.htm
+
+    For example, if you load the Windows operating system, an e-mail program, a Web browser and word processor into RAM simultaneously, 64 megabytes is not enough to hold it all.
+    If there were no such thing as virtual memory, your computer would have to say, "Sorry, you cannot load any more applications. Please close an application to load a new one."
+    With virtual memory, the computer can look for areas of RAM that have not been used recently and copy them onto the hard disk.
+    This frees up space in RAM to load the new application.
+    Because it does this automatically, you don't even know it is happening, and it makes your computer feel like is has unlimited RAM space even though it has only 32 megabytes installed.
+    Because hard-disk space is so much cheaper than RAM chips, virtual memory also provides a nice economic benefit.
+
+15.
+Where is Page File / Virtual Memory Stored
+http://computer.howstuffworks.com/question684.htm
+
+    The area of the hard disk that stores the RAM image is called a page file.
+    It holds pages of RAM on the hard disk, and the operating system moves data back and forth between the page file and RAM.
+    (On a Windows machine, page files have a .SWP extension.)
+
+    The operating system has to constantly swap information back and forth between RAM and the hard disk. This is called THRASHING
+
+    In Windows search for pagefile.sys. It should be in C:
+    The size of page file can be configured
+
+16.
+What is Resident Set Size (RSS) and Virtual Memory Size (VSZ)
+http://stackoverflow.com/questions/7880784/what-is-rss-and-vsz-in-linux-memory-management
+
+    Resident set size (RSS) is the portion of memory occupied by a process that is held in main memory (RAM).
+    The rest of the occupied memory exists in the swap space or file system, either because some parts of the occupied memory were paged out, or because some parts of the executable were never loaded
+    - It does include memory from shared libraries as long as the pages from those libraries are actually in memory.
+    - It does include all stack and heap memory.
+
+    - VSZ is the Virtual Memory Size.
+    - It includes all memory that the process can access, including memory that is swapped out and memory that is from shared libraries.
+
+    So if process A has a 500K binary and is linked to 2500K of shared libraries, has 200K of stack/heap allocations of which 100K is actually in memory (rest is swapped), and has only actually loaded 1000K of the shared libraries and 400K of its own binary then:
+        RSS: 400K + 1000K + 100K = 1500K
+        VSZ: 500K + 2500K + 200K = 3200K
+
 ---------------------------------------------------------------------------------------------
 NETWORKS:
 0. 

@@ -3223,7 +3223,6 @@ int main()
         cout << "Max Sum Not Adjacent: " << maxLengthSubArraySum(arr5) << endl;
     }
 
-#if 0
     // Problem 6. Find greatest sum divisble by a number
     {
         cout << endl << "Problem 6" << endl;
@@ -3633,7 +3632,6 @@ int main()
         pair<uint32_t, uint32_t> res = findInclusiveExclusiveTimeOfFunction(funcTimes2, funcName);
         cout << "Inclusive Time: " << res.first << "; ExclusiveTime: " << res.second << endl;
     }
-#endif
 
     cout << endl;
     return 0;
