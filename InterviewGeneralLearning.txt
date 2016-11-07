@@ -1157,9 +1157,20 @@ Every program assumes it has its own memory space
 -1b.
 Memory allocation at compile time
 http://stackoverflow.com/questions/21350478/what-does-memory-allocated-at-compile-time-really-mean/21350570#21350570
+http://stackoverflow.com/questions/2445242/what-does-the-kernel-virtual-memory-of-each-process-contain
+https://blogs.technet.microsoft.com/markrussinovich/2008/11/17/pushing-the-limits-of-windows-virtual-memory/
 
     VERY IMP:
-    - Every program assumes that it has its own entire memory space (From 0x00000000 to 0xFFFFFFFF for example).
+    - Every program / process assumes that it has its own entire memory space (From 0x00000000 to 0xFFFFFFFF for example).
+    - i.e. In a 32 bit machine, Every process assumes that it has 2^32 -1 bytes of memory to use (i.e. 4GB)
+    https://msdn.microsoft.com/en-us/library/windows/desktop/aa366912(v=vs.85).aspx
+        The following table shows the default memory range for each partition.
+            Memory range	                            Usage
+            Low 2GB (0x00000000 through 0x7FFFFFFF)	    Used by the process.
+            High 2GB (0x80000000 through 0xFFFFFFFF)	Used by the system.
+
+    - i.e. In a 64 bit machine, Every process assumes that it has 0x0000 0000 to 0xFFFF FFFF memory to use
+    https://msdn.microsoft.com/en-us/library/windows/desktop/aa384271(v=vs.85).aspx
 
     For example, consider a global array:
         int array[100];
