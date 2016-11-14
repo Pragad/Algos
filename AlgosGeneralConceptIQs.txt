@@ -1,6 +1,9 @@
 1. Merge Sort vs Quick Sort
 1b. Bubble Sort vs QuickSort
 2. Bubble Sort vs Selection Sort vs Insertion Sort
+2b. When to use what sorting algorithm
+2c. Stable Sort vs Unstable Sort
+2d. What is Intro Sort
 3. Median of Medians:
 4. Bit twiddling Stanford material
 4b. Count bits set in a number
@@ -34,23 +37,47 @@
 26b. SiftUp vs SiftDown
 27. n way merge
 28. B Tree vs B+ Tree
+29. Heap vs Binary Search Tree
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
 http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quick-sort-for-sorting-linked-lists?rq=1
+http://www.geeksforgeeks.org/why-quick-sort-preferred-for-arrays-and-merge-sort-for-linked-lists/
+http://stackoverflow.com/questions/2467751/quicksort-vs-heapsort
 
-    "Merge sort is very efficient for immutable datastructures like linked lists"
-    "Quick sort is typically faster than merge sort when the data is stored in memory.
-     However, when the data set is huge and is stored on external devices such as a hard
-     drive, merge sort is the clear winner in terms of speed. It minimizes the expensive
-     reads of the external drive"
-    "when operating on linked lists, merge sort only requires a small constant amount of
-     auxiliary storage"
+    QUICK SORT PROS
+    - ACCESSES DATA RANDOMLY
+    - Quicksort is significantly faster in practice than other T(nlogn) algorithms,
+    - Because its inner loop can be efficiently implemented on most architectures,
+    - In most real-world data, it is possible to make design choices which minimize the probability of requiring quadratic time
+    - Quick sort is space constant where Merge sort depends on the structure you're sorting
+    - Best when able to index into an array or similar structure.
+      You would want to access elements at random positions
+      When that's possible, it's hard to beat Quicksort.
+    - Quicksort is fast when the data fits into memory and can be addressed directly.
 
-     Quick Sort: 
-     - Best when able to index into an array or similar structure.
-       When that's possible, it's hard to beat Quicksort.
-     - Quicksort is fast when the data fits into memory and can be addressed directly.
+
+    - Practically, Quicksort runs fast, much faster than Heap and Merge algorithms.
+    - The secret of Quicksort is: It almost doesn't do unnecessary element swaps.
+      Swap is time consuming.
+
+    HEAPSORT MERGESORT AND QUICKSORT
+    - With HEAPSORT, even if all of your data is already ordered, you are going to swap 100% of elements to order the array.
+    - With MERGESORT, it's even worse. You are going to write 100% of elements in another array and write it back in the original one, even if data is already ordered.
+    - With QUICKSORT you don't swap what is already ordered. If your data is completely ordered, you swap almost nothing
+
+    MERGE SORT PROS
+    - ACCESSES DATA SEQUENTIALLY
+    - Quicksort is also more complicated than mergesort, especially if you want to write a really solid implementation
+    - Can easily insert elements in the middle
+    - So MERGE doesnot need any extra overhead
+    - "Merge sort is very efficient for immutable datastructures like linked lists"
+
+    - "Quick sort is typically faster than merge sort when the data is stored in memory.
+    - However, when the data set is huge and is stored on external devices such as a hard
+      drive, merge sort is the clear winner in terms of speed.
+    - It minimizes the expensive reads of the external drive" "when operating on linked lists
+    - Merge sort only requires a small constant amount of auxiliary storage"
 
      IMP:
      - Array of equal elements.
@@ -124,6 +151,89 @@ Bubble Sort vs Selection Sort vs Insertion Sort
         However, selection sort has the property of minimizing the number of swaps.
         In applications where the cost of swapping items is high, selection sort very well may be the algorithm of choice.
 
+2b.
+When to use what sorting algorithm
+http://stackoverflow.com/questions/1933759/when-is-each-sorting-algorithm-used
+
+    Quick sort:
+        - When you don't need a STABLE SORT and average case performance matters more than worst case performance.
+        - A good implementation uses O(log N) auxiliary storage in the form of stack space for recursion
+
+    Merge sort:
+        - When you need a STABLE, O(N log N) sort, this is about your only option.
+        - The only downsides to it are that it uses O(N) auxiliary space and has a slightly larger constant than a quick sort.
+        - There are some in-place merge sorts, but AFAIK they are all either not stable or worse than O(N log N).
+        - Even the O(N log N) in place sorts have so much larger a constant than the plain old merge sort that they're more theoretical curiosities than useful algorithms.
+
+    Heap sort:
+        - When you DON'T NEED A STABLE SORT and you care more about worst case performance than average case performance.
+        - It's guaranteed to be O(N log N), and uses O(1) auxiliary space, meaning that you won't unexpectedly run out of heap or stack space on very large inputs.
+
+    Introsort:
+        - This is a quick sort that switches to a heap sort after a certain recursion depth to get around quick sort's O(N^2) worst case.
+        - It's almost always better than a plain old quick sort, since you get the average case of a quick sort, with guaranteed O(N log N) performance.
+        - Probably the only reason to use a HEAP SORT instead of this is in SEVERELY MEMORY CONSTRAINED systems where O(log N) stack space is practically significant.
+
+    Insertion sort:
+        - When N is guaranteed to be small, including as the base case of a quick sort or merge sort.
+        - While this is O(N^2), it has a very small constant and is a stable sort.
+
+    Bubble sort, selection sort:
+        - When you're doing something quick and dirty and for some reason you can't just use the standard library's sorting algorithm.
+        - The only advantage these have over insertion sort is being slightly easier to implement.
+
+    NON-COMPARISON SORTS:
+    Under some fairly limited conditions it's possible to break the O(N log N) barrier and sort in O(N). Here are some cases where that's worth a try:
+
+    Counting sort:
+        When you are sorting integers with a limited range.
+
+    Radix sort:
+        When log(N) is significantly larger than K, where K is the number of radix digits.
+
+    Bucket sort:
+        When you can guarantee that your input is approximately uniformly distributed
+
+2c. 
+Stable Sort vs Unstable Sort
+http://stackoverflow.com/questions/8311090/why-not-use-heap-sort-always
+
+    A stable sort maintains the relative order of items that have the same key.
+    For example, imagine your data set contains records with an employee id and a name.
+
+    The initial order is:
+        1, Jim
+        2, George
+        3, Jim
+        4, Sally
+        5, George
+
+    You want to sort by name. A stable sort will arrange the items in this order:
+        2, George
+        5, George
+        1, Jim
+        3, Jim
+        4, Sally
+
+    Note that the duplicate records for "George" are in the same relative order as they were in the initial list.
+    Same with the two "Jim" records.
+
+    An unstable sort might arrange the items like this:
+        5, George
+        2, George
+        1, Jim
+        3, Jim
+        4, Sally
+
+    Heapsort is not stable because operations on the heap can change the relative order of equal items.
+    Not all Quicksort implementations are stable.
+    It depends on how you implement the partitioning.
+
+2d. 
+What is Intro Sort
+
+    Introsort or introspective sort is a hybrid sorting algorithm that provides both fast average performance and (asymptotically) optimal worst-case performance.
+    It begins with quicksort and switches to heapsort when the recursion depth exceeds a level based on (the logarithm of) the number of elements being sorted
 3.
 Median of Medians:
 http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
@@ -768,3 +878,25 @@ http://stackoverflow.com/questions/870218/differences-between-b-trees-and-b-tree
 
     Advantage of B trees:
         Because B trees contain data with each key, frequently accessed nodes can lie closer to the root, and therefore can be accessed more quickly.
+
+29.
+Heap vs Binary Search Tree
+http://stackoverflow.com/questions/6147242/heap-vs-binary-search-tree-bst
+
+    - Heap is better at findMin/findMax (O(1)), while BST is good at all finds (O(logN)).
+    - Insert is O(logN) for both structures.
+    - If you only care about findMin/findMax (e.g. priority-related), go with heap. If you want everything sorted, go with BST.
+
+    Heaps:
+        - Average time complexity for Insertion is O(1)
+        - Can be implemented using Arrays efficiently
+        - WORST CASE Heap creation is O(N)
+        - Lookup Max multiple times is O(1)
+
+    BST:
+        - Average time complexity for Insertion is O(log(N))
+        - CANNOT be implemented using Arrays efficiently
+        - WORST CASE Heap creation is O(N Log (N))
+        - Lookup Max multiple times could be made O(1) by doing some optimization
+
+
