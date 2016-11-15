@@ -819,7 +819,7 @@ int maxLengthSubArraySum(vector<int> nums)
 {
     if (nums.size() == 0)
     {
-        return false;
+        return 0;
     }
 
     int maxInclusiveSum = nums[0];
