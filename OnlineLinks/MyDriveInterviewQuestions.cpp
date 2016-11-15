@@ -822,6 +822,20 @@ int maxLengthSubArraySum(vector<int> nums)
         return false;
     }
 
+    int maxInclusiveSum = nums[0];
+    int maxExclusiveSum = 0;
+
+    for (uint32_t i = 1; i < nums.size(); i++)
+    {
+        
+        int tmpSum = nums[i] + maxExclusiveSum;
+        maxExclusiveSum = max(maxExclusiveSum, maxInclusiveSum);
+        maxInclusiveSum = tmpSum;
+    }
+
+    return max(maxInclusiveSum, maxExclusiveSum);
+
+    /*
     int a = nums[0];
     int b = nums[1];
     int maxVal = max(a, b);
@@ -834,6 +848,7 @@ int maxLengthSubArraySum(vector<int> nums)
     }
 
     return maxVal;
+    */
 }
 
 // ------------------------------------------------------------------------------------------------
