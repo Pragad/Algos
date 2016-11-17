@@ -16,7 +16,7 @@ using namespace std;
 #endif
 
 // -----------------------------------------------------------------------------------------
-// This is a Undirected Graph
+// This is a Directed Graph
 // http://codereview.stackexchange.com/questions/36464/coding-and-printing-a-graph
 // http://stackoverflow.com/questions/5493474/graph-implementation-c
 //
@@ -164,7 +164,6 @@ class Graph
 };
 
 // -----------------------------------------------------------------------------------------
-//
 // AddEdge() when we have both the Vertices
 // -----------------------------------------------------------------------------------------
 template <typename E>
