@@ -38,6 +38,7 @@
 27. n way merge
 28. B Tree vs B+ Tree
 29. Heap vs Binary Search Tree
+30. Smallest range that includes at least one number from each of the k lists 
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -899,4 +900,20 @@ http://stackoverflow.com/questions/6147242/heap-vs-binary-search-tree-bst
         - WORST CASE Heap creation is O(N Log (N))
         - Lookup Max multiple times could be made O(1) by doing some optimization
 
+30.
+Smallest range that includes at least one number from each of the k lists 
+http://stackoverflow.com/questions/21134720/smallest-range-that-includes-at-least-one-number-from-each-of-the-k-lists
+
+    You have k lists of sorted integers. Find the smallest range that includes at least one number from each of the k lists.
+
+    For example,
+        List 1: [4, 10, 13, 14] 
+        List 2: [0, 9, 15, 18] 
+        List 3: [5, 18, 22, 30] 
+    The smallest range here would be [14, 18] as it contains 14 from list 1, 15 from list 2, and 18 from list 3.
+
+    MY approach is:
+        Just use a MinHeap and insert the first elements from K lists
+        Remove the the min element and add the next element from the corresponding list
+        Simultaneously track the max and min value so that we can calculate the minimum range
 

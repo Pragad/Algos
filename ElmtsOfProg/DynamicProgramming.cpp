@@ -30,13 +30,17 @@ using namespace std;
  * PROBLEM 6. Longest Increasing Subsequence in a 2D Matrix
  * uint32_t longestIncSubSeqTwoDMat(int** twoDMat, uint32_t rows, uint32_t cols)
  *
- * PROBLEM 7. 
+ * PROBLEM 7. Find Subsets that add to a sum
+ * bool isSubsetSum(const vector<int>& nums)
+ * void printAllSubsetSum(const vector<int>& nums)
  *
+ * PROBLEM 8. Partition Equal Subset Sum
+ * bool canPartition(vector<int>& nums)
  */
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Problem 1: Fibonacci of a number
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 unsigned int fibonacci(int n)
 {
     // VERY IMP: // If N is less than 2, return n
@@ -96,13 +100,13 @@ unsigned int fibonacciDynamic2(int n)
     return result;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Problem 2: Ladder Problem
 // Algorithm: Used Dynamic Programming to get the result.
 // So Complexity is O(N).
 // I store the "n-1" and "n-2" lader positions. Then I append
 // '1' to 'n-1' positions and '2' to all 'n-2' positions.
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 
 // Utility function to print a Vector of Vector
 void printVecOfVec(vector< vector<unsigned int> > vecOfVec)
@@ -158,10 +162,12 @@ void ladderDynamic(int number)
     printVecOfVec(vecResult);
 }
 
+// ---------------------------------------------------------------------------------------
 // Problem 2: Print paths down a ladder
 // Algorithm: Use recursion to print the paths
 //            One call to the function is made for every single path entry.
 // http://www.geeksforgeeks.org/count-ways-reach-nth-stair/
+// ---------------------------------------------------------------------------------------
 void ladderPathsStrRec(string strPath, unsigned int num, unsigned int recLevel)
 {
     if (num == 0)
@@ -229,9 +235,9 @@ void ladderRec(unsigned int number)
     }
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Problem 2b: Ladder Count Possibilities
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 uint32_t countPossibilitiesLadderRec(uint32_t num)
 {
     if (num <= 2)
@@ -266,7 +272,7 @@ uint32_t countPossibilitiesLadderDynamic(uint32_t num)
     return res;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Problem 3: Longest Increasing Subsequence
 // http://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming
 //
@@ -283,7 +289,7 @@ uint32_t countPossibilitiesLadderDynamic(uint32_t num)
 //   lis(2) lis(1) lis(1)
 //   /
 // lis(1)
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 uint32_t longestIncreasingSubSequenceRecUtil(int arr[], uint32_t num, uint32_t& maxVal)
 {
     if (num == 1)
@@ -384,7 +390,7 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
     return maxSoFar;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Dynamic Programming Approach
 // Collection of integers: 2 6 3 4 1 2 9 5 8
 // 
@@ -418,7 +424,7 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
 // Utility function to calculate LIS
 // O(n log(n)) dynamic programming approach
 // VERY IMP:
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
 {
     uint32_t low = 0;
@@ -510,10 +516,10 @@ uint32_t longestIncreasingSubseq(vector<int> nums)
     return maxLisLen;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Problem 4: Longest Common Subsequence
 //            Using Recursion
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 uint32_t longestCommonSubSequenceRec(string str1, string str2)
 {
     // Even if one string is 0, then we don't have to go further
@@ -534,10 +540,10 @@ uint32_t longestCommonSubSequenceRec(string str1, string str2)
     }
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Problem 4: Longest Common Subsequence
 //            Using DP
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 uint32_t longestCommonSubSequenceDP(string str1, string str2)
 {
     // Even if one string is 0, then we don't have to go further
@@ -601,14 +607,14 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
     return subSeqDP[str1.length()][str2.length()];
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // PROBLEM 5. Coin change problem
 // http://algorithms.tutorialhorizon.com/dynamic-programming-coin-change-problem/
 //            coins[] = {25, 10, 5}, V = 30
 //            Ans: 2
 // EVERY COIN EITHER GETS INCLUDED or EXCLUDED
 // Time Complexity 2^n
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 //uint32_t minCoinChangeRec(vector<int> coins)
 uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
 {
@@ -688,7 +694,7 @@ int32_t minCoinChangeWrapper(uint32_t coins[], uint32_t num, uint32_t val)
     return (minCoins == UINT_MAX ? -1 : minCoins);
 }
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // PROBLEM 6. Longest Increasing Subsequence in a 2D Matrix 
 // {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
 // {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
@@ -700,8 +706,7 @@ int32_t minCoinChangeWrapper(uint32_t coins[], uint32_t num, uint32_t val)
 // {90, 69, 44, 52, 54, 73, 20, 12, 55, 52},
 // {39, 33, 25, 31, 76, 45, 44, 84, 90, 52},
 // {94, 35, 55, 24, 41, 63, 87, 93, 79, 24}}
-
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 template <typename T>
 void printTwoDPtrToPtr(T** array, uint32_t rows, uint32_t cols)
 {
@@ -773,20 +778,82 @@ uint32_t longestIncSubSeqTwoDMat(int (&twoDMat)[rows][cols])
     return maxSeq;
 }
 
-// ------------------------------------------------------------------------------------------------
-// PROBLEM 7. 
-// 
-// ------------------------------------------------------------------------------------------------
-/*
-void printLargestSubArrayZeroOne(int arr[], uint32_t num)
+// ---------------------------------------------------------------------------------------
+// PROBLEM 7. Find Subsets that add to a sum
+// ---------------------------------------------------------------------------------------
+void printTwoDVector(const vector< vector<bool> >& twoDVec)
+{
+    for (auto oneDVec : twoDVec)
+    {
+        for (auto num : oneDVec)
+        {
+            cout << num << ", ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+bool isSubsetSum(const vector<int>& nums, int target)
+{
+    // Create a 2D vector and fill it with 0s
+    vector< vector<bool> > sumMap(nums.size(), vector<bool>(target + 1, 0));
+
+    //printTwoDVector(sumMap);
+    for (int32_t i = 0; i < nums.size(); i++)
+    {
+        for (int32_t j = 1; j <= target; j++)
+        {
+            if ((i - 1) >= 0 && sumMap[i - 1][j] == true)
+            {
+                sumMap[i][j] = true;
+            }
+
+            else if (nums[i] == j)
+            {
+                sumMap[i][j] = true;
+            }
+            else if (nums[i] < j)
+            {
+                if (i - 1 >= 0 && (j - nums[i]) >= 0)
+                {
+                    sumMap[i][j] = sumMap[i - 1][j - nums[i]];
+                }
+            }
+        }
+    }
+
+    //printTwoDVector(sumMap);
+    return sumMap[nums.size() - 1][target];
+}
+
+void printAllSubsetSum(const vector<int>& nums, int target)
 {
 
 }
-*/
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
+// PROBLEM 8. Partition Equal Subset Sum
+// ---------------------------------------------------------------------------------------
+bool canPartition(vector<int>& nums)
+{
+    int numsTotal = 0;
+
+    for (int i : nums)
+    {
+        numsTotal += i;
+    }
+
+    // Return false if the total is ODD
+    if (numsTotal & 1)
+    {
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------------------------------
 // Main Function
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 int main()
 {
     {
@@ -862,4 +929,15 @@ int main()
         cout << longestIncSubSeqTwoDMat(arr2) << endl;
     }
 
+    // Problem 7. Subset Sum Problem
+    {
+        cout << endl << "Problem 7. Subset Sum Problem" << endl;
+        vector<int> nums = {3, 34, 4, 11, 5, 2};
+        cout << isSubsetSum(nums, 12) << endl;
+        printAllSubsetSum(nums, 12);
+    }
+
+    // Problem 8. Partition Equal Subset Sum
+    {
+    }
 }

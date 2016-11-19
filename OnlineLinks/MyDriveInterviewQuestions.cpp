@@ -130,9 +130,20 @@ using namespace std;
  * uint32_t minWindowContainingString(string str1, string str2)
  *
  * PROBLEM 25. Find if an element is present in a rotated sorted array
+ * bool findInSortedRotatedArrayNew(vector<int> nums, int elmt)
+ *
  * bool binarySearchRecursion(vector<int> nums, int low, int high, int elmt)
  * bool binarySearch(vector<int> nums, int elmt)
  * int findInSortedRotatedArray(vector<int> nums, int elmt)
+ *
+ * PROBLEM 25b. Find Index where array is rotated
+ * int IndexOfRotatedSortedArray(vector<int> nums)
+ *
+ * PROBLEM 25c. Find minimum element in a rotated sorted array
+ * int minInRotatedSortedNoDup(const vector<int>& nums)
+ *
+ * PROBLEM 25d. Find minimum element in a rotated sorted array with Duplicates
+ * int minInRotatedSortedWithDup(const vector<int>& nums)
  *
  * PROBLEM 26. Find Award Budget Cuts Problem
  * uint32_t findGrantsCap(vector<int> grants, uint32_t budget)
@@ -271,11 +282,11 @@ bool findFirstNonMatchingChar(string s1, string s2, char& result)
     return false;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 // PROBLEM 2: Find the unique character present in a string
 //            hlllhabcdedcba
 //            Ans: e
-// ------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 struct uniqChar
 {
     bool isPresent;
@@ -2415,11 +2426,77 @@ uint32_t minWindowContainingString(string str1, string str2)
     return minWindowSize;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 // PROBLEM 25. Find if an element is present in a rotated sorted array
 //             http://stackoverflow.com/questions/4773807/searching-in-an-sorted-and-rotated-array
 //             Complexity: O(log(n)).
-// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+bool findInSortedRotatedArrayNew(vector<int> nums, int val)
+{
+    if (nums.size() == 0)
+    {
+        return false;
+    }
+
+    int32_t startIdx = 0;
+    int32_t endIdx = nums.size() - 1;
+
+    while (startIdx <= endIdx)
+    {
+        int32_t midIdx = startIdx + (endIdx - startIdx) / 2;
+
+        // The below will take care of duplicates as well
+        if (nums[startIdx] == nums[midIdx] &&
+            nums[startIdx] == nums[endIdx])
+        {
+            if (minNum > nums[startIdx])
+            {
+                minNum = nums[startIdx];
+            }
+            
+            startIdx++;
+            endIdx--;
+            continue;
+        }
+
+        if (nums[midIdx] == val)
+        {
+            return true;
+        }
+
+        if (nums[startIdx] <= nums[midIdx])
+        {
+            // First part of the array is sorted
+            if (val >= nums[startIdx] && val <= nums[midIdx])
+            {
+                // Val is present between startIdx and midIdx
+                endIdx = midIdx;
+            }
+            else
+            {
+                // Val is present in the second half
+                startIdx = midIdx + 1;
+            }
+        }
+        else
+        {
+            // Second part of the array is sorted
+            if (val >= nums[midIdx] && val <= nums[endIdx])
+            {
+                // Val is present between midIdx and endIdx
+                startIdx = midIdx;
+            }
+            else
+            {
+                // Val is present in the first half
+                endIdx = midIdx - 1;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool binarySearchRecursion(vector<int> nums, int low, int high, int elmt)
 {
     if (low > high)
@@ -2514,11 +2591,11 @@ bool findInSortedRotatedArray(vector<int> nums, int elmt)
     return false;
 }
 
-// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 // PROBLEM 25b. Find Index where array is rotated
 //              http://stackoverflow.com/questions/11855709/how-to-determine-at-which-index-has-a-sorted-array-been-rotated-around
 //              Complexity: O(log(n)).
-// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 bool IsArrayRotatedSorted(vector<int> nums)
 {
     bool foundDip = false;
@@ -2579,6 +2656,105 @@ int IndexOfRotatedSortedArray(vector<int> nums)
         }
     }
     */
+}
+
+// ------------------------------------------------------------------------------------------
+// PROBLEM 25c. Find minimum element in a rotated sorted array
+// ------------------------------------------------------------------------------------------
+int minInRotatedSortedNoDup(const vector<int>& nums)
+{
+    if (nums.size() == 0)
+    {
+        return std::numeric_limits<int>::max();
+    }
+
+    int minNum = nums[0];
+    int32_t startIdx = 0;
+    int32_t endIdx = nums.size() - 1;
+
+    while (startIdx <= endIdx)
+    {
+        int32_t midIdx = startIdx + (endIdx - startIdx) / 2;
+
+        if (nums[startIdx] <= nums[midIdx])
+        {
+            // First part of the array is sorted
+            if (minNum > nums[startIdx])
+            {
+                minNum = nums[startIdx];
+            }
+
+            // But Minimum number should be in the Rotated i.e. Second part
+            startIdx = midIdx + 1;
+        }
+        else
+        {
+            // Second part of the array is sorted
+            if (minNum > nums[midIdx])
+            {
+                minNum = nums[midIdx];
+            }
+            endIdx = midIdx - 1;
+        }
+    }
+
+    return minNum;
+}
+
+// ------------------------------------------------------------------------------------------
+// PROBLEM 25d. Find minimum element in a rotated sorted array with Duplicates
+// ------------------------------------------------------------------------------------------
+int minInRotatedSortedWithDup(const vector<int>& nums)
+{
+    if (nums.size() == 0)
+    {
+        return std::numeric_limits<int>::max();
+    }
+
+    int minNum = nums[0];
+    int32_t startIdx = 0;
+    int32_t endIdx = nums.size() - 1;
+
+    while (startIdx <= endIdx)
+    {
+        int32_t midIdx = startIdx + (endIdx - startIdx) / 2;
+
+        if (nums[startIdx] == nums[midIdx] &&
+            nums[startIdx] == nums[endIdx])
+        {
+            if (minNum > nums[startIdx])
+            {
+                minNum = nums[startIdx];
+            }
+            
+            startIdx++;
+            endIdx--;
+            continue;
+        }
+
+        if (nums[startIdx] <= nums[midIdx])
+        {
+            // First part of the array is sorted
+            if (minNum > nums[startIdx])
+            {
+                minNum = nums[startIdx];
+            }
+
+            // But Minimum number should be in the Rotated i.e. Second part
+            startIdx = midIdx + 1;
+        }
+        else
+        {
+            // Second part of the array is sorted
+            if (minNum > nums[midIdx])
+            {
+                minNum = nums[midIdx];
+            }
+            endIdx = midIdx - 1;
+        }
+    }
+
+    return minNum;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -3530,6 +3706,14 @@ int main()
         cout << findInSortedRotatedArray(nums, 46) << " ";
         cout << findInSortedRotatedArray(nums, 82) << " ";
         cout << findInSortedRotatedArray(nums, 20) << endl;
+        cout << findInSortedRotatedArrayNew(nums, 2) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 3) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 17) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 19) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 22) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 46) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 82) << " ";
+        cout << findInSortedRotatedArrayNew(nums, 20) << endl;
     }
 
     // PROBLEM 25b. Find Index where array is rotated
@@ -3538,6 +3722,22 @@ int main()
         cout << "Find Index where array is rotated" << endl;
         vector<int> nums = {17, 19, 22, 46, 82, 2, 3};
         cout << IndexOfRotatedSortedArray(nums) << endl;
+    }
+
+    // PROBLEM 25c. Find minimum element in a rotated sorted array
+    {
+        cout << endl << "PROBLEM 25c" << endl;
+        cout << "Find minimum element in a rotated sorted array" << endl;
+        vector<int> nums = {17, 19, 22, 46, 82, 2, 3};
+        cout << minInRotatedSortedNoDup(nums) << endl;
+    }
+
+    // PROBLEM 25d. Find minimum element in a rotated sorted array with Duplicates
+    {
+        cout << endl << "PROBLEM 25d" << endl;
+        cout << "Find minimum element in a rotated sorted array with Duplicates" << endl;
+        vector<int> nums = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, -1, 0, 1, 10,10,10};
+        cout << minInRotatedSortedWithDup(nums) << endl;
     }
 
     // PROBLEM 26. Find Award Budget Cuts Problem
