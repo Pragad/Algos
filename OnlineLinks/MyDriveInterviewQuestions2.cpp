@@ -1,4 +1,5 @@
 #include <iostream>
+#include <bitset>
 #include <string>
 #include <stack>
 #include <unordered_map>
@@ -595,6 +596,53 @@ pair<int, int> findMinRangeForAllLists(vector<vector<int>> lists)
 }
 
 // -----------------------------------------------------------------------------------------
+// PROBLEM 8. Reverse a Integer Number
+// -----------------------------------------------------------------------------------------
+int reverse(int x) 
+{
+    int revNum = 0;
+    int newX = x;
+    int negNumMultiplier = 1;
+    if (x < 0)
+    {
+        negNumMultiplier = -1;
+        newX = x * (-1);
+    }
+    
+    if (newX == 0 || (log10(newX) + 1 == 1))
+    {
+        return x;
+    }
+    
+    while(newX != 0)
+    {
+        int rem = newX % 10;
+        newX = newX / 10;
+
+        // Check for multiplication and addition overflow
+        if ((revNum > (numeric_limits<int>::max() / 10)) ||
+            ((revNum * 10) > (numeric_limits<int>::max() - rem)))
+        {
+            return 0;
+        }
+
+        revNum = (revNum * 10) + rem;
+    }
+    
+    return revNum * negNumMultiplier;
+}
+
+// -----------------------------------------------------------------------------------------
+// PROBLEM 9. Reverse Bits in a Number
+//      43261596 (represented in binary as 00000010100101000001111010011100),
+//      Return 964176192 (represented in binary as 00111001011110000010100101000000)
+// -----------------------------------------------------------------------------------------
+uint32_t reverseBits(uint32_t n)
+{
+
+}
+
+// -----------------------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------------------
 int main()
@@ -685,6 +733,7 @@ int main()
 
     // PROBLEM 7. Find Minimum range  that covers all the lists
     {
+        cout << endl << "PROBLEM 7. Find Minimum range  that covers all the lists" << endl;
         vector< vector<int> > lists1 = {{20, 24, 100}, {2, 19, 22, 79, 800}, {10, 12, 23, 24, 119}};
         vector< vector<int> > lists2 = {{1, 4, 10}, {2, 15, 20}, {10, 12}};
 
@@ -693,6 +742,31 @@ int main()
 
         pair<int, int> minRange2 = findMinRangeForAllLists(lists2);
         cout << minRange2.first << ".." << minRange2.second << endl;
+    }
+
+    // PROBLEM 8. Reverse a Integer Number
+    {
+        cout << endl << "PROBLEM 8. Find Minimum range  that covers all the lists" << endl;
+        cout << reverse(53) << endl;
+        cout << reverse(-53) << endl;
+        cout << reverse(123456789) << endl;
+        cout << reverse(-123456789) << endl;
+        cout << reverse(0) << endl;
+        cout << reverse(-0) << endl;
+        cout << reverse(1) << endl;
+        cout << reverse(-1) << endl;
+        cout << reverse(1534236469) << endl;
+    }
+
+    // PROBLEM 9. Reverse Bits in a Number
+    {
+        cout << endl << "PROBLEM 9. Reverse Bits in a Number" << endl;
+        uint32_t num1 = 43261596;
+        bitset<sizeof(uint32_t) * 8> numBits1(num1);
+
+        cout << numBits1 << endl;
+        bitset<sizeof(uint32_t) * 8> res1 = reverseBits(43261596);
+        cout << res1 << endl;
     }
 
     return 0;

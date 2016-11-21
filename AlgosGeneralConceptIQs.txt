@@ -379,9 +379,15 @@ Reverse Bits in a number
 http://stackoverflow.com/questions/845772/how-to-check-if-the-binary-representation-of-an-integer-is-a-palindrome
 http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-number/
 
-    unsigned m = 0;
-    for(unsigned tmp = n; tmp; tmp >>= 1)
-    	m = (m << 1) | (tmp & 1);
+    {
+        uint32_t revNum = 0;
+        uint32_t numBits = (int)log2(num) + 1;
+        for (; num; num >>= 1)
+        {
+            revNum = (revNum << 1) | (num & 1);
+        }
+        revNum = revNum << ((sizeof(num) * 8) - numBits)
+    }
 
     unsigned int reverseBits(unsigned int num)
     {
@@ -457,6 +463,31 @@ http://www.geeksforgeeks.org/position-of-rightmost-set-bit/
 
 To Clear rightmost set bit just do
     x & (x-1)
+
+4h.
+Compute the minimum (min) or maximum (max) of two integers without branching
+
+    int x;  // we want to find the minimum of x and y
+    int y;   
+    int r;  // the result goes here 
+
+    r = y ^ ((x ^ y) & -(x < y)); // min(x, y)
+    r = x ^ ((x ^ y) & -(x < y)); // max(x, y)
+
+    It works because if x < y, then -(x < y) will be all ones, so r = y ^ (x ^ y) & ~0 = y ^ x ^ y = x.
+    Otherwise, if x >= y, then -(x < y) will be all zeros, so r = y ^ ((x ^ y) & 0) = y.
+
+4i.
+Compute the sign of an integer
+
+    int v;      // we want to find the sign of v
+    int sign;   // the result goes here 
+
+    // CHAR_BIT is the number of bits per byte (normally 8).
+    sign = -(v < 0);  // if v < 0 then -1, else 0.
+
+    // or, for one less instruction (but not portable):
+    sign = v >> (sizeof(int) * CHAR_BIT - 1); 
 
 5.
 String Search:
