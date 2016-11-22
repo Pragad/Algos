@@ -16,6 +16,7 @@
  *
  * Problem 5. Compute the Paths recursively
  * void printPathsRecur(tree* root, int path[], int pathLen)
+ * vector<string> binaryTreePaths(tree* root)
  *
  * Problem 6. Compute the paths using vector
  * void printPathsVec(tree* root)
@@ -40,6 +41,9 @@
  *
  * Problem 13. Compute the LCA of a tree
  * tree* findLCA(tree* root, tree* a, tree* b)
+ *
+ * Problem 13a. LCA in a Binary Search Tree
+ * tree* lowestCommonAncestor(tree* root, tree* p, tree* q)
  *
  * Problem 13b. Find Distance Between Siblings in a Binary Tree
  * int distanceBetweenKeys(tree* root, int a, int b)
@@ -95,12 +99,22 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-//#include <cmath>
 #include <queue>
 #include <stack>
 #include <map>
 #include <unordered_map>
+#define __STDC_LIMIT_MACROS     // std::numeric_limits<std::int32_t>::max();
+#include <cstdint>              // std::numeric_limits<std::int32_t>::max();
+#include <limits> 
 using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 struct tree
 {
@@ -277,10 +291,38 @@ bool hasPathSum(tree* root, int sum)
     }
 }
 
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
 // Problem 5.
 //      Compute the Paths recursively
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
+
+// From LeetCode
+void binaryTreePathsRec(tree* root, vector<string>& paths, string path)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        path = path + to_string(root->data);
+        paths.push_back(path);
+    }
+
+    binaryTreePathsRec(root->left, paths, path + to_string(root->data) + "->");
+    binaryTreePathsRec(root->right, paths, path + to_string(root->data) + "->");
+}
+
+vector<string> binaryTreePaths(tree* root)
+{
+    vector<string> paths;
+    string path = "";
+    binaryTreePathsRec(root, paths, path);
+    return paths;
+}
+
+// Using Arrays
 void printArray(int path[], int len)
 {
     for (int i = 0; i < len; i++)
@@ -538,6 +580,40 @@ int findLCANum(tree* root)
     return result->data;
 }
 
+// -----------------------------------------------------------------------------------------
+// Problem 13a. LCA in a Binary Search Tree
+// -----------------------------------------------------------------------------------------
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q)
+{
+    if (root == NULL || p == NULL || q == NULL)
+    {
+        return NULL;
+    }
+
+    while (root != NULL)
+    {
+        if (root->val == p->val || root->val == q->val)
+        {
+            return root;
+        }
+        else if ((root->val > p->val && root->val < q->val) ||
+            (root->val < p->val && root->val > q->val))
+        {
+            return root;
+        }
+        else if (root->val > p->val && root->val > q->val)
+        {
+            root = root->left;
+        }
+        else if (root->val < p->val && root->val < q->val)
+        {
+            root = root->right;
+        }
+    }
+
+    return NULL;
+}
+
 // ------------------------------------------------------------------------------------------------
 // Problem 13b. Find Distance Between Siblings/Key in a Binary Tree
 //      http://www.geeksforgeeks.org/find-distance-two-given-nodes/
@@ -735,7 +811,7 @@ int maxSumLeafToLeafRec(tree* root, int& maxLeafToLeaf)
 
 int maxSumLeafToLeaf(tree* root)
 {
-    int maxSum = INT_MIN;
+    int maxSum = numeric_limits<int>::min();
 
     // We don't need the return value here
     maxSumLeafToLeafRec(root, maxSum);
@@ -761,44 +837,62 @@ int maxSumLeafToLeaf(tree* root)
 //  1. We should return MAX found along LEFT OR RIGHT side
 //  2. MaxSum will store the actual Max got from LEFT OR RIGHT OR BOTH
 // ------------------------------------------------------------------------------------------------
-int maxSumNodeToNodeRec(tree* root, int& maxSum)
+// MaxSum can be either of the following
+// 1. Max of LeftSum, RightSum
+// 2. Max of LeftSum, RightSum + Root->data
+// 3. LeftSum + RightSum + Root->data
+// 4. Current Max itself
+//
+// At each level you should return the maxSum you got including the root
+// 1. Max of LeftSum, Right + Root->data
+// 2. Or just Root->data
+int maxPathSumRec(tree* root, int& maxSum)
 {
+    // We can't return 0. A tree can have all -ve numbers
     if (root == NULL)
     {
-        return 0;
+        return numeric_limits<int>::min();
     }
 
-    if (root->left == NULL && root->right == NULL)
+    if (root ->left == NULL && root->right == NULL)
     {
         return root->data;
     }
 
-    int leftMaxSum = maxSumNodeToNodeRec(root->left, maxSum);
-    int rightMaxSum = maxSumNodeToNodeRec(root->right, maxSum);
+    int leftMaxSum = maxPathSumRec(root->left, maxSum);
+    int rightMaxSum = maxPathSumRec(root->right, maxSum);
 
-    // We will RETURN the Max value that will belong to either side.
-    //      root + leftMax OR root + rightMax OR root
-    //      This values gets returned so that OTHER nodes can use this info.
-    //
-    // We compute the Total Max and store it in MAX SUM.
-    int tmp1 = max(root->data, max(leftMaxSum, rightMaxSum) + root->data);
-    maxSum = max(maxSum, max(tmp1, leftMaxSum + root->data + rightMaxSum));
+    int maxVal = max(leftMaxSum, rightMaxSum);
+
+    // INT_MIN + -ve Number would become very big positive number.
+    // So add conditions to avoid that
+    if (leftMaxSum != numeric_limits<int>::min() && rightMaxSum != numeric_limits<int>::min())
+    {
+        maxSum = max(max(max(maxVal, maxVal + root->data), leftMaxSum + rightMaxSum + root->data), maxSum); 
+    }
+    else if (leftMaxSum == numeric_limits<int>::min())
+    {
+        maxSum = max(max(max(maxVal, maxVal + root->data), rightMaxSum + root->data), maxSum); 
+    }
+    else if (rightMaxSum == numeric_limits<int>::min())
+    {
+        maxSum = max(max(max(maxVal, maxVal + root->data), leftMaxSum + root->data), maxSum); 
+    }
     
-    return tmp1;
+    return max(maxVal + root->data, root->data);
 }
+
 
 int maxSumNodeToNode(tree* root)
 {
     if (root == NULL)
     {
-        return 0;
+        return numeric_limits<int>::min();
     }
 
-    int maxSum = 0;
-
-    // We don't need the return value here
-    maxSumNodeToNodeRec(root, maxSum);
-    return maxSum;
+    int maxSum = numeric_limits<int>::min();
+    int retVal = maxPathSumRec(root, maxSum);
+    return max(maxSum, retVal);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1061,7 +1155,7 @@ int nearestLesserElmt(tree* root, int key, int& minElmt)
 {
     if (root == NULL)
     {
-        return INT_MAX;
+        return numeric_limits<int>::max();
     }
 
     if (root->data == key)
@@ -1173,7 +1267,7 @@ int findSmallestNumLargerThanKeyRec(tree* root, int elmt)
 {
     if (root == NULL)
     {
-        return INT_MAX;
+        return numeric_limits<int>::max();
     }
 
     if (root->data > elmt)
@@ -1341,14 +1435,53 @@ void printTreePreorderIterative(tree* root)
 //      http://www.geeksforgeeks.org/iterative-postorder-traversal/
 //      http://www.geeksforgeeks.org/iterative-postorder-traversal-using-stack/
 // ------------------------------------------------------------------------------------------------
-void printTreePostorderIterative(tree* root)
+vector<int> postorderTraversal(tree* root)
 {
-    stack<tree*> postRecStack;
+    vector<int> postorderList;
+    stack<tree*> postorderStackTmp;
+    stack<tree*> postorderStackFinal;
+
     if (root == NULL)
     {
-        return;
+        return postorderList;
     }
 
+    // Build the Final stack by pushing into a temporary stack
+    postorderStackTmp.push(root);
+    while (!postorderStackTmp.empty())
+    {
+        tree* tmp = postorderStackTmp.top();
+        postorderStackTmp.pop();
+        postorderStackFinal.push(tmp);
+
+        if (tmp->left != NULL)
+        {
+            postorderStackTmp.push(tmp->left);
+        }
+        if (tmp->right != NULL)
+        {
+            postorderStackTmp.push(tmp->right);
+        }
+    }
+
+    while (!postorderStackFinal.empty())
+    {
+        tree* tmp = postorderStackFinal.top();
+        postorderStackFinal.pop();
+        postorderList.push_back(tmp->data);
+    }
+
+    return postorderList;
+}
+
+void printTreePostorderIterative(tree* root)
+{
+    vector<int> postList = postorderTraversal(root);
+
+    for (auto num : postList)
+    {
+        cout << num << ", ";
+    }
     cout << endl;
 }
 
@@ -1530,7 +1663,7 @@ int main()
 
     // Problem 21 Find element that is lesser and closest to a given key
     {
-        int minElement = INT_MIN;
+        int minElement = numeric_limits<int>::min();
 
         cout << endl << "Level Order Traversal" << endl;
         printTreeLevelOrder(root);

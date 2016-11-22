@@ -32,7 +32,6 @@ void printVectorInt(vector<int> nums)
     cout << endl;
 }
 
-
 // -----------------------------------------------------------------------------------------
 // Problem 1:
 // https://www.hackerrank.com/challenges/circular-array-rotation
