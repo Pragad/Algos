@@ -57,7 +57,6 @@ http://stackoverflow.com/questions/2467751/quicksort-vs-heapsort
       When that's possible, it's hard to beat Quicksort.
     - Quicksort is fast when the data fits into memory and can be addressed directly.
 
-
     - Practically, Quicksort runs fast, much faster than Heap and Merge algorithms.
     - The secret of Quicksort is: It almost doesn't do unnecessary element swaps.
       Swap is time consuming.
@@ -125,7 +124,7 @@ Bubble Sort vs Selection Sort vs Insertion Sort
         - What we have at any given time is sorted.
         PROS:
             Online Sorting
-            Can you binary search for inserting into a position
+            Can do binary search for inserting into a position
 
         Although it is one of the elementary sorting algorithms with O(n2) worst-case time,
         insertion sort is the algorithm of choice either when the data is nearly sorted (because it is adaptive) or when the problem size is small (because it has low overhead).
@@ -151,6 +150,22 @@ Bubble Sort vs Selection Sort vs Insertion Sort
 
         However, selection sort has the property of minimizing the number of swaps.
         In applications where the cost of swapping items is high, selection sort very well may be the algorithm of choice.
+
+https://www.careercup.com/question?id=4620408242307072
+    Bubble/insertion/merge sorts are stable.
+    Selection/quick/heap sorts are not stable.
+
+    Selection Sort : Best Worst Average Case running time all O(n^2). However the number of swaps required is always n-1. Hence it is useful when the amount of satellite data(auxiliary data aside from the key) is large and for some reason pointer based swapping is not feasible.
+
+    Insertion Sort : Best case running time is O(n). Hence useful for adding new data to a presorted list. Also this is fast when the number of elements is small/ you need an online algorithm.
+
+    Bubble Sort:Where we know the data is very nearly sorted. Say only two elements are out of place. Then in one pass, BS will finish it and in the second pass, it will see everything is sorted and then exit. Only takes 2 passes of the array.
+
+    Merge Sort : For external sorting algorithms, it is the choice of sort.
+
+    Quicksort : Remember that quicksort is dependent on choice of pivot. So when we have absolutely random data values, and we will need to sort them, we have to use quick sort. Even for very unbalanced split QS produces good results.
+
+    Heap Sort: It is an inplace O(n logn) algorithm hence we can use it when we cannot afford the extra space required for merge sort. Also has a O(n logn) worst case time as compared to O(n^2) of quicksort
 
 2b.
 When to use what sorting algorithm
@@ -235,6 +250,7 @@ What is Intro Sort
 
     Introsort or introspective sort is a hybrid sorting algorithm that provides both fast average performance and (asymptotically) optimal worst-case performance.
     It begins with quicksort and switches to heapsort when the recursion depth exceeds a level based on (the logarithm of) the number of elements being sorted
+
 3.
 Median of Medians:
 http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
@@ -253,7 +269,6 @@ http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algor
 
         Similar logic for the number of elements m is bigger than.
 
-
 http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm 
         // L is the array on which median of medians needs to be found.
         // k is the expected median position. E.g. first select call might look like:
@@ -261,7 +276,6 @@ http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algor
 
         select(L,k)
         {
-
             if (L has 5 or fewer elements) {
                 sort L
                 return the element in the kth position

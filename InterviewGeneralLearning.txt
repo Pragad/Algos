@@ -57,6 +57,7 @@ UML / DESIGN Questions
 OS NOTES
 -1. Every program assumes it has its own memory space
 -1b. Memory allocation at compile time
+-1c. What determines the size of an executable
 0. Differentiate Threads and Processes
 0b. Explain Multithreading to a 5year old
 1. What is a Race Condition
@@ -462,7 +463,6 @@ Segmentation Fault:
 
     Still, SEGMENTATION FAULT CAN OCCUR IN CASE OF ACCESSING OUR OWN (PROCESS) MEMORY IN IMPROPER WAY (for instance trying to write to non-writable space).
     But the most common reason for it is the access to the part of the virtual address space that is not mapped to physical one at all.
-
 
 12b.
 How to create a Segmentation Fault
@@ -1195,6 +1195,18 @@ https://blogs.technet.microsoft.com/markrussinovich/2008/11/17/pushing-the-limit
     A: Simply declaring the static will not increase the size of your executable more than a few bytes.
        Declaring it with an initial value that is non-zero will (in order to hold that initial value).
        Rather, the linker simply adds this 1KB amount to the memory requirement that the system's loader creates for you immediately prior to execution.
+
+-1c.
+What determines the size of an executable
+http://stackoverflow.com/questions/12920955/what-decides-the-size-of-my-executable
+
+    Dynamically link to the C++ runtime.
+    Compile the executable without debugging information.
+    Compile with 'optimize for size' flags.
+    Remove #iostream and fstream if you can, and use low level instead
+    Also, using a lot of templates can cause size increase as well
+    Use of lot of inline functions can cause increase in size.
+    If you have lot of static and global variables then try to minimize them if possible.
 
 0.
 Differentiate Threads and Processes

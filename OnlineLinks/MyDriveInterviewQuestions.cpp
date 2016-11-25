@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -166,8 +167,11 @@ using namespace std;
  * PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
  * void moveEvenNosOddNosWithOrder(vector<int> nums)
  *
- * PROBLEM 33. Given list of software dependencies. Find order of software installation
- * vector<char> findSoftwareInstallationOrder(vector<softwawre> dependencyList)
+ * PROBLEM 33. Given list of software dependencies. Find if all can be installed
+ * bool canSoftwareBeInstalled(const vector<pair<int, int> >& dependencyList)
+ *
+ * PROBLEM 33b. Given list of software dependencies. Find order of software installation
+ * vector<int> findSoftwareOrder(int numCourses, vector<pair<int, int>>& prerequisites)
  *
  * PROBLEM 34. Find angle between hour and minute hand of clock
  * uint32_t findAngleBtwnHourMinute(uint32_t hour, uint32_t min)
@@ -194,6 +198,26 @@ void printVectorInt(vector<int> nums)
     {
         cout << num << ", ";
     }
+    cout << endl;
+}
+
+// This utility function takes care of printing vector of data types that can be
+// directly printed using "cout". For other data types a separate print function
+// should be written
+template <typename T>
+void printVector(const vector<T>& myData)
+{
+    if (myData.empty())
+    {
+        return;
+    }
+
+    cout << myData[0];
+    for (uint32_t i = 1; i < myData.size(); i++)
+    {
+        cout << ", " << myData[i]; 
+    }
+
     cout << endl;
 }
 
@@ -642,7 +666,6 @@ int maxProduct(vector<int> nums)
     }
 
     return finalProd;
-
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -845,21 +868,6 @@ int maxLengthSubArraySum(vector<int> nums)
     }
 
     return max(maxInclusiveSum, maxExclusiveSum);
-
-    /*
-    int a = nums[0];
-    int b = nums[1];
-    int maxVal = max(a, b);
-
-    for (uint32_t i = 2; i < nums.size(); i++)
-    {
-        maxVal = max(b, a + nums[i]);
-        a = b;
-        b = maxVal;
-    }
-
-    return maxVal;
-    */
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2175,92 +2183,41 @@ bool isElementPresentInRowColMatrix(vector<vector<int> > twoD, int elmt)
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 23. Multiplication of two very large numbers
 //             Using Bit shift operation
+// https://discuss.leetcode.com/topic/30508/easiest-java-solution-with-graph-explanation/2
 // ------------------------------------------------------------------------------------------------
-string largeNumberMultiplication(string str1, string str2)
-{
-    uint64_t num1 = stoi(str1);
-    uint64_t num2 = stoi(str2);
-    uint64_t result = 0;
-
-    while (num1)
-    {
-        if ((num1 % 2) != 0)
-        {
-            result += num2;
-        }
-        num2 = num2 << 1;
-        num1 = num1 >> 1;
-    }
-
-    return to_string(result);
-}
-
-// Do Multiplication without using "UINT"
-// Utility function to add two numbers represented as string
-string addStringNumbers(string s1, string s2)
-{
-    string result;
-    uint32_t carry = 0;
-    int32_t i = s1.length() - 1;
-    int32_t j = s2.length() - 1;
-    for (; i >= 0 && j >= 0; i--, j--)
-    {
-        uint32_t temp = (s1[i] - '0') + (s2[j] - '0');
-        result += (carry + (temp % 10)) + '0';
-        carry = temp / 10;
-    }
-
-    while (i >= 0)
-    {
-        result += (carry + (s1[i] - '0')) + '0';
-        i--;
-        carry = 0;
-    }
-
-    while (j >= 0)
-    {
-        result += (carry + (s2[j] - '0')) + '0';
-        j--;
-        carry = 0;
-    }
-
-    reverse(result.begin(), result.end());
-    cout << result << endl;
-    return result;
-}
-
-// Add two strings in binary form
-// http://www.geeksforgeeks.org/add-two-bit-strings/
-// sum = a xor b xor c
-// carry = ab+bc+ca
-
-// Assuming str1 and str2 in binary. Do the multiplication
-string largeNumberBinaryMultStr(string str1, string str2)
-{
-    string result;
-
-    /*
-    while (str1)
-    {
-        if ((str1[str1.length() - 1]) != '0')
-        {
-            result = addStringNumbers(str2, result);
-        }
-        num2 = num2 << 1;
-        num1 = num1 >> 1;
-    }
-    */
-
-    return result;
-}
-
 string largeNumberMultiplicationString(string str1, string str2)
 {
-    //string binStr1 = convertStrNumToBin(str1);
-    //string binStr2 = convertStrNumToBin(str2);
+    string result;
+    vector<uint32_t> prodNums(str1.length() + str2.length(), 0);
 
-    //cout << largeNumberBinaryMultStr(binStr1, binStr2);
-    return "";
+    for (int i = str1.length() - 1; i >= 0; i--)
+    {
+        for (int j = str2.length() - 1; j >= 0; j--)
+        {
+            int prod = (str1[i] - '0') * (str2[j] - '0');
+            prod += prodNums[i + j + 1];
+            prodNums[i + j + 1] = prod % 10;
+            prodNums[i + j] += prod / 10;
+        }
+    }
+
+    for (uint32_t i : prodNums)
+    {
+        // Do not add any leading 0's to the result
+        if(!(result.length() == 0 && i == 0))
+        {
+            result += (i + '0');
+        }
+    }
+    
+    if (result.length() == 0)
+    {
+        return "0";
+    }
+    else
+    {
+        return result;
+    }
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2449,11 +2406,6 @@ bool findInSortedRotatedArrayNew(vector<int> nums, int val)
         if (nums[startIdx] == nums[midIdx] &&
             nums[startIdx] == nums[endIdx])
         {
-            if (minNum > nums[startIdx])
-            {
-                minNum = nums[startIdx];
-            }
-            
             startIdx++;
             endIdx--;
             continue;
@@ -3072,18 +3024,19 @@ void moveEvenNosOddNosWithOrder(vector<int>& nums)
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 33. Given list of software dependencies. Find order of software installation
-//      {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}
-//      Ans: A -> C -> B -> D -> E
+// PROBLEM 33. Given list of software dependencies. Find if all can be installed
+//      Topological Sorting
+//      {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}}
+//      Ans: 1 -> 3 -> 2 -> 4 -> 4
 //
 //      https://www.careercup.com/question?id=5717669093310464
 // ------------------------------------------------------------------------------------------------
-void printDependencyMap(unordered_map <char, vector<char> > depMap)
+void printDependencyMap(unordered_map <int, vector<int> > depMap)
 {
     for (auto itr = depMap.begin(); itr != depMap.end(); itr++)
     {
         cout << itr->first << ": ";
-        for (uint32_t i = 0; i < itr->second.size(); i++)
+        for (int i = 0; i < itr->second.size(); i++)
         {
             cout << itr->second[i] << ", ";
         }
@@ -3092,78 +3045,208 @@ void printDependencyMap(unordered_map <char, vector<char> > depMap)
     cout << endl;
 }
 
-void findSoftwareInstallationOrder(vector<pair<char, char> >& dependencyList)
+void buildSwDependencyMap(const vector<pair<int, int> >& dependencyList,
+                          unordered_map <int, vector<int>>& swDependencyMap)
 {
-    unordered_map <char, vector<char> > startMap;
-    unordered_map <char, vector<char> > endMap;
-    unordered_set <char> softwareSet;
-    vector<char> result;
-
-    for (uint32_t i = 0; i < dependencyList.size(); i++)
+    for (auto entry : dependencyList)
     {
-        auto itr1 = startMap.find(dependencyList[i].first);
-        if (itr1 != startMap.end())
+        auto itr = swDependencyMap.find(entry.first);
+        if (itr != swDependencyMap.end())
         {
-            itr1->second.push_back(dependencyList[i].second);
+            itr->second.push_back(entry.second);
         }
         else
         {
-            startMap[dependencyList[i].first] = vector<char> {dependencyList[i].second};
+            swDependencyMap[entry.first] = {entry.second};
         }
+    }
+}
 
-        auto itr2 = endMap.find(dependencyList[i].second);
-        if (itr2 != endMap.end())
-        {
-            itr2->second.push_back(dependencyList[i].first);
-        }
-        else
-        {
-            endMap[dependencyList[i].second] = vector<char> {dependencyList[i].first};
-        }
-
-        softwareSet.insert(dependencyList[i].first);
-        softwareSet.insert(dependencyList[i].second);
+bool dfsCycle(int sw,
+              const unordered_map <int, vector<int> >& swDependencyMap,
+              unordered_set<int>& isVisited,
+              unordered_set<int>& cycleSet,
+              vector<int>& swOrder)
+{
+    // If the entry is present in the Cycle set, then there is cycle
+    // Return true
+    auto cycleSetItr = cycleSet.find(sw);
+    if (cycleSetItr != cycleSet.end())
+    {
+        return true;
     }
 
-    for (auto endElmt : endMap)
+    // Add the software to both 'cycleSet' and 'isVisitedSet'
+    cycleSet.insert(sw);
+    isVisited.insert(sw);
+    bool isCyclePresent = false;
+
+    // Go through each of the sw dependencies and do a dfs on each of those entries
+    auto depListItr = swDependencyMap.find(sw);
+
+    if (depListItr != swDependencyMap.end())
     {
-        cout << "Start Map: " << endl;
-        printDependencyMap(startMap);
-        cout  << "End Map: " << endl;
-        printDependencyMap(endMap);
-        auto itr = startMap.find(endElmt.first);
-
-        // There should be at least one element that is NOT present in startMap
-        if (itr == startMap.end())
+        for (auto entry : depListItr->second)
         {
-            result.push_back(endElmt.first);
 
-            // For each element in Vector find if it is present in startMap
-            for (char c : endElmt.second)
+            // Check if the Software has already been added to the Cycle Set.
+            // If so then we have a cycle
+            auto itr1 = cycleSet.find(entry);
+            if (itr1 != cycleSet.end())
             {
-                auto i2 = startMap.find(c);
-                if (i2 != startMap.end())
-                {
-                    i2->second.erase(std::remove(i2->second.begin(), i2->second.end(), endElmt.first), i2->second.end());
-                }
-
-                if (i2->second.size() == 0)
-                {
-                    startMap.erase(endElmt.first);
-                }
+                isCyclePresent = true;
+                break;
             }
 
-            endMap.erase(endElmt.first);
-            softwareSet.erase(endElmt.first);
-            break;
+            auto isVisitedItr = isVisited.find(entry);
+            if (isVisitedItr == isVisited.end())
+            {
+                 isCyclePresent = dfsCycle(entry, swDependencyMap, isVisited, cycleSet, swOrder);
+
+                 // If we have a cycle, we can break and return true
+                 if (isCyclePresent)
+                 {
+                     break;
+                 }
+            }
+
+            // Just erase that entry when we are done with it
+            cycleSet.erase(entry);
         }
     }
 
-    cout << "Start Map: " << endl;
-    printDependencyMap(startMap);
-    cout  << "End Map: " << endl;
-    printDependencyMap(endMap);
+    swOrder.push_back(sw);
 
+    return isCyclePresent;
+}
+
+bool canSoftwareBeInstalled(const vector<pair<int, int> >& dependencyList)
+{
+    unordered_map <int, vector<int> > swDependencyMap;
+    unordered_set <int> cycleSet;
+    unordered_set <int> isVisitedSet;
+
+    // To store the result
+    vector<int> swOrder;
+    bool isCyclePresent = false;
+
+    // Construct Dependency List from the given software order
+    buildSwDependencyMap(dependencyList, swDependencyMap);
+
+    //cout << "Start Map: " << endl;
+    //printDependencyMap(swDependencyMap);
+
+    // Take each software and check if it has a cycle
+    // To find if there is a cycle 'cycleSet' is used. It is clear after one DFS round
+    // 'isVisitedSet' keeps track of software that are visited in DFS
+    for (auto swDepMapItr = swDependencyMap.begin(); swDepMapItr != swDependencyMap.end(); swDepMapItr++)
+    {
+        auto isVisitedItr = isVisitedSet.find(swDepMapItr->first);
+        if (isVisitedItr == isVisitedSet.end())
+        {
+            cycleSet.clear();
+            isCyclePresent = dfsCycle(swDepMapItr->first, swDependencyMap, isVisitedSet, cycleSet, swOrder);
+
+            if (isCyclePresent)
+            {
+                break;
+            }
+        }
+    }
+
+    // Output
+    /*
+    cout << "Is Cycle Present: " << isCyclePresent << endl;
+    if (isCyclePresent)
+    {
+        swOrder.clear();
+    }
+    printVector(swOrder);
+    */
+
+    return !isCyclePresent;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 33b. Given list of software dependencies. Find order of software installation
+//      Topological Sorting
+//      {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}}
+//      Ans: 1 -> 3 -> 2 -> 4 -> 4
+//
+//      https://www.careercup.com/question?id=5717669093310464
+// ------------------------------------------------------------------------------------------------
+void getTopoSoftwareOrder(int sw,
+                          const unordered_map <int, vector<int> >& swDependencyMap,
+                          unordered_set<int>& isVisited,
+                          vector<int>& swOrder)
+{
+    isVisited.insert(sw);
+
+    auto depListItr = swDependencyMap.find(sw);
+
+    if (depListItr != swDependencyMap.end())
+    {
+        for (auto entry : depListItr->second)
+        {
+            auto isVisitedItr = isVisited.find(entry);
+            if (isVisitedItr == isVisited.end())
+            {
+                 getTopoSoftwareOrder(entry, swDependencyMap, isVisited, swOrder);
+            }
+        }
+    }
+
+    swOrder.push_back(sw);
+}
+
+void findSoftwareOrder(int numCourses, vector<pair<int, int>>& dependencyList)
+{
+    unordered_map <int, vector<int> > swDependencyMap;
+    unordered_set <int> isVisitedSet;
+    unordered_set <int> allCoursesSet;
+
+    // To store the result
+    vector<int> swOrder;
+    bool isCyclePresent = false;
+
+    // Construct Dependency List from the given software order
+    buildSwDependencyMap(dependencyList, swDependencyMap);
+
+    for (auto swDepMapItr = swDependencyMap.begin(); swDepMapItr != swDependencyMap.end(); swDepMapItr++)
+    {
+        auto isVisitedItr = isVisitedSet.find(swDepMapItr->first);
+        if (isVisitedItr == isVisitedSet.end())
+        {
+            getTopoSoftwareOrder(swDepMapItr->first, swDependencyMap, isVisitedSet, swOrder);
+        }
+    }
+
+    if (!canSoftwareBeInstalled(dependencyList))
+    {
+        swOrder.clear();
+        cout << "Empty" << endl;
+    }
+    else
+    {
+        // Insert other courses that are not dependent on anything into a Set
+        // Then for all courses from 0 to N-1, if not available add it to the vector
+        for (int i : swOrder)
+        {
+            allCoursesSet.insert(i);
+        }
+        
+        for (int i = 0; i < numCourses; i++)
+        {
+            auto itr = allCoursesSet.find(i);
+
+            if (itr == allCoursesSet.end())
+            {
+                swOrder.push_back(i);
+            }
+        }
+    }
+
+    printVector(swOrder);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -3639,12 +3722,19 @@ int main()
     // Problem 23. Multiplication of two very large numbers
     {
         cout << endl << "Problem 23" << endl;
-        cout << "Multiplication of large numbers using Bit operation" << endl;
-        string s1 = "5830";
-        string s2 = "23958233";
-        cout << largeNumberMultiplication(s1, s2) << endl;
-
-        addStringNumbers(s1, s2);
+        cout << "Multiplication of large numbers using strings" << endl;
+        string s1a = "5830";
+        string s1b = "23958233";
+        cout << largeNumberMultiplicationString(s1a, s1b) << endl;
+        string s2a = "0";
+        string s2b = "0";
+        cout << largeNumberMultiplicationString(s2a, s2b) << endl;
+        string s3a = "002";
+        string s3b = "009";
+        cout << largeNumberMultiplicationString(s3a, s3b) << endl;
+        string s4a = "5";
+        string s4b = "9";
+        cout << largeNumberMultiplicationString(s4a, s4b) << endl;
     }
 
     // PROBLEM 23b. PROBLEM 23b. Binary Decimal Conversions
@@ -3806,9 +3896,36 @@ int main()
     // PROBLEM 33. Given list of software dependencies. Find order of software installation
     {
         cout << endl << "PROBLEM 33" << endl;
-        //cout << "Find order of software installation" << endl;
-        vector<std::pair<char, char> > softwareList = {{'A', 'E'}, {'B', 'D'}, {'D', 'E'}, {'A', 'B'}, {'C', 'B'}, {'C', 'D'}}; 
-        //findSoftwareInstallationOrder(softwareList);
+        cout << "Can Software be installed" << endl;
+        vector<std::pair<int, int> > softwareList1 = {{1, 0}}; 
+        vector<std::pair<int, int> > softwareList2 = {{1, 1}}; 
+        vector<std::pair<int, int> > softwareList3 = {{1, 0}, {0, 1}}; 
+        vector<std::pair<int, int> > softwareList4 = {{1, 0}, {2, 0}, {3, 1}, {3, 2}}; 
+        vector<std::pair<int, int> > softwareList5 = {{1, 0}, {2, 1}, {3, 1}, {3, 2}}; 
+        vector<std::pair<int, int> > softwareList6 = {{1, 2}, {2, 1}, {3, 1}, {3, 2}}; 
+        vector<std::pair<int, int> > softwareList7 = {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}}; 
+        vector<std::pair<int, int> > softwareList8 = {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}, {4, 3}}; 
+        vector<std::pair<int, int> > softwareList9 = {{3, 2}, {3, 4}, {4, 3}}; 
+
+        assert(canSoftwareBeInstalled(softwareList1) == 1);
+        assert(canSoftwareBeInstalled(softwareList2) == 0);
+        assert(canSoftwareBeInstalled(softwareList3) == 0);
+        assert(canSoftwareBeInstalled(softwareList4) == 1);
+        assert(canSoftwareBeInstalled(softwareList5) == 1);
+        assert(canSoftwareBeInstalled(softwareList6) == 0);
+        assert(canSoftwareBeInstalled(softwareList7) == 1);
+        assert(canSoftwareBeInstalled(softwareList8) == 0);
+        assert(canSoftwareBeInstalled(softwareList9) == 0);
+
+        findSoftwareOrder(2, softwareList1);
+        findSoftwareOrder(2, softwareList2);
+        findSoftwareOrder(2, softwareList3);
+        findSoftwareOrder(4, softwareList4);
+        findSoftwareOrder(4, softwareList5);
+        findSoftwareOrder(4, softwareList6);
+        findSoftwareOrder(5, softwareList7);
+        findSoftwareOrder(5, softwareList8);
+        findSoftwareOrder(5, softwareList9);
     }
 
     // PROBLEM 34. Find angle between hour and minute hand of clock

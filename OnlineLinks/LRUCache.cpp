@@ -1,3 +1,5 @@
+// http://stackoverflow.com/questions/2504178/lru-cache-design
+
 #include <list>
 #include <unordered_map>
 #include <iostream>
@@ -135,6 +137,7 @@ int main()
     lruCache.printLRUCacheList();
     */
 
+    // 3,[set(1,1),set(2,2),set(3,3),set(4,4),get(4),get(3),get(2),get(1),set(5,5),get(1),get(2),get(3),get(4),get(5)]
     cout << endl;
     return 0;
 }

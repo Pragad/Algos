@@ -27,15 +27,17 @@ using namespace std;
  * uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
  * uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
  *
- * PROBLEM 6. Longest Increasing Subsequence in a 2D Matrix
+ * PROBLEM 6a. Longest Increasing Subsequence in a 2D Matrix considering Diagonals
  * uint32_t longestIncSubSeqTwoDMat(int** twoDMat, uint32_t rows, uint32_t cols)
  *
- * PROBLEM 7. Find Subsets that add to a sum
+ * PROBLEM 6b. Longest Increasing Path in a 2D Matrix without Diagonals
+ * int longestIncreasingPath(vector<vector<int>>& matrix)
+ *
+ * PROBLEM 7. Partition Equal Subset Sum
  * bool isSubsetSum(const vector<int>& nums)
  * void printAllSubsetSum(const vector<int>& nums)
  *
- * PROBLEM 8. Partition Equal Subset Sum
- * bool canPartition(vector<int>& nums)
+ * PROBLEM 8. 
  */
 
 // ---------------------------------------------------------------------------------------
@@ -695,7 +697,9 @@ int32_t minCoinChangeWrapper(uint32_t coins[], uint32_t num, uint32_t val)
 }
 
 // ---------------------------------------------------------------------------------------
-// PROBLEM 6. Longest Increasing Subsequence in a 2D Matrix 
+// PROBLEM 6a. Longest Increasing Subsequence in a 2D Matrix considering Diagonals 
+// http://stackoverflow.com/questions/6558710/longest-increasing-sequence-2d-matrix-recursion
+// Including Diagonal Paths as well
 // {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
 // {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
 // {89, 36, 98, 75, 91, 46, 95, 53, 37, 99},
@@ -779,7 +783,18 @@ uint32_t longestIncSubSeqTwoDMat(int (&twoDMat)[rows][cols])
 }
 
 // ---------------------------------------------------------------------------------------
-// PROBLEM 7. Find Subsets that add to a sum
+// PROBLEM 6b. Longest Increasing Path in a 2D Matrix without Diagonals
+// ---------------------------------------------------------------------------------------
+int longestIncreasingPath(vector<vector<int>>& matrix)
+{
+    int longestIncPath = 0;
+
+    return longestIncPath;
+}
+
+// ---------------------------------------------------------------------------------------
+// PROBLEM 7. Partition Equal Subset Sum
+// find iF the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
 // ---------------------------------------------------------------------------------------
 void printTwoDVector(const vector< vector<bool> >& twoDVec)
 {
@@ -832,9 +847,6 @@ void printAllSubsetSum(const vector<int>& nums, int target)
 
 }
 
-// ---------------------------------------------------------------------------------------
-// PROBLEM 8. Partition Equal Subset Sum
-// ---------------------------------------------------------------------------------------
 bool canPartition(vector<int>& nums)
 {
     int numsTotal = 0;
@@ -849,6 +861,9 @@ bool canPartition(vector<int>& nums)
     {
         return false;
     }
+
+    // Now check if we have a subset for half the sum
+    return isSubsetSum(nums, numsTotal/2);
 }
 
 // ---------------------------------------------------------------------------------------
@@ -857,6 +872,7 @@ bool canPartition(vector<int>& nums)
 int main()
 {
     {
+        cout << endl << "Problem 1. Fibonacci" << endl;
         int n = 10;
         cout << "1. " << fibonacci(n) << endl;
         cout << "2. " << fibonacciDynamic(n) << endl;
@@ -879,6 +895,7 @@ int main()
 
     // Problem 3. Longest Increasing Subsequence
     {
+        cout << endl << "Problem 3. LIS" << endl;
         int arr[] = {10,9,2,5,3,7,101,18};
         int arr2[] = {3,5,6,2,5,4,19,5,6,7,12};
         vector<int> vec5 = {3,5,6,2,5,4,19,5,6,7,12};
@@ -890,6 +907,7 @@ int main()
 
     // Problem 4. Longest Common Subsequence
     {
+        cout << endl << "Problem 4. LCS" << endl;
         string str1 = "ABCDGH";
         string str2 = "AEDFHR";
         string str3 = "MZJAWXU";
@@ -901,14 +919,14 @@ int main()
 
     // Problem 5: Coin Change Problem
     {
+        cout << endl << "Problem 5. Min Coins: " << endl;
         uint32_t coins[] = {10, 5};
-        cout << "Min Coins: ";
         cout << minCoinChangeWrapper(coins, sizeof(coins)/sizeof(uint32_t), 20) << endl;
     }
 
-    // Problem 6: 
+    // PROBLEM 6a. Longest Increasing Subsequence in a 2D Matrix considering Diagonals 
     {
-        cout << endl << "Longest Increasing Sequence in 2D" << endl;
+        cout << endl << "PROBLEM 6a. Longest Increasing Subsequence in a 2D Matrix considering Diagonals " << endl;
         int arr[1][1] = {{1}};
         int arr0[2][2] = {{3, 6},
                          {4, 4}};
@@ -917,6 +935,7 @@ int main()
                          {3, 2, 1}};
         int arr2[10][10] = {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
                         {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
+        cout << longestIncreasingPath(nums1) << endl;
                         {89, 36, 98, 75, 91, 46, 95, 53, 37, 99},
                         {25, 45, 26, 17, 15, 82, 80, 73, 96, 17},
                         {75, 22, 63, 96, 96, 36, 64, 31, 99, 86},
@@ -929,15 +948,29 @@ int main()
         cout << longestIncSubSeqTwoDMat(arr2) << endl;
     }
 
-    // Problem 7. Subset Sum Problem
+    // PROBLEM 6b. Longest Increasing Path in a 2D Matrix without Diagonals 
     {
-        cout << endl << "Problem 7. Subset Sum Problem" << endl;
+
+        cout << endl << "PROBLEM 6b. Longest Increasing Path in a 2D Matrix without Diagonals" << endl;
+        vector<vector<int>> nums1 = { {9,9,4},
+                                      {6,6,8},
+                                      {2,1,1} };
+        vector<vector<int>> nums2 = { {3,4,5},
+                                      {3,2,6},
+                                      {2,2,1} };
+        cout << longestIncreasingPath(nums1) << endl;
+        cout << longestIncreasingPath(nums2) << endl;
+    }
+
+    // Problem 7. Partition Equal Subset Sum
+    {
+        cout << endl << "Problem 7. Partition Equal Subset Sum" << endl;
         vector<int> nums = {3, 34, 4, 11, 5, 2};
         cout << isSubsetSum(nums, 12) << endl;
         printAllSubsetSum(nums, 12);
     }
 
-    // Problem 8. Partition Equal Subset Sum
+    // Problem 8. 
     {
     }
 }

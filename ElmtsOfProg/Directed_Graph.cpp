@@ -1,29 +1,16 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <stack>
 #include <queue>
 #include <functional>   // Contains function for hash
+#include <ctime>
 using namespace std;
-
-// Used to print out additionals log messages
-#define DEBUG
-
-#ifdef DEBUG
-#define DEBUG_MSG(str) do { std::cout << str << std::endl; } while( false )
-#else
-#define DEBUG_MSG(str) do { } while ( false )
-#endif
 
 // -----------------------------------------------------------------------------------------
 // This is a Directed Graph
-// http://codereview.stackexchange.com/questions/36464/coding-and-printing-a-graph
-// http://stackoverflow.com/questions/5493474/graph-implementation-c
-//
-// Link on how to make use of "template"s
-// http://stackoverflow.com/questions/39095527/how-to-achieve-forward-declaration-of-template-class
-//      If you use Graph like Graph<std::string> g;, then the template parameter E will be std::string, the member vertices will be vector<Vertex<std::string>>.
-//      Then in Vertex, _data will be std::string, _edges will be vector<Edge<std::string>>
 // -----------------------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------------------
@@ -39,364 +26,518 @@ using namespace std;
         //      Using the key, find if Vertex is present; Also where the Vertex is present
         //
         // The map also gives where the Vertex is stored in the vector
-// http://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
-// TODO: Check the above link for properly doing it
 // -----------------------------------------------------------------------------------------
-template <typename E>
 class Graph
 {
     private:
-        template<typename T>
-        class Vertex; // Forward Declaration
+        class Node; // Forward Declaration
 
-        vector<Vertex <E> > _vertices;
-        unordered_map<uint32_t, uint32_t> _verticesMap;
+        vector<Node*> _allNodes;
+        unordered_map<uint32_t, Node*> _nodesMap;
 
-        // Inner Class corresponding to an Edge of a graph.
-        // Each edge has
-        //      1) Origin
-        //      2) Destination
-        //      3) Weight
-        // Using the Edge, you can get its origin, destination or its weight
-        class Edge
+        // Inner Class corresponding to a Node of a graph.
+        // Each Node has
+        //      1) Integer that uniquely represents the node
+        //      2) List of Neighbor nodes that can be zero or more
+        class Node
         {
-            public:
-                Vertex<E>& _orig;
+        public:
+            uint32_t _id;   // A unique integer to represent each node
+            vector<Node*> _neighborNodes;
+            unordered_set<uint32_t> _uniqNeighbors;
 
-                Vertex<E>& _dest;
-                uint32_t _weight;
+            Node(uint32_t id)
+            {
+                _id = id;
+                _uniqNeighbors.insert(id);
+            }
 
-                Edge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight) : _orig(orig),
-                                                                          _dest(dest),
-                                                                          _weight(weight) { }
+            uint32_t getId() { return _id; }
 
-                Vertex<E>& getOrig() { return _orig; }
-                Vertex<E>& getDest() { return _dest; }
-                uint32_t getWeight() { return _weight; }
+            // This function adds a Neighbor Node to the given node
+            void addNeighborNode(Node* node)
+            {
+                auto itr = _uniqNeighbors.find(node->_id);
+
+                if (itr != _uniqNeighbors.end())
+                {
+                    cout << "Duplicate Neighbor: " << node->_id << " for Parent: " << _id <<  ". Unable to add neighbor node" << endl;
+                    return;
+                }
+
+                _uniqNeighbors.insert(node->_id);
+                _neighborNodes.push_back(node);
+            }
+
+            // This utility function prints all edges of a Vertex
+            void printNeighborNodes()
+            {
+                cout << _id << " -> ";
+
+                if (_neighborNodes.empty())
+                {
+                    cout << "No Neighbors" << endl;
+                    return;
+                }
+                
+                Node* node = _neighborNodes[0];
+                cout << node->_id;
+                for(uint32_t i = 1; i < _neighborNodes.size(); i++)
+                {
+                    cout << ", " << _neighborNodes[i]->_id;
+                }
+                cout << endl;
+            }
         };
 
-        // Inner Class for Vertex of a Graph
-        // Each Vertex has,
-        //      1) _id
-        //      2) Data
-        //      3) List of edges
-        // Using a Vertex you can,
-        //      - add Edge to the Vertex
-        //      - print all Edges of the Vertex
-        template<typename T>
-        class Vertex
-        {
-            public:
-                uint32_t _id;   // A unique identifier for each node
-                T _data;
-                vector<Edge> _edges;
-                bool _isVisited;
-
-                Vertex(T data)
-                {
-                    uint32_t hashVal = std::hash<E>()(data);
-
-                    _id = hashVal;
-                    _data = data;
-                    _isVisited = false;
-                }
-
-                Vertex(uint32_t id, T data) : _id(id),
-                                              _data(data),
-                                              _isVisited(false) { }
-
-                uint32_t getId() { return _id; }
-
-                // This function adds an Edge to the given vertex
-                void addEdgeToVertex(Edge& edge)
-                {
-                    _edges.push_back(edge);
-                }
-
-                // This utility function prints all edges of a Vertex
-                void printEdgesOfVertex()
-                {
-                    cout << "NODE: " << _data << "'s EDGES:" << endl;
-                    for(Edge e : _edges)
-                    {
-                        cout << e.getOrig()._data << "--" << e.getDest()._data << "::" << e.getWeight() << endl;
-                    }
-                }
-
-                void clearVisited()
-                {
-                    _isVisited = false;
-                }
-        };
-
-        // From a Graph class you can,
-        //      - add Edge between two vertices
-        //      - add a Vertex to the graph
-        //      - print all Edges of a Vertex
-        //      - print the Graph
     public:
-        void printGraphBFS(const E& data);
-        void printGraphDFS(const E& data);
-        uint32_t getVertexId(const E& vertexData);
-        void addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight);
-        void addEdge(E& orig, E& dest, uint32_t weight);
-        uint32_t addVertex(E data);
-        uint32_t getIdOfVertex(const E& data);
-        void printEdges(Vertex<E>& vert);
+        void createNode(uint32_t id);
+        void insertNode(uint32_t parent, uint32_t neighbor);
+        bool doesPathExist(uint32_t srcId, uint32_t destId);
         void printGraph();
-        void clearVisitedGraph();
 
-        // AddEdge() when we have both the Vertices
-        // Assumption: Vertex is present
-        Vertex<E>* getVertex(const E& data)
-        {
-            auto itr = _verticesMap.find(getIdOfVertex(data));
+        bool isCyclePresent();
 
-            if (itr != _verticesMap.end())
-            {
-                return &(_vertices[itr->second]);
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
+        // BFS on graph
+        void printGraphBfs(int);
+        void printGraphBfs(Node*);
+
+        // DFS on graph
+        void printGraphDfs(int);
+        void printGraphDfs(Node*);
+        void printGraphDfsRec(Node* startNode, unordered_set<Node*>& isVisitedSet);
+
+        // Topological Sort on Graph
+        void topologicalSort();
+        void printGraphDfsItrTopo(Node* startNode, unordered_set<Node*>& isVisitedSet);
+        void printGraphDfsRecTopo(Node* startNode, unordered_set<Node*>& isVisitedSet, vector<uint32_t>& topoOrder);
+        ~Graph();
+
 };
 
 // -----------------------------------------------------------------------------------------
-// AddEdge() when we have both the Vertices
+// Graph Destructor
 // -----------------------------------------------------------------------------------------
-template <typename E>
-void
-Graph<E>::addEdge(Vertex<E>& orig, Vertex<E>& dest, uint32_t weight)
+Graph::~Graph()
 {
-    //DEBUG_MSG("AddEdge(): Orig: " << orig._data << "; Dest: " << dest._data << endl);
-    Edge edge1(orig, dest, weight);
-    orig.addEdgeToVertex(edge1);
-
-    Edge edge2(dest, orig, weight);
-    dest.addEdgeToVertex(edge2);
-}
-
-// -----------------------------------------------------------------------------------------
-// AddEdge() when we just have the data of Vertices
-// -----------------------------------------------------------------------------------------
-template <typename E>
-void
-Graph<E>::addEdge(E& orig, E& dest, uint32_t weight)
-{
-    addEdge(_vertices[addVertex(orig)], _vertices[addVertex(dest)], weight);
-}
-
-// -----------------------------------------------------------------------------------------
-// IMP: Add template arguement
-// This functions returns the index of the vertex
-// -----------------------------------------------------------------------------------------
-template <typename E>
-uint32_t
-Graph<E>::addVertex(E data)
-{
-    uint32_t hashVal = std::hash<E>()(data);
-    auto itr = _verticesMap.find(hashVal);
-
-    if (itr != _verticesMap.end())
+    for (auto node : _allNodes)
     {
-        //DEBUG_MSG("Node Already Present at: " << itr->second << endl);
-        return itr->second;
-    }
-
-    Vertex<E> vert(hashVal, data);
-    _vertices.push_back(vert);
-
-    //DEBUG_MSG("Hash Val for: " << data << " : " << hashVal << endl);
-    _verticesMap[hashVal] =  _vertices.size() - 1;
-
-    return _vertices.size() - 1;
-}
-
-// -----------------------------------------------------------------------------------------
-//
-// -----------------------------------------------------------------------------------------
-template <typename E>
-uint32_t
-Graph<E>::getIdOfVertex(const E& data)
-{
-    return std::hash<E>()(data);
-}
-
-// -----------------------------------------------------------------------------------------
-//
-// -----------------------------------------------------------------------------------------
-template <typename E>
-void
-Graph<E>::printEdges(Vertex<E>& vert)
-{
-    vert.printEdgesOfVertex();
-}
-
-// Utility function to print the complete graph
-template <typename E>
-void
-Graph<E>::printGraph()
-{
-    for (auto vert : _vertices)
-    {
-        vert.printEdgesOfVertex();
+        delete node;
     }
 }
 
 // -----------------------------------------------------------------------------------------
-// Utility function to clear Visited on each Vertex
+// createNode()
 // -----------------------------------------------------------------------------------------
-template <typename E>
 void
-Graph<E>::clearVisitedGraph()
+Graph::createNode(uint32_t id)
 {
-    for (auto vert : _vertices)
+    Node* node = new Node(id);
+
+    auto itr = _nodesMap.find(id);
+    if (itr != _nodesMap.end())
     {
-        vert.clearVisited();
+        cout << "ID is already present" << endl;
+        return;
     }
+
+    _allNodes.push_back(node);
+    _nodesMap[id] = node;
 }
 
 // -----------------------------------------------------------------------------------------
-//
+// Function to check if there exists a path between two nodes
 // -----------------------------------------------------------------------------------------
-template <typename E>
-uint32_t
-Graph<E>::getVertexId(const E& vertexData)
+bool
+Graph::doesPathExist(uint32_t srcId, uint32_t destId)
 {
-    Vertex<E> v(vertexData);    
-    uint32_t vertexId = v.getId();
-    return vertexId;
-}
+    Node* src = _nodesMap[srcId];
+    Node* dest = _nodesMap[destId];
+    stack<uint32_t> dfsStack;
+    unordered_set<uint32_t> visitedNodes;
 
-// -----------------------------------------------------------------------------------------
-//
-// -----------------------------------------------------------------------------------------
-template <typename E>
-void
-Graph<E>::printGraphBFS(const E& data)
-{
-    Vertex<E>* v = getVertex(data);
-    queue<Vertex<E> *> bfsQueue;
-
-    v->_isVisited = true;
-    bfsQueue.push(v);
-
-    while(!bfsQueue.empty())
+    if (srcId == destId)
     {
-        Vertex<E>* tmpVert = bfsQueue.front();
-        bfsQueue.pop();
-        
-        cout << "BFS: " << tmpVert->_data << "; " << tmpVert->_edges.size() << endl;
-        for (Edge e : tmpVert->_edges)
-        {
-            // Only if the destination is not visited add it to the queue
-            if (!((e.getDest())._isVisited))
-            {
-                e.getDest()._isVisited = true;
-                cout << "\t; Dest: " << e.getDest()._data << endl;
-                bfsQueue.push(&e.getDest());
-            }
-        }
+        return true;
     }
-}
 
-// -----------------------------------------------------------------------------------------
-//
-// -----------------------------------------------------------------------------------------
-template <typename E>
-void
-Graph<E>::printGraphDFS(const E& data)
-{
-    Vertex<E>* v = getVertex(data);
-    stack<Vertex<E> *> dfsStack;
-
-    v->_isVisited = true;
-    dfsStack.push(v);
+    dfsStack.push(srcId);    
 
     while(!dfsStack.empty())
     {
-        Vertex<E>* tmpVert = dfsStack.top();
+        uint32_t top = dfsStack.top();
         dfsStack.pop();
-        
-        cout << "DFS: " << tmpVert->_data << "; " << tmpVert->_edges.size() << endl;
-        for (Edge e : tmpVert->_edges)
+
+        for(auto neighborNode : _nodesMap[top]->_neighborNodes)
         {
-            if (!((e.getDest())._isVisited))
+            if (neighborNode->_id == destId)
             {
-                e.getDest()._isVisited = true;
-                cout << "\t; Dest: " << e.getDest()._data << endl;
-                dfsStack.push(&e.getDest());
+                // Path exists. Return true
+                return true;
+            }
+            else
+            {
+                // Make sure this node is not visited already
+                // If we have visited this node, go to next node
+                auto itr = visitedNodes.find(neighborNode->_id);
+
+                if (itr == visitedNodes.end())
+                {
+                    visitedNodes.insert(neighborNode->_id);
+                    dfsStack.push(neighborNode->_id);
+                }
             }
         }
+    }
+
+    return false;
+}
+
+// -----------------------------------------------------------------------------------------
+// insertNode()
+// -----------------------------------------------------------------------------------------
+void
+Graph::insertNode(uint32_t parentId, uint32_t neighborId)
+{
+    auto itr1 = _nodesMap.find(parentId);
+    auto itr2 = _nodesMap.find(neighborId);
+
+    // Make sure that parent and neighbor nodes are present
+    if (itr1 == _nodesMap.end() || itr2 == _nodesMap.end())
+    {
+        cout << "Invalid Node IDs" << endl;
+        return;
+    }
+
+    // If there is a path from neighbor to parent then adding this Edge from parent to
+    // neighbor will result in a cycle
+    if (doesPathExist(neighborId, parentId))
+    {
+        cout << "Path Exists from " << neighborId << " to " << parentId  <<  ". Unable to add neighbor node" << endl;
+        return;
+    }
+
+    _nodesMap[parentId]->addNeighborNode(itr2->second);
+}
+
+// -----------------------------------------------------------------------------------------
+// Utility function to print the complete graph
+// -----------------------------------------------------------------------------------------
+void
+Graph::printGraph()
+{
+    cout << endl;
+    for (auto node : _allNodes)
+    {
+        node->printNeighborNodes();
     }
 }
 
 // -----------------------------------------------------------------------------------------
-//
+// Utility function to print the complete graph in BFS
+// -----------------------------------------------------------------------------------------
+void
+Graph::printGraphBfs(Node* startNode)
+{
+    cout << endl << "Graph in BFS" << endl;
+    queue<Node*> bfsNodesQueue;
+    unordered_set<Node*> isVisitedMap;
+
+    if (startNode == NULL)
+    {
+        return;
+    }
+
+    bfsNodesQueue.push(startNode);
+    isVisitedMap.insert(startNode);
+
+    while (!bfsNodesQueue.empty())
+    {
+        Node* curNode = bfsNodesQueue.front();
+        bfsNodesQueue.pop();
+
+        cout << curNode->_id << ", ";
+        
+        for (auto neighborNode : curNode->_neighborNodes)
+        {
+            auto itr = isVisitedMap.find(neighborNode);
+            if (itr == isVisitedMap.end())
+            {
+                bfsNodesQueue.push(neighborNode);
+                isVisitedMap.insert(neighborNode);
+            }
+        }
+    }
+
+    cout << endl;
+}
+
+void
+Graph::printGraphBfs(int nodeId)
+{
+    auto itr = _nodesMap.find(nodeId);
+
+    if (itr == _nodesMap.end())
+    {
+        cout << "Invalid Node ID for BFS" << endl;
+    }
+    printGraphBfs(_nodesMap[nodeId]);
+}
+
+// -----------------------------------------------------------------------------------------
+// Utility function to print the complete graph in DFS Iteratively
+// -----------------------------------------------------------------------------------------
+void
+Graph::printGraphDfs(Node* startNode)
+{
+    stack<Node*> dfsNodesStack;
+    unordered_set<Node*> isVisitedSet;
+
+    if (startNode == NULL)
+    {
+        return;
+    }
+
+    dfsNodesStack.push(startNode);
+    isVisitedSet.insert(startNode);
+
+    while (!dfsNodesStack.empty())
+    {
+        Node* curNode = dfsNodesStack.top();
+        dfsNodesStack.pop();
+
+        cout << curNode->_id << ", ";
+        
+        for (auto neighborNode : curNode->_neighborNodes)
+        {
+            auto itr = isVisitedSet.find(neighborNode);
+            if (itr == isVisitedSet.end())
+            {
+                dfsNodesStack.push(neighborNode);
+                isVisitedSet.insert(neighborNode);
+            }
+        }
+    }
+
+    cout << endl;
+}
+
+// -----------------------------------------------------------------------------------------
+// Utility function to print the complete graph in DFS Recursively
+// -----------------------------------------------------------------------------------------
+void
+Graph::printGraphDfsRec(Node* startNode, unordered_set<Node*>& isVisitedSet)
+{
+    if (startNode == NULL)
+    {
+        return;
+    }
+
+    isVisitedSet.insert(startNode);
+    cout << startNode->_id << ", ";
+        
+    for (auto neighborNode : startNode->_neighborNodes)
+    {
+        auto itr = isVisitedSet.find(neighborNode);
+        if (itr == isVisitedSet.end())
+        {
+            printGraphDfsRec(neighborNode, isVisitedSet);
+        }
+    }
+}
+
+void
+Graph::printGraphDfs(int nodeId)
+{
+    auto itr = _nodesMap.find(nodeId);
+    unordered_set<Node*> isVisitedSet;
+
+    if (itr == _nodesMap.end())
+    {
+        cout << "Invalid Node ID for DFS" << endl;
+    }
+
+    cout << endl << "Graph in DFS Iterative" << endl;
+    printGraphDfs(_nodesMap[nodeId]);
+
+    cout << endl << "Graph in DFS Recursive" << endl;
+    printGraphDfsRec(_nodesMap[nodeId], isVisitedSet);
+    cout << endl;
+}
+
+// -----------------------------------------------------------------------------------------
+// Is Cycle Present
+// -----------------------------------------------------------------------------------------
+bool
+Graph::isCyclePresent()
+{
+    bool isCycle = false;
+
+    return isCycle;
+}
+
+// -----------------------------------------------------------------------------------------
+// Topological Sort
+// -----------------------------------------------------------------------------------------
+/*
+void
+Graph::printGraphDfsItrTopo(Node* startNode, unordered_set<Node*>& isVisitedSet)
+{
+    stack<Node*> dfsNodesStack;
+    if (startNode == NULL)
+    {
+        return;
+    }
+
+    dfsNodesStack.push(startNode);
+    isVisitedSet.insert(startNode);
+
+    while (!dfsNodesStack.empty())
+    {
+        Node* curNode = dfsNodesStack.top();
+        dfsNodesStack.pop();
+        cout << "Stack Entry: " << curNode->_id << endl;
+
+        bool hasNeighbors = false;
+        for (auto neighborNode : curNode->_neighborNodes)
+        {
+            auto itr = isVisitedSet.find(neighborNode);
+            if (itr == isVisitedSet.end())
+            {
+                hasNeighbors = true;
+                dfsNodesStack.push(neighborNode);
+                isVisitedSet.insert(neighborNode);
+            }
+        }
+
+        if (!hasNeighbors)
+        {
+            cout << "C: " << curNode->_id << ", ";
+        }
+    }
+        
+    cout << "S: " << startNode->_id << ", ";
+}
+*/
+
+void
+Graph::printGraphDfsRecTopo(Node* startNode, unordered_set<Node*>& isVisitedSet, vector<uint32_t>& topoOrder)
+{
+    if (startNode == NULL)
+    {
+        return;
+    }
+
+    isVisitedSet.insert(startNode);
+        
+    for (auto neighborNode : startNode->_neighborNodes)
+    {
+        auto itr = isVisitedSet.find(neighborNode);
+        if (itr == isVisitedSet.end())
+        {
+            printGraphDfsRecTopo(neighborNode, isVisitedSet, topoOrder);
+        }
+    }
+
+    // Instead of printing you can push everything to stack and get it back in reverse order
+    cout << startNode->_id << ", ";
+    topoOrder.push_back(startNode->_id);
+}
+
+void
+Graph::topologicalSort()
+{
+    /*
+    {
+        cout << endl << "Topological Sort In Reverse Order Iterative" << endl;
+        unordered_set<Node*> isVisitedSet;
+
+        for (auto node : _allNodes)
+        {
+            auto itr = isVisitedSet.find(node);
+            if (itr == isVisitedSet.end())
+            {
+                printGraphDfsItrTopo(node, isVisitedSet);
+            }
+        }
+    }
+    */
+
+    {
+        cout << endl << "Topological Sort In Reverse Order Recursive" << endl;
+        unordered_set<Node*> isVisitedSet;
+        vector<uint32_t> topoOrder;
+
+        for (auto node : _allNodes)
+        {
+            auto itr = isVisitedSet.find(node);
+            if (itr == isVisitedSet.end())
+            {
+                printGraphDfsRecTopo(node, isVisitedSet, topoOrder);
+            }
+        }
+        cout << endl;
+
+        std::reverse(topoOrder.begin(), topoOrder.end()); 
+
+        for (auto i : topoOrder)
+        {
+            cout << i << ", ";
+        }
+        cout << endl;
+    }
+}
+
+// -----------------------------------------------------------------------------------------
+// Main Function
 // -----------------------------------------------------------------------------------------
 int main()
 {
     /*
-     *      b ----- d ------- f
-     *    /       /  \       /
-     *  a       /      \    /
-     *    \   /         \  /
-     *      c ---------- e
+     * Imagine a directed version of the below graph
+     *
+     *      2 ----- 5 
+     *    /       /  \
+     *  1 ---- 4 ---- 6
+     *    \   /       |   
+     *      3 --------
      */
 
-    Graph<string> g;
-    g.addVertex("A");
-    g.addVertex("B");
-    g.addVertex("C");
-    g.addVertex("D");
-    g.addVertex("E");
-    g.addVertex("F");
+    Graph g;
+    g.createNode(1);
 
-    string a1 = "A";
-    string b1 = "B";
-    g.addEdge(a1, b1, 1);
+    g.createNode(2);
+    g.createNode(3);
+    g.createNode(4);
+    g.createNode(5);
+    g.createNode(6);
 
-    string a2 = "A";
-    string b2 = "C";
-    g.addEdge(a2, b2, 2);
+    g.insertNode(1, 2);
+    g.insertNode(1, 3);
+    g.insertNode(1, 4);
+    g.insertNode(1, 4);
+    g.insertNode(1, 1);
 
-    string a3 = "B";
-    string b3 = "D";
-    g.addEdge(a3, b3, 3);
+    g.insertNode(2, 5);
 
-    string a4 = "C";
-    string b4 = "D";
-    g.addEdge(a4, b4, 4);
+    g.insertNode(3, 6);
 
-    string a5 = "C";
-    string b5 = "E";
-    g.addEdge(a5, b5, 5);
+    g.insertNode(4, 3);
+    g.insertNode(4, 6);
 
-    string a6 = "D";
-    string b6 = "E";
-    g.addEdge(a6, b6, 6);
+    g.insertNode(5, 6);
+    g.insertNode(6, 1);
+    g.insertNode(6, 2);
 
-    string a7 = "D";
-    string b7 = "F";
-    g.addEdge(a7, b7, 7);
-
-    string a8 = "E";
-    string b8 = "F";
-    g.addEdge(a8, b8, 8);
-
+    // Print Graph
     g.printGraph();
+    g.printGraphBfs(1);
+    g.printGraphDfs(1);
 
-    string bfs1 = "A";
-    //g.printGraphBFS(bfs1);
-    //g.clearVisitedGraph();
-
-    cout << endl;
-    g.printGraphDFS(bfs1);
-    g.clearVisitedGraph();
-
+    // Topological Sort
+    g.topologicalSort();
     cout << endl;
     return 0;
 }
+
 

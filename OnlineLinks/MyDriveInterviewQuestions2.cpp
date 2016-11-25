@@ -46,6 +46,12 @@ using namespace std;
  * 
  * PROBLEM 7.   Find Minimum range that covers all the lists
  * pair<uint32_t, uint32_t> findMinRangeForAllLists(vector<vector<int>> lists)
+ *
+ * PROBLEM 8. Reverse a Integer Number
+ * int reverse(int x)
+ *
+ * PROBLEM 9. Reverse Bits in a Number
+ * uint32_t reverseBits(uint32_t n)
  */
 
 // Utility function to print a vector of ints
@@ -619,7 +625,7 @@ int reverse(int x)
         int rem = newX % 10;
         newX = newX / 10;
 
-        // Check for multiplication and addition overflow
+        // VERY IMP: Check for multiplication and addition overflow
         if ((revNum > (numeric_limits<int>::max() / 10)) ||
             ((revNum * 10) > (numeric_limits<int>::max() - rem)))
         {
@@ -637,9 +643,17 @@ int reverse(int x)
 //      43261596 (represented in binary as 00000010100101000001111010011100),
 //      Return 964176192 (represented in binary as 00111001011110000010100101000000)
 // -----------------------------------------------------------------------------------------
-uint32_t reverseBits(uint32_t n)
+uint32_t reverseBits(uint32_t num)
 {
+    uint32_t revNum = 0;
+    uint32_t numBits = (int)log2(num) + 1;
+    for (; num; num >>= 1)
+    {
+        revNum = (revNum << 1) | (num & 1);
+    }
 
+    revNum = revNum << ((sizeof(num) * 8) - numBits);
+    return revNum;
 }
 
 // -----------------------------------------------------------------------------------------
@@ -746,7 +760,7 @@ int main()
 
     // PROBLEM 8. Reverse a Integer Number
     {
-        cout << endl << "PROBLEM 8. Find Minimum range  that covers all the lists" << endl;
+        cout << endl << "PROBLEM 8. Reverse a Integer Number" << endl;
         cout << reverse(53) << endl;
         cout << reverse(-53) << endl;
         cout << reverse(123456789) << endl;
@@ -761,12 +775,11 @@ int main()
     // PROBLEM 9. Reverse Bits in a Number
     {
         cout << endl << "PROBLEM 9. Reverse Bits in a Number" << endl;
-        uint32_t num1 = 43261596;
-        bitset<sizeof(uint32_t) * 8> numBits1(num1);
-
-        cout << numBits1 << endl;
-        bitset<sizeof(uint32_t) * 8> res1 = reverseBits(43261596);
-        cout << res1 << endl;
+        cout << reverseBits(6) << endl;
+        cout << reverseBits(16) << endl;
+        cout << reverseBits(26) << endl;
+        cout << reverseBits(36) << endl;
+        cout << reverseBits(43261596) << endl;
     }
 
     return 0;

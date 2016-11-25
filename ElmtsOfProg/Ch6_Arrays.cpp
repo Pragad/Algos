@@ -126,7 +126,7 @@ void threeWayQuickSort(int arr[], int num)
 // 6.2 Max Difference in Array
 int maxDifference(int arr[], int num)
 {
-    int tmpDiff = INT_MIN; 
+    int tmpDiff = 0; 
     int maxDiff = tmpDiff;
     int tmpSmall = arr[0];
     int finalSmall = arr[0];
