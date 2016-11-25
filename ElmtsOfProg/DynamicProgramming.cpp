@@ -890,6 +890,11 @@ int longestIncreasingPath(vector<vector<int>>& matrix)
 {
     int longestIncPath = -1;
 
+    if (matrix.size() == 0)
+    {
+        return 0;
+    }
+
     vector<vector<int>> incPathMatrix (matrix.size(), vector<int>(matrix[0].size(), -1));
 
     for (int i = 0; i < matrix.size(); i++)
