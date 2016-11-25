@@ -40,6 +40,23 @@ using namespace std;
  * PROBLEM 8. 
  */
 
+// Utility function to print a Vector of Vector
+template <typename T>
+void printVecOfVec(vector< vector<T> > vecOfVec)
+{
+    cout << "Vector of Vectors" << endl;
+    for (unsigned int i = 0; i < vecOfVec.size(); i++)
+    {
+        for (unsigned int j = 0; j < vecOfVec[i].size(); j++)
+        {
+            cout << vecOfVec[i][j] << " ";
+        }
+        cout <<  endl;
+    }
+    cout << endl;
+}
+
+
 // ---------------------------------------------------------------------------------------
 // Problem 1: Fibonacci of a number
 // ---------------------------------------------------------------------------------------
@@ -109,21 +126,6 @@ unsigned int fibonacciDynamic2(int n)
 // I store the "n-1" and "n-2" lader positions. Then I append
 // '1' to 'n-1' positions and '2' to all 'n-2' positions.
 // ---------------------------------------------------------------------------------------
-
-// Utility function to print a Vector of Vector
-void printVecOfVec(vector< vector<unsigned int> > vecOfVec)
-{
-    cout << "Vector of Vectors" << endl;
-    for (unsigned int i = 0; i < vecOfVec.size(); i++)
-    {
-        for (unsigned int j = 0; j < vecOfVec[i].size(); j++)
-        {
-            cout << vecOfVec[i][j] << " ";
-        }
-        cout <<  endl;
-    }
-    cout << endl;
-}
 
 // Given a source vector and a number, it appends the number to each source vectors
 // and puts the final values in the destination vector
@@ -785,11 +787,129 @@ uint32_t longestIncSubSeqTwoDMat(int (&twoDMat)[rows][cols])
 // ---------------------------------------------------------------------------------------
 // PROBLEM 6b. Longest Increasing Path in a 2D Matrix without Diagonals
 // ---------------------------------------------------------------------------------------
+bool isValidPositions(int i, int j, int rows, int cols)
+{
+    return (i >= 0 && i < rows && j >= 0 && j < cols);
+}
+
+int dfsIncreasingPath(int i,
+                      int j,
+                      const vector<vector<int>>& matrix,
+                      vector<vector<int>>& incPathMatrix)
+{
+    // Have four variables to store the max path length got from four sides
+    int val1 = 0;
+    int val2 = 0;
+    int val3 = 0;
+    int val4 = 0;
+    bool dfsFlag = false;
+
+    // Extra Check. Not necessary. Instead can directly make it to 0
+    if (incPathMatrix[i][j] == -1)
+    {
+        incPathMatrix[i][j] = 0;
+    }
+
+    // 1. Check if the new 'i' and new 'j' are valid
+    // 2. Only if the matrix[newI][newJ] > matrix[i][j] we get the new value
+    // 3. Also do DFS only we haven't done it before
+    if (isValidPositions(i - 1, j, matrix.size(), matrix[0].size()) &&
+        matrix[i - 1][j] > matrix[i][j])
+    {
+        dfsFlag = true;
+
+        // Go DFS only if we don't know the value of the incPathMatrix
+        if (incPathMatrix[i - 1][j] == -1)
+        {
+            val1 = dfsIncreasingPath(i - 1, j, matrix, incPathMatrix);
+        }
+        else
+        {
+            val1 = incPathMatrix[i - 1][j];
+        }
+    }
+    if (isValidPositions(i, j - 1, matrix.size(), matrix[0].size()) &&
+        matrix[i][j - 1] > matrix[i][j])
+    {
+        dfsFlag = true;
+
+        if (incPathMatrix[i][j - 1] == -1)
+        {
+            val2 = dfsIncreasingPath(i, j - 1, matrix, incPathMatrix);
+        }
+        else
+        {
+            val2 = incPathMatrix[i][j - 1];
+        }
+    }
+    if (isValidPositions(i + 1, j, matrix.size(), matrix[0].size()) &&
+        matrix[i + 1][j] > matrix[i][j])
+    {
+        dfsFlag = true;
+
+        if (incPathMatrix[i + 1][j] == -1)
+        {
+            val3 = dfsIncreasingPath(i + 1, j, matrix, incPathMatrix);
+        }
+        else
+        {
+            val3 = incPathMatrix[i + 1][j];
+        }
+    }
+    if (isValidPositions(i, j + 1, matrix.size(), matrix[0].size()) &&
+        matrix[i][j + 1] > matrix[i][j])
+    {
+        dfsFlag = true;
+
+        if (incPathMatrix[i][j + 1] == -1)
+        {
+            val4 = dfsIncreasingPath(i, j + 1, matrix, incPathMatrix);
+        }
+        else
+        {
+            val4 = incPathMatrix[i][j + 1];
+        }
+    }
+
+    // If any of the previous DfsFlag has been set, it means that we have a Row Col
+    // which has higher value than current 'i' 'j'
+    if (!dfsFlag)
+    {
+        incPathMatrix[i][j] = 0;
+        return 0;
+    }
+    else
+    {
+        int maxVal = (1 + max(max(max(val1, val2), val3), val4));
+        incPathMatrix[i][j] = maxVal;
+        return maxVal;
+    }
+}
+
 int longestIncreasingPath(vector<vector<int>>& matrix)
 {
-    int longestIncPath = 0;
+    int longestIncPath = -1;
 
-    return longestIncPath;
+    vector<vector<int>> incPathMatrix (matrix.size(), vector<int>(matrix[0].size(), -1));
+
+    for (int i = 0; i < matrix.size(); i++)
+    {
+        for (int j = 0; j < matrix[i].size(); j++)
+        {
+            if (incPathMatrix[i][j] == -1)
+            {
+                int incPathLen = dfsIncreasingPath(i, j, matrix, incPathMatrix);
+                if (incPathLen > longestIncPath)
+                {
+                    longestIncPath = incPathLen;
+                }
+            }
+        }
+    }
+
+    printVecOfVec(incPathMatrix);
+
+    return 1 + longestIncPath;
 }
 
 // ---------------------------------------------------------------------------------------
@@ -935,7 +1055,6 @@ int main()
                          {3, 2, 1}};
         int arr2[10][10] = {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
                         {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
-        cout << longestIncreasingPath(nums1) << endl;
                         {89, 36, 98, 75, 91, 46, 95, 53, 37, 99},
                         {25, 45, 26, 17, 15, 82, 80, 73, 96, 17},
                         {75, 22, 63, 96, 96, 36, 64, 31, 99, 86},
@@ -958,8 +1077,29 @@ int main()
         vector<vector<int>> nums2 = { {3,4,5},
                                       {3,2,6},
                                       {2,2,1} };
+        vector<vector<int>> nums3 = {{1}};
+        vector<vector<int>> nums4 = {{3, 6},
+                                     {4, 4}};
+        vector<vector<int>> nums5 = {{1, 8, 3},
+                                     {6, 4, 2},
+                                     {3, 2, 1}};
+        vector<vector<int>> nums6 = {{97, 47, 56, 36, 60, 31, 57, 54, 12, 55},
+                                     {35, 57, 41, 13, 82, 80, 71, 93, 31, 62},
+                                     {89, 36, 98, 75, 91, 46, 95, 53, 37, 99},
+                                     {25, 45, 26, 17, 15, 82, 80, 73, 96, 17},
+                                     {75, 22, 63, 96, 96, 36, 64, 31, 99, 86},
+                                     {12, 80, 42, 74, 54, 14, 93, 17, 14, 55},
+                                     {14, 15, 20, 71, 34, 50, 22, 60, 32, 41},
+                                     {90, 69, 44, 52, 54, 73, 20, 12, 55, 52},
+                                     {39, 33, 25, 31, 76, 45, 44, 84, 90, 52},
+                                     {94, 35, 55, 24, 41, 63, 87, 93, 79, 24}};
+
         cout << longestIncreasingPath(nums1) << endl;
         cout << longestIncreasingPath(nums2) << endl;
+        cout << longestIncreasingPath(nums3) << endl;
+        cout << longestIncreasingPath(nums4) << endl;
+        cout << longestIncreasingPath(nums5) << endl;
+        cout << longestIncreasingPath(nums6) << endl;
     }
 
     // Problem 7. Partition Equal Subset Sum
