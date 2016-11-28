@@ -17,7 +17,9 @@ string intToString(int x)
 #include <unordered_map>
 using namespace std;
 
+//-----------------------------------------------------------------------------------------
 // 7.1 b Integer to String
+//-----------------------------------------------------------------------------------------
 string intToString(int x)
 {
     uint32_t len = abs(log10(x)) + 1;
@@ -38,7 +40,9 @@ string intToString(int x)
     return string(strNum);
 }
 
+//-----------------------------------------------------------------------------------------
 // 7.1 String to Integer
+//-----------------------------------------------------------------------------------------
 int stringToInt(string s)
 {
     int result = 0;
@@ -86,7 +90,9 @@ bool myAtoI(string str, int& resNum)
     return true;
 }
 
+//-----------------------------------------------------------------------------------------
 // 7.2 Reverse Words in a Sentence
+//-----------------------------------------------------------------------------------------
 void swapChar(char &a, char &b)
 {
     a = a ^ b;
@@ -133,73 +139,89 @@ void reverseLine(string &line)
     line[en] = '\0';
 }
 
-char phoneDigitMap[10][5] = {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-
-// 7.3 Phone number permutations
-void printPhonePermuteRecursive(int number[], uint32_t currentDigit, char result[], uint32_t length)
+//-----------------------------------------------------------------------------------------
+// 7.3 Phone number permutations Recursive
+// http://stackoverflow.com/questions/2344496/how-can-i-print-out-all-possible-letter-combinations-a-given-phone-number-can-re
+// http://www.geeksforgeeks.org/find-possible-words-phone-digits/
+// Time Complexity: O(4^N)
+//-----------------------------------------------------------------------------------------
+void printPhonePermuteRecursive(const vector<uint32_t>& nums,
+                                uint32_t currentDigit,
+                                const unordered_map<uint32_t, string>& phoneDigitMap,
+                                string result)
 {
-    if (currentDigit == length)
+    if (currentDigit == nums.size())
     {
-        cout << string(result) << endl;
+        cout << result << ", ";
         return;
     }
 
     // Get all set of characters for the current digit from the map
-    for (uint32_t i = 0; i < strlen(phoneDigitMap[number[currentDigit]]); i++)
+    for (uint32_t i = 0; i < phoneDigitMap.at(nums[currentDigit]).length(); i++)
     {
-        result[currentDigit] = phoneDigitMap[number[currentDigit]][i];
-        printPhonePermuteRecursive(number, currentDigit + 1, result, length);
+        result += phoneDigitMap.at(nums[currentDigit])[i];
+        printPhonePermuteRecursive(nums, currentDigit + 1, phoneDigitMap, result);
+        result.pop_back();
 
         // 0 or 1 has only one digit. So we can safely return here;
-        if (number[currentDigit] == '0' || number[currentDigit] == '1')
+        // Even if we don't do this, for loop will take care of it right after this
+        if (nums[currentDigit] == 0 || nums[currentDigit] == 1)
         {
             return;
         }
     }
 }
 
-void printPhoneNumberPermutations(int number[], uint32_t len)
+void printPhoneNumberPermutations(vector<uint32_t> nums)
 {
-    char result[len + 1];
+    string result;
+    unordered_map<uint32_t, string> numberMap = {{0, "0"}, {1, "1"}, {2, "abc"},
+                                                 {3, "def"}, {4, "ghi"}, {5, "jkl"},
+                                                 {6, "mno"}, {7, "pqrs"}, {8, "tuv"},
+                                                 {9, "wxyz"}, };
 
-    // Add Null Character to the end of the string
-    result[len] = 0;
-    printPhonePermuteRecursive(number, 0, result, len);
+    printPhonePermuteRecursive(nums, 0, numberMap, result);
+    cout << endl;
 }
 
+//-----------------------------------------------------------------------------------------
+// 7.3 Phone number permutations Iterative
+// http://stackoverflow.com/questions/2344496/how-can-i-print-out-all-possible-letter-combinations-a-given-phone-number-can-re
+//-----------------------------------------------------------------------------------------
 void printVectorString(vector<string> vecString)
 {
     for (string s : vecString)
     {
-        cout << s << " , ";
+        cout << s << ", ";
     }
     cout << endl;
 }
 
-// http://stackoverflow.com/questions/2344496/how-can-i-print-out-all-possible-letter-combinations-a-given-phone-number-can-re
-void printPhoneNumPermuteIterativeNew(int number[], uint32_t len)
+void printPhoneNumPermuteIterativeNew(const vector<uint32_t>& nums)
 {
     vector<string> result;
     vector<string> preResult;
+    unordered_map<uint32_t, string> phoneDigitMap = {{0, "0"}, {1, "1"}, {2, "abc"},
+                                                     {3, "def"}, {4, "ghi"}, {5, "jkl"},
+                                                     {6, "mno"}, {7, "pqrs"}, {8, "tuv"},
+                                                     {9, "wxyz"}, };
 
     result.push_back("");
 
-    // Length of your phone number will be "number.length()"
     // We have to traverse each digit of the phone number
-    for (uint32_t i = 0; i < len; i++)
+    for (uint32_t i = 0; i < nums.size(); i++)
     {
         // Initially this will be empty. But we keep adding letters to it.
         //      Iteration 0: Result: a, b, c
         //      Iteration 1: Result: ad, bd, cd
-        //
         for (string s : result)
         {
-            // For each of the string we have in "s" add all letters corresponding to the next
-            // digit.
+            // For each of the string we have in "s"
+            // Add all letters corresponding to the next digit.
             // So "a" will become, "ad", "ae", "af". 
-            for (uint32_t j = 0; j < strlen(phoneDigitMap[number[i]]); j++)
+            for (uint32_t j = 0; j < phoneDigitMap.at(nums[i]).length(); j++)
             {
-                preResult.push_back(s + phoneDigitMap[number[i]][j]);
+                preResult.push_back(s + phoneDigitMap.at(nums[i])[j]);
             }
         }
 
@@ -216,56 +238,9 @@ void printPhoneNumPermuteIterativeNew(int number[], uint32_t len)
     printVectorString(result);
 }
 
-void printPhoneNumPermuteIterative(string number)
-{
-    unordered_map<char, string> numberMap = {{'0', "0"},
-                                             {'1', "1"},
-                                             {'2', "abc"},
-                                             {'3', "def"},
-                                             {'4', "ghi"},
-                                             {'5', "jkl"},
-                                             {'6', "mno"},
-                                             {'7', "pqrs"},
-                                             {'8', "tuv"},
-                                             {'9', "wxyz"},
-                                             };
-    vector<string> result;
-    vector<string> preResult;
-
-    result.push_back("");
-
-    // Length of your phone number will be "number.length()"
-    // We have to traverse each digit of the phone number
-    for (uint32_t i = 0; i < number.length(); i++)
-    {
-        // Initially this will be empty. But we keep adding letters to it.
-        //      Iteration 0: Result: a, b, c
-        //      Iteration 1: Result: ad, bd, cd
-        //
-        for (string s : result)
-        {
-            // For each of the string we have in "s" add all letters corresponding to the next
-            // digit.
-            // So "a" will become, "ad", "ae", "af". 
-            for (uint32_t j = 0; j < numberMap[number[i]].length(); j++)
-            {
-                preResult.push_back(s + numberMap[number[i]][j]);
-            }
-        }
-
-        // Save what we have built till now in "result" so we can continue using the result
-        // for our next loop.
-        result = preResult;
-
-        // Clear our the preResult. This is because, we have the updated preResult in result.
-        // So we have to extract each string from "s", add corresponding characters to it
-        // and finally put all the results built till now in "result".
-        preResult.erase(preResult.begin(), preResult.end());
-    }
-
-    printVectorString(result);
-}
-
+//-----------------------------------------------------------------------------------------
+// Main function
+//-----------------------------------------------------------------------------------------
 int main()
 {
     {
@@ -295,13 +270,14 @@ int main()
 
     {
         //int number[] = {2, 3, 4};
+        //vector<uint32_t> nums = {2, 3, 4};
+
         int number[] = {0, 2, 1};
+        vector<uint32_t> nums = {0, 2, 1};
 
         string strPhoneNo = "021";
-        printPhoneNumberPermutations(number, sizeof(number) / sizeof(int));
-        printPhoneNumPermuteIterativeNew(number, sizeof(number) / sizeof(int));
-
-        //printPhoneNumPermuteIterative(strPhoneNo);
+        printPhoneNumberPermutations(nums);
+        printPhoneNumPermuteIterativeNew(nums);
     }
 
     cout << endl;

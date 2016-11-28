@@ -16,30 +16,39 @@ using namespace std;
 // Given a number, find the number of bits required to represent the number.
 //int numBitsPresent(int num)
 
+// READ 1
 // 6.3 Find all subsets of an array
 //void printAllSubset(int arr[], int num)
 
 // Helper function to convert Int array to string.
 //string convertIntArrToString(int arr[], int num)
 
+// READ 2
 // 6.3b Find all substrings of an array using SUBSTING function.
 //void printAllSubSring(int arr[], int num)
 
 // 6.3c Recrusive way to find all substrings
 //void printAllSubsetRec(int arr[], int num)
 
-// 6.4 Find all permutations of an array
-//void printAllPermutations(int arr[], int num)
+// READ 3
+// 6.3c2 Recrusive way to find all subsets
+//void printAllSubSetRecVer2(int arr[], uint32_t sI, uint32_t eI, int result[], uint32_t resIdx)
 
-// 6.4b Recrusive way to find all permutations
+// READ 4
+// 6.4 Find all permutations of an array
 //void printAllPermutationsRec(int arr[], int num)
 
-// 6.5 Print all anagrams of a string
+// READ 5
+// 6.5 Print all anagrams / permutations of a string
 //void printAllAnagrams(string str)
 
+// READ 6
 // 6.6 Print all possible strings of length k that can be formed from a set of n characters
 //void printAllKLengthStrings(string str, uint32_t k)
 
+//-----------------------------------------------------------------------------------------
+// Utility Functions
+//-----------------------------------------------------------------------------------------
 void printArray(int arr[], int num)
 {
     for (int i = 0; i < num; i++)
@@ -78,7 +87,9 @@ void printVectorChar(vector<char> vecChar)
     cout << endl;
 }
 
+//-----------------------------------------------------------------------------------------
 // 6.1 Dutch National Flag Proble / 3 way quick sort
+//-----------------------------------------------------------------------------------------
 void threeWayQuickSort(int arr[], int num)
 {
     int pivot = 4;
@@ -123,7 +134,9 @@ void threeWayQuickSort(int arr[], int num)
     }
 }
 
+//-----------------------------------------------------------------------------------------
 // 6.2 Max Difference in Array
+//-----------------------------------------------------------------------------------------
 int maxDifference(int arr[], int num)
 {
     int tmpDiff = 0; 
@@ -159,6 +172,9 @@ int maxDifference(int arr[], int num)
 
 
 //-----------------------------------------------------------------------------------------
+// READ 1
+// 6.3 Find all subsets of an array
+//-----------------------------------------------------------------------------------------
 // Helper function
 // Given a number, find the number of bits required to represent the number.
 int numBitsPresent(int num)
@@ -166,7 +182,6 @@ int numBitsPresent(int num)
     return (log2(num) + 1);
 }
 
-// 6.3 Find all subsets of an array
 void printAllSubset(int arr[], int num)
 {
     int powerSetSize = pow(2, num);
@@ -187,6 +202,11 @@ void printAllSubset(int arr[], int num)
     }
 }
 
+//-----------------------------------------------------------------------------------------
+// READ 2
+// 6.3b Find all substrings of an array using SUBSTING function.
+// http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-fastest-way
+//-----------------------------------------------------------------------------------------
 // Helper function to convert Int array to string.
 string convertIntArrToString(int arr[], int num)
 {
@@ -200,11 +220,8 @@ string convertIntArrToString(int arr[], int num)
     }
 
     return foo.str();
-
 }
 
-// 6.3b Find all substrings of an array using SUBSTING function.
-// http://stackoverflow.com/questions/15726641/find-all-possible-substring-in-fastest-way
 void printAllSubSring(int arr[], int num)
 {
     string tmpStr = convertIntArrToString(arr, num);
@@ -221,6 +238,10 @@ void printAllSubSring(int arr[], int num)
     }
 }
 
+//-----------------------------------------------------------------------------------------
+// http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
+// 6.3c Recrusive way to find all subsets
+//-----------------------------------------------------------------------------------------
 void copyVectorToItself(vector < vector <int> >& subsetVec)
 {
     int vecSize = subsetVec.size();
@@ -242,8 +263,6 @@ void printVectorOfVectors(vector < vector <int> > subsetVec)
     }
 }
 
-// http://stackoverflow.com/questions/728972/finding-all-the-subsets-of-a-set
-// 6.3c Recrusive way to find all subsets
 void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subsetVec)
 {
 
@@ -270,10 +289,13 @@ void printAllSubsetRec(int arr[], int sI, int eI, vector < vector <int> >& subse
     }
 }
 
+//-----------------------------------------------------------------------------------------
+// READ 3
 // 6.3c2 Recrusive way to find all subsets
 // VERY IMP:
 //      1. Use separate index for result
 //      2. sI can go bigger than eI
+//-----------------------------------------------------------------------------------------
 void printAllSubSetRecVer2(int arr[], uint32_t sI, uint32_t eI, int result[], uint32_t resIdx)
 {
     if (sI > eI)
@@ -288,6 +310,9 @@ void printAllSubSetRecVer2(int arr[], uint32_t sI, uint32_t eI, int result[], ui
         return;
     }
 
+    // 1. Take element and each index and add it to the result
+    // 2. Print the result
+    // 3. Repeat above for the next index
     for (uint32_t i = sI; i <= eI; i++)
     {
         result[resIdx] = arr[i];
@@ -304,40 +329,68 @@ void printAllSubSetVer2(int arr[], uint32_t num)
     delete[] result;
 }
 
+//-----------------------------------------------------------------------------------------
+// READ 4
 // 6.4 Find all permutations of an array
 // Replace start index with Current index. All other elements except current index should be added.
-void printAllPermutationsRecUtil(int arr[], uint32_t cI, uint32_t eI, int result[], uint32_t resIdx)
+//-----------------------------------------------------------------------------------------
+void permuteIntArray(vector<int> nums, uint32_t stIdx)
 {
-    if (cI > eI)
+    if (stIdx == nums.size() -1)
     {
-        return;
+        printVectorInt(nums, nums.size() - 1);
     }
 
-    if (cI == eI)
+    for(uint32_t i = stIdx; i < nums.size(); i++)
     {
-        result[resIdx] = arr[cI];
-        printArrayEndIdx(result, resIdx);
-        return;
-    }
-
-    for (uint32_t i = 0; i <= eI; i++)
-    {
-        result[resIdx] = arr[i];
-        printArrayEndIdx(result, resIdx);
-
-        printAllPermutationsRecUtil(arr, i+1, eI, result, resIdx + 1);
+        swap(nums[i], nums[stIdx]);
+        permuteIntArray(nums, stIdx + 1);
+        swap(nums[i], nums[stIdx]);
     }
 }
 
 void printAllPermutationsRec(int arr[], int num)
 {
-    int* result = new int[num];
-    printAllPermutationsRecUtil(arr, 0, num - 1, result, 0);
-    delete[] result;
+    vector<int> nums(arr, arr + num);
 
+    permuteIntArray(nums, 0);
 }
 
-// 6.5 Print all anagrams of a string
+//-----------------------------------------------------------------------------------------
+// READ 5
+// 6.5 Print all anagrams / permutations of a string
+//-----------------------------------------------------------------------------------------
+void printAnagramsUtilsStr(vector<char> vecStr, string result, uint32_t curLen, uint32_t tarLen)
+{
+    if (curLen == tarLen)
+    {
+        cout << result << endl;
+        return;
+    }
+
+    for (uint32_t i = curLen; i < vecStr.size(); i++)
+    {
+        // VERY IMP: Use temp array. It is needed to re insert the element back to the vector
+        char temp = vecStr[i];
+        result += temp;
+        swap(vecStr[i], vecStr[curLen]);
+
+        printAnagramsUtilsStr(vecStr, result, curLen + 1, tarLen);
+        swap(vecStr[i], vecStr[curLen]);
+        result.erase(result.find(temp));
+    }
+}
+
+void printAllAnagramsStr(string str)
+{
+    string result = "";
+    vector<char> vecStr(str.begin(), str.end());
+
+    printVectorChar(vecStr);
+    printAnagramsUtilsStr(vecStr, result, 0, str.size());
+}
+
+/*
 void printAnagramsUtils(vector<char> vecStr, char result[], uint32_t curLen, uint32_t tarLen)
 {
     if (curLen == tarLen)
@@ -367,38 +420,12 @@ void printAllAnagrams(string str)
     printVectorChar(vecStr);
     printAnagramsUtils(vecStr, result, 0, str.size());
 }
+*/
 
-void printAnagramsUtilsStr(vector<char> vecStr, string result, uint32_t curLen, uint32_t tarLen)
-{
-    if (curLen == tarLen)
-    {
-        cout << result << endl;
-        return;
-    }
-
-    for (uint32_t i = 0; i < vecStr.size(); i++)
-    {
-        // VERY IMP: Use temp array. It is needed to re insert the element back to the vector
-        char temp = vecStr[i];
-        result += temp;
-        vecStr.erase(find(vecStr.begin(), vecStr.end(), temp));
-        printAnagramsUtilsStr(vecStr, result, curLen + 1, tarLen);
-        vecStr.insert(vecStr.begin(), temp);
-        result.erase(result.find(temp));
-    }
-}
-
-void printAllAnagramsStr(string str)
-{
-    string result = "";
-    vector<char> vecStr(str.begin(), str.end());
-
-    printVectorChar(vecStr);
-    printAnagramsUtilsStr(vecStr, result, 0, str.size());
-}
-
-// Problem 6.7
+//-----------------------------------------------------------------------------------------
+// Problem 6.5b
 // http://stackoverflow.com/questions/12477339/finding-anagrams-for-a-given-word
+//-----------------------------------------------------------------------------------------
 void printAllAnagramsUsingDict(string str)
 {
     // Part 1. Update the dictionary contents into a hash table
@@ -441,8 +468,34 @@ void printAllAnagramsUsingDict(string str)
     }
 }
 
-// 6.4b Recrusive way to find all permutations
+//-----------------------------------------------------------------------------------------
+// READ 6
+// 6.6 Print all possible strings of length k that can be formed from a set of n characters
+//
+// IMP:
+// Set of characters. So with a, b, c we can form aa, ab, ac, ba, bb, bc, ca, cb, cc
+//-----------------------------------------------------------------------------------------
+// Using Strings
+void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, string res)
+{
+    if (curNum == tarNum)
+    {
+        cout << res << endl;
+        return;
+    }
+
+    for (char c : str)
+    {
+        res += c;
+        printAllKLengthStringsRec(str, tarNum, curNum + 1, res);
+
+        // Create room for the next character in the result
+        res.pop_back();
+    }
+}
+
 // Using Char array
+/*
 void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, char res[])
 {
     if (curNum == tarNum)
@@ -461,38 +514,22 @@ void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, cha
             res[curNum] = c;
             printAllKLengthStringsRec(str, tarNum, curNum + 1, res);
         }
-        //res.pop_back();
     }
 
 }
-
-// Using Strings
-void printAllKLengthStringsRec(string str, uint32_t tarNum, uint32_t curNum, string res)
-{
-    if (curNum == tarNum)
-    {
-        cout << res << endl;
-        return;
-    }
-
-    for (char c : str)
-    {
-        res += c;
-        printAllKLengthStringsRec(str, tarNum, curNum + 1, res);
-        res.pop_back();
-    }
-
-}
+*/
 
 void printAllKLengthStrings(string str, uint32_t k)
 {
     string result;
    // char res[3];
-    char c;
     printAllKLengthStringsRec(str, k, 0,  result);
     //printAllKLengthStringsRec(str, k, 0,  res);
 }
 
+//-----------------------------------------------------------------------------------------
+// Main function
+//-----------------------------------------------------------------------------------------
 int main()
 {
     // 3 way quick sort
@@ -501,31 +538,32 @@ int main()
 
         printArray(arr, sizeof(arr) / sizeof(int));
 
-        cout << "Three Way Quick Sort" << endl;
+        cout << endl << "6.1 Three Way Quick Sort" << endl;
         threeWayQuickSort(arr, sizeof(arr) / sizeof(int));
         printArray(arr, sizeof(arr) / sizeof(int));
     }
 
     // Max difference in an array
     {
+        cout << endl << "6.2 Max Difference in Array" << endl;
         //int arr2[] = {7, 9, 5, 6, 3, 2}; 
         //int arr2[] =  { 3, 2, 6, 9, 5 }; 
         int arr2[] =  { 10, 1, 12, 3, 4, 28, 1 }; 
-        //maxDifference(arr2, sizeof(arr2) / sizeof(int));
+        maxDifference(arr2, sizeof(arr2) / sizeof(int));
     }
 
     // Print all subsets
     {
+        cout << endl << "6.3 Find all subsets of an array" << endl;
         int arr3[] = {1, 2, 3, 4};
-        cout << "Print All Subsets" << endl;
         printAllSubset(arr3, sizeof(arr3) / sizeof(int));
         cout << endl;
-        cout << "Print All Substring" << endl;
+        cout << "6.3b Find all substrings of an array using SUBSTING function." << endl;
         printAllSubSring(arr3, sizeof(arr3) / sizeof(int));
         cout << endl;
 
         // Version 2
-        cout << "Print All Subsets Version 2" << endl;
+        cout << "6.3c2 Recrusive way to find all subsets" << endl;
         vector<int> nums(arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
         printAllSubSetVer2(arr3, sizeof(arr3) / sizeof(arr3[0]));
     }
@@ -533,7 +571,7 @@ int main()
     // Print all Subsets using recursion
     {
         int arr4[] = {1, 2, 3, 4};
-        cout << "Print All Subsets Using Recursion" << endl;
+        cout << endl << "6.3c Recrusive way to find all substrings" << endl;
         vector < vector <int> > subsetVec;
         printAllSubsetRec(arr4, 0, sizeof(arr4) / sizeof(int) - 1, subsetVec);
         printVectorOfVectors(subsetVec);
@@ -542,27 +580,22 @@ int main()
 
     // Print All Permutation of an array
     {
+        cout << endl << "6.4 Find all permutations of an array" << endl;
         int arr[] = {1, 2, 3};
         // Goes on infinite loop
-        //printAllPermutationsRec(arr, sizeof(arr)/sizeof(arr[0]));
+        printAllPermutationsRec(arr, sizeof(arr)/sizeof(arr[0]));
     }
-
-    // Print all permutations of a String
 
     // Print all anagrams of a string
     {
-        cout << "Print All Anagrams Recursion" << endl;
+        cout << endl << "6.5a Print all anagrams / permutations of a string" << endl;
         string str = "abc";
-        printAllAnagrams(str);
-
-        cout << "Print All Anagrams Recursion" << endl;
-        string str2 = "abc";
-        printAllAnagramsStr(str2);
+        printAllAnagramsStr(str);
     }
 
     // Print all possible strings of length k that can be formed from a set of n characters 
     {
-        cout << "All Possible strings of Length k" << endl;
+        cout << endl << "6.6 Print all possible strings of length k that can be formed from a set of n characters" << endl;
         string s = "abc";
         printAllKLengthStrings(s, 2);
     }

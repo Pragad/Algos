@@ -228,7 +228,7 @@ void printVector(const vector<T>& myData)
 //            Ans: x
 // Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
-bool findFirstNonMatchingChar(string s1, string s2, char& result)
+bool findFirstNonMatchingChar(const string& s1, const string& s2, char& result)
 {
     uint32_t shortLen = (s1.length() < s2.length() ? s1.length() : s2.length());
     uint32_t i = 0;
@@ -317,7 +317,7 @@ struct uniqChar
     uint32_t index;
 };
 
-char findUniqueChar(string str)
+char findUniqueChar(const string& str)
 {
     if (str.empty())
     {
@@ -1129,6 +1129,9 @@ int largestNumByRemovingDup(int number)
         }
     }
 
+    // TODO: What if the number has smaller number on either sides?
+    // 12553664
+    // We can just go ahead and remove the last duplicate character
     // Control should not reach here
     return 0;
 }
@@ -1194,6 +1197,7 @@ void generalizedAbbrevation(string word)
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 12. Find if two rectangles overlap
 // http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+// https://silentmatt.com/rectangle-intersection/
 // ------------------------------------------------------------------------------------------------
 // Points should be such that
 //      a1.x < a2.x &&
@@ -1513,6 +1517,31 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
 // PROBLEM 17. Find minimum number of conference room required
 // http://stackoverflow.com/questions/12283559/find-overlapping-appointments-in-on-time
 // http://stackoverflow.com/questions/24657695/optimal-room-count-and-sizes-for-n-overlapping-meeting-schedules
+// http://blog.gainlo.co/index.php/2016/07/12/meeting-room-scheduling-problem/
+//
+// Logic from Gainlo:
+//      1. If you sort both Start times and end times together
+//      2. Have a count.
+//      3. Increase when you see a start time and decrease when you see an end time
+//      4. If count is always 0. Then no overlap
+//      5. Max value of count is the maximum interference
+//
+// Logic:
+//      1. Keep 2 vectors
+//      2. One vector stores Meeting time based on ASCENDING ORDER OF START TIMES
+//      3. Another vector stores Meeting time based on DESCENDING ORDER OF END TIMES
+//
+//      4. If Start time of new entry is LESS than Least end time of all entries
+//         i.e. New meeting starts at 4pm and 
+//              least end time of all current meetings is 5pm
+//         Then we should add new meeting to our list
+//
+//      5. Else, find the first meeting who end time is JUST lesser than current meeting's
+//         start time.
+//         Go one step back. So this meeting should be over before current meeting's start
+//         time
+//         For sure this entry will be present because, condition in STEP 4 takes care of it
+//         Remove this entry and push the new entry
 // ------------------------------------------------------------------------------------------------
 static const double EPSILON = 0.000001;
 
@@ -1575,6 +1604,7 @@ uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
 {
     uint32_t minRoomReqd = 0;
     // Sort by ascending order of start Time
+    // Time Complexity: O(N log(N))
     sort(meetingsList.begin(), meetingsList.end());
 
     vector<struct MeetingTime> meetingsEndTimeSort;
@@ -1586,6 +1616,7 @@ uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
         if (meetingsEndTimeSort.empty() ||
             meetingsEndTimeSort[meetingsEndTimeSort.size()-1].endTime > meeting.startTime)
         {
+            // Time Complexity: Should be able to push at right position in log(N)
             meetingsEndTimeSort.push_back(meeting);
             sort(meetingsEndTimeSort.begin(), meetingsEndTimeSort.end(), greater<MeetingTime>());
         }
@@ -1598,6 +1629,7 @@ uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
             // 
             // Lineraly traverse END TIME VECTOR to find the first one which has end time
             // greater than current start time
+            // Time Complexity: Should be able to find the meeting in log(N)
             for (i = 0; i < meetingsEndTimeSort.size(); i++)
             {
                 // Eg: Start Time: 11am
@@ -1614,6 +1646,7 @@ uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
                 meetingsEndTimeSort.erase(meetingsEndTimeSort.begin() + i);
             }
 
+            // Time Complexity: Should be able to push at right position in log(N)
             meetingsEndTimeSort.push_back(meeting);
             sort(meetingsEndTimeSort.begin(), meetingsEndTimeSort.end(), greater<MeetingTime>());
         }
@@ -1749,49 +1782,6 @@ double medianTwoSortedDiffSizeArrays(int A[], int n, int B[], int m)
 //
 // IMP: First array should be bigger than the second array
 // ------------------------------------------------------------------------------------------------
-int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
-{
-    if (k > num1 + num2)
-    {
-        cout << "Error" << endl;
-        return -1;
-    }
-
-    uint32_t index1 = 0;
-    uint32_t index2 = 0;
-    uint32_t step = 0;
-
-    while (index1 + index2 < k - 1)
-    {
-        step = (k - index1 - index2) / 2;    
-        uint32_t step1 = index1 + step;
-        uint32_t step2 = index2 + step;
-
-        if (num1 > step1 - 1 &&
-            (num2 <= step2 - 1 ||
-             arr1[step1 - 1] < arr2[step2 - 1]))
-        {
-            index1 = step1;
-        }
-        else
-        {
-            index2 = step2;
-        }
-    }
-
-    // Now idx1 + idx2 will be k-1
-    cout << "Idx 1: " << index1 << "; Index 2: " << index2 << endl;
-    if (num1 > index1 &&
-        (num2 <= index2 || arr1[index1] < arr2[index2]))
-    {
-        return arr1[index1];
-    }
-    else
-    {
-        return arr2[index2];
-    }
-}
-
 // Kth Smallest Element Iterative method 2
 // We maintain i + j = k, and find such i and j so that a[i-1] < b[j-1] < a[i] (or the other way round).
 // Now since there are i elements in 'a' smaller than b[j-1], and j-1 elements in 'b' smaller than b[j-1], b[j-1] is the i + j-1 + 1 = kth smallest element.
@@ -1838,6 +1828,49 @@ int kthSmallestElementIterativeTwo(int arr1[], uint32_t num1, int arr2[], uint32
     else
     {
         return arr2[idx2 - 1];
+    }
+}
+
+int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
+{
+    if (k > num1 + num2)
+    {
+        cout << "Error" << endl;
+        return -1;
+    }
+
+    uint32_t index1 = 0;
+    uint32_t index2 = 0;
+    uint32_t step = 0;
+
+    while (index1 + index2 < k - 1)
+    {
+        step = (k - index1 - index2) / 2;    
+        uint32_t step1 = index1 + step;
+        uint32_t step2 = index2 + step;
+
+        if (num1 > step1 - 1 &&
+            (num2 <= step2 - 1 ||
+             arr1[step1 - 1] < arr2[step2 - 1]))
+        {
+            index1 = step1;
+        }
+        else
+        {
+            index2 = step2;
+        }
+    }
+
+    // Now idx1 + idx2 will be k-1
+    cout << "Idx 1: " << index1 << "; Index 2: " << index2 << endl;
+    if (num1 > index1 &&
+        (num2 <= index2 || arr1[index1] < arr2[index2]))
+    {
+        return arr1[index1];
+    }
+    else
+    {
+        return arr2[index2];
     }
 }
 
@@ -1902,6 +1935,9 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
     // Now the heap will contain the first k numbers
     // Complexity O(K log K)
     // One push is (Log k)
+    //
+    // 'K' batched inserts could be done in O(K)
+    // So put into a vector and do make_heap
     for(uint32_t i = 0; i < k; i++)
     {
         kSmallNos.push(arr[i]);
@@ -1991,7 +2027,6 @@ pair<int32_t, int32_t> threeWayQuickSortPartition(vector<int>& nums, int32_t stI
     // Start Pivot is at Low + 1 and End Pivot is at high
     pivotPos = make_pair(low, high);
     return pivotPos;
-
 }
 
 int32_t quickSortPartition(vector<int>& nums, int32_t stIdx, int32_t endIdx)
@@ -2182,7 +2217,6 @@ bool isElementPresentInRowColMatrix(vector<vector<int> > twoD, int elmt)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 23. Multiplication of two very large numbers
-//             Using Bit shift operation
 // https://discuss.leetcode.com/topic/30508/easiest-java-solution-with-graph-explanation/2
 // ------------------------------------------------------------------------------------------------
 string largeNumberMultiplicationString(string str1, string str2)
@@ -2968,6 +3002,8 @@ bool compGreater(pair<int, int> x, pair<int, int> y)
 void findKclosestPoints(vector<pair<int, int> >& pointsList, uint32_t k)
 {
     uint32_t i = 0;
+
+    // Making use of functional's std::function
     priority_queue< pair<int, int>, vector<pair<int, int> >, std::function<bool(pair<int, int>, pair<int, int>)> > kClosest(compGreater);
 
     for (; i < k; i++)
@@ -3547,7 +3583,8 @@ int main()
     // Problem 9. Remove duplicate int from a number
     {
         cout << endl << "Problem 9" << endl;
-        cout << largestNumByRemovingDup(122334) << endl;
+        cout << largestNumByRemovingDup(12553664) << endl;
+        //cout << largestNumByRemovingDup(122334) << endl;
         //cout << largestNumByRemovingDup(433221) << endl << endl;
         //cout << largestNumByRemovingDup(122334) << endl;
         //cout << largestNumByRemovingDup(43332221) << endl << endl;

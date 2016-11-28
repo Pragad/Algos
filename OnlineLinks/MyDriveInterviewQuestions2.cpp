@@ -38,7 +38,7 @@ using namespace std;
  * PROBLEM 4. Evaluate Reverse Polish Notation
  * int evalRPN(vector<string>& tokens)
  *
- * PROBLEM 5. myAtoi function
+ * PROBLEM 5. myAtoi function String to Integer
  * int myAtoi(string str)
  *
  * PROBLEM 6. Reverse words in a sentence
@@ -52,6 +52,12 @@ using namespace std;
  *
  * PROBLEM 9. Reverse Bits in a Number
  * uint32_t reverseBits(uint32_t n)
+ *
+ * PROBLEM 10. Sorted Array. Find first element smaller than given number
+ * int findFirstSmallerElement(vector<int> nums, int myNum)
+ *
+ * PROBLEM 11. Sorted Array. Find first element smaller than given number
+ * int findFirstGreaterElement(vector<int> nums, int myNum)
  */
 
 // Utility function to print a vector of ints
@@ -536,9 +542,21 @@ struct heapStuff
     uint32_t row;
     uint32_t col;
 
+    /*
     friend bool operator<(const heapStuff& ls, const heapStuff& rs)
     {
         return ls.num > rs.num;
+    }
+    */
+
+    friend bool operator>(const heapStuff& ls, const heapStuff& rs)
+    {
+        return ls.num > rs.num;
+    }
+
+    friend bool operator<(const heapStuff& ls, const heapStuff& rs)
+    {
+        return ls.num < rs.num;
     }
 };
 
@@ -553,8 +571,8 @@ pair<int, int> findMinRangeForAllLists(vector<vector<int>> lists)
     // A pair of ints to store the range
     pair<int, int> minRange = {0, numeric_limits<int>::max()};
 
-    // A priority queue that holds the num, row and col position
-    priority_queue<heapStuff> numsHeap;
+    // A min-heap that holds the num, row and col position
+    priority_queue<heapStuff, vector<heapStuff>, greater<heapStuff>> numsHeap;
 
     // First push the first element from each of the lists into the heap
     for (uint32_t i = 0; i < lists.size(); i++)
@@ -722,7 +740,7 @@ int main()
 
     // Problem 5.
     {
-        cout << endl << "PROBLEM 5. myAtoi" << endl;
+        cout << endl << "PROBLEM 5. myAtoi  String to Integer" << endl;
         cout << myAtoi("54321") << endl;
         cout << myAtoi("0") << endl;
         cout << myAtoi("-1") << endl;
@@ -780,6 +798,38 @@ int main()
         cout << reverseBits(26) << endl;
         cout << reverseBits(36) << endl;
         cout << reverseBits(43261596) << endl;
+    }
+
+    // PROBLEM 10. Sorted Array. Find first element smaller than given number
+    {
+        cout << endl << "PROBLEM 10. Sorted Array. Find first element smaller than given number" << endl;
+        vector<int> nums = {2, 4, 6, 7, 8, 9, 11, 15};
+        /*
+        cout << findFirstSmallerElement(nums, 2);
+        cout << findFirstSmallerElement(nums, 4);
+        cout << findFirstSmallerElement(nums, 5);
+        cout << findFirstSmallerElement(nums, 6);
+        cout << findFirstSmallerElement(nums, 7);
+        cout << findFirstSmallerElement(nums, 11);
+        cout << findFirstSmallerElement(nums, 15);
+        cout << findFirstSmallerElement(nums, 17);
+        */
+    }
+
+    // PROBLEM 11. Sorted Array. Find first element smaller than given number
+    {
+        cout << endl << "PROBLEM 11. Sorted Array. Find first element smaller than given number" << endl;
+        vector<int> nums = {2, 4, 6, 7, 8, 9, 11, 15};
+        /*
+        cout << findFirstGreaterElement(nums, 2);
+        cout << findFirstGreaterElement(nums, 4);
+        cout << findFirstGreaterElement(nums, 5);
+        cout << findFirstGreaterElement(nums, 6);
+        cout << findFirstGreaterElement(nums, 7);
+        cout << findFirstGreaterElement(nums, 11);
+        cout << findFirstGreaterElement(nums, 15);
+        cout << findFirstGreaterElement(nums, 17);
+        */
     }
 
     return 0;
