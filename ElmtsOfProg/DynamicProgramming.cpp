@@ -37,7 +37,10 @@ using namespace std;
  * bool isSubsetSum(const vector<int>& nums)
  * void printAllSubsetSum(const vector<int>& nums)
  *
- * PROBLEM 8. 
+ * PROBLEM 8. Edit Distance between two Strings
+ * int minEditDistance(const string& word1, const string& word2)
+ *
+ * PROBLEM 9. Longest Palindromic Substring
  */
 
 // Utility function to print a Vector of Vector
@@ -56,6 +59,16 @@ void printVecOfVec(vector< vector<T> > vecOfVec)
     cout << endl;
 }
 
+// Utility function to print a vector 
+template<typename T>
+void printVector(vector<T> nums)
+{
+    for (auto num : nums)
+    {
+        cout << num << ", ";
+    }
+    cout << endl;
+}
 
 // ---------------------------------------------------------------------------------------
 // Problem 1: Fibonacci of a number
@@ -189,6 +202,7 @@ void ladderPathsStrRec(string strPath, unsigned int num, unsigned int recLevel)
 
     if (num >= 2)
     {
+        // As we have added '1' remove it
         // Add '2' to our paths and go two steps further
         strPath.pop_back();
         strPath += '2';
@@ -280,8 +294,11 @@ uint32_t countPossibilitiesLadderDynamic(uint32_t num)
 // Problem 3: Longest Increasing Subsequence
 // http://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming
 //
-// Let arr[0..n-1] be the input array and L(i) be the length of the LIS till index i such that arr[i] is part of LIS and arr[i] is the last element in LIS, then L(i) can be recursively written as.
-// L(i) = { 1 + Max ( L(j) ) } where j < i and arr[j] < arr[i] and if there is no such j then L(i) = 1
+//      Let arr[0..n-1] be the input array and
+//      L(i) be the length of the LIS till index i such that arr[i] is part of LIS and arr[i] is the last element in LIS, then L(i) can be recursively written as.
+//      
+//      L(i) = { 1 + Max ( L(j) ) }
+//      where j < i and arr[j] < arr[i] and if there is no such j then L(i) = 1
 //
 //      Complexity Recursion: O(n!)
 //      Complexity DP: O(n log(n))
@@ -325,40 +342,19 @@ uint32_t longestIncreasingSubSequenceRec(int arr[], uint32_t num)
     return maxVal;
 }
 
+// ---------------------------------------------------------------------------------------
 // TIME COMPLEXITY: O(N^2)
-uint32_t longestIncreasingSubSequence(int arr[], int num)
-{
-    if (num < 2)
-    {
-        return num;
-    }
-
-    uint32_t maxSoFar = 0;
-    uint32_t endIdx;
-    int DP[num];
-    DP[0] = 1;
-    
-    for (uint32_t i = 1; i < num; i++)
-    {
-        DP[i] = 1;
-        for (int32_t j = i-1; j >=0; j--)
-        {
-            if ((DP[j] + 1 > DP[i]) && (arr[j] < arr[i]))
-            {
-                DP[i] = DP[j] + 1;
-            }
-        }
-
-        if (DP[i] > maxSoFar)
-        {
-            maxSoFar = DP[i];
-            endIdx = i;
-        }
-    }
-
-    return maxSoFar;
-}
-
+// DP Logic: O(N*N)
+//      
+//      Arr: 3, 5, 6, 2, 5, 4, 19, 5, 6, 7, 12
+//      DP : 1, 2, 3, 1, 2, 2,  4, 3, 4, 5,  6
+//
+//      1. Start i at 1 and j at 0
+//      2. If num[i] > num[j], then DP[i] = 1 + DP[j]
+//      3. Go till 'j' reaches 'i'
+//      4. Once 'j' reaches 'i', move 'j' back to 0 and increment 'i'
+//      5. Keep track of max values got so far
+// ---------------------------------------------------------------------------------------
 uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
 {
     if (nums.size() < 2)
@@ -370,15 +366,15 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
     // maxSoFar should be initialized
     uint32_t maxSoFar = 0;
     uint32_t endIdx;
-    int DP[nums.size()];
-    DP[0] = 1;
+
+    // Make everything 1 to start with. Because LIS will be at least 1
+    vector<uint32_t> DP(nums.size(), 1);
     
     for (uint32_t i = 1; i < nums.size(); i++)
     {
-        DP[i] = 1;
         for (int32_t j = i-1; j >=0; j--)
         {
-            if ((DP[j] + 1 > DP[i]) && (nums[j] < nums[i]))
+            if ((nums[j] < nums[i]) && (DP[j] + 1 > DP[i]))
             {
                 DP[i] = DP[j] + 1;
             }
@@ -390,16 +386,16 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
             endIdx = i;
         }
     }
+    //printVector(DP);
 
     return maxSoFar;
 }
 
 // ---------------------------------------------------------------------------------------
-// Dynamic Programming Approach
+// Dynamic Programming Approach: O(N log(N))
+//
 // Collection of integers: 2 6 3 4 1 2 9 5 8
-// 
 // Steps:
-// 
 // 0. S = {} - Initialize S to the empty set
 // 1. S = {2} - New largest LIS
 // 2. S = {2, 6} - New largest LIS
@@ -412,9 +408,7 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
 // 9. S = {1, 2, 4, 5, 8} - New largest LIS
 
 // Collection of integers: 10,9,2,5,3,7,101,18
-// 
 // Steps:
-// 
 // 0. S = {} - Initialize S to the empty set
 // 1. S = {10} - New largest LIS
 // 2. S = {9} - Change 10 to 9
@@ -424,10 +418,6 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
 // 6. S = {2, 3, 7} - New largest LIS
 // 7. S = {2, 3, 7, 101} - New largest LIS
 // 8. S = {2, 3, 7, 18} - Changed 101 to 18
-
-// Utility function to calculate LIS
-// O(n log(n)) dynamic programming approach
-// VERY IMP:
 // ---------------------------------------------------------------------------------------
 uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
 {
@@ -477,8 +467,6 @@ uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
     }
 }
 
-// Better Algorithm than Previous DP solution
-// Complexity is O(N log N). Uses binary search
 uint32_t longestIncreasingSubseq(vector<int> nums)
 {
     if (nums.size() < 2)
@@ -511,7 +499,7 @@ uint32_t longestIncreasingSubseq(vector<int> nums)
         else
         {
             // Find the First element that is greater than the current element
-            // and insert the new element there
+            // and replace the new element there
             uint32_t index = findFirstLargerElement(longIncSeq, nums[i]);
             longIncSeq[index] = nums[i];
         }
@@ -547,6 +535,22 @@ uint32_t longestCommonSubSequenceRec(string str1, string str2)
 // ---------------------------------------------------------------------------------------
 // Problem 4: Longest Common Subsequence
 //            Using DP
+//
+// Logic: 
+//      1. If str[i] == str[j] then
+//         DP[i][j] = 1 + DP[i-1][j-1]
+//      2. Else
+//         DP[i][j] = max(DP[i-1][j], DP[i][j-1])
+//
+//         X M J Y A U Z
+//       0 0 0 0 0 0 0 0
+//     M 0 0 1 1 1 1 1 1
+//     Z 0 0 1 1 1 1 1 2
+//     J 0 0 1 2 2 2 2 2
+//     A 0 0 1 2 2 3 3 3
+//     W 0 0 1 2 2 3 3 3
+//     X 0 1 1 2 2 3 3 3
+//     U 0 1 1 2 2 3 4 4
 // ---------------------------------------------------------------------------------------
 uint32_t longestCommonSubSequenceDP(string str1, string str2)
 {
@@ -557,14 +561,14 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
     }
     
     // VERY IMP. To initialize a 2D array to 0.
-    uint32_t subSeqDP[str1.length()+1][str2.length()+1] = {{0}};
+    //uint32_t subSeqDP[str1.length()+1][str2.length()+1] = {{0}};
 
-    //vector< vector<int> > myTwoDVec(rows, vector<int> (cols, 5));
+    vector< vector<int> > subSeqDP(str1.length() + 1, vector<int> (str2.length() + 1, 0));
     
     // STD:FILL NOT WORKING
     //std::fill_n(subSeqDP, ((str1.length()+1) * (str2.length()+1)), 0);
     //std::fill_n(subSeqDP, (sizeof subSeqDP / sizeof **subSeqDP), 0);
-    memset(subSeqDP, 0, sizeof(subSeqDP));
+    //memset(subSeqDP, 0, sizeof(subSeqDP));
 
     for(uint32_t i = 1; i <= str1.length(); i++)
     {
@@ -581,6 +585,7 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
         }
     }
 
+    //printVecOfVec(subSeqDP);
     // To print out the LCS
     string strLcs;
     // VeRY IMP: Start from Length
@@ -648,19 +653,30 @@ uint32_t minCoinChangeRec(uint32_t coins[], uint32_t num, uint32_t val)
     }
 }
 
+// ---------------------------------------------------------------------------------------
 // http://www.geeksforgeeks.org/find-minimum-number-of-coins-that-make-a-change/
 // Coins:     2, 3, 4, 5
 // DP   : 0, 1   , 2, 3, 4, 5, 6
 // 6    : 0, -INF, 1, 1, 2, 2, 2
 //                       1, 1, 1
+//
+// Logic: 
+//      1. If coins[j] >  val, i.e. Coin '7' Val '2'
+//         We can't form 2 from coin 7. So continue
+//      2. Else DP[i] = min(1 + DP[i - coin[j]])
+//      3. To get the coins we should use another array to store as and when we update
+//      
+//      Sum: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+//      DP : 0, 1, 2, 3, 4, 1, 1, 2, 1, 2,  2,  2,  2 
+//
 // Complexity: O(m.n)
+// ---------------------------------------------------------------------------------------
 uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
 {
     // We will store values till dpTable of VAL. So need space from 0 to Val + 1.
     // To store dpTable[5], we need an array of size 6.
-    uint32_t dpTable[val+1];
+    vector<uint32_t> dpTable(val + 1, UINT_MAX);
     uint32_t tmpResult = UINT_MAX;
-    std::fill_n(dpTable, val+1, UINT_MAX);
 
     dpTable[0] = 0;
 
@@ -683,6 +699,7 @@ uint32_t minCoinChangeDP(uint32_t coins[], uint32_t num, uint32_t val)
         }
     }
 
+    // printVector(dpTable);
     return dpTable[val];
 }
 
@@ -911,59 +928,63 @@ int longestIncreasingPath(vector<vector<int>>& matrix)
             }
         }
     }
-
-    printVecOfVec(incPathMatrix);
+    // printVecOfVec(incPathMatrix);
 
     return 1 + longestIncPath;
 }
 
 // ---------------------------------------------------------------------------------------
 // PROBLEM 7. Partition Equal Subset Sum
-// find iF the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+// Find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+// 
+// Logic:
+//      0. We can get 0 total from a empty set. So Colum 0 will be all T
+//      1. If nums[i] > curValue, nums[i] won't play any role. So just get from top
+//         sumMap[i][j] = sumMap[i-1][j]
+//      2. Also if sumMap[i-1][j] is True, then sumMap[i][j] is True
+//      3. If nums[i] <= curValue, go to previous row and go curValue steps back and get that value
+//         sumMap[i][j] = sumMap[i-1][j - nums[i]]
+//
+//     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+//  3: T, F, F, T, F, F, F, F, F, F, F,  F,  F,
+// 34: T, F, F, T, F, F, F, F, F, F, F,  F,  F,
+//  4: T, F, F, T, T, F, F, T, F, F, F,  F,  F,
+// 11: T, F, F, T, T, F, F, T, F, F, F,  T,  F,
+//  5: T, F, F, T, T, T, F, T, T, T, F,  T,  T,
+//  2: T, F, T, T, T, T, T, T, T, T, T,  T,  T,
 // ---------------------------------------------------------------------------------------
-void printTwoDVector(const vector< vector<bool> >& twoDVec)
-{
-    for (auto oneDVec : twoDVec)
-    {
-        for (auto num : oneDVec)
-        {
-            cout << num << ", ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 bool isSubsetSum(const vector<int>& nums, int target)
 {
     // Create a 2D vector and fill it with 0s
     vector< vector<bool> > sumMap(nums.size(), vector<bool>(target + 1, 0));
 
-    //printTwoDVector(sumMap);
+    // Make sure colum 0 is T. Or if target is 0, return true
+    for (uint32_t i = 0; i < nums.size(); i++)
+    {
+        sumMap[i][0] = 1;
+    }
+
     for (int32_t i = 0; i < nums.size(); i++)
     {
         for (int32_t j = 1; j <= target; j++)
         {
-            if ((i - 1) >= 0 && sumMap[i - 1][j] == true)
+            if (nums[i] == j ||
+                (i - 1 >= 0 && sumMap[i - 1][j] == 1))
             {
-                sumMap[i][j] = true;
+                sumMap[i][j] = 1;
             }
-
-            else if (nums[i] == j)
+            else if (nums[i] < j && (i - 1 >= 0) && (j - nums[i] >= 0))
             {
-                sumMap[i][j] = true;
+                sumMap[i][j] = sumMap[i - 1][j - nums[i]];
             }
-            else if (nums[i] < j)
+            else if (nums[i] > j && (i - 1 >= 0))
             {
-                if (i - 1 >= 0 && (j - nums[i]) >= 0)
-                {
-                    sumMap[i][j] = sumMap[i - 1][j - nums[i]];
-                }
+                sumMap[i][j] = sumMap[i - 1][j];
             }
         }
     }
 
-    //printTwoDVector(sumMap);
+    //printVecOfVec(sumMap);
     return sumMap[nums.size() - 1][target];
 }
 
@@ -989,6 +1010,55 @@ bool canPartition(vector<int>& nums)
 
     // Now check if we have a subset for half the sum
     return isSubsetSum(nums, numsTotal/2);
+}
+
+// ---------------------------------------------------------------------------------------
+// Problem 8. Edit Distance between two Strings
+// Logic:
+//      If word1[i] == word2[j] then DP[i][j] will be same as DP[i-1][j-1]
+//      Else DP[i][j] will be minimum of DP[i-1][j], DP[i][j-1], DP[i-1][j-1]
+//
+//     a z c e d
+//   0 1 2 3 4 5
+// a 1 0 1 2 3 4
+// b 2 1 1 2 3 4
+// c 3 2 2 1 2 3
+// d 4 3 3 2 2 2
+// e 5 4 4 3 2 3
+// f 6 5 5 4 3 3
+// ---------------------------------------------------------------------------------------
+int minEditDistance(const string& word1, const string& word2)
+{
+    // Create a 2D vector and fill it with 0s
+    vector<vector<uint32_t>> DPtable(word1.length() + 1, vector<uint32_t>(word2.length() + 1, 0));
+
+    // Start with empty string on both sides. So add the cost for converting from 
+    // empty string to word1 AND
+    // Cost for converting empty string to word2
+    iota(DPtable[0].begin(), DPtable[0].end(), 0);
+
+    for (uint32_t i = 0; i < word1.length() + 1; i++)
+    {
+        DPtable[i][0] = i;
+    }
+
+    for (uint32_t i = 1; i < DPtable.size(); i++)
+    {
+        for (uint32_t j = 1; j < DPtable[i].size(); j++)
+        {
+            if (word1[i - 1] == word2[j - 1])
+            {
+                DPtable[i][j] = DPtable[i - 1][j - 1];
+            }
+            else
+            {
+                DPtable[i][j] = 1 + min(min(DPtable[i - 1][j], DPtable[i][j - 1]), DPtable[i - 1][j - 1]);
+            }
+        }
+    }
+    //printVecOfVec(DPtable);
+
+    return DPtable[word1.length()][word2.length()];
 }
 
 // ---------------------------------------------------------------------------------------
@@ -1038,15 +1108,16 @@ int main()
         string str3 = "MZJAWXU";
         string str4 = "XMJYAUZ";
         cout << "LCS 1: " << longestCommonSubSequenceRec(str1, str2) << endl;
-        cout << "LCS 2: " << longestCommonSubSequenceDP(str3, str4) << endl;
+        cout << "LCS 2 Rec: " << longestCommonSubSequenceRec(str3, str4) << endl;
+        cout << "LCS 2 DP: " << longestCommonSubSequenceDP(str3, str4) << endl;
 
     }
 
     // Problem 5: Coin Change Problem
     {
         cout << endl << "Problem 5. Min Coins: " << endl;
-        uint32_t coins[] = {10, 5};
-        cout << minCoinChangeWrapper(coins, sizeof(coins)/sizeof(uint32_t), 20) << endl;
+        uint32_t coins[] = {1, 8, 6, 5};
+        cout << minCoinChangeWrapper(coins, sizeof(coins)/sizeof(uint32_t), 12) << endl;
     }
 
     // PROBLEM 6a. Longest Increasing Subsequence in a 2D Matrix considering Diagonals 
@@ -1115,7 +1186,15 @@ int main()
         printAllSubsetSum(nums, 12);
     }
 
-    // Problem 8. 
+    // Problem 8. Edit Distance between two Strings
     {
+        cout << endl << "Problem 8. Edit Distance between two Strings" << endl;
+        string word1a = "abcdef";
+        string word2a = "azced";
+        string word1b = "howareyo";
+        string word2b = "whoareyo";
+        string word1c = " what is this";
+        string word2c = "whatisthis";
+        cout << "Min Edit Dist: " << minEditDistance(word1b, word2b) << endl;
     }
 }

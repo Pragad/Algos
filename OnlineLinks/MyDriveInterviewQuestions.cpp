@@ -130,6 +130,9 @@ using namespace std;
  * PROBLEM 24. Finding the Minimum Window in S which Contains All Elements from T
  * uint32_t minWindowContainingString(string str1, string str2)
  *
+ * PROBLEM 24b. Finding the Minimum Window in S which Contains All Elements from Set T
+ * uint32_t minWindowContainingCharsInSet(string str1, string str2)
+ *
  * PROBLEM 25. Find if an element is present in a rotated sorted array
  * bool findInSortedRotatedArrayNew(vector<int> nums, int elmt)
  *
@@ -2392,8 +2395,9 @@ uint32_t minWindowContainingString(string str1, string str2)
                 {
                     // IMP: Do .at() only if the element is present. Else we will get
                     // out_of_range exception
-                    if (itrToFind != hasToFindMap.end() &&
-                        foundMap.at(str1[startPos]) > hasToFindMap.at(str1[startPos]))
+                    //if (itrToFind != hasToFindMap.end() &&
+                    //    foundMap.at(str1[startPos]) > hasToFindMap.at(str1[startPos]))
+                    if (itrToFind != hasToFindMap.end())
                     {
                         foundMap.at(str1[startPos])--;
                     }
@@ -2412,7 +2416,99 @@ uint32_t minWindowContainingString(string str1, string str2)
             }
         }
     }
-    cout << "Win Beg: " << windowBegIdx << "; Win End: " << windowEndIdx << "; Win Len: " << minWindowSize << endl;
+
+    if (minWindowSize != std::numeric_limits<std::int32_t>::max())
+    {
+        string resStr = str1.substr(windowBegIdx, windowEndIdx - windowBegIdx + 1);
+        cout << "SubStr: " << resStr << endl;
+        cout << "Win Beg: " << windowBegIdx << "; Win End: " << windowEndIdx << "; Win Len: " << minWindowSize << endl;
+    }
+
+    return minWindowSize;
+}
+
+// ------------------------------------------------------------------------------------------------
+// PROBLEM 24b. Minimum Window in S which Contains All Elements from Set T
+//
+// ASSUMPTION: All Characters are unique in str2
+// ------------------------------------------------------------------------------------------------
+uint32_t minWindowContainingCharsInSet(string str1, string str2)
+{
+    unordered_map<char, uint32_t> hasToFindMap;
+    uint32_t countFoundChars = 0;
+    uint32_t minWindowSize = std::numeric_limits<std::int32_t>::max();
+    uint32_t windowBegIdx = 0;
+    uint32_t windowEndIdx = 0;
+    uint32_t startPos = 0;
+
+    // Update Count of each character in a HasToFindMap
+    for (char c : str2)
+    {
+        // The below line takes care of the entire block
+        // ++hasToFindMap[c];
+        hasToFindMap[c] = 0;
+    }
+
+    // Go over each character and find if it is present in HasToFindMap
+    // If it is not present, then continue to the next character
+    // If it is present, then
+    //     Increase Count only when necessary
+    //     Check if Count has reached to Total Number of Characters 
+    for (uint32_t i = 0; i < str1.length(); i++)
+    {
+        auto itrToFind = hasToFindMap.find(str1[i]);
+
+        // If the character is not present in Has to find map then proceed to the next
+        // character.
+        if (itrToFind != hasToFindMap.end())
+        {
+            // If this is the first time we are seeing this character then
+            // increase the count
+            if (itrToFind->second == 0)
+            {
+                countFoundChars++;
+            }
+            (itrToFind->second)++;
+
+            // If we have found characters same as the number of characters in str2 then
+            // we have found a WINDOW
+            if (countFoundChars == str2.length())
+            {
+                // While we have more characters in hand, increment startIndex.
+                // This is to reduce the size of the window
+                //
+                // If the character is NOT present in HAS to find map, then go to next char
+                auto itrToFind = hasToFindMap.find(str1[startPos]);
+                while (itrToFind == hasToFindMap.end() || hasToFindMap.at(str1[startPos]) > 1)
+                {
+                    // IMP: Do .at() only if the element is present. Else we will get
+                    // out_of_range exception
+                    if (itrToFind != hasToFindMap.end())
+                    {
+                        hasToFindMap.at(str1[startPos])--;
+                    }
+
+                    startPos++;
+                    itrToFind = hasToFindMap.find(str1[startPos]);
+                }
+
+                // Compute the minimum Window length
+                if (minWindowSize > (i - startPos + 1))
+                {
+                    minWindowSize = (i - startPos + 1);
+                    windowBegIdx = startPos;
+                    windowEndIdx = i;
+                }
+            }
+        }
+    }
+
+    if (minWindowSize != std::numeric_limits<std::int32_t>::max())
+    {
+        string resStr = str1.substr(windowBegIdx, windowEndIdx - windowBegIdx + 1);
+        cout << "Str: " << str1 << "; SubStr: " << resStr << endl;
+        cout << "Win Beg: " << windowBegIdx << "; Win End: " << windowEndIdx << "; Win Len: " << minWindowSize << endl;
+    }
 
     return minWindowSize;
 }
@@ -3794,12 +3890,33 @@ int main()
     {
         cout << endl << "PROBLEM 24" << endl;
         cout << "Minimum Window containing characters" << endl;
-        string str1 = "ADOBECOEBANCD";
-        string str2 = "ABC";
-        string str3 = "acbbaca";
-        string str4 = "aba";
-        minWindowContainingString(str1, str2);
-        minWindowContainingString(str3, str4);
+        string str1a = "ADOBECOEBANCD";
+        string str1b = "ABC";
+        string str2a = "acbbaca";
+        string str2b = "aba";
+        string str3a = "a";
+        string str3b = "aa";
+        string str4a = "a";
+        string str4b = "a";
+        minWindowContainingString(str1a, str1b);
+        minWindowContainingString(str2b, str2b);
+        minWindowContainingString(str3a, str3b);
+        minWindowContainingString(str4a, str4b);
+    }
+
+    // PROBLEM 24b. Minimum Window in S which Contains All Elements from Set T
+    {
+        cout << endl << "PROBLEM 24b" << endl;
+        cout << "Minimum Window in S which Contains All Elements from Set T" << endl;
+        string str1a = "ADOBECOEBANCD";
+        string str1b = "ABC";
+        string str2a = "axcbbaca";
+        string str2b = "abc";
+        string str3a = "a";
+        string str3b = "a";
+        //minWindowContainingCharsInSet(str1a, str1b);
+        minWindowContainingCharsInSet(str2a, str2b);
+        //minWindowContainingCharsInSet(str3a, str3b);
     }
 
     // Problem 25. Find if an element is present in a rotated sorted array

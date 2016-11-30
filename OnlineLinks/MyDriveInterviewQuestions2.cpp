@@ -54,16 +54,26 @@ using namespace std;
  * uint32_t reverseBits(uint32_t n)
  *
  * PROBLEM 10. Sorted Array. Find first element smaller than given number
- * int findFirstSmallerElement(vector<int> nums, int myNum)
+ * int findFirstSmallerElementIndex(vector<int> nums, int myNum)
  *
  * PROBLEM 11. Sorted Array. Find first element smaller than given number
- * int findFirstGreaterElement(vector<int> nums, int myNum)
+ * int findFirstGreaterElementIndex(vector<int> nums, int myNum)
+ *
+ * PROBLEM 12: Square root of a number
+ * double squareRoot(double number)
+ *
+ * PROBLEM 13: Power of a number
+ * double myPow(double x, int n)
+ *
+ * PROBLEM 14. Replace 0s with 5 in a given number
+ * int replaceZerosWithFives(int num)
  */
 
 // Utility function to print a vector of ints
-void printVectorInt(vector<int> nums)
+template<typename T>
+void printVector(vector<T> nums)
 {
-    for (int num : nums)
+    for (auto num : nums)
     {
         cout << num << ", ";
     }
@@ -675,6 +685,319 @@ uint32_t reverseBits(uint32_t num)
 }
 
 // -----------------------------------------------------------------------------------------
+// PROBLEM 10. Sorted Array. Find first element smaller than given number
+// -----------------------------------------------------------------------------------------
+int findFirstSmallerElementIndex(vector<int> nums, int myNum)
+{
+    if (nums.empty())
+    {
+        return -1;
+    }
+
+    if (myNum > nums[nums.size() - 1])
+    {
+        return nums.size() - 1;
+    }
+
+    int32_t stIdx = 0;
+    int32_t endIdx = nums.size() - 1;
+
+    while (stIdx <= endIdx)
+    {
+        int32_t midIdx = stIdx + (endIdx - stIdx) / 2;
+
+        if (nums[midIdx] < myNum)
+        {
+            if (midIdx + 1 < nums.size() - 1 && nums[midIdx + 1] >= myNum)
+            {
+                return midIdx;
+            }
+            else
+            {
+                stIdx = midIdx + 1;
+            }
+        }
+        else
+        {
+            if (midIdx - 1 >= 0 && nums[midIdx - 1] < myNum)
+            {
+                return midIdx - 1;
+            }
+            else
+            {
+                endIdx = midIdx - 1;
+            }
+        }
+    }
+
+    return -1;
+}
+
+// -----------------------------------------------------------------------------------------
+// PROBLEM 11. Sorted Array. Find first element smaller than given number
+// -----------------------------------------------------------------------------------------
+int findFirstGreaterElementIndex(vector<int> nums, int myNum)
+{
+    if (nums.empty())
+    {
+        return -1;
+    }
+
+    if (myNum < nums[0])
+    {
+        return 0;
+    }
+
+    int32_t stIdx = 0;
+    int32_t endIdx = nums.size() - 1;
+
+    while (stIdx <= endIdx)
+    {
+        int32_t midIdx = stIdx + (endIdx - stIdx) / 2;
+
+        if (nums[midIdx] <= myNum)
+        {
+            if (midIdx + 1 < nums.size() - 1 && nums[midIdx + 1] > myNum)
+            {
+                return midIdx + 1;
+            }
+            else
+            {
+                stIdx = midIdx + 1;
+            }
+        }
+        // So num[midIdx] is GREATER than myNum
+        // If the previous number is a smaller or equal number, we go the answer
+        else
+        {
+            if (midIdx - 1 >= 0 && nums[midIdx - 1] <= myNum)
+            {
+                return midIdx;
+            }
+            else
+            {
+                endIdx = midIdx - 1;
+            }
+        }
+    }
+
+    return -1;
+}
+
+// ------------------------------------------------------------------------------------------
+// PROBLEM 12: Square root of a number
+//
+// Algorithm 1: My algorithm to return Square root to nearest whole number.
+//      For a given number, go from 1 to n/2 and find the number for which n * n = Given number.
+//      Return the answer.
+//
+// Complexity:
+//      With real math, you could keep dividing the search space in two forever
+//      (if it doesn't have a rational square root).
+//      In reality, computers will eventually run out of precision and
+//      you'll have your approximation.
+//
+// http://stackoverflow.com/questions/1623375/writing-your-own-square-root-function
+// ------------------------------------------------------------------------------------------
+static const double EPSILON = 0.00001;
+
+bool areDoubleSame(double a, double b)
+{
+    return fabs(a - b) < 0.00001;
+}
+
+double squareRoot(double number)
+{
+    if (number == 0 || number == 1)
+    {
+        return number;
+    }
+
+    // Start x from number and y from 0.
+    // The point where x and y meets is the approximate square root.
+    double low = 0;
+    double high = number;
+    double mid = 0;
+
+    // Loop will continue till we get an accuracy of 0.001
+    while ((high - low) >= 0.00001)
+    {
+        mid = low + (high - low) / 2;
+        /*
+        if (areDoubleSame(mid * mid, number))
+        {
+            cout << "same" << endl;
+            return round(mid);
+        }
+        */
+        if (mid * mid > number)
+        {
+            high = mid;
+        }
+        else
+        {
+            low = mid;
+        }
+    }
+
+    return mid;
+}
+
+// -----------------------------------------------------------------------------------------
+// PROBLEM 13. Power of a number
+// http://stackoverflow.com/questions/101439/the-most-efficient-way-to-implement-an-integer-based-power-function-powint-int
+// http://www.geeksforgeeks.org/write-a-c-program-to-calculate-powxn/
+//
+// Logic:
+// For any number 'exp' it will have atleast A SINGLE '1' in its binary form.
+// So till you get that one, if you see a 0 in binary form, multiply x * x
+// Whenever you see a 1. multiply answer with x
+// -----------------------------------------------------------------------------------------
+double myPowRec(double x, int n)
+{
+    if (n == 0)
+    {
+        return 1;
+    }
+
+    if (n < 0)
+    {
+        n = -n;
+        x = 1/x;
+    }
+
+    if (n & 1)
+    {
+        if (x == 0)
+        {
+            return 0;
+        }
+        return x * myPowRec(x * x, n/2);
+    }
+    else
+    {
+        return myPowRec(x * x, n/2);
+    }
+}
+
+double myPow(double x, int n)
+{
+    /*
+    bool isNegativePower = false;
+    bool isNegativeNumOddPow = false;
+    */
+
+    int newN = n;
+    double newX = x;
+    double answer = 1;
+
+    // Corner Cases
+    if (n < 0)
+    {
+        //isNegativePower = true;
+
+        // Convert the number to positive. Finally divide the answer by 1 i.e. 1/(x^n)
+        newN = -n;
+        newX = 1/x;
+    }
+
+    /*
+    if (x < 0)
+    {
+        // Only if the power is an odd number then we have to multiply by -1
+        if (n % 2 != 0)
+        {
+            isNegativeNumOddPow = true;
+        }
+        newX *= -1;
+    }
+
+    // If number is 0, return 1
+    if (n == 0)
+    {
+        return 1;
+    }
+
+    // If the number is '1' or power is '1' return it as such
+    if (n == 1 || x == 1 || x == -1)
+    {
+        if (x == -1 && !isNegativeNumOddPow)
+        {
+            return x * -1;
+        }
+        return x;
+    }
+    */
+
+    // Main Loop 
+    while (newN > 0)
+    {
+        if (newN % 2 != 0)
+        {
+            answer *= newX;
+        }
+
+        newX *= newX;
+        newN = newN >> 1;
+    }
+
+    // Multiply by -1 only when the power is Odd number
+    /*
+    if (isNegativeNumOddPow)
+    {
+        answer *= -1;
+    }
+
+    // If negative power do 1/answer
+    if (isNegativePower)
+    {
+        return 1 / answer;
+    }
+    */
+
+    return answer;
+}
+
+// -----------------------------------------------------------------------------------------
+// PROBLEM 14. Replace 0s with 5 in a given number
+//
+//      Eg : 1208 ; 1258 120096045 ; 125596545 
+// -----------------------------------------------------------------------------------------
+int replaceZerosWithFives(int num)
+{
+    int result;
+    int i = 0;
+    int multiplier = 1;
+
+    if (num < 0)
+    {
+        num = -num;
+        multiplier = -1;
+    }
+
+    result = num;
+    while (num)
+    {
+
+        if (num % 10 == 0)
+        {
+            result += 5 * pow(10, i);
+        }
+
+        i++;
+        num /= 10;
+    }
+
+    return result * multiplier;
+}
+
+// -----------------------------------------------------------------------------------------
+// PROBLEM 15. Replace 0s with 5 in a given number
+//
+//      Eg : 1208 ; 1258 120096045 ; 125596545 
+// -----------------------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------------------
 int main()
@@ -804,32 +1127,85 @@ int main()
     {
         cout << endl << "PROBLEM 10. Sorted Array. Find first element smaller than given number" << endl;
         vector<int> nums = {2, 4, 6, 7, 8, 9, 11, 15};
-        /*
-        cout << findFirstSmallerElement(nums, 2);
-        cout << findFirstSmallerElement(nums, 4);
-        cout << findFirstSmallerElement(nums, 5);
-        cout << findFirstSmallerElement(nums, 6);
-        cout << findFirstSmallerElement(nums, 7);
-        cout << findFirstSmallerElement(nums, 11);
-        cout << findFirstSmallerElement(nums, 15);
-        cout << findFirstSmallerElement(nums, 17);
-        */
+        cout << findFirstSmallerElementIndex(nums, 1) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 2) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 4) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 5) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 6) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 7) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 8) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 9) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 11) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 15) << ", ";
+        cout << findFirstSmallerElementIndex(nums, 17) << endl;
     }
 
     // PROBLEM 11. Sorted Array. Find first element smaller than given number
     {
         cout << endl << "PROBLEM 11. Sorted Array. Find first element smaller than given number" << endl;
         vector<int> nums = {2, 4, 6, 7, 8, 9, 11, 15};
-        /*
-        cout << findFirstGreaterElement(nums, 2);
-        cout << findFirstGreaterElement(nums, 4);
-        cout << findFirstGreaterElement(nums, 5);
-        cout << findFirstGreaterElement(nums, 6);
-        cout << findFirstGreaterElement(nums, 7);
-        cout << findFirstGreaterElement(nums, 11);
-        cout << findFirstGreaterElement(nums, 15);
-        cout << findFirstGreaterElement(nums, 17);
-        */
+        cout << findFirstGreaterElementIndex(nums, 1) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 2) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 4) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 5) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 6) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 7) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 8) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 9) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 11) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 15) << ", ";
+        cout << findFirstGreaterElementIndex(nums, 17) << endl;
+    }
+
+    // PROBLEM 12: Square root of a number
+    {
+        cout << endl << "PROBLEM 12: Square root of a number" << endl;
+        cout << squareRoot(0) << ", ";
+        cout << squareRoot(1) << ", ";
+        cout << squareRoot(2) << ", ";
+        cout << squareRoot(3) << ", ";
+        cout << squareRoot(4) << ", ";
+        cout << squareRoot(5) << ", ";
+        cout << squareRoot(6) << ", ";
+        cout << squareRoot(7) << ", ";
+        cout << squareRoot(8) << ", ";
+        cout << squareRoot(9) << ", ";
+        cout << squareRoot(49) << ", ";
+        cout << squareRoot(62.104) << ", ";
+        cout << squareRoot(77) << endl;
+    }
+
+    // PROBLEM 13: Power of a number
+    {
+        cout << endl << "PROBLEM 13: Power of a number" << endl;
+        cout << myPow(-4, 4) << ", ";
+        cout << myPow(2, -2147483648) << ", ";
+        cout << myPow(6, -1) << ", ";
+        cout << myPow(-1, -1) << ", ";
+        cout << myPow(4, -5) << ", ";
+        cout << myPow(6, 3) << ", ";
+        cout << myPow(2, 1) << ", ";
+        cout << myPow(2, 2) << ", ";
+        cout << myPow(2, 3) << ", ";
+        cout << myPow(2, 4) << ", ";
+        cout << myPow(2, 5) << ", ";
+        cout << myPow(2, 3) << ", ";
+        cout << myPow(2, 3) << ", ";
+        cout << myPow(2, 3) << ", ";
+        cout << endl;
+
+        cout << myPowRec(2, -2147483648) << ", ";
+        cout << endl;
+
+    }
+
+    // PROBLEM 14: Replace 0s with 5 in a given number
+    {
+        cout << endl << "PROBLEM 14: Replace 0s with 5 in a given number" << endl;
+        cout << replaceZerosWithFives(1208) << ", ";
+        cout << replaceZerosWithFives(120096045) << ", ";
+        cout << replaceZerosWithFives(-100) << ", ";
+        cout << endl;
     }
 
     return 0;
