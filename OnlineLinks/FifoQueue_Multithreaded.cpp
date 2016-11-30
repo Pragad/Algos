@@ -19,6 +19,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <future>
 using namespace std;
 
 // -----------------------------------------------------------------------------------------
@@ -56,7 +57,9 @@ public:
                                       _maxQueueSize(maxSize)  { }
 
     void enqueueRear(T data);
+    void enqueueRearThr(T data);
     T dequeueFront();
+    T dequeueFrontThr();
     bool isEmpty();
     bool isFull();
     uint32_t getSize();
@@ -67,11 +70,14 @@ public:
 //
 // -----------------------------------------------------------------------------------------
 template <class T>
-void FifoQueue<T>::enqueueRear(T data)
+void FifoQueue<T>::enqueueRearThr(T data)
 {
+    unique_lock<std::mutex> enqueueLock(_mtxFifoQueue);
     if (isFull())
     {
-        return;
+        // If the queue is full, WAIT till dequeue has happenend
+        _cvFifoQueue.wait(enqueueLock);
+        //return;
     }
 
     Node* temp = new Node(data);
@@ -96,21 +102,29 @@ void FifoQueue<T>::enqueueRear(T data)
         }
     }
     _curQueueSize++;
+
+    // Once we have inserted the first item, notify Dequeue thread if it has been waiting
+    if (_curQueueSize == 1)
+    {
+        _cvFifoQueue.notify_one();
+    }
 }
 
 // -----------------------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------------------
 template <class T>
-T FifoQueue<T>::dequeueFront()
+T FifoQueue<T>::dequeueFrontThr()
 {
     // TODO: Handle proper returning when _tail is null
     // This can be handled by using a wrapper function
     // Right now the caller should call this function my making sure the dequeue is not empty.
     // Else a garbage value will be returned.
+    unique_lock<std::mutex> dequeueLock(_mtxFifoQueue);
     if (isEmpty())
     {
-        return 0;
+        _cvFifoQueue.wait(dequeueLock);
+        //return 0;
     }
 
     Node* tmp = _head;
@@ -132,6 +146,7 @@ T FifoQueue<T>::dequeueFront()
     else
     {
         cout << "Fifoqueue Front: List is empty" << endl;
+        _cvFifoQueue.notify_one();
     }
 
     _curQueueSize--;
@@ -181,6 +196,40 @@ template <class T>
 uint32_t FifoQueue<T>::getSize()
 {
     return _curQueueSize;
+}
+
+// -----------------------------------------------------------------------------------------
+//
+// -----------------------------------------------------------------------------------------
+template <class T>
+void FifoQueue<T>::enqueueRear(T data)
+{
+    // Create Threads
+    thread enqueThread (&FifoQueue::enqueueRearThr, this, data);
+    enqueThread.join();
+}
+
+// -----------------------------------------------------------------------------------------
+//
+// -----------------------------------------------------------------------------------------
+template <class T>
+T FifoQueue<T>::dequeueFront()
+{
+    // Create Threads
+    // To get the return value use async
+    /*
+    thread dequeThread(&FifoQueue::dequeueFrontThr,  this);
+    dequeThread.join();
+    */
+
+    // http://stackoverflow.com/questions/7686939/c-simple-return-value-from-stdthread
+    // http://www.cplusplus.com/reference/future/async/
+    // Async Launches a new thread
+    // Accessing the shared state of the returned future joins it
+    auto future = std::async(&FifoQueue::dequeueFrontThr,  this);
+    T simple = future.get();
+
+    return simple;
 }
 
 // -----------------------------------------------------------------------------------------
