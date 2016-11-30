@@ -118,7 +118,7 @@ using namespace std;
  * bool isElementPresentInRowColMatrixModified(vector<vector<int> > twoD, int elmt)
  *
  * PROBLEM 23. Multiplication of two very large numbers
- * int largeNumberMultiplication(int arr[], uint32_t num, uint32_t k)
+ * int largeNumberMultiplicationString(int arr[], uint32_t num, uint32_t k)
  *
  * PROBLEM 23b. Binary Decimal Conversions
  * void convertDecimalNumToBinaryStrRec(uint32_t num, string strBin)

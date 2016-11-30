@@ -41,6 +41,7 @@ using namespace std;
  * int minEditDistance(const string& word1, const string& word2)
  *
  * PROBLEM 9. Longest Palindromic Substring
+ * string longestPalindromicString(string s)
  */
 
 // Utility function to print a Vector of Vector
@@ -1062,6 +1063,65 @@ int minEditDistance(const string& word1, const string& word2)
 }
 
 // ---------------------------------------------------------------------------------------
+// PROBLEM 9. Longest Palindromic Substring
+// Logic:
+//
+// A palindrome can be expanded from its center, and there are only 2N-1 such centers.
+
+// The reason is the center of a palindrome can be in between two letters.
+// Such palindromes have even number of letters (such as abba)
+// and its center are between the two ‘b’s.
+// ---------------------------------------------------------------------------------------
+string findSubString(const string& str, int stIdx, int endIdx)
+{
+    while(stIdx >= 0 && endIdx < str.length())
+    {
+        if (str[stIdx] == str[endIdx])
+        {
+            stIdx--;
+            endIdx++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return str.substr(stIdx + 1, endIdx - stIdx - 1);
+}
+
+string longestPalindromicString(const string& s)
+{
+    string palinSubStr = "";
+
+    if (s.empty())
+    {
+        return "";
+    }
+
+    // At least a single char will be the answer for sure
+    palinSubStr = s.substr(0, 1);
+
+    for (int i = 0; i < s.length(); i++)
+    {
+        string tmpSubStr1 = findSubString(s, i , i);
+        string tmpSubStr2 = findSubString(s, i , i + 1);
+
+        if (tmpSubStr1.length() > palinSubStr.length())
+        {
+            palinSubStr = tmpSubStr1;
+        }
+
+        if (tmpSubStr2.length() > palinSubStr.length())
+        {
+            palinSubStr = tmpSubStr2;
+        }
+    }
+
+    return palinSubStr;
+}
+
+// ---------------------------------------------------------------------------------------
 // Main Function
 // ---------------------------------------------------------------------------------------
 int main()
@@ -1196,5 +1256,15 @@ int main()
         string word1c = " what is this";
         string word2c = "whatisthis";
         cout << "Min Edit Dist: " << minEditDistance(word1b, word2b) << endl;
+    }
+
+    // PROBLEM 9. Longest Palindromic Substring
+    {
+        cout << endl << "Problem 9. Longest Palindromic Substring" << endl;
+        cout << longestPalindromicString("caba") << ", ";
+        cout << longestPalindromicString("babad") << ", ";
+        cout << longestPalindromicString("abacdfgdcaba") << ", ";
+        cout << longestPalindromicString("cbbd") << ", ";
+        cout << endl;
     }
 }
