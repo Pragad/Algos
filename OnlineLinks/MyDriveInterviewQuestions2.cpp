@@ -992,9 +992,7 @@ int replaceZerosWithFives(int num)
 }
 
 // -----------------------------------------------------------------------------------------
-// PROBLEM 15. Replace 0s with 5 in a given number
-//
-//      Eg : 1208 ; 1258 120096045 ; 125596545 
+// PROBLEM 15. 
 // -----------------------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------------------
@@ -1205,6 +1203,12 @@ int main()
         cout << replaceZerosWithFives(1208) << ", ";
         cout << replaceZerosWithFives(120096045) << ", ";
         cout << replaceZerosWithFives(-100) << ", ";
+        cout << endl;
+    }
+
+    // PROBLEM 15: 
+    {
+        cout << endl << "PROBLEM 15: " << endl;
         cout << endl;
     }
 

@@ -21,8 +21,6 @@
 #include <condition_variable>
 using namespace std;
 
-    std::mutex _mtxFifoQueue;
-    std::condition_variable _cvFifoQueue;
 // -----------------------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------------------
@@ -49,6 +47,8 @@ private:
     Node* _tail;
     uint32_t _maxQueueSize;
     uint32_t _curQueueSize;
+    std::mutex _mtxFifoQueue;
+    std::condition_variable _cvFifoQueue;
 
 public:
     FifoQueue(uint32_t maxSize = 5) : _head(nullptr),
