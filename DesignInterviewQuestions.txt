@@ -1,0 +1,218 @@
+Distributed Systems - Key Concepts
+0. Things to read about
+1. 4 Building Blocks of Architecting Systems for Scale
+
+------------------------------------------------------------------------------------------
+System Design Interview Questions
+1. How to Design Twitter
+2. Create a TinyURL System
+3. Design a Cache System
+4. Design a Recommendation System
+5. Design a Key-Value Store
+6. Map Implementation
+7. Random ID Generator
+8. Design a Garbage Collection System
+9. Design Hit Counter
+10. Build a Web Crawler
+11. How to Design a Trending Algorithm for Twitter
+12. Design eCommerce Website
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+Distributed Systems - Key Concepts
+
+0. Things to read about
+- Frangipani: A Scalable Distributed File System 
+- https://dancres.github.io/Pages/
+
+1. 4 Building Blocks of Architecting Systems for Scale
+http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-systems-for-scale.html
+
+    1. Load Balancing: Scalability and Redundancy
+        - Horizontal scalability and redundancy are usually achieved via load balancing,
+          the spreading of requests across multiple resources. 
+
+        1. Smart Clients.
+           The client has a list of hosts and load balances across that list of hosts.
+           Upside is simple for programmers. Downside is it's hard to update and change.
+
+        2. Hardware Load Balancers.
+           Targeted at larger companies, this is dedicated load balancing hardware.
+           Upside is performance.
+           Downside is cost and complexity.
+
+        3. Software Load Balancers.
+           The recommended approach, it's  software that handles load balancing, health checks, etc
+
+    2. Caching.
+        Make better use of resources you already have. Precalculate results for later use. 
+
+        Application Versus Database Caching. Databases caching is simple because the programmer doesn't have to do it. Application caching requires explicit integration into the application code.
+        In Memory Caches. Performs best but you usually have more disk than RAM.
+        Content Distribution Networks. Moves the burden of serving static resources from your application and moves into a specialized distributed caching service.
+        Cache Invalidation. Caching is great but the problem is you have to practice safe cache invalidation. 
+
+    3. Off-Line Processing.
+        Processing that doesn't happen in-line with a web requests. Reduces latency and/or handles batch processing. 
+
+        Message Queues. Work is queued to a cluster of agents to be processed in parallel.
+        Scheduling Periodic Tasks. Triggers daily, hourly, or other regular system tasks. 
+        Map-Reduce. When your system becomes too large for ad hoc queries then move to using a specialized data processing infrastructure.
+
+    4. Platform Layer.
+        Disconnect application code from web servers, load balancers, and databases using a service level API.
+        This makes it easier to add new resources, reuse infrastructure between projects, and scale a growing organization. 
+
+------------------------------------------------------------------------------------------
+System Design Interview Questions
+1. How to Design Twitter
+    1. Things to be taken care of
+    - Have multiple users,
+    - Each user will post a tweek
+    - A tweet can be followed by users.
+
+    2. You will have,
+    - Frontend that take care of
+        - User publishing a tweet and other GUI parts
+    - Backend that stores all the information
+        - User details
+        - Tweet details
+
+    3. So basically two objects:
+    - User object
+        - Can be owner of multiple tweets
+        - Can follow tweets
+    - Tweet Object
+        - Can be followed by multiple users
+
+    4. For any user,
+    - you will have to fetch the top N feeds posted by the user's followers
+    - Arrang the feeds by latest time
+
+    Questions:
+    1. When users followed a lot of people, fetching and rendering all their feeds can be costly. How to improve this?
+        - You will fetch only the latest N feeds and publish it and keep a cursor
+        - On further scroll, you will fetch the next set of feeds
+
+        - Keep the latest feeds in Cache
+
+    2. How to detect fake users?
+        - Use machine learning algorithms and do analysis based on date, followers etc
+
+    3. Can we order feed by other algorithms? i.e. Based on user interest instead of time
+        - Also use other factors to order instead of just time
+
+    4. How to implement the @ feature and retweet feature?
+        @feature:
+            - Have a list of all followers who the user can tag.
+            - Prefix tree data structure to get it
+---------------------------------------------
+2. Create a TinyURL System
+http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/?utm_source=email&utm_medium=email&utm_campaign=email
+
+a. Read Dynamo: Amazon’s Highly Available Key-value Store
+
+    Problem:
+        - Given a smaller URL you should find the corresponding bigger URL
+        - Given a bigger URL you should convert it into a smaller URL
+
+        - Hash bigger URL into a smaller URL of just few chars
+        - A-Z, a-z, 0-9 = 62chars. 
+        - With size 7, 62^7 ~ 3500billion
+
+    Solution:
+        - We don't need two hash tables
+          Hash1: Key: smallUrl, Val: bigUrl
+
+        - If someone gives the same bigURL again, we hash it and check if we already have
+          that key. If so we don't add it.
+
+        Problem:
+            1. You have millions of URL that you can't store the HASH table in memory.
+            2. You want to store the hash table in multiple files so that you can spread the load
+
+            Now how will you decide which URL goes to which file?
+
+        Solution 1:
+            - Instead of random hash, use GUID a sequentially increasing number
+            - This way we can say, 1 - 50 in file1, 51 - 100 in file2 etc
+
+        Problem:
+            - What if IDs get deleted from the system
+            - If you keep removing multiple entries from say file 1, how will you add entries back in file1
+
+        Solution 2:
+            - Store entries in distributed key-value store
+            - Very similar to database sharding. 
+            - A system in front to determine where each key, value pair will be stored.
+            - Say keys that end with a particular number go to a shard
+
+    Further Questions:
+    1. Replication to prevent disasters?
+       How to keep read and writes consistent?
+    2. Concurrency?
+       Multiple users inserting the same URL
+       A better way than global lock?
+---------------------------------------------
+3. Design a Cache System
+
+---------------------------------------------
+4. Design a Recommendation System
+
+---------------------------------------------
+5. Design a Key-Value Store
+http://blog.gainlo.co/index.php/2016/06/14/design-a-key-value-store-part-i/?utm_source=email&utm_medium=email&utm_campaign=email
+
+    Consistency when you have replica for disaster recovery:
+    1. Have a commit log
+---------------------------------------------
+6. Map Implementation
+
+---------------------------------------------
+7. Random ID Generator
+http://blog.gainlo.co/index.php/2016/06/07/random-id-generator/?utm_source=email&utm_medium=email&utm_campaign=email 
+
+a. See how Twitter's Snowflake works?
+b. Check Flickr's ticket servers
+
+    Problem:
+    You have to design a ID generation engine
+    - Is the ID an integer like number of a RANDOM ID
+
+    - If integer like number then
+    - Similar to generating a unique number among 4 billion ints
+
+    - Else
+    - Combine timestamp with some unique identifier of the machine that sends the request.
+    - Final ID = timestamp + serverID + counter
+
+      We can also allow multiple requests within a single timestamp on a single server.
+      We can keep a counter on each server, which indicates how many IDs have been generated in the current timestamp.
+      So the final ID is a combination of timestamp, serverID and the counter.
+
+    Questions:
+    1. What if you get multiple requests (millions of request)
+    2. How to scale the machine?
+
+    1. How to tackle Clock Synchronization?
+
+
+---------------------------------------------
+8. Design a Garbage Collection System
+
+---------------------------------------------
+9. Design Hit Counter
+
+---------------------------------------------
+10. Build a Web Crawler
+
+---------------------------------------------
+11. How to Design a Trending Algorithm for Twitter
+
+---------------------------------------------
+12. Design eCommerce Website
+
+---------------------------------------------
+
+
+------------------------------------------------------------------------------------------
+
