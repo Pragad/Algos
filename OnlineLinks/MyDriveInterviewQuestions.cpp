@@ -165,8 +165,11 @@ using namespace std;
  * void sortKsortedArray(vector<int>& nums, uint32_t k)
  *
  * PROBLEM 31. Given N points, find k points closest to 0,0
- * vector<point> findKclosestPoints(vector<point> pointsList, uint32_t k)
+ * vector<point> findKclosestPointsToOrigin(vector<point> pointsList, uint32_t k)
  *
+ * PROBLEM 31b. Given N points, find k points closest to a, b
+ * vector<point> findKclosestPointsToXY(vector<point> pointsList, uint32_t k)
+* 
  * PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
  * void moveEvenNosOddNosWithOrder(vector<int> nums)
  *
@@ -2876,6 +2879,7 @@ double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
     }
     else
     {
+        cout << "Bud: " << budget << "; CurSum: " << curSum << endl;
         return (double)(budget - curSum) / (grants.size() - i);
     }
 }
@@ -3095,7 +3099,7 @@ bool compGreater(pair<int, int> x, pair<int, int> y)
     return computeDistanceFromOrigin(x) < computeDistanceFromOrigin(y);
 }
 
-void findKclosestPoints(vector<pair<int, int> >& pointsList, uint32_t k)
+void findKclosestPointsToOrigin(vector<pair<int, int> >& pointsList, uint32_t k)
 {
     uint32_t i = 0;
 
@@ -4034,7 +4038,18 @@ int main()
         cout << endl << "PROBLEM 31" << endl;
         cout << "Given N points, find k points closest to Origin: " << endl;
         vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
-        findKclosestPoints(pointsList, 3);
+        findKclosestPointsToOrigin(pointsList, 3);
+    }
+
+    // PROBLEM 31b. Given N points, find k points closest to a, b
+    {
+        /*
+        cout << endl << "PROBLEM 31" << endl;
+        cout << "Given N points, find k points closest to Origin: " << endl;
+        vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
+        pair<int, int> myPos = {1, 1};
+        findKclosestPointsToXY(pointsList, myPos, 3);
+        */
     }
 
     // PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved

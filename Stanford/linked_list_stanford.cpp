@@ -49,12 +49,14 @@
  * PROBLEM 16. Delete Nodes that have a certain value
  * void removeNode(node*& head, int val)
  *
- * PROBLEM 17. Check if a linked list is a palindrome without using extra space.
- * bool isListPalindrome(node*& head)
- *
- * PROBLEM 18. Reverse a list Recursive and Iterative way
+ * PROBLEM 17. Reverse a list Recursive and Iterative way
  * void reverseList(node*& head)
  * void reverseListRecursive(node*& head)
+ * void reverseUtil(node *curr, node *prev, node*& head)
+ *
+ * PROBLEM 18. Check if a linked list is a palindrome without using extra space.
+ * bool isListPalindrome(node*& head)
+ **
  *
  */
 
@@ -720,6 +722,40 @@ void reverseList(node*& head)
     head = prev;
 }
 
+// A simple and tail recursive function to reverse
+// a linked list.  prev is passed as NULL initially.
+// Tail Recursive Approach from GeeksForGeeks
+void reverseUtil(node *curr, node *prev, node*& head)
+{
+    /* If last node mark it head*/
+    if (!curr->next)
+    {
+        head = curr;
+ 
+        /* Update next to prev node */
+        curr->next = prev;
+        return;
+    }
+ 
+    /* Save curr->next node for recursive call */
+    node *next = curr->next;
+ 
+    /* and update next ..*/
+    curr->next = prev;
+ 
+    reverseUtil(next, curr, head);
+}
+
+void reverseNeat(node*& head)
+{
+    if (!head)
+    {
+        return;
+    }
+    reverseUtil(head, NULL, head);
+}
+ 
+// From MS Stanford
 void reverseListRecursive(node*& head)
 {
     if (NULL == head)
@@ -1009,10 +1045,14 @@ int main()
 
     // PROBLEM 17. Reverse a list Recursive and Iterative way
     {
-        cout << endl << "PROBLEM 18. Reverse List" << endl;
+        cout << endl << "PROBLEM 17. Reverse List" << endl;
         reverseList(head1);
         printList(head1);
+
         reverseListRecursive(head1);
+        printList(head1);
+
+        reverseNeat(head1);
         printList(head1);
     }
 

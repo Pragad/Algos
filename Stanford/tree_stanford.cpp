@@ -93,6 +93,9 @@
  * Problem 28. Iterative Inorder, Preorder, Postorder Traversal
  * void printTreePostorderIterative(tree* root)
  *
+ * Problem 29. Find Max Nodes in a Tree that will fall within the given range
+ * int maxNodesWithinRange(int A, int B, tree* T)
+ *
  */
 
 // This contains solution to Stanford's Tree problems.
@@ -261,6 +264,24 @@ int minValue(tree* root)
             return root->data;
         }
         return minValue(root->left);
+    }
+
+    return -1;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Problem 3.
+//      Compute the maximum value
+// ------------------------------------------------------------------------------------------------
+int maxValue(tree* root)
+{
+    while (root != NULL)
+    {
+        if (root->right == NULL)
+        {
+            return root->data;
+        }
+        return minValue(root->right);
     }
 
     return -1;
@@ -1486,6 +1507,44 @@ void printTreePostorderIterative(tree* root)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 29.
+// Find Max Nodes in a Tree that will fall within the given range
+// ------------------------------------------------------------------------------------------------
+int maxNodesWithinRange(int A, int B, tree* T)
+{
+    if (T == NULL)
+    {
+        return 0;
+    }
+
+    // If root->data is more than Max Range then go left
+    if (T->data > B)
+    {
+        return solution(A, B, T->left);
+    }
+    else if (T->data < A)
+    {
+        return solution(A, B, T->right);
+    }
+    else
+    {
+        // root->data falls within the range
+
+        int minVal = minValue(T);
+        int maxVal = maxValue(T);
+
+        if (minVal > A && maxVal < B)
+        {
+            return size(T);
+        }
+        else
+        {
+            return max (solution(A, B, T->left), solution(A, B, T->right));
+        }
+    }
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -1806,6 +1865,28 @@ int main()
         printTreePostorderIterative(root);
     }
 
+    // Problem 29. Find Max Nodes in a Tree that will fall within the given range 
+    {
+        cout << endl << endl << "Problem 29. Find Max Nodes in a Tree that will fall within the given range " << endl;
+        struct tree* root5 = NULL;
+        root5 = newNode(25);
+        root5->left = newNode(19);
+        root5->right = newNode(37);
+
+        root5->left->left = newNode(12);
+        root5->left->right = newNode(22);
+        root5->right->left = newNode(29);
+
+        root5->left->left->left = newNode(4);
+        root5->left->right->left = newNode(23);
+        root5->right->left->right = newNode(30);
+        printTreeLevelOrder(root5);
+        cout << "Solution: " << solution(15, 29, root5) << endl;
+        cout << "Solution: " << solution(1, 100, root5) << endl;
+        cout << "Solution: " << solution(25, 31, root5) << endl;
+        cout << "Solution: " << solution(3, 24, root5) << endl;
+        cout << "Solution: " << solution(24, 29, root5) << endl;
+    }
     cout << endl;
 
     return 0;

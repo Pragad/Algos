@@ -42,7 +42,10 @@ Genral Programming / OOPS Concepts
 28. Multithreading Best Practices
 29. What is Amdhal's law
 30. UCS-2 vs UTF-8/16/32
-31. How to read a file in reverse
+31. When will you use ASCII instead of UTF-8?
+32. Number of characters in ASCII
+33. Unicode and Character Set
+34. How to read a file in reverse
 -----------------------------------------------
 UML / DESIGN Questions
 1. Parking lot  
@@ -1078,6 +1081,29 @@ http://lucumr.pocoo.org/2014/1/9/ucs-vs-utf8/
     In order to achieve that they came up with the concept of surrogate pairs to encode characters if they don't fit into ~16 bit. Essentially UTF-16 is now defined as an encoding that is either 2 or 4 bytes long but never more than that. The way this works is that 65.536 characters fit into just one unit. If a character is outside of that range it gets split up into two units of 16 bits each and the data is mangled in a way that makes them uniquely distinct. If you would look at one of the two surrogates in the pair separately without the knowledge of the other, it would become apparently that this is in incomplete character. For this trick to work the range D800 to DBFF are reserved for the trail surrogates and DC00 to DF00 for the lead ones. As an end result the total range of what can be encoded by UTF-16 is the lowest of all UTF formats.
 
 31.
+When will you use ASCII instead of UTF-8?
+http://softwareengineering.stackexchange.com/questions/97247/what-is-the-advantage-of-choosing-ascii-encoding-over-utf-8
+
+    In some cases it can speed up access to individual characters.
+    Imagine string str='ABC' encoded in UTF8 and in ASCII (and assuming that the language/compiler/database knows about encoding)
+
+    To access third (C) character from this string using array-access operator which is featured in many programming languages you would do something like c = str[2].
+
+    Now, if the string is ASCII encoded, all we need to do is to fetch third byte from the string.
+
+    If, however string is UTF-8 encoded, we must first check if first character is a one or two byte char, then we need to perform same check on second character, and only then we can access the third character.
+    The difference in performance will be the bigger, the longer the string.
+
+32.
+Number of characters in ASCII
+
+    There are 256 ASCII characters. This includes standard ASCII characters(0-127) and Extended ASCII characters(128-255).
+
+33.
+Unicode and Character Set
+https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+
+34.
 How to read a file in reverse
 http://stackoverflow.com/questions/8664705/how-to-read-file-from-end-to-start-in-reverse-order-in-java
 

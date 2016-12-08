@@ -17,6 +17,18 @@ void printArray(int a[], uint32_t n)
     cout << endl;
 }
 
+void insertionSortOptimized(int arr[] uint32_t num)
+{
+    for (uint32_t i = 1; i < num; i++)
+    {
+        // TODO: Should be >= 0 and signed int
+        for (uint32_t j = i; j > 0 && arr[j - 1] > arr[j]; j--)
+        {
+            swapInt(arr[j-1], arr[j]);
+        }
+    }
+}
+
 void sort2(int a[], uint32_t n)
 {
     for (uint32_t i = 1; i < n; i++)
@@ -59,17 +71,6 @@ void insertionSort(int a[], uint32_t n)
                 }
                 a[k] = key;
             }
-        }
-    }
-}
-
-void insertionSortOptimized(int arr[] uint32_t num)
-{
-    for (uint32_t i = 1; i < num; i++)
-    {
-        for (uint32_t j = i; j > 0 && arr[j - 1] > arr[j]; j--)
-        {
-            swapInt(arr[j-1], arr[j]);
         }
     }
 }

@@ -1,6 +1,7 @@
 /*
  * Author: Pragad Thiru
  * Program to select a random color based on given weights
+ * http://stackoverflow.com/questions/1761626/weighted-random-numbers
  *
  */
 

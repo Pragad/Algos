@@ -153,7 +153,6 @@ uint32_t countIslands(vector<vector <uint32_t> >& twoDMat)
 //            Arr: 1, 2, 5, 7, 15, 20, 25
 //            Sum: 30
 //            Ans: 1, 2, 7, 20
-// Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
 vector<int> quadCombination(const vector<int>& nums, int sum)
 {

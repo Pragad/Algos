@@ -191,6 +191,7 @@ private:
 // ----------------------------------------------------------------------------------------------
 // Class BST:
 //      This is the Binary Search Tree data structure
+// https://discuss.leetcode.com/topic/6575/my-solutions-in-3-languages-with-stack
 // ----------------------------------------------------------------------------------------------
 class BST
 {
