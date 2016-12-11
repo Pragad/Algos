@@ -62,6 +62,11 @@ TreeNode::getVal()
 // ----------------------------------------------------------------------------------------------
 class BSTIterator
 {
+private:
+    TreeNode* _cur;
+    TreeNode* _root;
+    unordered_map<TreeNode*, TreeNode*> _nextSmallestMap;
+
 public:
     BSTIterator(TreeNode *root)
     {
@@ -175,11 +180,6 @@ public:
         _cur = itr->second;
         return _cur->val;
     }
-
-private:
-    TreeNode* _cur;
-    TreeNode* _root;
-    unordered_map<TreeNode*, TreeNode*> _nextSmallestMap;
 };
 
 /**

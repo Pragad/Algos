@@ -86,6 +86,7 @@ BSTIterator::operator * () const
     return _cur->getData();
 }
 
+// TODO: This should be corrected
 int
 BSTIterator::operator -> () const
 {

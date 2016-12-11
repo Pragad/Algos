@@ -150,6 +150,7 @@ uint32_t countIslands(vector<vector <uint32_t> >& twoDMat)
 // https://www.pramp.com/question/gKQ5zA52mySBOA5GALj9
 // Session6_2016_06_17.cpp
 //            Let's assume the array is sorted
+//            The array need not be sorted
 //            Arr: 1, 2, 5, 7, 15, 20, 25
 //            Sum: 30
 //            Ans: 1, 2, 7, 20

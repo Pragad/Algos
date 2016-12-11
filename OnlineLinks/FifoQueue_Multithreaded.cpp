@@ -121,6 +121,8 @@ T FifoQueue<T>::dequeueFrontThr()
     // Right now the caller should call this function my making sure the dequeue is not empty.
     // Else a garbage value will be returned.
     unique_lock<std::mutex> dequeueLock(_mtxFifoQueue);
+    bool isListFull = isFull();
+
     if (isEmpty())
     {
         _cvFifoQueue.wait(dequeueLock);
@@ -142,12 +144,23 @@ T FifoQueue<T>::dequeueFrontThr()
 
         // Delete the first node
         delete tmp;
+
+        // If the list had been full, now that we have deleted an item, we can
+        // NOTIFY enqueue about it, so that enqueue can insert stuffs
+        if (isListFull)
+        {
+            _cvFifoQueue.notify_one();
+        }
     }
+    /*
+    // Why should be notify once the list has become empty? Even if one element is
+    // removed from the list, we can immediately notify
     else
     {
         cout << "Fifoqueue Front: List is empty" << endl;
         _cvFifoQueue.notify_one();
     }
+    */
 
     _curQueueSize--;
     return tmpData;

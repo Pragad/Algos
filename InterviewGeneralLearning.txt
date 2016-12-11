@@ -71,6 +71,7 @@ OS NOTES
 3c. Lock Monitor Mutex and Semaphore
 3d. Monitor vs Semaphore
 3e. Monitor vs Mutex
+3f. Semaphore vs Condition Variable
 4. Multi-threaded programming in C++
 4b. Thread Join vs Detach
 5. Hard Link vs Soft Link
@@ -1212,6 +1213,7 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
 OS NOTES:
 -1.
 Every program assumes it has its own memory space
+
 -1b.
 Memory allocation at compile time
 http://stackoverflow.com/questions/21350478/what-does-memory-allocated-at-compile-time-really-mean/21350570#21350570
@@ -1518,6 +1520,31 @@ http://stackoverflow.com/questions/1164038/monitor-vs-mutex-in-c-sharp
 
     Use a Monitor unless you need to synchronize across process boundaries.
 
+3f.
+Semaphore vs Condition Variable
+http://stackoverflow.com/questions/3513045/conditional-variable-vs-semaphore
+
+    Conditional variable is essentially a wait-queue, that supports blocking-wait and wakeup operations, i.e. you can put a thread into the wait-queue and set its state to BLOCK, and get a thread out from it and set its state to READY.
+
+    Note that to use a conditional variable, two other elements are needed:
+
+        a condition (typically implemented by checking a flag or a counter)
+        a mutex that protects the condition
+
+    The protocol then becomes,
+
+        acquire mutex
+        check condition
+        block and release mutex if condition is true, else release mutex
+
+    Semaphore is essentially a counter + a mutex + a wait queue. And it can be used as it is without external dependencies. You can use it either as a mutex or as a conditional variable.
+
+    Therefore, semaphore can be treated as a more sophisticated structure than conditional variable, while the latter is more lightweight and flexible.
+
+    If all of your threads are waiting for some event, e.g., submission of a task, then you can wake them all up by using a condition variable upon an event.
+
+    If you have a limited resource, say 10 pages of memory reserved for your threads, then you will need them to wait until a page is available. When this happens, you will need to let just one thread start execution. In this case you can use a semaphore unlock up as many threads as available pages.
+
 4.
 Multi-threaded programming in C++
 http://stackoverflow.com/questions/266168/simple-example-of-threading-in-c
@@ -1772,6 +1799,7 @@ Unequal Size Fixed Partitioning and Dynamic Partitioning
         - Thus resulting in EXTERNAL FRAGMENTATION
 
     Paging:
+        - Process is split into Pages
         Pages of process memory may be displaced from the RAM to the disk.
         This is called swapping or paging.
         The data is moved to the swap space, and loaded back from the swap space when it is needed
@@ -1780,6 +1808,9 @@ Unequal Size Fixed Partitioning and Dynamic Partitioning
         - Also divide the process into the same size
         - Internal Fragmentation same as Fixed Partitioning
         - INVISIBLE to programmer
+
+        - Within a program, each logical address consists of a page number and an
+          offset within the page
 
         VERY IMP:
         - OS maintains a PAGE TABLE for each Process
@@ -2039,6 +2070,8 @@ Switch vs Hub vs Router:
         - Router:
           - Connects network
           - Uses MAC address
+          - To send the packet to the next hop, you need its MAC address.
+          While hopping through intermediate links, the IP address in the IP header don't change - only the MAC addresses change
 
         - Switch:
           - Creates network
@@ -2341,6 +2374,9 @@ What is TLS and SSL
     When a server and client communicate, TLS ensures that no third party may eavesdrop or tamper with any message.
     TLS is the successor to the Secure Sockets Layer (SSL).
 
+    SSL (Secure Sockets Layer) is the standard security technology for establishing an encrypted link between a web server and a browser.
+    This link ensures that all data passed between the web server and browsers remain private and integral.
+
 13.
 What is DHCP
 
@@ -2366,6 +2402,8 @@ http://stackoverflow.com/questions/239385/what-is-ldap-used-for
 
     Ldap Server + Ldap Protocol is a data store, or a database.
     It's not relational, but it's just a place to store data, and it's optimized to be efficient at reads more than writes.
+
+    Lightweight Directory Access Protocol (LDAP) is a client/server protocol used to access and manage directory information. It reads and edits directories over IP networks and runs directly over TCP/IP using simple string formats for data transfer
 
     Why LDAP?
         When you have a task that requires ¿write/update once, read/query many times¿, you might consider using LDAP.
