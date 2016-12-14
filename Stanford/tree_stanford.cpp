@@ -78,6 +78,9 @@
  * Problem 23. Find next larger number than K in a BST
  * int findSmallestNumLargerThanKey(tree* root, int elmt)
  *
+ * Problem 23b. Find closest number to K in a BST
+ * int closestNumToK(tree* root, int elmnt)
+ *
  * Problem 24. Nth largest element in a binary search tree
  * int NthLargestInBST(tree* root, uint32_t n)
  *
@@ -1304,6 +1307,48 @@ int findSmallestNumLargerThanKeyRec(tree* root, int elmt)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 23b
+//      Find closest number to K in a BST
+// ------------------------------------------------------------------------------------------------
+int closestNumToK(tree* root, int elmnt)
+{
+    int result = numeric_limits<int>::max();
+    int curDiff = numeric_limits<int>::max();
+
+    while (root != NULL)
+    {
+        // Root is bigger. So trying going left to find a closer number
+        if (root->data > elmnt)
+        {
+            if (abs(root->data - elmnt) < curDiff)
+            {
+                result = root->data;
+                curDiff = abs(root->data - elmnt);
+            }
+            root = root->left;
+        }
+        else if (root->data < elmnt)
+        {
+            if (abs(root->data - elmnt) < curDiff)
+            {
+                result = root->data;
+                curDiff = abs(root->data - elmnt);
+            }
+
+            root = root->right;
+        }
+        else
+        {
+            // Element is same as root. So return root
+            result = root->data;
+            curDiff = 0;
+            break;
+        }
+    }
+
+    return result;
+}
+
 // Problem 24
 //      Nth largest element in a binary search tree
 //      http://stackoverflow.com/questions/2612362/nth-largest-element-in-a-binary-search-tree
@@ -1520,11 +1565,11 @@ int maxNodesWithinRange(int A, int B, tree* T)
     // If root->data is more than Max Range then go left
     if (T->data > B)
     {
-        return solution(A, B, T->left);
+        return maxNodesWithinRange(A, B, T->left);
     }
     else if (T->data < A)
     {
-        return solution(A, B, T->right);
+        return maxNodesWithinRange(A, B, T->right);
     }
     else
     {
@@ -1539,7 +1584,7 @@ int maxNodesWithinRange(int A, int B, tree* T)
         }
         else
         {
-            return max (solution(A, B, T->left), solution(A, B, T->right));
+            return max (maxNodesWithinRange(A, B, T->left), maxNodesWithinRange(A, B, T->right));
         }
     }
 }
@@ -1881,11 +1926,11 @@ int main()
         root5->left->right->left = newNode(23);
         root5->right->left->right = newNode(30);
         printTreeLevelOrder(root5);
-        cout << "Solution: " << solution(15, 29, root5) << endl;
-        cout << "Solution: " << solution(1, 100, root5) << endl;
-        cout << "Solution: " << solution(25, 31, root5) << endl;
-        cout << "Solution: " << solution(3, 24, root5) << endl;
-        cout << "Solution: " << solution(24, 29, root5) << endl;
+        cout << "maxNodesWithinRange: " << maxNodesWithinRange(15, 29, root5) << endl;
+        cout << "maxNodesWithinRange: " << maxNodesWithinRange(1, 100, root5) << endl;
+        cout << "maxNodesWithinRange: " << maxNodesWithinRange(25, 31, root5) << endl;
+        cout << "maxNodesWithinRange: " << maxNodesWithinRange(3, 24, root5) << endl;
+        cout << "maxNodesWithinRange: " << maxNodesWithinRange(24, 29, root5) << endl;
     }
     cout << endl;
 

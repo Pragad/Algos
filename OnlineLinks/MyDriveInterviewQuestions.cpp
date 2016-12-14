@@ -963,6 +963,7 @@ void printMatrixDiagonally(int (&twoDMatrix)[rows][cols])
     {
         for(uint32_t j = 0 ; j <= k ; j++ )
         {
+            // This will make sure [i] decreases for each increase in [j]
             int i = k - j;
 
             if(i < rows && j < cols)

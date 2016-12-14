@@ -22,6 +22,14 @@ All Interview
 10/12: Python
 10/13: Revise
 
+How is heap balance maintained
+Yahoo hospital problem
+Riverbed all design problems
+Architecture of some of the project that you developed
+Design Car, Engine, Truck, Bicycle, Wheel
+Virtual vs pure virtual
+Deadlock
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -1. Netapp Related
 0. Virtual Address and Physical Address Mapping

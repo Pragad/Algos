@@ -73,6 +73,7 @@ void printVector(vector<T> nums)
 
 // ---------------------------------------------------------------------------------------
 // Problem 1: Fibonacci of a number
+// http://php.bubble.ro/fibonacci/
 // ---------------------------------------------------------------------------------------
 unsigned int fibonacci(int n)
 {

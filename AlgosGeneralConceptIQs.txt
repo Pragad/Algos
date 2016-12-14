@@ -39,6 +39,10 @@
 28. B Tree vs B+ Tree
 29. Heap vs Binary Search Tree
 30. Smallest range that includes at least one number from each of the k lists 
+31. Select a random number from stream, with O(1) space
+32. Design a data structure that supports insert, delete, search and getRandom in constant time
+33. Check if a given array contains duplicate elements within k distance from each other
+34. Reservoir Sampling
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -914,6 +918,8 @@ B Tree vs B+ Tree
 http://stackoverflow.com/questions/870218/differences-between-b-trees-and-b-trees/12014474#12014474
 
     The image below helps show the differences between B+ trees and B trees.
+    Leaves in B+ trees contain all the data
+    Leaves in B+ trees are connected linerarly
 
     Advantages of B+ trees:
         Because B+ trees don't have data associated with interior nodes, more keys can fit on a page of memory.
@@ -962,3 +968,61 @@ http://stackoverflow.com/questions/21134720/smallest-range-that-includes-at-leas
         Remove the the min element and add the next element from the corresponding list
         Simultaneously track the max and min value so that we can calculate the minimum range
 
+31.
+Select a random number from stream, with O(1) space
+
+    Keep  track of size of stream.
+    Generated random in the stream
+
+32.
+Design a data structure that supports insert, delete, search and getRandom in constant time
+
+    - Vector:
+    Insert at end : O(1)
+    Delete by lookup on Hash, Swap with last element and Delete last: O(1)
+    Search: Lookup on Hash
+    GetRandom: Find array size and get random element
+
+33.
+Check if a given array contains duplicate elements within k distance from each other
+
+    - Put everything in Hashtable
+    - Maintain hashtable of size k
+    - While inserting a new element A[i], delete A[i-k]
+
+34.
+Reservoir Sampling
+
+    Reservoir sampling is a family of randomized algorithms for randomly choosing k samples from a list of n items, where n is either a very large or unknown number.
+    Typically n is large enough that the list doesn’t fit into main memory.
+    For example, a list of search queries in Google and Facebook.
+
+    - A simple solution is to create an array reservoir[] of maximum size k.
+    - One by one randomly select an item from stream[0..n-1].
+    - If the selected item is not previously selected, then put it in reservoir[].
+    - To check if an item is previously selected or not, we need to search the item in reservoir[].
+    - The time complexity of this algorithm will be O(k^2).
+    - This can be costly if k is big.
+    - Also, this is not efficient if the input is in the form of a stream.
+
+35.
+Search a Word in a 2D Grid of characters
+
+    - DFS style search
+
+36.
+If you're given a list of countries and its corresponding population, write a function that will return a random country but the higher the population of the country, the more likely it is to be picked at random.
+
+    Approach 1:
+    - Check Color Picker Logic
+    - Have all countries as leaf nodes and build a Sum tree of the population
+    - Generate a random number between 1 and Total Sum of Population and go to the Child
+      Node that falls within the range
+
+    Approach 2:
+    - First of all, sum the population of all countries. Let the sum be N.
+    - Now think of it in terms of a number line. Have a number line from 1 to N.
+    - Now allocate proportional part of the number line to corresponding country based on its population (Higher the population more numbers in number line and vice versa).
+    - Let say 1 to n1 is for 1st country , n1+1 to n2 to second and so on.
+    - Now generate a random number between 1 to N.
+    - Just return the country which owns that number in that number line.
