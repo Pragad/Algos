@@ -24,12 +24,12 @@ using namespace std;
 //            Ans: 8
 // Find the first non-match character in two strings.
 // ------------------------------------------------------------------------------------------------
-int indexEqualsValueSearch(vector<int> nums)
+int indexEqualsValueSearch(const vector<int>& nums)
 {
     uint32_t low = 0;
     uint32_t high = nums.size() - 1;
 
-    while (low < high)
+    while (low <= high)
     {
         uint32_t mid = low + (high - low)/2;
 

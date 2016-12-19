@@ -853,6 +853,8 @@ bool isSudokuBoardSolvable(int twoDMat[9][9], int stRow, int stCol)
 {
     int i = stRow;
     int j = stCol;
+    bool isSolvable = false;
+
     for ( i = stRow; i < 9; i++)
     {
         for ( j = stCol; j < 9; j++)
@@ -863,21 +865,34 @@ bool isSudokuBoardSolvable(int twoDMat[9][9], int stRow, int stCol)
                 vector<int> possibleNums = {1, 2, 3, 4, 5, 6, 7, 8, 9};
                 findPossibleNums(twoDMat, i, j, possibleNums);
 
+                // If we can't find a possible number, then we should go back
+                // and try the next number
+                if (possibleNums.empty())
+                {
+                    return false;
+                }
+
                 for (int possibleNum : possibleNums)
                 {
+
                     twoDMat[i][j] = possibleNum;
-                    return isSudokuBoardSolvable(twoDMat, i, j);
+                    isSolvable |= isSudokuBoardSolvable(twoDMat, i, j);
+
+                    // If one guys says it is not solvable we should still go on an try the 
+                    // next number
+                    // Only when all guys say that it is not solvable we should return false
                 }
             }
         }
     }
 
-    if (i == 9 && j == 9)
-    {
-        return false;
-    }
-
-    return true;
+    // OLD: If we are able to get there then some guy has filled the Sudoku Board.
+    // OLD: So it is solvable
+    // Even if one guy says it can solve it, the board is solvable
+    // Only if all guys give up we should return false
+    //
+    // TODO: We could come here even if the board is wrongly filled or correctly filled
+    return isSolvable;
 }
 
 // -----------------------------------------------------------------------------------------

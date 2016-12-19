@@ -43,6 +43,9 @@
 32. Design a data structure that supports insert, delete, search and getRandom in constant time
 33. Check if a given array contains duplicate elements within k distance from each other
 34. Reservoir Sampling
+35. Search a Word in a 2D Grid of characters
+36. Sort countries based on population
+37. Average of a number accounting for integer overflow
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -1026,3 +1029,15 @@ If you're given a list of countries and its corresponding population, write a fu
     - Let say 1 to n1 is for 1st country , n1+1 to n2 to second and so on.
     - Now generate a random number between 1 to N.
     - Just return the country which owns that number in that number line.
+
+37.
+Average of a number accounting for integer overflow
+        double mean(double[] ary) {
+            double avg = 0;
+            int t = 1;
+            for (double x : ary) {
+                avg += (x - avg) / t;
+                ++t;
+            }
+            return avg;
+        }
