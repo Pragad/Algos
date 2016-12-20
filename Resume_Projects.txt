@@ -89,6 +89,84 @@ User functionalities are to create or delete a directory, open, close, read, wri
 I would first test the project with basic test cases and verify if the core of my design works without any issues. As a second step, I will test with corner cases and add exception handling. Then, I will improve the performance of the project. I will also try to make my project reusable by splitting my code into smaller modules.
 
 Later I will extend my project by adding nice to have features (like adding back or delete shortcut to above project). If I have more time I would concentrate on including support for GUI various fancy formats, different design and patterns which can improve user experience.
+
+Flow:
+-3. User can enter a Command on the CLI
+
+-2. We get the Input command from the User and Parse it
+
+-1. After parsing we figure out what the operation is
+
+
+0. We maintained a LinkedList of unused blocks
+    a. Every time a new entry gets inserted, top of stack is popped and used for storing it
+    b. LinkedList just stores an Integer that represents which blocks are available
+
+0b. Created an Array of 100 entries
+    a. Each entry could be a file or a directory
+
+1. Created 512 byte entry to represent a file
+    a. A file entry will have 504 bytes to store data
+    b. It has 4 byte to store previous pointer
+    c. It has 4 bytes to store next pointer
+
+2. Created another 512 byte entry to represent a directory
+    a. It has 4 bytes for previous block
+    b. It has 4 bytes for next block
+    c. A pointer to first unused block
+    d. A filler character (reserved)
+    d. 31 directory entries
+        i.e. At max, there can be 31 directories inside a directory
+        - Holds type of sub directory
+        - A directory name
+        - Actual block where it is stored
+
+3. For testing we limited the max number of entries inside a directory to 3.
+
+4. As a directory can have 31 entries inside it,
+    - Given a directory or file name you can go over the 31 entries and find the BLOCK
+      NUMBER where the file/directory is stored
+
+    - TODO: This can be improved by using a Hash Table
+
+5. CREATE
+    a. Check if the path already exists
+        - Get the root block number
+        - Using the block number, you can go to the corresponding entry in Array
+        - Get the entry from the array. It will have a LIST OF ENTRIES (which could be 31)
+        - Traverse through the list of entries and check if the "Name" exists
+    b. So to create an entry you just get the next available block number and update it
+
+6. DELETE
+    a. Same as create. 
+       - Find if path exists and free it
+       - The directory can have sub directories.
+       - So first free the sub / leaf directory and then delete the parent directory
+
+7. OPEN
+    a. Make sure the path exists
+    b. This is allowed on a file
+    c. Open the file in a specific mode that user is requesting
+    d. Update the file with the mode that the user has opened
+    e. Open modes can be "I", "O", "U"
+
+8. CLOSE
+    a. Clear the "I", "O", "U" flags set on the file
+
+9. READ
+    a. Will read only if the current pointer and user's amount of bytes is less than 504
+    b. You have an array of 504 bytes holding the data
+    c. You have a current offset stored
+    d. Go to current offset use 'Divide by 504' AND 'Modulo 504' and go to the right place
+    e. Read the necessary bytes
+
+10. WRITE
+    a. Same as READ, update the right pointers
+    b. Write data at necessary bytes
+
+11. SEEK
+    a. Validity check to make sure we have enough bytes
+    b. We go to the right offset and from that position display the amount of bytes
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 3. RFP Software Match
     A. Problem:
