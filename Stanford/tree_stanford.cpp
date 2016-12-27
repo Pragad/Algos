@@ -99,6 +99,19 @@
  * Problem 29. Find Max Nodes in a Tree that will fall within the given range
  * int maxNodesWithinRange(int A, int B, tree* T)
  *
+ * Problem 30. Serialize a tree
+ * string serialize(tree* root)
+ *
+ * Problem 31. Deserialize a tree
+ * TreeNode* deserialize(string data)
+ *
+ * Problem 32. Convert Tree into a Double Linked List
+ * tree* convertTreeToDoubleList(tree* root)
+ *
+ * Problem 33. Convert Tree into a Circular Linked List
+ * tree* joinTwoCircularList(tree* aList, tree* bList)
+ * tree* convertTreeToCircularList(tree* root)
+ *
  */
 
 // This contains solution to Stanford's Tree problems.
@@ -1590,6 +1603,136 @@ int maxNodesWithinRange(int A, int B, tree* T)
 }
 
 // ------------------------------------------------------------------------------------------------
+// Problem 30.
+// Serialize a tree
+// ------------------------------------------------------------------------------------------------
+string serialize(tree* root)
+{
+
+}
+
+// ---------------------------------------------------------------------------------------
+// Problem 31.
+// Deserialize a tree
+// ---------------------------------------------------------------------------------------
+TreeNode* deserialize(string data)
+{
+
+}
+
+// ---------------------------------------------------------------------------------------
+// Problem 32.
+// Convert Tree into a Double Linked List
+// http://www.geeksforgeeks.org/in-place-convert-a-given-binary-tree-to-doubly-linked-list/
+//
+// Complexity is High. Every time from root, you try to find the successor and predecessor
+// ---------------------------------------------------------------------------------------
+tree* convertTreeToDoubleListRec(tree* root)
+{
+    if (root == NULL)
+    {
+        return root;
+    }
+
+    if (root->left != NULL)
+    {
+        tree* rootPredecessor = convertTreeToDoubleListRec(root->left);
+
+        // Go to the right most child in the rootPredecessor tree
+        while (rootPredecessor->right != NULL)
+        {
+            rootPredecessor = rootPredecessor->right;
+        }
+
+        root->left = rootPredecessor;
+        rootPredecessor->right = root;
+    }
+
+    if (root->right != NULL)
+    {
+        tree* rootSuccessor = convertTreeToDoubleListRec(root->right);
+
+        // Go to the left most child in the rootSuccessor tree
+        while (rootSuccessor->left != NULL)
+        {
+            rootSuccessor = rootSuccessor->left;
+        }
+
+        root->right = rootSuccessor;
+        rootSuccessor->left = root;
+    }
+
+    return root;
+}
+
+void convertTreeToDoubleList(tree*& root)
+{
+    if (root != NULL)
+    {
+        // After this root will still point to the same root.
+        root = convertTreeToDoubleListRec(root);
+
+        // Adjust the root to point to the first in order node
+        while (root->left != NULL)
+        {
+            root = root->left;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------
+// Problem 33.
+// Convert Tree into a Circular Linked List
+// ---------------------------------------------------------------------------------------
+// Utility function to join two circular list
+tree* joinTwoCircularList(tree* aList, tree* bList)
+{
+    if (aList == NULL)
+    {
+        return bList;
+    }
+    else if (bList == NULL)
+    {
+        return aList;
+    }
+
+    // Store the last pointers of the circular list
+    tree* aListLast = aList->left;
+    tree* bListLast = bList->left;
+
+    // Adjust the LAST node of aList and FIRST node of bList
+    aListLast->right = bList;
+    bList->left = aListLast;
+
+    // Also adjust the FIRST node of aList and LAST node of bList
+    aList->left = bListLast;
+    bListLast->right = aList;
+
+    return aList;
+}
+
+tree* convertTreeToCircularList(tree* root)
+{
+    if (root == NULL)
+    {
+        return root;
+    }
+
+    tree* leftList = convertTreeToCircularList(root->left);
+    tree* rightList = convertTreeToCircularList(root->right);
+
+    // This will make a circular list of a single node
+    root->left = root;
+    root->right = root;
+
+    // Now append leftList and rightList to the root
+    leftList = joinTwoCircularList(leftList, root);
+    leftList = joinTwoCircularList(leftList, rightList);
+
+    return leftList;
+}
+
+// ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
 int main()
@@ -1932,6 +2075,59 @@ int main()
         cout << "maxNodesWithinRange: " << maxNodesWithinRange(3, 24, root5) << endl;
         cout << "maxNodesWithinRange: " << maxNodesWithinRange(24, 29, root5) << endl;
     }
+
+    // Problem 30. Serialize a Binary Tree
+    {
+        cout << endl << endl << "Problem 30. Serialize a Binary Tree" << endl;
+    }
+
+    // Problem 31. Deserialize a Binary Tree
+    {
+        cout << endl << endl << "Problem 31. Deserialize a Binary Tree" << endl;
+    }
+
+    // Problem 32. Convert Tree into a Double Linked List
+    {
+        cout << endl << endl << "Problem 32. Convert Tree into a Double Linked List" << endl;
+        printTreeLevelOrder(root);
+
+        convertTreeToDoubleList(root);
+        
+        // Print Doubly Linked List
+        while(root != NULL)
+        {
+            cout << root->data << ", ";
+            root = root->right;
+        }
+        cout << endl;
+    }
+
+    root = newNode(20);
+    root->left = newNode(10);
+    root->right = newNode(30);
+
+    root->left->left = newNode(5);
+    root->left->right = newNode(15);
+    root->right->left = newNode(25);
+    root->right->right = newNode(35);
+
+    // Problem 33. Convert Tree into a Circular Linked List
+    {
+        cout << endl << endl << "Problem 33. Convert Tree into a Circular List" << endl;
+        printTreeLevelOrder(root);
+        root = convertTreeToCircularList(root);
+        cout << root->data << endl;
+
+        tree* rootLast = root->left;
+        cout << rootLast->data << endl;
+        while(root != rootLast)
+        {
+            cout << root->data << ", ";
+            root = root->right;
+        }
+        cout << endl;
+    }
+
     cout << endl;
 
     return 0;

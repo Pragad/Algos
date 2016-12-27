@@ -1918,6 +1918,90 @@ http://stackoverflow.com/questions/7880784/what-is-rss-and-vsz-in-linux-memory-m
 NETWORKS:
 0. 
 How TCP Works:
+    7 Logical Layers
+        Application
+        Presentation
+        Session
+        Transport
+        Network
+        Data Link
+        Physical
+
+OSI Model:
+
+    1. Application
+        - Application that the user is interacting with
+        - Eg: Firefox, Outlook, Chrome, Skype
+        - Users are on this layer
+
+        PROBLEMs:
+        - Firefox could be corrputed
+        - Misconfiguration of the application
+
+    2. Presentation
+        - Layer that the operating system is on
+        - Lot of configurable information
+
+        PROBLEMs:
+        - Something is the OS is not allowing the users to go to internet
+        - Could be a device driver problem where Wifi is not working
+
+    3. Session
+        - Layer that deals creating a Session between two computers
+        - So if we are going to a website, our computer should create a session with the
+          web server from which we want the information
+        - Everytime a computer has to talk to another computer, a session should be 
+          created between the two computers
+    
+        PROBLEMs:
+        - Someone might have prohibited you from accessing the website
+
+    4. Transport
+        - Decides how much information should be sent at one time
+        - Sliding window / Windowing happens here
+        - How much information the server will send back
+        - Deals with transfer of data back and forth
+        - How long the computer will wait before the ACK is received
+
+        PROBLEMs:
+
+    5. Network
+        - IP address are at this layer
+        - TCP / IP falls here
+        - Default gateways, Subnet Mask, DNS falls here
+        - Routers operate on this layer
+        - Choosing the best path to transfer information from one point to another
+
+        PROBLEMs:
+
+    6. Data Link:
+        - Data would come all the way till your AP
+        - Deciding on which computer or machine to deliver the packets will be decided
+          by looking up the MAC address
+        - MAC address reside here
+        - Swithces operate on this layer
+        - ARP falls here (Address Resolution Protocol)
+        - All computers on a network are plugged into a switch so that they can talk to each
+          other.
+        - Those things happen here
+
+        WIFI Access Point
+http://superuser.com/questions/902831/which-layer-of-network-stack-does-access-point-operate
+        - 802.11 is said to operate at layer 2
+        - Access points belong to the data-link layer (layer 2) devices.
+
+        - An access point cannot create a new network.
+        - It only broadcasts whatever packet it receives...just like switches. A router is a good example of a device that can create a new network
+
+        PROBLEMs:
+
+    7. Physical Layer:
+        - Hubs, cabling, and repeaters
+        - Where actual wiring happens
+        - All the physical stuffs that connect computers
+
+        PROBLEMs:
+        - If the cable gets unplugged
 
 1.
 How TCP/IP Network works.
@@ -1989,12 +2073,41 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
 
             - IMP: To communicate in an Ethernet network, MAC addresses are used.
                    Ethernet frames (packets) don't know anything about IP addresses. ARP is used to find out the MAC address of a host on the local network.
+
         c. Physical
             - Switches come in this layer.
         
 1b.
 How Internet Works
 http://www.theshulers.com/whitepapers/internet_whitepaper/index.html
+
+    1. The message would start at the top of the protocol stack on your computer and work it's way downward.
+
+    2. If the message to be sent is long, each stack layer that the message passes through may break the message up into smaller chunks of data.
+      This is because data sent over the Internet (and most computer networks) are sent in manageable chunks.
+      On the Internet, these chunks of data are known as packets.
+
+    3. The packets would go through the Application Layer and continue to the TCP layer.
+       Each packet is assigned a port number.
+       Ports will be explained later, but suffice to say that many programs may be using the TCP/IP stack and sending messages.
+       We need to know which program on the destination computer needs to receive the message because it will be listening on a specific port.
+
+    4. After going through the TCP layer, the packets proceed to the IP layer.
+       This is where each packet receives it's destination address, 5.6.7.8.
+
+    5. Now that our message packets have a port number and an IP address, they are ready to be sent over the Internet.
+       The hardware layer takes care of turning our packets containing the alphabetic text of our message into electronic signals and transmitting them over the phone line.
+
+    6. On the other end of the phone line your ISP has a direct connection to the Internet.
+       The ISPs router examines the destination address in each packet and determines where to send it.
+       Often, the packet's next stop is another router. More on routers and Internet infrastructure later.
+
+    7. Eventually, the packets reach computer 5.6.7.8.
+       Here, the packets start at the bottom of the destination computer's TCP/IP stack and work upwards.
+
+    8. As the packets go upwards through the stack, all routing data that the sending computer's stack added (such as IP address and port number) is stripped from the packets.
+
+    9. When the data reaches the top of the stack, the packets have been re-assembled into their original form, "Hello computer 5.6.7.8!"
 
 1c.
 TCP vs UDP
@@ -2069,13 +2182,13 @@ Switch vs Hub vs Router:
     - Router vs Switch
         - Router:
           - Connects network
-          - Uses MAC address
+          - Uses IP address
           - To send the packet to the next hop, you need its MAC address.
           While hopping through intermediate links, the IP address in the IP header don't change - only the MAC addresses change
 
         - Switch:
           - Creates network
-          - Uses IP address
+          - Uses MAC address
 
 4.
 How NTLM Authentication Works

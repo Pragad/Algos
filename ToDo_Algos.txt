@@ -1,26 +1,23 @@
-Arrays
-Strings
-Pramp Qs
-Threads
-    Producer Consumer
-    Reader Writer
-    Simple Threading
-DP
-Graph Cycle
+Complete In depth of SMB Encryption Project
+Complete In depth of File System Project
+Take design questions and solve them. From front end to back end
+Write class structure for all questions
 
-All Interview
-    All Tree
-    Graph
+Coding:
+    Google Question
+    Cracking Coding Interview
+    Graph Cycle
+    All Open Tabs
+
+Revise:
+    Permutation and Subsets
+    Strings
+    Producer Consumer and all threading related
+    DP
+    BST Delete node
     BST Iterator
-
-09/09: All GENERIC QUESTIONs about netapp and others, Interview General, Cpp Tips, Algos General
-
-10/08: DP
-10/09: All Other Old Problems
-10/10: Cpp Tips Tricks
-10/11: Python
-10/12: Python
-10/13: Revise
+    MyDriveInterview Qs
+    Smart Pointers
 
 How is heap balance maintained
 Yahoo hospital problem
@@ -29,44 +26,18 @@ Architecture of some of the project that you developed
 Design Car, Engine, Truck, Bicycle, Wheel
 Virtual vs pure virtual
 Deadlock
-
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--1. Netapp Related
 0. Virtual Address and Physical Address Mapping
 1. AVL and Red Black Trees
-2. Dynamic Programming
-3. Square Root of a number
-4. Smart Pointers
-5. Concurrency and Non blocking IO
-6. IPC and Parallel Programming
-7. Draw stack / heap o-------f a program run
-8. Functors
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
--1) Meetup Qs
-    0) Quick Select k'th smallest element
-1) Find Cycle in a Graph
+1) Meetup Qs
 2) Find a sub matrix that sums to a value
-3) Implementing a function that can concatenate two null terminated strings together in C
 4) Build a simple regex matcher
-5) Write code that finds the set of all sub-sets of a set
-6) FizzBuzz
-8) Large number multiplication without using *
-10) LRU Cache
-12) Tree Serialize and Deserialize
-    13) Uber Question
-14) Simple Multi threading problem
 15) Two Bit Problems from Interview Bit
-16) Reader Writer problem
-    17) Amazon Linked List Palindrome
-    18) Amazon All Pair of ints that sum to a number
-19) Design Question
-20) Design some other similar class or a project that you did
-21) Cracking the coding Interview - Recursion
 22) Soundhound Problems
     - Auto complete of a search
 23) MZ Problem
-24) Finding if two strings are anagrams
 25) Given a char pointer to large buffer of memory, write your own version of my_malloc and my_free without using any system calls.
     Make it as robust as possible.
     How would you minimize memory fragmentation?
@@ -74,9 +45,6 @@ http://blog.robertelder.org/50-interviews-with-facebook-twitter-amazon-others/
     - Think of different ways and its pros and cons
     - Make it thread safe
 27) Riverbed time problem
-    28) Check other interview Qs
-    29) Bloomberg practice problem
-30) MongoDB problem
 31) Splunk interview question
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MEETUP: Tech Interview Whiteboard Session
