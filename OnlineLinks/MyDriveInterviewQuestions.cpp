@@ -1032,21 +1032,24 @@ void printMatrixSpiralOrder(vector< vector <int> > twoDMatrix)
 
 void printCombinationOnesZeros(string str, uint32_t stIdx, uint32_t lastQMarkPos)
 {
-    if (stIdx == lastQMarkPos)
+    if (stIdx == lastQMarkPos + 1)
     {
-        cout << str << endl;
+        cout << "0. " << str << endl;
         return;
     }
 
     for (uint32_t i = stIdx; i < str.size(); i++)
     {
+        cout << "1. For: " << i << endl;
         if (str[i] == '?')
         {
             str[i] = '0';
-            printCombinationOnesZeros(str, i, lastQMarkPos);
+            cout << "2. " << i << "; " << str << endl;
+            printCombinationOnesZeros(str, i + 1, lastQMarkPos);
 
             str[i] = '1';
-            printCombinationOnesZeros(str, i, lastQMarkPos);
+            cout << "3. " << i << "; " << str << endl;
+            printCombinationOnesZeros(str, i + 1, lastQMarkPos);
         }
     }
 }
@@ -1059,9 +1062,11 @@ void findLastQMark(string str)
         if (str[i] == '?')
         {
             lastQMarkPos = i;
+            break;
         }
     }
 
+    cout << "Last Q Mark: " << lastQMarkPos << endl;
     if (lastQMarkPos < str.size())
     {
         printCombinationOnesZeros(str, 0, lastQMarkPos);
@@ -1180,7 +1185,40 @@ int32_t equilibriumIndex(vector<int> nums)
 //            word
 //
 //            Ans: word, 1ord, w1rd, wo1d, wor1, 2rd, w2d, wo2, 1o1d, 1or1, w1r1, 1o2, 2r1, 3d, w3, 4
+//
+// https://discuss.leetcode.com/topic/32171/9-line-easy-java-solution
+// https://discuss.leetcode.com/topic/32270/java-backtracking-solution
 // ------------------------------------------------------------------------------------------------
+void generateAbbreviationsHelper(string& word, string abbr, int i, vector<string>& result, bool prevNum)
+{
+    if (i == word.length())
+    {
+        result.push_back(abbr);
+        return;
+    }
+
+    generateAbbreviationsHelper(word, abbr+word[i], i+1, result, false);
+    if (!prevNum) {
+        // Add number abbreviations only when we added a character instead of an abbreviation earlier
+        for (int len = 1; i+len <= word.length(); ++len) {
+            generateAbbreviationsHelper(word, abbr+to_string(len), i+len, result, true);
+        }
+    }
+}
+
+void generalizedAbbrevation(string word)
+{
+    vector<string> result;
+    generateAbbreviationsHelper(word, "", 0, result, false);
+
+    for (string res : result)
+    {
+        cout << res << ", ";
+    }
+    cout << endl;
+}
+
+/*
 void generalizedAbbrevation(string word)
 {
     for (uint32_t i = 1; i <= word.length(); i++)
@@ -1200,6 +1238,7 @@ void generalizedAbbrevation(string word)
         cout << endl;
     }
 }
+*/
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 12. Find if two rectangles overlap
@@ -3677,7 +3716,7 @@ int main()
     // Problem 8. Combination of 1s and 0s
     {
         cout << endl << "Problem 8" << endl;
-        string str = "10?0";
+        string str = "??";
         findLastQMark(str);
     }
 
