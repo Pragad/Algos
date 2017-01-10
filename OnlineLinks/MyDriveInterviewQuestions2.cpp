@@ -822,6 +822,7 @@ double squareRoot(double number)
     // Loop will continue till we get an accuracy of 0.001
     while ((high - low) >= 0.00001)
     {
+        cout << "low: " << low << "; high: " << high << endl;
         mid = low + (high - low) / 2;
         /*
         if (areDoubleSame(mid * mid, number))
@@ -1158,6 +1159,7 @@ int main()
     // PROBLEM 12: Square root of a number
     {
         cout << endl << "PROBLEM 12: Square root of a number" << endl;
+        /*
         cout << squareRoot(0) << ", ";
         cout << squareRoot(1) << ", ";
         cout << squareRoot(2) << ", ";
@@ -1170,6 +1172,8 @@ int main()
         cout << squareRoot(9) << ", ";
         cout << squareRoot(49) << ", ";
         cout << squareRoot(62.104) << ", ";
+        cout << squareRoot(77) << endl;
+        */
         cout << squareRoot(77) << endl;
     }
 

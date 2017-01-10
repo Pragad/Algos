@@ -1045,6 +1045,7 @@ int minEditDistance(const string& word1, const string& word2)
     }
 
     for (uint32_t i = 1; i < DPtable.size(); i++)
+
     {
         for (uint32_t j = 1; j < DPtable[i].size(); j++)
         {
@@ -1256,6 +1257,7 @@ int main()
         string word2b = "whoareyo";
         string word1c = " what is this";
         string word2c = "whatisthis";
+        cout << "Min Edit Dist: " << minEditDistance(word1a, word2a) << endl;
         cout << "Min Edit Dist: " << minEditDistance(word1b, word2b) << endl;
     }
 

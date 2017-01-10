@@ -110,6 +110,7 @@ int* merge_sort(int array[], int start, int end)
     return merge_1(left_hal, end/2 - start, right_hal, end - end/2);
 }
 
+// http://codereview.stackexchange.com/questions/64711/merge-sort-an-integer-array
 int main()
 {
     int unsorted[] = {5,4,3,2,1,6,7,8};
