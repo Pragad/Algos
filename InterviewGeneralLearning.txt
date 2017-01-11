@@ -113,6 +113,7 @@ NETWORKS
 16. What is Samba
 17. What is SMB
 18. Ports vs Socket
+19. IPv6
 -----------------------------------------------
 MISC
 1. What is REST Servcie
@@ -2596,6 +2597,20 @@ http://stackoverflow.com/questions/152457/what-is-the-difference-between-a-port-
     For example:
         1030 is a port.
         (10.1.1.2 , TCP , port 1030) is a socket.
+
+19.
+IPv6
+
+Unlike the familiar IPv4 addresses which are 32 bits long, written in decimal, and separated by periods, IPv6 addresses are 128 bits long, written in hexadecimal, and separated by colons.
+
+An example would be:
+    3ffe:1900:4545:3:200:f8ff:fe21:67cf
+
+Colons separate 16-bit fields. Leading zeros can be omitted in each field as can be seen above where the field :0003: is written :3:. In addition, a double colon (::) can be used once in an address to replace multiple fields of zeros. For example:
+
+fe80:0:0:0:200:f8ff:fe21:67cf
+can be written
+fe80::200:f8ff:fe21:67cf
 
 -----------------------------------------------
 MISC
