@@ -112,6 +112,8 @@
  * tree* joinTwoCircularList(tree* aList, tree* bList)
  * tree* convertTreeToCircularList(tree* root)
  *
+ * Problem 34. Count Leaf Nodes
+ * int countLeafNodes(tree* root)
  */
 
 // This contains solution to Stanford's Tree problems.
@@ -1606,19 +1608,23 @@ int maxNodesWithinRange(int A, int B, tree* T)
 // Problem 30.
 // Serialize a tree
 // ------------------------------------------------------------------------------------------------
+/*
 string serialize(tree* root)
 {
 
 }
+*/
 
 // ---------------------------------------------------------------------------------------
 // Problem 31.
 // Deserialize a tree
 // ---------------------------------------------------------------------------------------
+/*
 TreeNode* deserialize(string data)
 {
 
 }
+*/
 
 // ---------------------------------------------------------------------------------------
 // Problem 32.
@@ -1730,6 +1736,25 @@ tree* convertTreeToCircularList(tree* root)
     leftList = joinTwoCircularList(leftList, rightList);
 
     return leftList;
+}
+
+// ---------------------------------------------------------------------------------------
+// Problem 34.
+// Count Leaf Nodes
+// ---------------------------------------------------------------------------------------
+int countLeafNodes(tree* root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    if (root->left == NULL && root->right == NULL)
+    {
+        return 1;
+    }
+
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2128,6 +2153,22 @@ int main()
         cout << endl;
     }
 
+
+    root = newNode(20);
+    root->left = newNode(10);
+    root->right = newNode(30);
+
+    root->left->left = newNode(5);
+    root->left->right = newNode(15);
+    root->right->left = newNode(25);
+    root->right->right = newNode(35);
+
+    // Problem 34. Count Leaf Nodes
+    {
+        cout << endl << endl << "Problem 34. Count Leaf Nodes" << endl;
+        printTreeLevelOrder(root);
+        cout << "Number of Leaf Nodes: " << countLeafNodes(root) << endl;
+    }
     cout << endl;
 
     return 0;
