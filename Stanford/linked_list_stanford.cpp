@@ -466,9 +466,9 @@ void removeDuplicates(node* head)
         deleteHappened = false;
         if (tmpHead->next != NULL)
         {
-            deleteHappened = true;
             if (tmpHead->data == tmpHead->next->data)
             {
+                deleteHappened = true;
                 tmpHold = tmpHead->next->next;
                 delete tmpHead->next;
                 tmpHead->next = tmpHold;
@@ -476,10 +476,6 @@ void removeDuplicates(node* head)
 
             // IMP: only advance if no deletion. Else we cannot delete more than
             // TWO duplicates
-            else
-            {
-                tmpHead = tmpHead->next;
-            }
         }
 
         if (!deleteHappened)
@@ -978,6 +974,7 @@ int main()
     cout << "Another List" << endl;
     printList(head2);
 
+    /*
     // PROBLEM 11. Move Node
     {
         cout << endl <<  "PROBLEM 11. Move Node" << endl;
@@ -1071,6 +1068,7 @@ int main()
         cout << endl << "PROBLEM 17. Is list Palindrome" << endl;
         cout << isListPalindrome(head1) << endl;
     }
+    */
 
     cout << endl;
     return 0;

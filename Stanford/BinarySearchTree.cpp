@@ -247,6 +247,7 @@ BST::balancedInsertRec(Node*& node, int data)
         if (lh > rh) 
         {
             // Because Equal elements will get inserted to the left child
+            // data: x, node: z
             if (data <= node->_left->_data)
             {
                 // Do a right rotate
@@ -263,6 +264,7 @@ BST::balancedInsertRec(Node*& node, int data)
         }
         else if (lh < rh)
         {
+            // data: x, node: z
             if(data <= node->_right->_data)
             {
                 // Do a right rotate and then a left rotate

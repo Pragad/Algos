@@ -18,6 +18,8 @@ int main()
     cout << sizeof(int) << endl;
     cout << sizeof(char) << endl;
 
+    bool a = 0;
+    bool b = 1;
     cout << endl;
     return 0;
 }
