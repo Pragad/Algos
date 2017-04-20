@@ -46,6 +46,8 @@
 35. Search a Word in a 2D Grid of characters
 36. Sort countries based on population
 37. Average of a number accounting for integer overflow
+38. Swap Endianess / Converting Little Endian to Big Endian
+
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -1041,3 +1043,9 @@ Average of a number accounting for integer overflow
             }
             return avg;
         }
+
+38. Swap Endianess / Converting Little Endian to Big Endian
+
+	int little2big(int i) {
+		return (i&0xff)<<24 | (i&0xff00)<<8 | (i&0xff0000)>>8 | (i>>24)&0xff;
+	}
