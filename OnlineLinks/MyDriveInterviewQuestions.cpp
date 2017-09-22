@@ -723,25 +723,32 @@ bool subArrayWithSum(int arr[], uint32_t num, int sum)
 // http://www.geeksforgeeks.org/find-the-largest-subarray-with-0-sum/
 //             IMP: This does not give the maximum length sub array.
 //             This just gives all the such sub array
+//             
+//             VERY IMP: Should do curSum - Sum NOT sum-curSum
 //
 //             Returns false if no such array is present
 //             Sum      : 3
 //             Index    : 0, 1,  2, 3, 4,  5
 //             Arr      : 4, 1, -3, 2, 6 , -5
 //             Map      : 4, 5,  2, 4, 10,  5
-//             Map Find : 1, 2, -1, 1,  7,  2
+// CUR - SUM   Map Find : 1, 2, -1, 1,  7,  2
 //             Check if each element in Map Find is present in the MAP.
 //             We can see that "2" is present in the map at index 2. 
 //             Now we are at Index 5, with a Sum of 5. This denotes that after Index 2 where
 //             our Sum was 2. We have gotnumber in the middle which would contribute to a
 //             Sum of 3.
-//
 //              
 //             Sum      : 4
 //             Index    : 0, 1,  2, 3, 4,  5
 //             Arr      : 4, 1, -3, 2, 6 , -5
 //             Map    :0, 4, 5,  2, 4, 10,  5 // VERY IMP: Map should start from 0.
 //             Map Find : 0, 1, -2, 0,  6,  1
+//
+//             Sum :    5
+//             Idx:     0, 1,  2, 3,  4,  5, 6, 7 ,  8, 9,10, 11
+//             Arr :    4, 1, -3, 2,  6, -5, 4, 1 , -3, 2, 6 , -5
+//             Map : 0, 4, 5,  2, 4, 10,  5, 9, 10,  7, 9, 15, 10 
+//             Find: 0,-1, 0, -3,-1,  5,  0, 4,  5,  2, 4, 10,  5
 // ------------------------------------------------------------------------------------------------
 bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
 {
@@ -3659,12 +3666,13 @@ int main()
         vector<int> arr5 = {6, 5, 10, 40, 50, 35};
 
         cout << "Max Sum: " << maxSumSubArray(arr1, sizeof(arr1) / sizeof(arr1[0])) << endl;
-        cout << "Max Sum SubSeq:: " << endl;
+        cout << "Max Sum SubSeq: " << endl;
         maxSumSubSequence(arr1, sizeof(arr1) / sizeof(arr1[0]));
         cout << "Max Prod: " << maxProduct(std::vector<int> (arr1, arr1 + sizeof arr1 / sizeof arr1[0])) << endl;
 
         subArrayWithSum(arr2, sizeof(arr2) / sizeof(arr2[0]), 23);
 
+        cout << "All Subarrays with Sum: ";
         allSubArraysWithSum(arr4, sizeof(arr4) / sizeof(arr4[0]), 5);
 
         vector <int> nums = {74, 659, 931, 273, 545, 879, 924, 710, 441, 166, 493, 43, 988, 504, 328, 730, 841, 613, 304, 170, 710, 158, 561, 934, 100, 279, 817, 336, 98, 827, 513, 268, 811, 634, 980, 150, 580, 822, 968, 673, 394, 337, 486, 746, 229, 92, 195, 358, 2, 154, 709, 945, 669, 491, 125, 197, 531, 904, 723, 667, 550};
