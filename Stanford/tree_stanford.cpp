@@ -669,6 +669,7 @@ int findLevel(const tree* root, int a, int lvl)
         return lvl;
     }
 
+    // This won't work
     return findLevel(root->left, a, lvl + 1);
     return findLevel(root->right, a, lvl + 1);
 }
