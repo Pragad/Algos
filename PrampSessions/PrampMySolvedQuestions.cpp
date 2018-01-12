@@ -30,7 +30,7 @@ using namespace std;
  *
  * PROBLEM 11. Find The Duplicates
  *
- * PROBLEM 12. Getting a Different Number
+ * PROBLEM 12. Getting a Different Number in 4 billion ints
  *
  * PROBLEM 13. Drone Flight Planner
  *
@@ -519,7 +519,7 @@ vector<int> findDuplicatesOptimized(const vector<int>& arr1, const vector<int>& 
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 12. Getting a Different Number
+// PROBLEM 12. Getting a Different Number in 4 billion ints
 //             Find a number not present in the array
 // https://www.pramp.com/question/aK6V5GVZ9MSPqvG1vwQp
 // http://stackoverflow.com/questions/27449831/create-a-large-bitset
