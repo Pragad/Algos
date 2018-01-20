@@ -1282,6 +1282,9 @@ int findLargestNumSmallerThanKeyRec(tree* root, int elmt)
 // Problem 23
 //      Find next larger number than K in a BST
 //      http://stackoverflow.com/questions/6334514/to-find-largest-element-smaller-than-k-in-a-bst
+//
+//      VERY IMP: Inorder successor of all nodes
+//      https://www.geeksforgeeks.org/populate-inorder-successor-for-all-nodes/
 // ------------------------------------------------------------------------------------------------
 int findSmallestNumLargerThanKey(tree* root, int elmt)
 {
@@ -1393,6 +1396,9 @@ void NthLargestInBST(tree* root, uint32_t& n, int32_t& result)
 // Problem 25
 //      In Order Successor in Binary Search Tree
 //      http://stackoverflow.com/questions/5471731/in-order-successor-in-binary-search-tree
+//
+//      VERY IMP: Inorder successor of all nodes
+//      https://www.geeksforgeeks.org/populate-inorder-successor-for-all-nodes/
 // ------------------------------------------------------------------------------------------------
 treeWithParent* findLeftMostNode(treeWithParent* node)
 {

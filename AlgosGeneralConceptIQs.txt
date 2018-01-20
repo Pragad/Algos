@@ -47,6 +47,7 @@
 36. Sort countries based on population
 37. Average of a number accounting for integer overflow
 38. Swap Endianess / Converting Little Endian to Big Endian
+39. How many traversals need to be known to construct a BST
 
 --------------------------------------------------------------------------------------------
 1.
@@ -1049,3 +1050,45 @@ Average of a number accounting for integer overflow
 	int little2big(int i) {
 		return (i&0xff)<<24 | (i&0xff00)<<8 | (i&0xff0000)>>8 | (i>>24)&0xff;
 	}
+
+39. How many traversals need to be known to construct a BST
+https://stackoverflow.com/questions/12880718/how-many-traversals-need-to-be-known-to-construct-a-bst
+
+    To construct a BST you need only one (not in-order) traversal.
+
+    In general, to build a binary tree you are going to need two traversals, in order and pre-order for example. However, for the special case of BST - the in-order traversal is always the sorted array containing the elements, so you can always reconstruct it and use an algorithm to reconstruct a generic tree from pre-order and in-order traversals.
+
+    So, the information that the tree is a BST, along with the elements in it (even unordered) are equivalent to an in-order traversal.
+
+    Bonus: why is one traversal not enough for a general tree, (without the information it is a BST)? 
+    Answer: Let's assume we have n distinct elements. There are n! possible lists to these n elements, however - the possible number of trees is much larger (2 * n! possible trees for the n elements are all decayed trees, such that node.right = null in every node, thus the tree is actually a list to the right. There are n! such trees, and another n! trees where always node.left = null ) Thus, from pigeon hole principle - there is at least one list that generates 2 trees, thus we cannot reconstruct the tree from a single traversal. (QED)
+
+
+https://stackoverflow.com/questions/33062228/why-it-is-impossible-to-construct-binary-tree-with-pre-order-post-order-and-lev
+    We can't build a tree without the in-order traversal. Why? Let's say you are given the pre-order and post-order traversals only.A simple example is shown below.
+    Consider two different trees,
+
+    TREE 1:
+
+    root=a;  
+    root->left=b;  
+    root->left->right=c;  
+    Tree 2:
+
+    root=a;  
+    root->right=b;  
+    root->right->left=c;  
+    Both the trees are different, but have same pre-order and post-order sequence.
+
+    pre-order - a b c  
+    post-order - c b a  
+    This is so because we cannot separate the left sub-tree and right sub-tree using the pre-order or post-order traversal alone.
+
+    Pre-order, as its name, always visits root first and then left and right sub-trees. That is to say, walking through a pre-order list, each node we hit would be a "root" of a sub-tree.
+
+    Post-order, as its name, always visits left and right sub-trees first and then the root. That is to say, walking through a post-order list backward, each node we hit would be a "root" of a sub-tree.
+
+    In-order, on the other hand, always visits left sub-tree first and then root and then right sub-tree, which means that given a root(which we can obtain from the pre-order or post-order traversal as stated above), in-order traversal tells us the sizes of the left and right sub-trees of a given root and thus we can construct the original tree.(Think this out)
+
+    Same is the case with level-order traversal. Thus if we want to obtain a unique tree we need an in-order traversal along with any other of the three traversals.
+    Note - The exception is of course a full binary tree, in which pre-order and post-order traversals can be used to construct the tree, as there is no ambiguity in tree structure.

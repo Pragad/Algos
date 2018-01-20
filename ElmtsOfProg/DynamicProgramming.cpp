@@ -74,6 +74,7 @@ void printVector(vector<T> nums)
 // ---------------------------------------------------------------------------------------
 // Problem 1: Fibonacci of a number
 // http://php.bubble.ro/fibonacci/
+// The Fibonacci sequence is defined with seed values fib(0) = 0 and fib(1) = 1
 // ---------------------------------------------------------------------------------------
 unsigned int fibonacci(int n)
 {
@@ -421,6 +422,7 @@ uint32_t longestIncreasingSubSequenceVec(vector<int>& nums)
 // 7. S = {2, 3, 7, 101} - New largest LIS
 // 8. S = {2, 3, 7, 18} - Changed 101 to 18
 // ---------------------------------------------------------------------------------------
+// VERY IMP: Return Greater or Equal
 uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
 {
     uint32_t low = 0;
@@ -443,7 +445,7 @@ uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
 
     while (low < high)
     {
-        uint32_t middle = (low + high) / 2;
+        int middle = (low + high) / 2;
 
         // VERY IMP ">=" NOT ">"
         if (longIncSeq[middle] >= num)
@@ -467,6 +469,7 @@ uint32_t findFirstLargerElement(vector<int> longIncSeq, int num)
             low = middle + 1;
         }
     }
+    return longIncSeq.size();
 }
 
 uint32_t longestIncreasingSubseq(vector<int> nums)
@@ -513,6 +516,7 @@ uint32_t longestIncreasingSubseq(vector<int> nums)
 // ---------------------------------------------------------------------------------------
 // Problem 4: Longest Common Subsequence
 //            Using Recursion
+//            Complexity: 2^n
 // ---------------------------------------------------------------------------------------
 uint32_t longestCommonSubSequenceRec(string str1, string str2)
 {
@@ -564,7 +568,6 @@ uint32_t longestCommonSubSequenceDP(string str1, string str2)
     
     // VERY IMP. To initialize a 2D array to 0.
     //uint32_t subSeqDP[str1.length()+1][str2.length()+1] = {{0}};
-
     vector< vector<int> > subSeqDP(str1.length() + 1, vector<int> (str2.length() + 1, 0));
     
     // STD:FILL NOT WORKING
@@ -1037,7 +1040,9 @@ int minEditDistance(const string& word1, const string& word2)
     // Start with empty string on both sides. So add the cost for converting from 
     // empty string to word1 AND
     // Cost for converting empty string to word2
-    iota(DPtable[0].begin(), DPtable[0].end(), 0);
+
+    // TODO Fix below line
+    //itoa(DPtable[0].begin(), DPtable[0].end(), 0);
 
     for (uint32_t i = 0; i < word1.length() + 1; i++)
     {

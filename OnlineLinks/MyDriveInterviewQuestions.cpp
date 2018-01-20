@@ -1008,24 +1008,28 @@ void printMatrixSpiralOrder(vector< vector <int> > twoDMatrix)
             cout << twoDMatrix[curRow][i] << ", ";
         }
         curRow++;
+        // Check if numEntries == twoMat.length * twoMat[0].length
 
         for (int i = curRow; i <= maxRow; i++)
         {
             cout << twoDMatrix[i][maxCol] << ", ";
         }
         maxCol--;
+        // Check if numEntries == twoMat.length * twoMat[0].length
 
         for (int i = maxCol; i >= curCol; i--)
         {
             cout << twoDMatrix[maxRow][i] << ", ";
         }
         maxRow--;
+        // Check if numEntries == twoMat.length * twoMat[0].length
 
         for (int i = maxRow; i >= curRow; i--)
         {
             cout << twoDMatrix[i][curCol] << ", ";
         }
         curCol++;
+        // Check if numEntries == twoMat.length * twoMat[0].length
     }
 }
 

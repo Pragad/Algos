@@ -201,6 +201,32 @@ Technologies and Languages used: Spring MVC, Python, ScraperWiki, HTML5, CSS3, J
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7. Sentiment based review system
+    A. Problem:
+        - Evaluate individual features of a product instead of a overall product
+        - Subjective nature of a user review
+
+    B. How you solved it:
+        - Extract FEATURES and find SENTIMENT for the features.
+        1. Did PART OF SPEECH tagging on a sentence. 
+            - This will tell the NOUNS and the ADJECTIVES
+        2. Used APRIORI algorithm to extract features.
+            http://nikhilvithlani.blogspot.com/2012/03/apriori-algorithm-for-data-mining-made.html
+        3. Used SENTIMENT ANALYSIS to find about the feature
+            - Identified the polarity to remove ambiguous sentiment values.
+        - Used BIGRAMS to overcome words like "battery life"
+        - Used a BAG of ADJECTIVES
+
+    C. Interesting Stuffs:
+        - From ANALYSIS found that running APRIORI on smaller data sets give precise results.
+
+    D. Challenges and How you fixed it:
+        - phrases like "blocks the lens"
+
+    E. Additional Notes:
+        - should use SVMs a better classifier.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4. Instant Indoor Localization
     A. Problem:
         - When a stranger is inside a building they don't know their current position and the way out
@@ -251,32 +277,6 @@ Technologies and Languages used: Spring MVC, Python, ScraperWiki, HTML5, CSS3, J
         Align the reads to a reference genome to find out the SNP (Single Nucleotide Polymorphism) positions.
         Build a greedy algorithm for haplotype phasing from sequence reads, allowing for sequencing errors.
 
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-7. Sentiment based review system
-    A. Problem:
-        - Evaluate individual features of a product instead of a overall product
-        - Subjective nature of a user review
-
-    B. How you solved it:
-        - Extract FEATURES and find SENTIMENT for the features.
-        1. Did PART OF SPEECH tagging on a sentence. 
-            - This will tell the NOUNS and the ADJECTIVES
-        2. Used APRIORI algorithm to extract features.
-            http://nikhilvithlani.blogspot.com/2012/03/apriori-algorithm-for-data-mining-made.html
-        3. Used SENTIMENT ANALYSIS to find about the feature
-            - Identified the polarity to remove ambiguous sentiment values.
-        - Used BIGRAMS to overcome words like "battery life"
-        - Used a BAG of ADJECTIVES
-
-    C. Interesting Stuffs:
-        - From ANALYSIS found that running APRIORI on smaller data sets give precise results.
-
-    D. Challenges and How you fixed it:
-        - phrases like "blocks the lens"
-
-    E. Additional Notes:
-        - should use SVMs a better classifier.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 8. MIMO Antenna Power Allocation

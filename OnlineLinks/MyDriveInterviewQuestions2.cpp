@@ -493,7 +493,7 @@ int myAtoi(string str)
 }
 
 // -----------------------------------------------------------------------------------------
-// PROBLEM 6.   Convert Int to Roman Numbers
+// PROBLEM 6.   Reverse words in a string
 // IMP:    
 //          1. reverseString should use TWO variable, i and j
 //          2. Make sure "int i" is done before for loop

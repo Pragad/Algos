@@ -376,6 +376,7 @@ void reverseWordsInSentence(string& str)
 
     if (stIdx < i)
     {
+        // In for-loop 'i' got incremented one extra time. So 'i - 1' below
         reverseWord(str, stIdx, i - 1);
     }
 }
