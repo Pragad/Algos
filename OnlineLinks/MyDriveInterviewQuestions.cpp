@@ -1340,6 +1340,41 @@ void printLargestSubArrayZeroOne(int arr[], uint32_t num)
 //             This problem can be solved only by sorting the array. So consider  the array
 //             is sorted.
 // ------------------------------------------------------------------------------------------------
+// This returns unique three pairs without any duplicates
+vector<vector<int>> threeSum(vector<int>& nums) 
+{
+    sort(nums.begin(), nums.end());
+    vector<vector<int>> result;
+    for (int i = 0; i < nums.size(); i++)
+    {
+        int k = nums.size() - 1;
+        // VERY IMPORTANT. This hugely saves time
+        if (i != 0 && nums[i] == nums[i-1]) {
+            continue;
+        }
+        for (int j = i + 1; j < k; )
+        {
+            if (nums[i] + nums[j] + nums[k] == 0)
+            {
+                result.push_back({nums[i], nums[j], nums[k]});
+                j++;
+                k--;
+            }
+            else if (nums[i] + nums[j] + nums[k] > 0)
+            {
+                k--;
+            }
+            else
+            {
+                j++;
+            }
+        }
+    }
+    sort(result.begin(), result.end());
+    result.erase(unique( result.begin(), result.end() ), result.end());
+    return result;
+}
+
 void printThreeNumSum(int arr[], uint32_t num, int sum)
 {
     if (num < 3)
@@ -1846,6 +1881,7 @@ double medianTwoSortedDiffSizeArrays(int A[], int n, int B[], int m)
 // I'll assume that N and M are > k, so the complexity here is O(log k), which is O(log N + log M)
 int kthSmallestElementIterativeTwo(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uint32_t k)
 {
+    // THIS FUNCTION DOES NOT WORK. Use RECURSIVE OR THE OTHER ONE
     if (k > num1 + num2)
     {
         cout << "Error" << endl;
@@ -2388,7 +2424,7 @@ uint32_t minWindowContainingString(string str1, string str2)
     // Update Count of each character in a HasToFindMap
     for (char c : str2)
     {
-        // The below line takes care of the entire block
+        // VERY IMP The below line takes care of the entire block
         // ++hasToFindMap[c];
         auto itr = hasToFindMap.find(c);
         if (itr != hasToFindMap.end())
@@ -3589,6 +3625,149 @@ pair<uint32_t, uint32_t> findInclusiveExclusiveTimeOfFunction(const vector<funct
     return result;
 }
 
+// -----------------------------------------------------------------------------
+// PROBLEM 37. Find rotation point
+// -----------------------------------------------------------------------------
+int findRotationPoint(const vector<string>& words) {
+    int stIdx = 0;
+    int endIdx = words.size() - 1;
+    while (stIdx <= endIdx) {
+        int midIdx = stIdx + (endIdx - stIdx) / 2;
+        if (midIdx - 1 >= 0 && words[midIdx].compare(words[midIdx - 1]) < 1) {
+            return midIdx;
+        }
+
+        if (words[stIdx].compare(words[midIdx]) > 0) {
+            endIdx = midIdx;
+        } else {
+            stIdx = midIdx;
+        }
+    }
+    return -1;
+}
+
+// -----------------------------------------------------------------------------
+// PROBLEM 38. Two numbers add to a sum
+// -----------------------------------------------------------------------------
+bool twoNumbersSum(const vector<int>& nums, int sum) {
+    unordered_map<int, int> diffMap;
+    for (int i = 0; i < nums.size(); i++) {
+        auto itr = diffMap.find(nums[i]);
+        if (itr != diffMap.end()) {
+            return true;
+        }
+        diffMap[sum - nums[i]] = i;
+    }
+    return false;
+}
+
+// -----------------------------------------------------------------------------
+// PROBLEM 39. ZigZag Conversion
+// -----------------------------------------------------------------------------
+string zigzagconversion(string s, int numRows) {
+    vector<string> strLines(numRows);
+    for (int x = 0; x < s.size(); )
+    {
+        for (int i = 0; i < numRows && x < s.size(); i++)
+        {
+            strLines[i] += s[x];
+            x++;
+        }
+        for (int i = numRows - 2; i >= 1 && x < s.size(); i--)
+        {
+            strLines[i] += s[x];
+            x++;
+        }
+    }
+    for (int i = 1; i < strLines.size(); i++)
+    {
+        strLines[0] += strLines[i];
+    }
+    return strLines[0];   
+}
+
+// -------------------------------------------------------------------------
+// PROBLEM 47. Minimun length between numbers with max frequency
+// -------------------------------------------------------------------------
+struct NumDetails
+{
+    int count;
+    int stIdx;
+    int endIdx;
+    int len;
+    
+    NumDetails() : count(-1),
+                   stIdx(-1),
+                   endIdx(-1),
+                   len(-1) { }
+
+    NumDetails(int count, int stIdx, int endIdx) : count(count),
+                                                   stIdx(stIdx),
+                                                   endIdx(endIdx),
+                                                   len(endIdx - stIdx + 1) { }
+    /*
+    string toString() {
+        return "Cnt: " + this->count + "; St: " + this->stIdx + "; End: "
+               + this->endIdx + "; Len: " + len;
+    }
+    */
+};
+
+bool vecMapComparison(const pair<int, NumDetails>& a, const pair<int, NumDetails>& b)
+{
+    // This sorts in descending order
+    return a.second.count > b.second.count;
+}
+
+int minLengthMaxFrequencyNumbers(const vector<int>& arr) {
+    unordered_map<int, NumDetails> hmap;
+    for (int i = 0; i < arr.size(); i++)
+    {
+        auto itr = hmap.find(arr[i]);
+        if (itr != hmap.end())
+        {
+            hmap[arr[i]] = {itr->second.count + 1, itr->second.stIdx, i};
+        }
+        else
+        {
+            hmap[arr[i]] = {1, i, i};
+        }
+    }
+
+    for (auto mm : hmap)
+    {
+        cout << mm.first << ": " << mm.second.count << " , " << mm.second.stIdx
+             << " , " << mm.second.endIdx << " , " << mm.second.len << endl;
+    }
+    cout << endl;
+
+    // Copy map to a vector of pair of Key and Value and sort the vector
+    vector<pair<int, NumDetails>> vecMap;
+    for (auto itr = hmap.begin(); itr != hmap.end(); ++itr) 
+    {
+        vecMap.push_back(*itr);
+    }
+
+    sort(vecMap.begin(), vecMap.end(), vecMapComparison);
+    int maxFreq = numeric_limits<int>::min();
+    int minNum = numeric_limits<int>::max();
+    for (pair<int, NumDetails> e : vecMap)
+    {
+        if (e.second.count >= maxFreq)
+        {
+            maxFreq = e.second.count;
+            minNum = min(minNum, e.second.len);
+        }
+        else
+        {
+            break;
+        }
+    }
+    cout << endl;
+
+    return minNum;
+}
+
 // ------------------------------------------------------------------------------------------------
 // Main Function
 // ------------------------------------------------------------------------------------------------
@@ -3839,18 +4018,22 @@ int main()
         //int A[] = {1, 2, 6, 8};
         //int B[] = {3, 5};
         int A[] = {1, 2, 6, 8, 9, 15, 20};
-        int B[] = {3, 7, 10, 11, 12};
+        int B[] = {3};
+        //int B[] = {3, 7, 10, 11, 12};
 
         int N = sizeof(A) / sizeof(A[0]);
         int M = sizeof(B) / sizeof(B[0]);
 
-        cout << "Kth Smallest: " << kthSmallestElement(A, N, B, M, 8) << endl;
+        cout << "Kth Smallest: " << kthSmallestElement(A, N, B, M, 4) << endl;
+        cout << "Kth Smallest: " << kthSmallestElement(A, N, B, M, 5) << endl;
 
         uint32_t index1 = 0;
         uint32_t index2 = 0;
         cout << "Kth Smallest Rec: " << kthSmallestElementRec(A, index1, N, B, index2, M, 4) << endl;
+        cout << "Kth Smallest Rec: " << kthSmallestElementRec(A, index1, N, B, index2, M, 5) << endl;
 
         cout << "Kth Smallest Two: " << kthSmallestElementIterativeTwo(A, N, B, M, 4) << endl;
+        cout << "Kth Smallest Two: " << kthSmallestElementIterativeTwo(A, N, B, M, 5) << endl;
 
     }
 
@@ -4058,7 +4241,7 @@ int main()
         cout << isBitStreamDivsible(stream, 3) << endl;
     }
 
-    // PROBLEM 28. Sort an array of 0s, 1s and 2s{
+    // PROBLEM 28. Sort an array of 0s, 1s and 2s
     {
         cout << endl << "PROBLEM 28" << endl;
         cout << "Sort an array of 0s 1s and 2s" << endl;
@@ -4168,6 +4351,7 @@ int main()
     }
             
 
+    // PROBLEM 36. Find inclusive and exclusive times of a function
     {
         cout << endl << "PROBLEM 36" << endl;
         cout << "Find inclusive and exclusive times of a function" << endl;
@@ -4188,6 +4372,34 @@ int main()
         cout << "Inclusive Time: " << res.first << "; ExclusiveTime: " << res.second << endl;
     }
 
+    // PROBLEM 37. Find rotation point
+    {
+        cout << endl << "PROBLEM 37. Find rotation point" << endl;
+        vector<string> words = {"pto", "ret", "sup", "und", "xen", "asy", "bab", "ban", "eng", "kar", "oth"};
+        cout << words[findRotationPoint(words)] << endl;
+    }
+
+    // PROBLEM 38. Two numbers add to a sum
+    {
+        cout << endl << "PROBLEM 38. Two numbers add to a sum" << endl;
+        vector<int> nums = {1, 4, 45, 6, 10, -8};
+        cout << twoNumbersSum(nums, 17);
+    }
+
+    // PROBLEM 39. ZigZag Conversion
+    {
+        cout << endl << "PROBLEM 39. ZigZag Conversion" << endl;
+        string s = "PAYPALISHIRING";
+        cout << zigzagconversion(s, 4) << endl;
+    }
+
+    // PROBLEM 40. Minimun length between numbers with max frequency
+    {
+        cout << "\nPROBLEM 40. Minimun length between numbers with max frequency" << endl;
+        vector<int> nums1 = {1, 2, 3, 4, 2, 2, 3};
+        vector<int> nums2 = {1, 2, 2, 3, 1};
+        cout << minLengthMaxFrequencyNumbers(nums2) << endl;
+    }
     cout << endl;
     return 0;
 }

@@ -450,6 +450,27 @@ pair<uint32_t, uint32_t> meetingScheduler(const vector<pair<uint32_t, uint32_t> 
 // https://www.pramp.com/question/AMypWAprdmUlaP2gPVLZ
 // Session12_2016_07_09.cpp
 // ------------------------------------------------------------------------------------------------
+	
+/*
+static HashMap<String, String> flattenDictionary(HashMap<String, Object> dict){
+    return helper("", dict);
+}
+
+static HashMap<String, String> helper(String prefix, HashMap<String, Object> dict) {
+    HashMap<String, String> res = new HashMap<String, String>();
+
+    for(Map.Entry<String, Object> item : dict.entrySet()){
+        if(item.getValue() == null)
+            continue;
+        else if(!(item.getValue() instanceof String))
+            res.putAll(helper(prefix + item.getKey() + ".", (HashMap<String, Object>) item.getValue()));
+        else
+            res.put(prefix + item.getKey(), (String) item.getValue());
+    }
+
+    return res;
+}
+*/
 
  // ------------------------------------------------------------------------------------------------
 // PROBLEM 10. Merging 2 Packages

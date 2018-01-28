@@ -1746,10 +1746,9 @@ tree* convertTreeToCircularList(tree* root)
     return leftList;
 }
 
-// ---------------------------------------------------------------------------------------
-// Problem 34.
-// Count Leaf Nodes
-// ---------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Problem 34. Count Leaf Nodes
+// -----------------------------------------------------------------------------
 int countLeafNodes(tree* root)
 {
     if (root == NULL)
@@ -1763,6 +1762,26 @@ int countLeafNodes(tree* root)
     }
 
     return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
+
+// -----------------------------------------------------------------------------
+// Problem 35. Flatten a binary tree to linkedlist
+// -----------------------------------------------------------------------------
+void flatten(tree* root, tree*& prev) {
+    if (root == NULL)
+    {
+        return;
+    }
+    flatten(root->right, prev);
+    flatten(root->left, prev);
+    root->left = NULL;
+    root->right = prev;
+    prev = root;
+}
+
+void flatten(tree* root) {
+    tree* prev = NULL;
+    flatten(root, prev);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2176,6 +2195,11 @@ int main()
         cout << endl << endl << "Problem 34. Count Leaf Nodes" << endl;
         printTreeLevelOrder(root);
         cout << "Number of Leaf Nodes: " << countLeafNodes(root) << endl;
+    }
+
+    // Problem 35. Flatten a binary tree to linkedlist
+    {
+        cout << endl << endl << "Problem 35. Flatten a binary tree to linkedlist" << endl;
     }
     cout << endl;
 

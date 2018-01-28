@@ -313,6 +313,27 @@ int countAnit(string s)
     return answer;
 }
 
+// -----------------------------------------------------------------------------
+// Problem 3. Left Rotation
+// -----------------------------------------------------------------------------
+template <typename T>
+void reverseArray(vector<T>& nums, int stIdx, int endIdx) {
+    for (; stIdx < endIdx; stIdx++, endIdx--) {
+        T temp = nums[stIdx];
+        nums[stIdx] = nums[endIdx];
+        nums[endIdx] = temp;
+    }
+}
+
+vector<int> leftRotation(vector<int> a, int d) {
+    d = d % a.size();
+    reverseArray(a, 0, a.size() - 1);
+    reverseArray(a, 0, a.size() - d - 1);
+    reverseArray(a, a.size() - d, a.size() - 1);
+    
+    return a;
+}
+
 // -----------------------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------------------
@@ -344,6 +365,22 @@ int main()
         cout << endl;
     }
 
+    // Problem 3. Left Rotation
+    {
+        cout << endl << "Problem 3. Left Rotation" << endl;
+        int n;
+        int d;
+        cin >> n >> d;
+        vector<int> a(n);
+        for(int a_i = 0; a_i < n; a_i++){
+           cin >> a[a_i];
+        }
+        vector <int> result = leftRotation(a, d);
+        for (ssize_t i = 0; i < result.size(); i++) {
+            cout << result[i] << (i != result.size() - 1 ? " " : "");
+        }
+        cout << endl;
+    }
     return 0;
 }
 

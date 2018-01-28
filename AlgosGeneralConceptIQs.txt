@@ -48,7 +48,8 @@
 37. Average of a number accounting for integer overflow
 38. Swap Endianess / Converting Little Endian to Big Endian
 39. How many traversals need to be known to construct a BST
-
+40. Trie vs Ternary Search Tree
+41. Find number of possible perfect squares between two numbers
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -1092,3 +1093,48 @@ https://stackoverflow.com/questions/33062228/why-it-is-impossible-to-construct-b
 
     Same is the case with level-order traversal. Thus if we want to obtain a unique tree we need an in-order traversal along with any other of the three traversals.
     Note - The exception is of course a full binary tree, in which pre-order and post-order traversals can be used to construct the tree, as there is no ambiguity in tree structure.
+
+40. Trie vs Ternary Search Tree
+https://www.geeksforgeeks.org/ternary-search-tree/
+    Unlike trie(standard) data structure where each node contains 26 pointers for its children, each node in a ternary search tree contains only 3 pointers:
+    1. The left pointer points to the node whose value is less than the value in the current node.
+    2. The equal pointer points to the node whose value is equal to the value in the current node.
+    3. The right pointer points to the node whose value is greater than the value in the current node.
+
+    Tries are suitable when there is a proper distribution of words over the alphabets so that spaces are utilized most efficiently. Otherwise ternary search trees are better. Ternary search trees are efficient to use(in terms of space) when the strings to be stored share a common prefix.
+
+    Applications of ternary search trees:
+    1. Ternary search trees are efficient for queries like ¿Given a word, find the next word in dictionary(near-neighbor lookups)¿ or ¿Find all telephone numbers starting with 9342 or ¿typing few starting characters in a web browser displays all website names with this prefix¿(Auto complete feature)¿.
+
+    2. Used in spell checks: Ternary search trees can be used as a dictionary to store all the words. Once the word is typed in an editor, the word can be parallely searched in the ternary search tree to check for correct spelling.
+
+41. Find number of possible perfect squares between two numbers
+https://www.geeksforgeeks.org/find-number-perfect-squares-two-given-numbers/
+    return (floor(sqrt(b)) - ceil(sqrt(a)) + 1);
+
+42. Check if an Intger is a perfect square
+    bool IsPerfectSquare(long input)
+    {
+        long closestRoot = (long) Math.Sqrt(input);
+        return input == closestRoot * closestRoot;
+    }
+
+    This may get away from some of the problems of just checking "is the square root an integer" but possibly not all. You potentially need to get a little bit funkier:
+
+    bool IsPerfectSquare(long input)
+    {
+        double root = Math.Sqrt(input);
+
+        long rootBits = BitConverter.DoubleToInt64Bits(root);
+        long lowerBound = (long) BitConverter.Int64BitsToDouble(rootBits-1);
+        long upperBound = (long) BitConverter.Int64BitsToDouble(rootBits+1);
+
+        for (long candidate = lowerBound; candidate <= upperBound; candidate++)
+        {
+             if (candidate * candidate == input)
+             {
+                 return true;
+             }
+        }
+        return false;
+    }
