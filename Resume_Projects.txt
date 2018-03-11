@@ -397,6 +397,16 @@ Developed a model to estimate the space consumption of Virtual Machine images du
 Involved estimating the space savings due to Deduplication in the storage array.
 Applied Bloom filters, hash comparison and sampling technique to compare our model with SDFS and LessFS volumes.
 
+Fixed-size chunking simply divides files  at block boundaries.
+Variable-size chunking typically provides better deduplication, since it is more resistant to insertion or deletion of a few bytes in the middle of a file
+
+Bloom Filter:
+It is possible to have false positives; however, it is not possible to have false negatives. This means that if the Bloom filter determines that an entry is new, it is 100% correct; however, if it detects that the entry is an existing member of the set, it could be wrong.
+
+The more hash functions you have, the slower your bloom filter, and the quicker it fills up. If you have too few, however, you may suffer too many false positives.
+
+Chunk Size: 4k, 16k, 64k, 128k
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 EMC:
 

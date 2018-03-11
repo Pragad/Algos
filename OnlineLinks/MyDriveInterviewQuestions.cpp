@@ -49,6 +49,8 @@ using namespace std;
  * PROBLEM 5d. Find ALL SUB ARRAYS that will give you a sum
  * bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
  *
+ * Problem 5d2. Count all sub-arrays having sum divisible by k
+ *
  * PROBLEM 5e. Find the max sum such that no two elements are adjacent
  * int maxLengthSubArraySum(vector<int> nums)
  *
@@ -330,6 +332,7 @@ char findUniqueChar(const string& str)
         return str[0];
     }
 
+    // INT_MIN, INT_MAX
     uint32_t minIndex = std::numeric_limits<std::int32_t>::max();
     unordered_map<char, uniqChar> charMap;
 
@@ -852,6 +855,36 @@ uint32_t maxSubArraysWithLessOrEqualSum(const vector<int>& nums, const int sum)
     maxLen = maxSubArraysWithLessOrEqualSumWrapperOptimized(numsCopy, sum);
 
     return maxLen;
+}
+
+// -----------------------------------------------------------------------------
+// Problem 5d2. Count all sub-arrays having sum divisible by k
+// https://www.geeksforgeeks.org/count-sub-arrays-sum-divisible-k/
+// https://stackoverflow.com/questions/16605991/number-of-subarrays-divisible-by-k
+// -----------------------------------------------------------------------------
+// VERY IMP: To get positive mod
+int mod (int a, int b)
+{
+    int r = a % b;
+    return r < 0 ? r + b : r;
+}
+
+int countAllSubArraysDivisibleByK(int nums[], int size, int k) {
+    unordered_map<int, vector<int>> moduloMap;
+    moduloMap[0] = vector<int> {-1};
+    int curMod = 0;
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        curMod = mod((curMod + nums[i]),  k);
+        auto itr = moduloMap.find(curMod);
+        if (itr != moduloMap.end()) {
+            count += itr->second.size();
+            itr->second.push_back(i);
+        } else {
+            moduloMap[curMod] = vector<int> {i};
+        }
+    }
+    return count;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -2024,7 +2057,7 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
     }
 
     // Default sorting is in descending order
-    priority_queue<int> kSmallNos;
+    priority_queue<int> kSmallNos(k);
 
     // Now the heap will contain the first k numbers
     // Complexity O(K log K)
@@ -3687,7 +3720,7 @@ string zigzagconversion(string s, int numRows) {
 }
 
 // -------------------------------------------------------------------------
-// PROBLEM 47. Minimun length between numbers with max frequency
+// PROBLEM 40. Minimun length between numbers with max frequency
 // -------------------------------------------------------------------------
 struct NumDetails
 {
@@ -3768,9 +3801,65 @@ int minLengthMaxFrequencyNumbers(const vector<int>& arr) {
     return minNum;
 }
 
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Problem 41. Find subarray that should be flipped to get Max 1s
+// https://stackoverflow.com/questions/20993454/find-number-of-bits-to-be-flipped-to-get-maximum-1s-in-array
+// -----------------------------------------------------------------------------
+int onesAfterFlippingBestSubArray(int nums[], int size) {
+    int result[2];
+    for (int i = 0; i < size; i++) {
+        if (nums[i] == 0) {
+            nums[i] = 1;
+        } else if (nums[i] == 1) {
+            nums[i] = -1;
+        }
+    }
+
+    int stIdx = -1;
+    int endIdx = -1;
+    int curSum = 0;
+    int maxSum = numeric_limits<int>::min();
+    for (int i = 0; i < size; i++) {
+        if (curSum + nums[i] > nums[i]) {
+            curSum = curSum + nums[i];
+        } else {
+            curSum = nums[i];
+            stIdx = i;
+        }
+
+        if (curSum > maxSum) {
+            maxSum = curSum;
+            result[0] = stIdx;
+            result[1] = i;
+        }
+    }
+
+    cout << "StIdx: " << result[0] << "; EndIdx: " << result[1] << endl;
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (nums[i] == 1) {
+            nums[i] = 0;
+            // Since we are flipping, if 0 increase the count
+        } else if (nums[i] == -1) {
+            nums[i] = 1;
+        }
+
+        if (i < result[0] || i > result[1]) {
+            if (nums[i] == 1) {
+                count++;
+            }
+        } else {
+            if (nums[i] == 0) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+// -----------------------------------------------------------------------------
 // Main Function
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main()
 {
     // Problem 1.
@@ -3864,6 +3953,13 @@ int main()
         cout << "Max Len Sub Array For Sum: " << maxSubArraysWithLessOrEqualSum(nums, 22337) << endl;
 
         cout << "Max Sum Not Adjacent: " << maxLengthSubArraySum(arr5) << endl;
+    }
+
+    // Problem 5d2. Count all sub-arrays having sum divisible by k
+    {
+        cout << endl << "Problem 5d2. Count all sub-arrays having sum divisible by k" << endl;
+        int nums1[] = {4, 5, 0, -2, -3, 1};
+        cout << countAllSubArraysDivisibleByK(nums1, sizeof(nums1) / sizeof(nums1[0]), 5) << endl;
     }
 
     // Problem 6. Find greatest sum divisble by a number
@@ -4399,6 +4495,17 @@ int main()
         vector<int> nums1 = {1, 2, 3, 4, 2, 2, 3};
         vector<int> nums2 = {1, 2, 2, 3, 1};
         cout << minLengthMaxFrequencyNumbers(nums2) << endl;
+    }
+
+    // Problem 41. Find subarray that should be flipped to get Max 1s
+    {
+        cout << "\nProblem 41. Find subarray that should be flipped to get Max 1s" << endl;
+        int nums1[] = {1, 0, 1, 0, 0, 1, 0, 1};
+        int nums2[] = {1, 0, 0, 1, 0, 0, 1, 0};
+        cout << onesAfterFlippingBestSubArray(nums1, sizeof(nums1) / sizeof(nums1[0])) << endl;
+        cout << onesAfterFlippingBestSubArray(nums2, sizeof(nums2) / sizeof(nums2[0])) << endl;
+        // onesAfterFlippingBestSubArray(nums3, sizeof(nums3) / sizeof(nums3[0]);
+        // onesAfterFlippingBestSubArray(nums4, sizeof(nums4) / sizeof(nums4[0]);
     }
     cout << endl;
     return 0;

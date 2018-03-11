@@ -56,7 +56,8 @@
  *
  * PROBLEM 18. Check if a linked list is a palindrome without using extra space.
  * bool isListPalindrome(node*& head)
- **
+ *
+ * PROBLEM 19. Add two numbers represented as LinkedList
  *
  */
 
@@ -69,6 +70,9 @@ struct node
 {
     int data;
     struct node* next;
+
+    node () : data (0), next (NULL) { }
+    node (int x) : data (x), next (NULL) { }
 };
 
 // A simple push function that inserts the new value at the beginning of the list.
@@ -830,6 +834,63 @@ void samp(node* head)
     // head->next = NULL;
 }
 
+// -----------------------------------------------------------------------------
+// PROBLEM 19. Add two numbers represented as LinkedList
+// -----------------------------------------------------------------------------
+    node* addTwoNumbers(node* l1, node* l2) {
+        int carry = 0;
+        node* result = NULL;
+        node* resultHead = result;
+
+        while (l1 != NULL && l2 != NULL) {
+            int sum = carry + l1->data + l2->data;
+            carry = sum / 10;
+            node* temp = new node(sum % 10);
+            if (result == NULL) {
+                result = temp;
+                resultHead = temp;
+            } else if (result->next == NULL) {
+                result->next = temp;
+                result = result->next;
+            }
+            l1 = l1->next;
+            l2 = l2->next;
+        }
+        
+        while (l1 != NULL) {
+            int sum = carry + l1->data;
+            carry = sum / 10;
+            node* temp = new node(sum % 10);
+            if (result == NULL) {
+                result = temp;
+                resultHead = temp;
+            } else if (result->next == NULL) {
+                result->next = temp;
+                result = result->next;
+            }
+            l1 = l1->next;
+        }
+        
+        while (l2 != NULL) {
+            int sum = carry + l2->data;
+            carry = sum / 10;
+            node* temp = new node(sum % 10);
+            if (result == NULL) {
+                result = temp;
+                resultHead = temp;
+            } else if (result->next == NULL) {
+                result->next = temp;
+                result = result->next;
+            }
+            l2 = l2->next;
+        }
+        
+        if (carry != 0) {
+            node* temp = new node(carry);
+            result->next = temp;
+        }
+        return resultHead;
+    }
 // -----------------------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------------------
@@ -1065,11 +1126,15 @@ int main()
     // PROBLEM 18. Check if a linked list is a palindrome without using extra space.
     // Original list can be modified
     {
-        cout << endl << "PROBLEM 17. Is list Palindrome" << endl;
+        cout << endl << "PROBLEM 18. Is list Palindrome" << endl;
         cout << isListPalindrome(head1) << endl;
     }
     */
 
+    // PROBLEM 19. Add two numbers represented as LinkedList
+    {
+        cout << endl << "PROBLEM 19. Add two numbers represented as LinkedList" << endl;
+    }
     cout << endl;
     return 0;
 }

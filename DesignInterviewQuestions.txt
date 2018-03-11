@@ -1,14 +1,16 @@
 Distributed Systems - Key Concepts
 0. Things to read about
 1. 4 Building Blocks of Architecting Systems for Scale
+2. CAP Theorem
 
-------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 System Design Interview Questions
 1. How to Design Twitter
 2. Create a TinyURL System
-3. Design a Cache System
+3. Design a Distributed Cache System like Redis or Memcache
 4. Design a Recommendation System
 5. Design a Key-Value Store
+5b. Design a distributed hash table DHT
 6. Map Implementation
 7. Random ID Generator
 8. Design a Garbage Collection System
@@ -16,8 +18,20 @@ System Design Interview Questions
 10. Build a Web Crawler
 11. How to Design a Trending Algorithm for Twitter
 12. Design eCommerce Website
-------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------
+13. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
+14. How to count number of requests in last second, minute and hour
+15. Consistent Hashing
+--------------------------------------------------------------------------------
+System Design Primer - FB Github page
+0. Conversion Guide
+1. Load Balancer:
+2. Sticky Sessions:
+3. Asynchronism:
+4. Performance vs scalability
+5. Reverse Proxy vs Forward Proxy
+6. Load balancer vs reverse proxy
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Distributed Systems - Key Concepts
 
 0. Things to read about
@@ -62,7 +76,39 @@ http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-
         Disconnect application code from web servers, load balancers, and databases using a service level API.
         This makes it easier to add new resources, reuse infrastructure between projects, and scale a growing organization. 
 
-------------------------------------------------------------------------------------------
+2. CAP Theorem
+    [C] Consistency - All nodes see the same data at the same time.
+
+    Simply put, performing a read operation will return the value of the most recent write operation causing all nodes to return the same data.
+
+    [A] Availability - Every request gets a response on success/failure.
+
+    Achieving availability in a distributed system requires that the system remains operational 100% of the time. Every client gets a response, regardless of the state of any individual node in the system.
+
+    [P] Partition Tolerance - System continues to work despite message loss or partial failure.
+
+    Most people think of their data store as a single node in the network. ¿This is our production SQL Server instance¿. Anyone who has run a production instance for more than four minutes, quickly realizes that this creates a single point of failure. A system that is partition-tolerant can sustain any amount of network failure that doesn¿t result in a failure of the entire network.
+
+3. SQL vs NoSQL
+    Reasons for SQL:
+        Structured data
+        Strict schema
+        Relational data
+        Need for complex joins
+        Transactions
+        Clear patterns for scaling
+        More established: developers, community, code, tools, etc
+        Lookups by index are very fast
+
+    Reasons for NoSQL:
+        Semi-structured data
+        Dynamic or flexible schema
+        Non-relational data
+        No need for complex joins
+        Store many TB (or PB) of data
+        Very data intensive workload
+        Very high throughput for IOPS
+--------------------------------------------------------------------------------
 System Design Interview Questions
 1. How to Design Twitter
     1. Things to be taken care of
@@ -109,6 +155,40 @@ System Design Interview Questions
 2. Create a TinyURL System
 http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/?utm_source=email&utm_medium=email&utm_campaign=email
 
+APPROACH:
+1. Questions to Interviewer:
+    1. Mention the basic functionality as primary goals
+    2. Secondary goals like or Open questions that I will focus later
+        - Ability to provide custom url
+        - Ability to get analytics
+        - Can the tiny url expire
+        - Can we return same / different url for multiple users
+    3. Scalability questions:
+        - How many queries per second can the system get?
+
+Thigs to Calcualte:
+    0. Estimate the number of char for Tiny URL
+    1. What will be the total DB size
+
+
+1. Open Questions:
+    1. If you use a unique integer from DB table and use that to generate a short URL, how will you guarentee same short URL gets generated for the long URL?
+        a. Should you add any check sum / salt so that users can't predict the tiny URL you would give?
+    2. Should two users get same short url for a long url or not?
+        a. Can we have multiple long urls map to same short url?
+    3. What if your DB crashes?
+
+2. Important Points:
+    - Avoid confusing characters
+    - Avoid swear words
+
+https://stackoverflow.com/questions/1562367/how-do-short-urls-services-work
+https://stackoverflow.com/questions/742013/how-to-code-a-url-shortener
+https://stackoverflow.com/questions/11326598/how-do-url-shorteners-guarantee-unique-urls-when-they-dont-expire
+    Others have answered how the redirects work but you should also know how they generate their tiny urls. You'll mistakenly hear that they create a hash of the URL in order to generate that unique code for the shortened URL. This is incorrect in most cases, they aren't using a hashing algorithm (where you could potentially have collisions).
+
+    Most of the popular URL shortening services simply take the ID in the database of the URL and then convert it to either Base 36 [a-z0-9] (case insensitive) or Base 62 (case sensitive). 
+
 a. Read Dynamo: Amazon’s Highly Available Key-value Store
 
     Problem:
@@ -153,7 +233,135 @@ a. Read Dynamo: Amazon’s Highly Available Key-value Store
        Multiple users inserting the same URL
        A better way than global lock?
 ---------------------------------------------
-3. Design a Cache System
+3. Design a Distributed Cache System like Redis or Memcache
+https://stackoverflow.com/questions/27268182/how-does-redis-achieve-the-high-throughput-and-performance
+https://stackoverflow.com/questions/10489298/redis-is-single-threaded-then-how-does-it-do-concurrent-i-o
+https://stackoverflow.com/questions/48035646/if-redis-is-single-threaded-how-can-it-be-so-fast
+https://stackoverflow.com/questions/45364256/why-redis-is-single-threadedevent-driven
+https://stackoverflow.com/questions/21304947/redis-performance-on-a-multi-core-cpu
+https://www.quora.com/Why-isnt-Redis-designed-to-benefit-from-multi-threading
+
+REDIS - Single threaded approach
+1.
+    There can be multiple reasons to do so.
+    Ease of programming - Writing a multi-threaded program can be trickier. Sometimes multi-threading may not work, locks can block other threads.
+Concurrency helps - Concurrency can be achieved on single threaded system. See [1]
+    CPU is not bottleneck - Usually network is bottleneck. CPUs are very fast. If application is designed right, i.e. avoiding blocking IO, threading will be near the bottom of the list to worry about.
+    Cost effective deployment - Such applications can work on any machine having at least a single CPU core.
+
+2.
+    I'm currently trying to understand some basic implementation things of Redis. I know that redis is single-threaded and I have already stumbled upon the following Question: Redis is single-threaded, then how does it do concurrent I/O?
+
+    But I still think I didn't understood it right. Afaik Redis uses the reactor pattern using one single thread. So If I understood this right, there is a watcher (which handles FDs/Incoming/outgoing connections) who delegates the work to be done to it's registered event handlers. They do the actual work and set eg. their responses as event to the watcher, who transfers the response back to the clients. But what happens if a request (R1) of a client takes lets say about 1 minute. Another Client creates another (fast) request (R2). Then - since redis is single threaded - R2 cannot be delegated to the right handler until R1 is finished, right? In a multithreade environment you could just start each handler in a single thread, so the "main" Thread is just accepting and responding to io connections and all other work is carried out in own threads.
+
+3.
+    Redis is single-threaded with epoll/kqueue and scales indefinitely in terms of I/O concurrency. --@antirez (creator of Redis)
+        A reason for choosing an event-driven approach is that synchronization between threads comes at a cost in both the software (code complexity) and the hardware level (context switching). Add to this that the bottleneck of Redis is usually the network, not the CPU. On the other hand, a single-threaded architecture has its own benefits (for example the guarantee of atomicity).
+        Therefore event loops seem like a good design for an efficient & scalable system like Redis.
+
+    Also, if yes, how can we make 100% utilization of CPU resources with redis on a multi core CPU's.
+        The Redis approach to scale over multiple cores is sharding, mostly together with Twemproxy.
+https://github.com/memcached/memcached/wiki/Overview
+
+MEMCACHE:
+    Memcached servers are indeed independent of each other. Memcached server is just an efficient key-value store implemented as in-memory hash table. What makes memcached distributed is the client, which in most implementations can connect to a pool of servers. Typical implementations use consistent hashing, which means that when you add or remove server to/from a pool of N servers, you only have to remap 1/N keys. Typically keys are not duplicated on various hosts, as memcached is not meant to be persistent store and gives no guarantees that your value will persist (for example when running out of assigned memory, memcached server drops least recently used (LRU) elements). Thus it's assumed that your application should handle missing keys.
+
+        if a cache goes down, requests go to DB
+    If you happen to use memcached to cache results of DB queries. Which is one of many possible uses. Memcached is just generic key-value store, can be used for other purposes.
+
+    Memcached supports multithreaded access to the store. It controls access to the resources via bare POSIX thread mutexes. Operations with hash table buckets are guarded with one of the pthread_mutex objects in the power-of-two sized array. Size of this array couldn't be smaller than hash table size. Index of the mutex for the bucket is determined as bucket index % bucket mutex array size. I. e. each mutex is responsible for hash table size / bucket mutex array size buckets.
+
+    Concurrent access management
+        While bucket lock is well striped, other three (memory allocator, LRU cache and statistics) locks are single, that limits scalability to only 5 threads.
+        At very least, having allocator and LRU cache locks per slabclass should help in some cases, and should be easy to implement, because slabclasses don't share state.
+        Mutex locks are slow, because they cause two context switches. Context switch cost estimates vary in a wide range, depending on if this is just a in-process thread switch, or an OS-level process switch (requiring much more kernel operations and TLB cache flush), CPU model, workload, if the server is dedicated for Memcached or have other intensively-working processes, and so on.
+
+        The broadest estimate, is that context switch takes from 1 to 50 microseconds, i. e. from 1000 to 50 000 nanoseconds.
+
+    The process of the entry insertion
+        Compute hash code of the key
+        Acquire corresponding bucket lock
+        Try to find the entry with the searched key in the table; if it is present, updates the entry correspondingly.
+        Otherwise compute the total entry size (key + value + overhead).
+        Determine closest ceiling entry size class (slabclass) for our entry size
+        Walk through 5 (hard-coded constant) last entries in the LRU chain for this size class, searching for expired entries. After each unsuccessful visit, try to allocate the new entry using ordinary process, via slab allocator. Of cause, search is continued only if we failed to allocate the entry, i. e. we are running out of available memory.
+        If an expired entry is taken, it is unlinked from old hash table bucket and repositioned in the LRU list
+        The newly allocated one is unlinked from the slabclass free entry list and inserted in front of the LRU chain
+        Entry contents are written and it becomes the head of the needed hash table bucket chain.
+        Like memory allocation operations, all operation with per-size-class LRU lists are guarded by a single pthread_mutex (cache_lock).
+
+http://qnimate.com/overview-of-redis-architecture/
+Redis Replication
+Replication is a technique involving many computers to enable fault-tolerance and data accessibility. In a replication environment many computers share the same data with each other so that even if few computers go down, all the data will be available.
+
+Master and slaves are redis servers configured as such.
+
+All the slaves contain exactly same data as master. There can be as many as slaves per master server. When a new slave is inserted to the environment, the master automatically syncs all data to the slave.
+
+All the queries are redirected to master server, master server then executes the operations. When a write operation occurs, master replicates the newly written data to all slaves. When a large number sort or read operation are made, master distributes them to the slaves so that a large number of read and sort operations can be executed at a time.
+
+If a slave fails, then also the environment continues working. when the slave again starts working, the master sends updated data to the slave.
+
+If there is a crash in master server and it looses all data then you should convert a slave to master instead of bringing a new computer as a master. If we make a new computer as master then all data in the environemt will be lost because new master will have no data and will makes the slaves also to have zero data(new master does resync ). If master fails but data is persistent(disk not crashed) then starting up the same master server again will bring up the whole environment to running mode.
+
+Replication helped us from disk failures and other kinds of hardware failures. It also helped to execute multiple read/sort queries at a time.
+
+https://redis.io/presentation/Redis_Cluster.pdf
+https://redis.io/topics/cluster-tutorial
+https://redis.io/topics/replication
+
+    Redis Cluster does not use consistent hashing, but a different form of sharding where every key is conceptually part of what we call an hash slot.
+
+    There are 16384 hash slots in Redis Cluster, and to compute what is the hash slot of a given key, we simply take the CRC16 of the key modulo 16384.
+
+    Every node in a Redis Cluster is responsible for a subset of the hash slots, so for example you may have a cluster with 3 nodes, where:
+
+    Node A contains hash slots from 0 to 5500.
+    Node B contains hash slots from 5501 to 11000.
+    Node C contains hash slots from 11001 to 16383.
+
+Redis Cluster master-slave model
+In order to remain available when a subset of master nodes are failing or are not able to communicate with the majority of nodes, Redis Cluster uses a master-slave model where every hash slot has from 1 (the master itself) to N replicas (N-1 additional slaves nodes).
+
+In our example cluster with nodes A, B, C, if node B fails the cluster is not able to continue, since we no longer have a way to serve hash slots in the range 5501-11000.
+
+However when the cluster is created (or at a later time) we add a slave node to every master, so that the final cluster is composed of A, B, C that are masters nodes, and A1, B1, C1 that are slaves nodes, the system is able to continue if node B fails.
+
+Node B1 replicates B, and B fails, the cluster will promote node B1 as the new master and will continue to operate correctly.
+
+However note that if nodes B and B1 fail at the same time Redis Cluster is not able to continue to operate.
+
+Redis Cluster consistency guarantees
+Redis Cluster is not able to guarantee strong consistency. In practical terms this means that under certain conditions it is possible that Redis Cluster will lose writes that were acknowledged by the system to the client.
+
+The first reason why Redis Cluster can lose writes is because it uses asynchronous replication. This means that during writes the following happens:
+
+Your client writes to the master B.
+The master B replies OK to your client.
+The master B propagates the write to its slaves B1, B2 and B3.
+As you can see B does not wait for an acknowledge from B1, B2, B3 before replying to the client, since this would be a prohibitive latency penalty for Redis, so if your client writes something, B acknowledges the write, but crashes before being able to send the write to its slaves, one of the slaves (that did not receive the write) can be promoted to master, losing the write forever.
+
+Replication
+At the base of Redis replication there is a very simple to use and configure master-slave replication that allows slave Redis servers to be exact copies of master servers. The slave will automatically reconnect to the master every time the link breaks, and will attempt to be an exact copy of it regardless of what happens to the master.
+
+This system works using three main mechanisms:
+
+When a master and a slave instance are well-connected, the master keeps the slave updated by sending a stream of commands in order to replicate the effects on the dataset happening in the master dataset: client writes, keys expiring or evicted, and so forth.
+When the link between the master and the slave breaks, for network issues or because a timeout is sensed in the master or the slave, the slave reconnects and attempts to proceed with a partial resynchronization: it means that it will try to just obtain the part of the stream of commands it missed during the disconnection.
+When a partial resynchronization is not possible, the slave will ask for a full resynchronization. This will involve a more complex process in which the master needs to create a snapshot of all its data, send it to the slave, and then continue sending the stream of commands as the dataset changes.
+Redis uses by default asynchronous replication, which being high latency and high performance, is the natural replication mode for the vast majority of Redis use cases. However Redis slaves asynchronously acknowledge the amount of data the received periodically with the master.
+
+
+MEMCACHE:
+Memcached servers do not communicate with each other and in fact, a Memcached server is completely blind to which objects are stored on it, not to mention other servers. This simple architecture enables Memcached to be very fast and effective, but comes with poor reliability, which is unacceptable by most web applications today. 
+There is no master node, all nodes are equal, there is no replication, and node selection is done by the client hashing algorithm. 
+Smarter clients use consistent hashing to avoid losing the entire data while scaling. So if you scale out (i.e. adding nodes) you lose "only" 1/(N+1) of the objects, where N is the number of nodes after you scaled-out.
+
+What memcache normally does is a simple, yet very effective loadbalance trick: for each key that gets stored or fetched, it will create a hash (you might see it as md5(key), but in fact, it¿s a more specialized - quicker - hash method). Now, the hashes we create are pretty much evenly distributed, so we can use a modulus function to find out which server to store the object to:
+
+In php¿ish code, it would do something like this:
+
+$server_id = hashfunc($key) % $servercount;
 
 ---------------------------------------------
 4. Design a Recommendation System
@@ -165,11 +373,26 @@ http://blog.gainlo.co/index.php/2016/06/14/design-a-key-value-store-part-i/?utm_
     Consistency when you have replica for disaster recovery:
     1. Have a commit log
 ---------------------------------------------
+5b. Design a distributed hash table DHT
+https://stackoverflow.com/questions/144360/simple-basic-explanation-of-a-distributed-hash-table-dht
+http://www.eecs.harvard.edu/~mema/courses/cs264/cs264.html
+
+    Ok, they're fundamentally a pretty simple idea. A DHT gives you a dictionary-like interface, but the nodes are distributed across the network. The trick with DHTs is that the node that gets to store a particular key is found by hashing that key, so in effect your hash-table buckets are now independent nodes in a network.
+
+    This gives a lot of fault-tolerance and reliability, and possibly some performance benefit, but it also throws up a lot of headaches. For example, what happens when a node leaves the network, by failing or otherwise? And how do you redistribute keys when a node joins so that the load is roughly balanced. Come to think of it, how do you evenly distribute keys anyhow? And when a node joins, how do you avoid rehashing everything? (Remember you'd have to do this in a normal hash table if you increase the number of buckets).
+
+    One example DHT that tackles some of these problems is a logical ring of n nodes, each taking responsibility for 1/n of the keyspace. Once you add a node to the network, it finds a place on the ring to sit between two other nodes, and takes responsibility for some of the keys in its sibling nodes. The beauty of this approach is that none of the other nodes in the ring are affected; only the two sibling nodes have to redistribute keys.
+
+    For example, say in a three node ring the first node has keys 0-10, the second 11-20 and the third 21-30. If a fourth node comes along and inserts itself between nodes 3 and 0 (remember, they're in a ring), it can take responsibility for say half of 3's keyspace, so now it deals with 26-30 and node 3 deals with 21-25.
+
+    There are many other overlay structures such as this that use content-based routing to find the right node on which to store a key. Locating a key in a ring requires searching round the ring one node at a time (unless you keep a local look-up table, problematic in a DHT of thousands of nodes), which is O(n)-hop routing. Other structures - including augmented rings - guarantee O(log n)-hop routing, and some claim to O(1)-hop routing at the cost of more maintenance. 
+---------------------------------------------
 6. Map Implementation
 
 ---------------------------------------------
 7. Random ID Generator
 http://blog.gainlo.co/index.php/2016/06/07/random-id-generator/?utm_source=email&utm_medium=email&utm_campaign=email 
+https://medium.com/@varuntayal/what-does-it-take-to-generate-cluster-wide-unique-ids-in-a-distributed-system-d505b9eaa46e
 
 a. See how Twitter's Snowflake works?
 b. Check Flickr's ticket servers
@@ -195,7 +418,32 @@ b. Check Flickr's ticket servers
 
     1. How to tackle Clock Synchronization?
 
+https://stackoverflow.com/questions/2671858/distributed-sequence-number-generation
+    OK, this is a very old question, which I'm first seeing now.
 
+    You'll need to differentiate between sequence numbers and unique IDs that are (optionally) loosely sortable by a specific criteria (typically generation time). True sequence numbers imply knowledge of what all other workers have done, and as such require shared state. There is no easy way of doing this in a distributed, high-scale manner. You could look into things like network broadcasts, windowed ranges for each worker, and distributed hash tables for unique worker IDs, but it's a lot of work.
+
+    Unique IDs are another matter, there are several good ways of generating unique IDs in a decentralized manner:
+
+    a) You could use Twitter's Snowflake ID network service. Snowflake is a:
+
+    Networked service, i.e. you make a network call to get a unique ID;
+    which produces 64 bit unique IDs that are ordered by generation time;
+    and the service is highly scalable and (potentially) highly available; each instance can generate many thousand IDs per second, and you can run multiple instances on your LAN/WAN;
+    written in Scala, runs on the JVM.
+    b) You could generate the unique IDs on the clients themselves, using an approach derived from how UUIDs and Snowflake's IDs are made. There are multiple options, but something along the lines of:
+
+    The most significant 40 or so bits: A timestamp; the generation time of the ID. (We're using the most significant bits for the timestamp to make IDs sort-able by generation time.)
+
+    The next 14 or so bits: A per-generator counter, which each generator increments by one for each new ID generated. This ensures that IDs generated at the same moment (same timestamps) do not overlap.
+
+    The last 10 or so bits: A unique value for each generator. Using this, we don't need to do any synchronization between generators (which is extremely hard), as all generators produce non-overlapping IDs because of this value.
+
+    c) You could generate the IDs on the clients, using just a timestamp and random value. This avoids the need to know all generators, and assign each generator a unique value. On the flip side, such IDs are not guaranteed to be globally unique, they're only very highly likely to be unique. (To collide, one or more generators would have to create the same random value at the exact same time.) Something along the lines of:
+
+    The most significant 32 bits: Timestamp, the generation time of the ID.
+    The least significant 32 bits: 32-bits of randomness, generated anew for each ID.
+    d) The easy way out, use UUIDs / GUIDs.
 ---------------------------------------------
 8. Design a Garbage Collection System
 
@@ -212,7 +460,429 @@ b. Check Flickr's ticket servers
 12. Design eCommerce Website
 
 ---------------------------------------------
+13. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
+https://stackoverflow.com/questions/185697/the-most-efficient-way-to-find-top-k-frequent-words-in-a-big-word-sequence
+https://stackoverflow.com/questions/21565880/find-the-n-most-repeating-words-strings-in-a-huge-file-that-does-not-fit-in-me
+https://stackoverflow.com/questions/17541983/find-the-10-most-frequently-used-words-in-a-large-book
+https://www.geeksforgeeks.org/find-the-k-most-frequent-words-from-a-file/
 
+MY SOLUTION:
+    Approach 1:
+        - First Hash all the words and compute a count of all the words. This can be done in O(n).
+        - One approach would be to sort the hash list by values and return the top k.
+          This will take O(n log n).
 
-------------------------------------------------------------------------------------------
+    Approach 2:
+        - Instead we can traverse through the hash list and find the word with most frequency.
+          Apply bucket sort algorithm. Create buckets and insert the elements into respective buckets.
+          Then we can give all elements that have frequence over k.
+        - Problem with this approach is, creating buckets of a size. This would take unnecessary space.
 
+        - In case a new element get added to file, we can add it to hash table.
+        - If the word is already in the hash, go to the bucket, pick the word and add to the correct bucket
+
+    Approach 3:
+        - IS ORDERING of top k elements important?
+        - From the hash table, use quick sort partition algorithm to partition around k
+        - With this you will get elements more than k. This can be done in O(n)
+
+FROM ONLINE:
+    Input: A positive integer K and a big text. The text can actually be viewed as word sequence. So we don't have to worry about how to break down it into word sequence.
+    Output: The most frequent K words in the text.
+
+    My thinking is like this.
+
+        use a Hash table to record all words' frequency while traverse the whole word sequence. In this phase, the key is "word" and the value is "word-frequency". This takes O(n) time.
+
+        sort the (word, word-frequency) pair; and the key is "word-frequency". This takes O(n*lg(n)) time with normal sorting algorithm.
+
+        After sorting, we just take the first K words. This takes O(K) time.
+
+    To summarize, the total time is O(n+nlg(n)+K)¿ Since K is surely smaller than N, so it is actually O(nlg(n)).
+
+    We can improve this. Actually, we just want top K words. Other words' frequency is not concern for us. So, we can use "partial Heap sorting". For step 2) and 3), we don't just do sorting. Instead, we change it to be
+
+    2') build a heap of (word, word-frequency) pair with "word-frequency" as key. It takes O(n) time to build a heap;
+
+    3') extract top K words from the heap. Each extraction is O(lg(n)). So, total time is O(k*lg(n)).
+
+    To summarize, this solution cost time O(n+k*lg(n)).
+
+ANSWER:
+    Solution 1:
+        This can be done in O(n) time
+
+        Steps:
+
+            Count words and hash it, which will end up in the structure like this
+
+            var hash = {
+              "I" : 13,
+              "like" : 3,
+              "meow" : 3,
+              "geek" : 3,
+              "burger" : 2,
+              "cat" : 1,
+              "foo" : 100,
+              ...
+              ...
+
+            Traverse through the hash and find the most frequently used word (in this case "foo" 100), then create the array of that size
+
+            Then we can traverse the hash again and use the number of occurrences of words as array index, if there is nothing in the index, create an array else append it in the array. Then we end up with an array like:
+
+              0   1      2            3                100
+            [[ ],[ ],[burger],[like, meow, geek],[]...[foo]]
+
+            Then just traverse the array from the end, and collect the k words.
+
+    Solution 2:
+        You're not going to get generally better runtime than the solution you've described. You have to do at least O(n) work to evaluate all the words, and then O(k) extra work to find the top k terms.
+
+        If your problem set is really big, you can use a distributed solution such as map/reduce. Have n map workers count frequencies on 1/nth of the text each, and for each word, send it to one of m reducer workers calculated based on the hash of the word. The reducers then sum the counts. Merge sort over the reducers' outputs will give you the most popular words in order of popularity.
+
+    Solution 3:
+        After selecting the Kth smallest element, we partition the list around that element just as in quicksort. This is obviously also O(n). Anything on the "left" side of the pivot is in our group of K elements, so we're done (we can simply throw away everything else as we go along).
+
+        So this strategy is:
+
+            Go through each word and insert it into a hash table: O(n)
+            Select the Kth smallest element: O(n)
+            Partition around that element: O(n)
+
+        If you want to rank the K elements, simply sort them with any efficient comparison sort in O(k * lg(k)) time, yielding a total run time of O(n+k * lg(k)).
+
+        The O(n) time bound is optimal within a constant factor because we must examine each word at least once.
+
+        The O(n + k * lg(k)) time bound is also optimal because there is no comparison-based way to sort k elements in less than k * lg(k) time. 
+
+WHAT IF THE DICTIONARY CAN'T FIT IN MEMORY
+    Solution 4:
+        Create an empty dictionary (hash map), keyed by word. The value is the count.
+        for each file
+            while not end of file
+                read word
+                if word in dictionary
+                    update count
+                else
+                    if dictionary full
+                        sort dictionary by word
+                        output dictionary to temporary file
+                        Clear dictionary
+                    Add word to dictionary, with count 1
+            end
+        end
+        if dictionary not empty
+            sort dictionary by word
+            output dictionary to temporary file
+
+        You now have some number of temporary files, each sorted by word and containing one word/count pair per line. Like:
+
+        aardvark,12
+        bozo,3
+        zebra,5
+
+        Create a min-heap that you will use to hold your n largest items. Call it largest_items.
+
+        Do a standard n-way merge of those temporary files. As you find each unique item (i.e. you merge all of the "aardvark" entries across the multiple files), you do this:
+
+        if (largest_items.count < n)
+            largest_items.add(word)
+        else if (word.count > largest_items.peek().count)
+        {
+            // the count for this word is more than the smallest count
+            // already on the heap. So remove the item with the
+            // smallest count, and add this one.
+            largest_items.remove_root()
+            largest_items.add(word)
+        }
+
+        Complexity:
+
+            Building the dictionaries is O(N), where N is the total number of individual words in the file.
+            Sorting each temporary dictionary is O(k log k), where 'k' is the number of words in the dictionary.
+            Writing each temporary dictionary is O(k)
+            The merge is O(M log x), where M is the combined number of entries across all the temporary files, and x is the number of temporary files.
+            Selecting the items is O(m log n), where m is the number of unique words, and n is the number of words you want to select.
+
+        If you look at worst case behavior (i.e. all the words are unique), the complexity works out to (n is the total number of words):
+
+            Building the dictionaries is O(n)
+            Sorting and writing the temporary files is (n/m) * (m log m), where m is the dictionary size.
+            The merge is n log (n/m).
+            Selection is O(m + (k log k)), where k is the number of words you want to select and m is the number of unique words. Because all words are unique they have the same count, so you'll only do k inserts into the heap. The m term dominates when k is much smaller than m (which is usually the case in these situations). So selection turns out to be O(m).
+
+        When you're working with data sets larger than memory, very often your bottleneck is file I/O. The algorithm I've outlined above tries to minimize the I/O. In the worst case (all words are unique), each word will be read twice and written once. But in the general case each word is read once and then each hash page is written once and read once. Plus, your sorts are on hash pages rather than raw words, and the total size of your temporary files will be much smaller than the original text.
+---------------------------------------------
+14. How to count number of requests in last second, minute and hour
+https://stackoverflow.com/questions/17562089/how-to-count-number-of-requests-in-last-second-minute-and-hour
+https://stackoverflow.com/questions/11701008/efficient-way-to-compute-number-of-hits-to-a-server-within-the-last-minute-in-r    
+
+    Solution 1:
+        If 100% accuracy is required:
+
+        Have a linked-list of all requests and 3 counts - for the last hour, the last minute and the last second.
+
+        You will have 2 pointers into the linked-list - for a minute ago and for a second ago.
+
+        An hour ago will be at the end of the list. Whenever the time of the last request is more than an hour before the current time, remove it from the list and decrement the hour count.
+
+        The minute and second pointers will point to the first request that occurred after a minute and a second ago respectively. Whenever the time of the request is more than a minute / second before the current time, shift up the pointer and decrement the minute / second count.
+
+        When a new request comes in, add it to all 3 counts and add it to the front of the linked-list.
+
+        Requests for the counts would simply involve returning the counts.
+
+        All of the above operations are amortised constant time.
+
+        If less than 100% accuracy is acceptable:
+
+        The space-complexity for the above could be a bit much, depending on how many requests per second you would typically get; you can reduce this by sacrificing slightly on accuracy as follows:
+
+        Have a linked-list as above, but only for the last second. Also have the 3 counts.
+
+        Then have a circular array of 60 elements indicating the counts of each of the last 60 seconds. Whenever a second passes, subtract the last (oldest) element of the array from the minute count and add the last second count to the array.
+
+        Have a similar circular array for the last 60 minutes.
+
+        Loss of accuracy: The minute count can be off by all the requests in a second and the hour count can be off by all the requests in a minute.
+
+        Obviously this won't really make sense if you only have one request per second or less. In this case you can keep the last minute in the linked-list and just have a circular array for the last 60 minutes.
+
+        There are also other variations on this - the accuracy to space used ratio can be adjusted as required.
+
+        A timer to remove old elements:
+
+        If you remove old elements only when new elements come in, it will be amortised constant time (some operations might take longer, but it will average out to constant time).
+
+        If you want true constant time, you can additionally have a timer running which removes old elements, and each invocation of this (and of course insertions and checking the counts) will only take constant time, since you're removing at most a number of elements inserted in the constant time since the last timer tick.
+
+    Solution 2:
+        To do this for time window of T seconds, have a queue data structure where you queue the timestamps of individual requests as they arrive. When you want to read the number of requests arrived during the most recent window of T seconds, first drop from the "old" end of the queue those timestamps that are older than T seconds, then read the size of the queue. You should also drop elements whenever you add a new request to the queue to keep its size bounded (assuming bounded rate for incoming requests).
+
+        This solution works up to arbitrary precision, e.g. millisecond accuracy. If you are content with returning approximate answers, you can e.g. for time window of T = 3600 (an hour), consolidate requests coming within same second into a single queue element, making queue size bounded by 3600. I think that would be more than fine, but theoretically loses accuracy. For T = 1, you can do consolidation on millisecond level if you want.
+
+        In pseudocode:
+        queue Q
+
+        proc requestReceived()
+          Q.insertAtFront(now())
+          collectGarbage()
+
+        proc collectGarbage()
+          limit = now() - T
+          while (! Q.empty() && Q.lastElement() < limit)
+            Q.popLast()
+
+        proc count()
+          collectGarbage()
+          return Q.size()
+
+    Solution 3:
+        Why not just use a circular array? We have 3600 elements in that array.
+
+        index = 0;
+        Array[index % 3600] = count_in_one_second. 
+        ++index;
+
+        if you want last second, return the last element of this array. if you want last minute, return the sum of last 60 elements. if you want last hour, return the sum of the whole array (3600 elements).
+
+        Also How about using current time (e.g. System.currentTimeMillis()) instead of index?
+
+    Solution 4:
+        Use a circular buffer.
+
+        Whenever you have to keep some current statistics with a built-in obsolescence, a ring buffer is a good candidate. In your case, you can easily keep count of the requests in the last minute by inserting new packets at the front of the circular buffer and keeping a one-minute-before-now pointer in the buffer, or performing a binary search on request time.
+
+15. Consistent Hashing
+https://www.adayinthelifeof.nl/2011/02/06/memcache-internals/
+    Consistent hashing uses a counter that acts like a clock. Once it reaches the ¿12¿, it wraps around to ¿1¿ again. Suppose this counter is 16 bits. This means it ranges from 0 to 65535.  If we visualize this on a clock, the number 0 and 65535 would be on the ¿12¿, 32200 would be around 6¿o clock, 48000 on 9 o¿clock and so on. We call this clock the continuum.
+
+    On this continuum, we place a (relative) large amount of ¿dots¿  for each server. These are placed randomly so we have a clock with a lot of dots.
+
+--------------------------------------------------------------------------------
+HighScalability:
+1. Netflix:
+http://highscalability.com/blog/2017/12/11/netflix-what-happens-when-you-press-play.html
+Netflix uses two different clouds: AWS and Open Connect. 
+
+The three parts of Netflix: client, backend, content delivery network (CDN).
+The client is the user interface on any device used to browse and play Netflix videos
+
+Everything that happens before you hit play happens in the backend, which runs in AWS. That includes things like preparing all new incoming video and handling requests from all apps, websites, TVs, and other devices.
+
+Everything that happens after you hit play is handled by Open Connect. Open Connect is Netflix¿s custom global content delivery network (CDN). Open Connect stores Netflix video in different locations throughout the world. When you press play the video streams from Open Connect, into your device, and is displayed by the client
+
+DATA CENTERS:
+EC2 was just getting started in 2007, about the same time Netflix¿s streaming service started. There was no way Netflix could have launched using EC2. 
+
+Netflix built two datacenters, located right next to each other. They experienced all the problems we talked about in earlier chapters. 
+
+MOVE TO AWS
+For three days in August 2008, Netflix could not ship DVDs because of corruption in their database. This was unacceptable. Netflix had to do something.
+
+The experience of building datacenters had taught Netflix an important lesson¿they weren¿t good at building datacenters.
+
+AWS offered highly reliable databases, storage and redundant datacenters. Netflix wanted cloud computing, so it wouldn¿t have to build big unreliable monoliths anymore. 
+
+UNDIFFERENTIATED HEAVY LIFTING.
+Undifferentiated heavy lifting are those things that have to be done, but don¿t provide any advantage to the core business of providing a quality video watching experience. AWS does all the undifferentiated heavy lifting for Netflix. This lets Netflixians focus on providing business value.
+
+GLOBAL SERVICES MODEL
+Netflix calls this their global services model. Any customer can be served out of any region. This is amazing. And it doesn¿t happen automatically. AWS has no magic sauce for handling region failures or serving customers out of multiple regions. Netflix has done all this work on its own. Netflix is a pioneer in figuring out how to create reliable systems using multiple regions. 
+
+What happens if the entire Dublin region fails? Does that mean Netflix should stop working for you? Of course not!
+
+Netflix, after detecting the failure, redirects you to Virginia. Your device would now talk to the Virginia region instead of Dublin. You might not even notice there was a failure.
+
+How often does an AWS region fail? Once a month. Well, a region doesn¿t actually fail every month. Netflix runs monthly tests. Every month Netflix causes a region to fail on purpose just to make sure its system can handle region level failures. A region can be evacuated in six minutes.
+
+Netflix could add servers when it needed them and return them when it didn¿t. Rather than have a lot of extra computers hanging around doing nothing just to handle peak load, Netflix only had to pay for what was needed, when it was needed. 
+
+WHAT HAPPENS IN AWS BEFORE YOU PRESS PLAY?
+Anything that doesn¿t involve serving video is handled in AWS.
+
+This includes scalable computing, scalable storage, business logic, scalable distributed databases, big data processing and analytics, recommendations, transcoding, and hundreds of other functions.
+
+Scalable computing and scalable storage.
+
+Scalable computing is EC2 and scalable storage is S3. Nothing new for us here. 
+
+Your Netflix device¿iPhone, TV, Xbox, Android phone, tablet, etc.¿talks to a Netflix service running in EC2.
+
+View a list of potential videos to watch? That¿s your Netflix device contacting a computer in EC2 to get the list. 
+
+Ask for more details about a video? That¿s your Netflix device contacting a computer in EC2 to get the details. 
+--------------------------------------------------------------------------------
+SYSTEM DESIGN PRIMER:
+https://github.com/donnemartin/system-design-primer
+
+Scalability Video
+https://www.youtube.com/watch?v=-W9F__D3oY4
+
+0. Conversion Guide
+    2.5 million seconds per month
+    1 request per second = 2.5 million requests per month
+    40 requests per second = 100 million requests per month
+    400 requests per second = 1 billion requests per month
+
+    Latency Comparison Numbers
+    --------------------------
+    L1 cache reference                           0.5 ns
+    Branch mispredict                            5   ns
+    L2 cache reference                           7   ns                      14x L1 cache
+    Mutex lock/unlock                          100   ns
+    Main memory reference                      100   ns                      20x L2 cache, 200x L1 cache
+    Compress 1K bytes with Zippy            10,000   ns       10 us
+    Send 1 KB bytes over 1 Gbps network     10,000   ns       10 us
+    Read 4 KB randomly from SSD*           150,000   ns      150 us          ~1GB/sec SSD
+    Read 1 MB sequentially from memory     250,000   ns      250 us
+    Round trip within same datacenter      500,000   ns      500 us
+    Read 1 MB sequentially from SSD*     1,000,000   ns    1,000 us    1 ms  ~1GB/sec SSD, 4X memory
+    Disk seek                           10,000,000   ns   10,000 us   10 ms  20x datacenter roundtrip
+    Read 1 MB sequentially from 1 Gbps  10,000,000   ns   10,000 us   10 ms  40x memory, 10X SSD
+    Read 1 MB sequentially from disk    30,000,000   ns   30,000 us   30 ms 120x memory, 30X SSD
+    Send packet CA->Netherlands->CA    150,000,000   ns  150,000 us  150 ms
+
+    Notes
+    -----
+    1 ns = 10^-9 seconds
+    1 us = 10^-6 seconds = 1,000 ns
+    1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns
+    Handy metrics based on numbers above:
+
+    Read sequentially from disk at 30 MB/s
+    Read sequentially from 1 Gbps Ethernet at 100 MB/s
+    Read sequentially from SSD at 1 GB/s
+    Read sequentially from main memory at 4 GB/s
+    6-7 world-wide round trips per second
+    2,000 round trips per second within a data center
+
+1.  Load Balancer:
+        - Typically comes in pairs
+        - Could be implemented as Active - Active or Active Passive mode
+          Active - Active:
+        - Load balancer can partition for various requests
+            - Frequent heart beat happens. So that if ones dies another will automatically be responsible
+
+        Random
+        Least loaded
+        Sticky Session/cookies
+        Round robin or weighted round robin
+        Layer 4 : Layer 4 load balancers look at info at the transport layer to decide how to distribute requests. Generally, this involves the source, destination IP addresses, and ports in the header, but not the contents of the packet.
+        Layer 7 : Layer 7 load balancers look at the application layer to decide how to distribute requests. This can involve contents of the header, message, and cookies.
+
+2.  Sticky Sessions:
+        - Say you have two web servers, WWW1 and WWW2.
+        - You get a request from Alice and Load Balancer sends it to WWW1.
+        - Next time when you get a request from Alice you would like to send to same WWW1
+        - ANS:
+        - When WWW1 sends response, it can send a cookie object to the client. So next time when Alice sends a request it will use the cookie object
+        - The cookie objects identifies to send request to WWW1 instead of WWW2
+
+http://www.lecloud.net/post/9699762917/scalability-for-dummies-part-4-asynchronism
+3. Asynchronism:
+    - Pre-compute things ahead of time
+    - Callback mechanism
+
+4. Performance vs scalability
+    If you have a performance problem, your system is slow for a single user.
+    If you have a scalability problem, your system is fast for a single user but slow under heavy load.
+
+5. Reverse Proxy vs Forward Proxy
+https://stackoverflow.com/questions/224664/difference-between-proxy-server-and-reverse-proxy-server
+
+    First of all, the word "proxy" describes someone or something acting on behalf of someone else.
+
+    In the computer realm, we are talking about one server acting on the behalf of another computer.
+
+    FORWARD proxy
+    The proxy event in this case is that the "forward proxy" retrieves data from another web site on behalf of the original requestee.
+
+    A tale of 3 computers (part I)
+    For an example, I will list three computers connected to the internet.
+
+    X = your computer, or "client" computer on the internet
+    Y = the proxy web site, proxy.example.org
+    Z = the web site you want to visit, www.example.net
+    Normally, one would connect directly from X --> Z.
+
+    However, in some scenarios, it is better for Y --> Z on behalf of X, which chains as follows: X --> Y --> Z.
+
+    Reasons why X would want to use a forward proxy server:
+    Here is a (very) partial list of uses of a forward proxy server.
+
+    1) X is unable to access Z directly because
+
+    a) Someone with administration authority over X's internet connection has decided to block all access to site Z.
+
+    REVERSE proxy
+    A tale of 3 computers (part II)
+    For this example, I will list three computers connected to the internet.
+
+    X = your computer, or "client" computer on the internet
+    Y = the reverse proxy web site, proxy.example.com
+    Z = the web site you want to visit, www.example.net
+    Normally, one would connect directly from X --> Z.
+
+    However, in some scenarios, it is better for the administrator of Z to restrict or disallow direct access, and force visitors to go through Y first. So, as before, we have data being retrieved by Y --> Z on behalf of X, which chains as follows: X --> Y --> Z.
+
+    What is different this time compared to a "forward proxy," is that this time the user X does not know he is accessing Z, because the user X only sees he is communicating with Y. The server Z is invisible to clients and only the reverse proxy Y is visible externally. A reverse proxy requires no (proxy) configuration on the client side.
+
+    The client X thinks he is only communicating with Y (X --> Y), but the reality is that Y forwarding all communication (X --> Y --> Z again).
+
+    Reasons why Z would want to set up a reverse proxy server:
+    1) Z wants to force all traffic to its web site to pass through Y first.
+    a) Z has a large web site that millions of people want to see, but a single web server cannot handle all the traffic. So Z sets up many servers, and puts a reverse proxy on the internet that will send users to the server closest to them when they try to visit Z. This is part of how the Content Distribution Network (CDN) concept works.
+    2) The administrator of Z is worried about retaliation for content hosted on the server and does not want to expose the main server directly to the public.
+    a) Owners of Spam brands such as "Canadian Pharmacy" appear to have thousands of servers, while in reality having most websites hosted on far fewer servers. Additionally, abuse complaints about the spam will only shut down the public servers, not the main server.
+    In the above scenarios, Z has the ability to choose Y
+
+6. Load balancer vs reverse proxy
+    Deploying a load balancer is useful when you have multiple servers. Often, load balancers route traffic to a set of servers serving the same function.
+    Reverse proxies can be useful even with just one web server or application server, opening up the benefits described in the previous section.
+    Solutions such as NGINX and HAProxy can support both layer 7 reverse proxying and load balancing.
+
+    Disadvantage(s): reverse proxy
+        Introducing a reverse proxy results in increased complexity.
+        A single reverse proxy is a single point of failure, configuring multiple reverse proxies (ie a failover) further increases complexity.

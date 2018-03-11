@@ -3,8 +3,10 @@
 #include <unordered_map>
 #include <algorithm> // For sort
 #include <thread>
+#include <chrono>   // Sleep
 #include <mutex>
 #include <condition_variable>
+#include <queue>
 using namespace std;
 
 /*
@@ -19,6 +21,7 @@ using namespace std;
 // -----------------------------------------------------------------------------------------
 // PROBLEM 1. Producer Consumer Problem
 // -----------------------------------------------------------------------------------------
+static const int MAX_SIZE = 10;
 static const int MAX_BUFFER_SIZE = 5;
 static const uint32_t NUM_THREADS = 5;
 static uint32_t BUFFER[MAX_BUFFER_SIZE];
@@ -29,52 +32,64 @@ std::condition_variable cv;
 
 void producer()
 {
-    for (uint32_t i = 0; i < MAX_BUFFER_SIZE; i++)
+    for (uint32_t i = 0; i < MAX_SIZE; i++)
     {
+        cout << "Pro i: " << i << endl;
         // Take a lock on the mutex
         unique_lock<std::mutex> prodLock(mtx);
         if (VEC_BUFFER.size() > MAX_BUFFER_SIZE)
         {
             // Wait if Producer does not have space to put into the buffer
             // The execution of the current thread is blocked until notified.
+            cout << "Producer waiting.." << endl;
             cv.wait(prodLock);
         }
-        else
-        {
+        // Once consumer notifies back the producer, producer should insert that element
+        // So Comment below ELSE block
+        //else
+        //{
             cout << "Produced: " << i << endl;
             VEC_BUFFER.push_back(i);
-        }
+        //}
 
         if (VEC_BUFFER.size() == 1)
         {
             // Notify the client if Producer has produced the first element and put it into
             // the buffer
+            cout << "Producer notifying consumer as there is one entry to free" << endl;
             cv.notify_one();
         }
     }
+    // VERY IMP: Once done with loop if there are consumers waiting for producer
+    // to produce then notify them
+    cv.notify_one();
 }
 
 void consumer()
 {
-    for (uint32_t i = 0; i < MAX_BUFFER_SIZE; i++)
+    for (uint32_t i = 0; i < MAX_SIZE; i++)
     {
+        cout << "Con i: " << i << endl;
+        this_thread::sleep_for(chrono::milliseconds(100));
         // Take a lock on the mutex
         // When a  second consumer comes, it has to wait
         unique_lock<std::mutex> consLock(mtx);
         if (VEC_BUFFER.size() < 1)
         {
+            cout << "Consumer waiting.." << endl;
             cv.wait(consLock);
         }
-        else
-        {
+        //else
+        //{
             cout << "Consumed: " << VEC_BUFFER.back() << endl;
             VEC_BUFFER.pop_back();
-        }
+        //}
 
         if (VEC_BUFFER.size() == MAX_BUFFER_SIZE - 1)
         {
             // Notify the Producer once the last element is consumed and there is space for
             // adding elements
+            cout << "Consumer notifying producer as there is one spot free" << endl;
             cv.notify_one();
         }
     }
@@ -203,12 +218,137 @@ void printStockPrices(uint32_t index)
     cout << "List 2 done" << endl;
 }
 
-// -----------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Producer consumer using classes
+// https://codereview.stackexchange.com/questions/84109/a-multi-threaded-producer-consumer-with-c11
+// -----------------------------------------------------------------------------
+class Buffer {
+private:
+    queue<int> buffer;
+    int count;
+    int capacity;
+    mutex mtx;
+    condition_variable cv;
+
+public:
+    Buffer() : capacity (5),
+               count(0) { }
+    Buffer(int capacity) : capacity(capacity),
+                           count(0) { }
+
+    void produce() {
+        cout << "In produce" << endl;
+        unique_lock<mutex> produceLock(mtx);
+        if (buffer.size() == capacity) {
+            cout << "Producer waiting.." << endl;
+            cv.wait(produceLock);
+        }
+        buffer.push(count);
+        cout << "Produced: " << count << endl;
+        count++;
+        produceLock.unlock();
+        // Can do this unconditionally
+        cout << "Producer notifying consumers.." << endl;
+        cv.notify_all();
+    }
+
+    void consume() {
+        unique_lock<mutex> consumeLock(mtx);
+        if (buffer.size() == 0) {
+            cout << "Consumer waiting.." << endl;
+            cv.wait(consumeLock);
+        }
+        cout << "Consumed: " << buffer.front() << endl;
+        buffer.pop();
+        consumeLock.unlock();
+        // Can do this unconditionally
+        cout << "Consumer notifying producers.." << endl;
+        cv.notify_one();
+    }
+};
+
+class Producer {
+private:
+    Buffer& _b;
+
+public:
+    Producer(Buffer& b) : _b(b) { }
+
+    void produce() {
+        cout << "About to call produce\n";
+        for (int i = 0; i < 10; i++) {
+            _b.produce();
+        }
+    }
+};
+
+class Consumer {
+private:
+    Buffer& _b;
+
+public:
+    Consumer(Buffer& b) : _b(b) { }
+
+    void consume() {
+        for (int i = 0; i < 10; i++) {
+            _b.consume();
+        }
+    }
+};
+
+// -----------------------------------------------------------------------------
+// Reader writer problem
+// -----------------------------------------------------------------------------
+class ReadWriteLock {
+private:
+    mutex _mtx;
+    condition_variable _cv;
+    int _waitingReaders;
+    int _waitingWriters;
+
+public:
+    ReadWriteLock() : _waitingReaders(0),
+                      _waitingWriters(0) { }
+
+    void readLock() {
+        unique_lock<mutex> lock(mtx);
+        if (_waitingWriters > 0) {
+        }
+    }
+
+    void readUnlock() {
+    }
+
+    void writeLock() {
+    }
+
+    void writeUnlock() {
+    }
+};
+
+// -----------------------------------------------------------------------------
+// Counter
+// -----------------------------------------------------------------------------
+int counter = 0;
+void increaseCounter() {
+    while (true) {
+        cout << "\nTid: " << this_thread::get_id() << endl;
+        if (counter == 10) {
+            cout << "\nThread return tid: " << this_thread::get_id() << endl;
+            return;
+        }
+        counter++;
+        cout << "\nTid: " << this_thread::get_id() << "; Counter: " << counter << endl;
+    }
+}
+
+// -----------------------------------------------------------------------------
 // Main Function
-// -----------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main()
 {
     // PROBLEM 1. Single Threaded Producer Consumer Problem
+    /*
     {
         cout << endl << "Problem 1: Single Threaded Producer Consumer Problem" << endl;
         thread prod (producer);
@@ -256,7 +396,33 @@ int main()
         thPrintList3a.join();
         thPrintList3b.join();
     }
+    */
 
+    // Problem 4. Producer consumer using classes
+    {
+        cout << endl << "Problem 4. Producer consumer using classes" << endl;
+        Buffer b;
+        Producer p(b);
+        /*
+        Consumer c(b);
+        thread prod(&Producer::produce, Producer(b));
+        thread prod(&Producer::produce, &p);
+        */
+        thread prod(&Producer::produce, p);
+        prod.join();
+        /*
+        //thread cons(&Consumer::consume, c);
+        //cons.join();
+        */
+    }
+
+    {
+        thread t1(increaseCounter);
+        thread t2(increaseCounter);
+        t1.join();
+        t2.join();
+        cout << "Counter: " << counter << endl;
+    }
     cout << endl;
     return 0;
 }

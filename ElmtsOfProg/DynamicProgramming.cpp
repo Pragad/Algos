@@ -1071,6 +1071,7 @@ int minEditDistance(const string& word1, const string& word2)
 
 // ---------------------------------------------------------------------------------------
 // PROBLEM 9. Longest Palindromic Substring
+// https://articles.leetcode.com/longest-palindromic-substring-part-i/
 // Logic:
 //
 // A palindrome can be expanded from its center, and there are only 2N-1 such centers.

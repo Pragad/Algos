@@ -1,8 +1,25 @@
+- READ BLOGS  ON PURE
+- SHOW A LOT OF CURIOSITY
+- ASK A LOT OF QUESTIONS
+- THINK OUT LOUD
+- HOW MUCH KNOW ABOUT THE COMPANY
+- BODY LANGUAGE
+- THOUGHT PROCESS
+- Even if you come up with the OPTIMAL SOLUTION (Just give the REASONING behind it)
+- HOW AM I APPROACHING THE PROBLEM
+- PREPARE QUESTIONS TO ASK
+- SEE ABOUT EACH INTERVIEWER AND IF YOU HAVE ANY SIMILARITY
+
 1. Don't Jump into Coding
 2. First Do Algo Reasoning
 3. Clarify all statements
 4. Debugging
 5. How you approach the solution
+
+2018:
+1. Catch and Throw exception where necessary
+    - queue.remove(), queue.add() etc
+2. Class design, First come up with design
 -----------------------------------------------
 Genral Programming / OOPS Concepts
 0. What is Abstraction:
@@ -46,6 +63,8 @@ Genral Programming / OOPS Concepts
 32. Number of characters in ASCII
 33. Unicode and Character Set
 34. How to read a file in reverse
+35. How to programmatically cause a core dump in C/C++
+36. How to store a password in database
 -----------------------------------------------
 UML / DESIGN Questions
 1. Parking lot  
@@ -60,7 +79,8 @@ UML / DESIGN Questions
 OS NOTES
 -1. Every program assumes it has its own memory space
 -1b. Memory allocation at compile time
--1c. What determines the size of an executable
+-1c. When we associate '&' with a variable the address we get is the virtual address or the physical address? [duplicate]
+-1d. What determines the size of an executable
 0. Differentiate Threads and Processes
 0b. Explain Multithreading to a 5year old
 1. What is a Race Condition
@@ -76,6 +96,7 @@ OS NOTES
 4b. Thread Join vs Detach
 5. Hard Link vs Soft Link
 5b. What is an Inode ?
+5c. How is data stored? Direct referencing, Double indirect and triple indirect
 6. Multi Processor vs Multi Core System
 7. What is a File descriptor
 8. Why can't RAM be replaced by Cache memory
@@ -88,6 +109,11 @@ OS NOTES
 14. Why do we need Virtual Memory
 15. Where is Page File / Virtual Memory Stored
 16. What is Resident Set Size (RSS) and Virtual Memory Size (VSZ)
+17. Paging vs Swapping vs Trashing
+18. Why does a 32-bit OS support 4 GB of RAM?
+19. MB vs MiB / GB vs GiB
+20. SRAM vs DRAM
+21. Spurious Wakeups
 -----------------------------------------------
 NETWORKS
 0. How TCP Works:
@@ -95,6 +121,8 @@ NETWORKS
 1b. How Internet Works
 1c. TCP vs UDP
 1d. Can two applications listen to the same port
+1e. Do browsers listen to port 80?
+1f. Do web browsers use different outgoing ports for different tabs?
 2. Why is MAC address required    
 3. Switch vs Hub vs Router
 4. How NTLM Authentication Works
@@ -121,8 +149,67 @@ MISC
 2. What is a Websocket
 3. Relational Database vs NoSQL Database
 4. ACID Properties in DB
-5. Tabs vs Spaces as Coding Style
--------------------------------------------------------------------------------------------
+5. BASE Properties
+6. Tabs vs Spaces as Coding Style
+-----------------------------------------------
+DISTRIBUTED SYSTEMS:
+1. Docker and Kubernetes
+2. Memcache, Redis
+3. Hadoop
+4. Apache Spark
+4b. Spark vs MapReduce
+5. Hive
+6. AWS
+6a. Amazon EC2 - Elastic Compute Cloud
+7. Kafta
+8. RabbitMQ
+--------------------------------------------------------------------------------
+BEHAVIORAL QUESTIONS
+1. Disagree with Manager / Team Member
+    Deadline Scheduling
+        - Situation:
+            - For  a new project my manager initially thought it could be done in a week. I had a disagreement there that we would need 3 weeks for that to completely deliver the product
+        - Task
+            - Building a system to sync changes between source and target
+        - Action
+            - I split the project into multiple modules and explain in detail how long each module will take
+            - About integration of the modules
+            - Performing regression testing on the entire module
+            - Also creating a test bed for the environment
+        - Result
+            - We were able to deliver the product with high quality and on time
+            - If we had rushed through in two weeks, we might not have done a thorough
+              testing. Might also went with a quicker way to do things instead of going with a scalable way of doing things
+    
+    Developing Abstract Notification Adapter
+        - Situation
+            - First make few API calls to Storage subsystem to create a new FPolicy config
+            - Later got a separate project which heavily uses the config
+            - Didn't have time to make the switch from old to new as it was already out with customers
+        - Task
+            - Had to create a generic adapter
+        - Action
+            - Had a knob to switch back to old mechanism in case of any failure
+            - Designed the new one in a completely abstract way
+        - Result
+            - Amazing generic notification adapter
+
+2. Customer Obsession:
+    POC Example where we failed to configure on storage systems
+    I have worked very closely with customers
+    How customers would configure / unconfigure
+        - Where they would like to select multiple entries and perform "enable all" / "disable all"
+    Multi-node cluster setup
+
+3. Highest Standards:
+    - Coding standards
+        - Comments
+        - Documentation etc
+
+4. Ownership:
+    - Own NetApp and EMC storage systems
+
+--------------------------------------------------------------------------------
 GENRAL PROGRAMMING / OOPS Concepts
 0.
 What is Abstraction:
@@ -149,6 +236,14 @@ What is Polymorphism:
 VERY IMP:
 http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
 http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction-a-real-time-example-bid-wvGh8f5F89208310.html
+
+        Encapsulation puts some things in a box and gives you a peephole; this keeps you from mucking with the gears.
+
+        Abstraction is the process of generalization: taking a concrete implementation and making it applicable to different, albeit somewhat related, types of data. The classical example of abstraction is C's qsort function which sorts data.
+
+        The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
+
+
     Abstraction is achieved by making class abstract having one or more methods abstract.
     Which is nothing but essential characteristic which should be implemented by the class extending it.
     e.g. when you inventing/designing a car you define a characteristics like car should have 4 doors, break, steering wheel etc… so anyone uses this design should include this characteristics.
@@ -175,7 +270,6 @@ http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction
         Though every method is an encapsulation, it is also an abstraction, because every time you put some things together and give it a name you create a new (abstract) concept. Encapsulation without abstraction is useless.
 
     http://stackoverflow.com/questions/742341/difference-between-abstraction-and-encapsulation
-        Encapsulation puts some things in a box and gives you a peephole; this keeps you from mucking with the gears.
 
         Abstraction flat-out ignores the details that don't matter, like whether the things have gears, ratchets, flywheels, or nuclear cores; they just "go"
 
@@ -199,10 +293,6 @@ INFORMATION HIDING, ENCAPSULATION and ABSTRACTION:
         int d = distance(x, y);
 
         Here, distance encapsulates the calculation of the (euclidean) distance between two points in a plane: it hides implementation details. This is encapsulation, pure and simple.
-
-        Abstraction is the process of generalization: taking a concrete implementation and making it applicable to different, albeit somewhat related, types of data. The classical example of abstraction is C's qsort function which sorts data.
-
-        The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
  
 3a.
 How are Abstraction and Encapsulation related
@@ -822,6 +912,32 @@ http://stackoverflow.com/questions/19854007/what-is-the-advantage-of-using-tail-
     In a tail recursive function, the recursive call is the very last thing to be executed.
     In this case, instead of allocating a stack frame for each call, the compiler can rework the code to simply reuse the current stack frame, meaning a tail-recursive function will only use a single stack frame as opposed to hundreds or even thousands.
 
+Not tail recursive example:
+    // A NON-tail-recursive function.  The function is not tail
+    // recursive because the value returned by fact(n-1) is used in
+    // fact(n) and call to fact(n-1) is not the last thing done by fact(n)
+    unsigned int fact(unsigned int n)
+    {
+        if (n == 0) return 1;
+     
+        return n*fact(n-1);
+    }
+
+Tail Recursive example:
+    // A tail recursive function to calculate factorial
+    unsigned factTR(unsigned int n, unsigned int a)
+    {
+        if (n == 0)  return a;
+     
+        return factTR(n-1, n*a);
+    }
+     
+    // A wrapper over factTR
+    unsigned int fact(unsigned int n)
+    {
+       return factTR(n, 1);
+    }
+
 25.
 Problems with Multiple Inheritence
 http://stackoverflow.com/questions/225929/what-is-the-exact-problem-with-multiple-inheritance
@@ -1110,6 +1226,42 @@ How to read a file in reverse
 http://stackoverflow.com/questions/8664705/how-to-read-file-from-end-to-start-in-reverse-order-in-java
 
     Apache Commons IO has the ReversedLinesFileReader
+
+35. How to programmatically cause a core dump in C/C++
+https://stackoverflow.com/questions/979141/how-to-programmatically-cause-a-core-dump-in-c-c
+    Raising of signal number 6 (SIGABRT in Linux) is one way to do it (though keep in mind that SIGABRT is not required to be 6 in all POSIX implementations so you may want to use the SIGABRT value itself if this is anything other than quick'n'dirty debug code).
+
+    #include <signal.h>
+    : : :
+    raise (SIGABRT);
+    Calling abort() will also cause a core dump, and you can even do this without terminating your process by calling fork() followed by abort() in the child only
+
+36. How to store a password in database
+https://www.geeksforgeeks.org/store-password-database/
+https://stackoverflow.com/questions/1054022/best-way-to-store-password-in-database
+
+    Storing plain text passwords in the database is a sin.
+
+
+    One might also think that if not plain text then we must encrypt the password and then store. It is also a terrible idea. Encryption functions provide one-one mapping between input and output and they are always reversible. If the hacker gets the key, he will be able to decrypt the passwords. The better way would be to use a one way cryptographic hash function. Hash function provides a many-one mapping between input and output and it is practically impossible to reverse a output. A good cryptographic hash function has lesser number of Collisions (i.e for different input values to the function it is difficult to get the same output). Collisions cannot be completely avoided because of pigeonhole principle. For hashing passwords we can assume that the hash function will generate unique output i.e for no two different passwords we will get a same hash value.
+
+    Some of the popular cryptographic hash functions are MD5 and SHA1. Instead of storing plain text password in the database one way is to store the hash of the password. You might be thinking that if we cannot get the actual password back from the hash then how are we going to verify the credentials that the user entered? It¿s simple, apply the same hash function on the password which user entered and then compare it with the hash stored in the database. If both hashes match then the user is authenticated (since hash of same input will give same output). Now if the attacker is able to get database access, he will be only able to view the hashed output and not the actual password.
+
+    Using cryptographic hash function is better than storing plain text password.
+
+    Hackers are smart guys and once they came to know that developers are storing hashed passwords, they pre-computed hash of large number of words (from a popular word list or dictionary words). They created a table of words and their corresponding hashes. This table is known as Rainbow Table and it is readily available online. They can use this table to reverse lookup the actual password by comparing the hashes obtained from the database. Hence it is very important to have a strong password since the possibility of your password appearing in the word list becomes less.
+
+    There is still something that developers can do to keep your passwords away from prying eyes of the hackers. Make the passwords delicious by adding some salt to them! Yeah, right..! Add a salt. A salt is random data that is concatenated with your password before sending it as the input of the hashing function.
+
+    For example :
+    If your password is abc and the salt is !ZaP0#8, the result of hashFunction(¿abc!ZaP0#8¿) will be stored in the database instead of hashFunction(¿abc¿).
+    Hence the rainbow table attacks won¿t be effective now as the probability that rainbow table contains hash of ¿abc!ZaP0#8¿ is meager (because generally rainbow tables are constructed from common words, dictionary words etc). Salt is not stored in the database and only present in the application configuration file which is not accessible to outer world. Gaining access to the source files is difficult than gaining access to the database.
+
+    The above salting method is static. We have one fixed salt for all the passwords. To authenticate the user, first concatenate the fixed salt to the user supplied input (password) and then pass the value to the hashing function and compare it with the value stored in the database. However this approach is still vulnerable to brute-force and if the attacker is able to get the static salt he can use the old attack methodology by concatenating the salt in every word.
+
+    A better approach would be to use a dynamic salt. For each user a new salt is generated by cryptographically strong random string generator. The password entered by user is concatenated with a random generated salt as well as a static salt. The concatenated string is passed as the input of hashing function. The result obtained is stored in database. Dynamic salt is required to be stored in the database since it is different for different users. When the user is to be authenticated, first the value of dynamic salt for that user is fetched from the database, it is concatenated with user supplied input and the static salt. The result is compared with the hash stored in the database.
+
+    If the database is compromised the hacker will not only get your password hashes but also the dynamic salt used. You might be wondering then what is the advantage of dynamic salt over static salt if attacker has dynamic salt? Even if the attacker has dynamic salt he needs to create a new hash-table (or rainbow table) for each and every user present in the database (as per dynamic salt). This is a lot more expensive operation than creating just one table for all the users.
 ---------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 1. Parking lot  
@@ -1257,7 +1409,17 @@ https://blogs.technet.microsoft.com/markrussinovich/2008/11/17/pushing-the-limit
        Declaring it with an initial value that is non-zero will (in order to hold that initial value).
        Rather, the linker simply adds this 1KB amount to the memory requirement that the system's loader creates for you immediately prior to execution.
 
--1c.
+-1c. When we associate '&' with a variable the address we get is the virtual address or the physical address? [duplicate]
+
+    Processes on systems with virtual memory always deal with virtual addresses. You wouldn't be able to use a physical address from within a process.
+
+    This is most easily verified by making the program run in a loop and print the value with some delay, then running multiple copies of the same program. Chances are they will print the same address (unless the OS is randomizing the virtual address usage), which of course would be impossible if the addresses were physical.
+
+    Physical addresses occur in hardware, not software. A possible/occasional exception is in the operating system kernel. Physical means it's the address that the system bus and the RAM chips see.
+
+    Not only are physical addresses useless to software, but it could be a security issue. Being able to access any physical memory without address translation, and knowing the addresses of other processes, would allow unfettered access to the machine.
+
+-1d.
 What determines the size of an executable
 http://stackoverflow.com/questions/12920955/what-decides-the-size-of-my-executable
 
@@ -1272,6 +1434,13 @@ http://stackoverflow.com/questions/12920955/what-decides-the-size-of-my-executab
 0.
 Differentiate Threads and Processes
 http://stackoverflow.com/questions/1762418/process-vs-thread
+IMP:
+    THE TYPICAL DIFFERENCE IS THAT THREADS (OF THE SAME PROCESS) RUN IN A SHARED MEMORY SPACE, WHILE PROCESSES RUN IN SEPARATE MEMORY SPACES.
+
+    - A process is an executing instance of an application.
+    - Another difference between a thread and a process is that threads within the same process share the same address space, whereas different processes do not.
+    - This allows threads to read from and write to the same data structures and variables, and also facilitates communication between threads.
+    - Communication between processes – also known as IPC, or inter-process communication – is quite difficult and resource-intensive.
 
     Recently, I have been asked a question in an interview what's the difference between a process and a thread. Really, I did not know the answer. I thought for a minute and gave a very weird answer.
 
@@ -1281,21 +1450,15 @@ http://stackoverflow.com/questions/1762418/process-vs-thread
        My answer: yep (thought it was an easy one) Stack, Data, Code, Heap
 
     Q. So, tell me which segments share threads?
-       You're pretty much correct, but threads share all segments except the stack.
+       You're pretty much correct, but THREADS SHARE ALL SEGMENTS EXCEPT THE STACK.
        Threads have independent call stacks, however the memory in other thread stacks is still accessible and in theory you could hold a pointer to memory in some other thread's local stack frame (though you probably should find a better place to put that memory!).
 
-    - A process is an executing instance of an application.
     - What does that mean? Well, for example, when you double-click the Microsoft Word icon, you start a process that runs Word.
     - A thread is a path of execution within a process.
     - Also, a process can contain multiple threads.
     - When you start Word, the operating system creates a process and begins executing the primary thread of that process. 
 
-    - Another difference between a thread and a process is that threads within the same process share the same address space, whereas different processes do not.
-    - This allows threads to read from and write to the same data structures and variables, and also facilitates communication between threads.
-    - Communication between processes – also known as IPC, or inter-process communication – is quite difficult and resource-intensive.
-
     Both processes and threads are independent sequences of execution.
-    The typical difference is that threads (of the same process) run in a shared memory space, while processes run in separate memory spaces.
 
     1. Threads share the address space of the process that created it; processes have their own address space.
     2. Threads have direct access to the data segment of its process; processes have their own copy of the data segment of the parent process.
@@ -1320,6 +1483,8 @@ http://programmers.stackexchange.com/questions/54359/how-would-you-explain-multi
 What is a Race Condition
 http://stackoverflow.com/questions/34510/what-is-a-race-condition
 
+    A race condition is an undesirable situation that occurs when a device or system attempts to perform two or more operations at the same time, but because of the nature of the device or system, the operations must be done in the proper sequence to be done correctly.
+
     A race condition occurs when two or more threads can access shared data and they try to change it at the same time.
     Because the thread scheduling algorithm can swap between threads at any time, you don't know the order in which the threads will attempt to access the shared data.
     Therefore, the result of the change in data is dependent on the thread scheduling algorithm, i.e. both threads are "racing" to access/change the data.
@@ -1333,6 +1498,8 @@ http://stackoverflow.com/questions/34510/what-is-a-race-condition
            // If another thread changed x in between "if (x == 5)" and "y = x * 2" above,
            // y will not be equal to 10.
         }
+
+    Race conditions can be avoided by employing some sort of locking mechanism before the code that accesses the shared resource:
 
 2. Mutex vs Semaphores:
     http://www.geeksforgeeks.org/mutex-vs-semaphore/
@@ -1538,7 +1705,7 @@ http://stackoverflow.com/questions/3513045/conditional-variable-vs-semaphore
         check condition
         block and release mutex if condition is true, else release mutex
 
-    Semaphore is essentially a counter + a mutex + a wait queue. And it can be used as it is without external dependencies. You can use it either as a mutex or as a conditional variable.
+    SEMAPHORE IS ESSENTIALLY A COUNTER + A MUTEX + A WAIT QUEUE. And it can be used as it is without external dependencies. You can use it either as a mutex or as a conditional variable.
 
     Therefore, semaphore can be treated as a more sophisticated structure than conditional variable, while the latter is more lightweight and flexible.
 
@@ -1654,8 +1821,11 @@ Hard Link vs Soft Link
 
 5b.
 What is an Inode ?
-    It is the metadata about a file.
+    INDEX NODE
+    It is the metadata about a file - permissions, ownerships, timestamps
     It is a data structure that holds all relevant information about a file.
+
+    The contents of the file are stored in a collection of data blocks
 
     File -> iNode -> Actual Data
     Inodes link to the physical data
@@ -1696,10 +1866,24 @@ http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
     - Find if "ls" can be found at $PATH
     - Bash spawns a child process to execute the "ls" program
 
+5c. How is data stored? Direct referencing, Double indirect and triple indirect
+https://digital-forensics.sans.org/blog/2008/12/24/understanding-indirect-blocks-in-unix-file-systems
+
+    There are pointers in the inode that link to the data blocks.
+    The contents of the file are stored in a collection of data blocks
+
+    There are only fifteen block pointers in the inode. Assuming standard 4K data blocks, that means that the largest possible file that could be addressed directly would be 60K
+
+    Thirteenth pointer is the indirect block pointer. Once the file grows beyond 48K, the file system grabs a data block and starts using it to store additional block pointers, setting the thirteenth block pointer in the inode to the address of this block. Block pointers are 4-byte quantities, so the indirect block can store 1024 of them. That means that the total file size that can be addressed via the indirect block is 4MB (plus the 48K of storage addressed by the direct blocks in the inode).
+    Once the file size grows beyond 4MB + 48KB, the file system starts using doubly indirect blocks. The fourteenth block pointer points to a data block that contains the addresses of other indirect blocks, which in turn contain the addresses of the actual data blocks that make up the file's contents. That means we have up to 1024 indirect blocks that in turn point to up to 1024 data blocks- in other words up to 1M total 4K blocks, or up to 4GB of storage.
+    At this point, you've probably figured out that the fifteenth inode pointer is the trebly indirect block pointer. With three levels of indirect blocks, you can address up to 4TB (+4GB from the doubly indirect pointer, +4M from the indirect block pointer, +48K from the direct block pointers) for a single file.
+
 6.
 Multi Processor vs Multi Core System
 http://superuser.com/questions/13107/whats-the-difference-between-multicore-proc-and-multiproc-system
 http://theydiffer.com/difference-between-multicore-and-multiprocessor-systems/
+
+    A multicore uses a single CPU while a multiprocessor uses multiple CPU¿s.
 
     Multiple processors let your computer do literally two things at once (instead of only seemingly doing two things at once, but actually just swapping between tasks extremely rapidly).
 
@@ -1915,6 +2099,76 @@ http://stackoverflow.com/questions/7880784/what-is-rss-and-vsz-in-linux-memory-m
         RSS: 400K + 1000K + 100K = 1500K
         VSZ: 500K + 2500K + 200K = 3200K
 
+17. Paging vs Swapping vs Trashing
+    Paging is when individual memory segments, or pages, are moved to or from the swap area. When memory is low portions of a process (data areas, but not instructions which are available from local or remote file systems) are moved to free up memory space. Segments are chosen to be moved if they haven't been referenced recently. When the process next tries to reference this segment a page fault occurs and the process is suspended until the segment is returned to memory. A page fault is normally returned the first time a program is started, as it won't be in memory. It's then paged from the local or remote file system.
+
+    Swapping happens under a heavier work load. With swapping the kernel moves all segments belonging to a process to the swap area. The process is chosen if it's not expected to be run for a while. Before the process can run again it must be copied back into physical memory.
+
+    Thrashing It is a state in which our CPU perform 'productive' work less and 'swapping' more. CPU is busy in swapping pages, so much that it can not respond to user program as much as required. Why it occurs In our system Thrashing occurs when there are too much pages in our memory, and each page referes t an other page. The real memory shortens in capacity to have all the pages in it, so it uses 'virtual memory'. When each page in execution demands that page that is not currently in real memory (RAM) it place some pages on virtual memory and adjust the required page on RAM. If CPU is so much busy in doing this task, thrashing occurs
+
+    In operating systems that implement a virtual memory space the programs allocate memory from an address space that may be much larger than the actual amount of RAM the system possesses. The OS is responsible for deciding which programs "memory" is in actual RAM. It needs a place to keep things while they are "out". This is what is called "swap space", as the OS is swapping things in and out as needed. When this swapping activity is occurring such that it is the major consumer of the CPU time, then you are effectively thrashing. You prevent it by running fewer programs, writing programs that use memory more efficiently, adding RAM to the system, or maybe even by increasing the swap size.
+
+18. Why does a 32-bit OS support 4 GB of RAM?
+https://stackoverflow.com/questions/1119278/why-does-a-32-bit-os-support-4-gb-of-ram
+    Because 32 bits are able to represent numbers up to 232 ¿ 1 = 4294967295 = 4 GiB ¿ 1 and therefore address up to 232 individual bytes which would be 4 GiB then.
+
+    Everybody is saying 2^32 = 4GiB, which is right. Just in case, here is how we got there:
+
+    A 32-bit machine uses 32 bits to address memory. Each bit has a value of 0 or 1. If you have 1 bit, you have two possible addresses: 0 or 1. A two-bit system ( pun aside ) has four possible address: 00 =0, 01=1, 10=2, 11=3. 2^2=4. Three bits have 8 possble addresses: 000=0, 001=1, 010=2, 011=3, 100=4, 101=5, 110=6, and 111=7.
+
+    Each bit doubles the potential address space, which is why 2^n tells you how many addresses you use for a given number of bits. 2^1 = 2, 2^2 = 2*2 = 4, 2^3 = 2*2*2 = 8, etc.
+
+    By the time you get to 32 bits, you are at 4GiB.
+
+19. MB vs MiB / GB vs GiB
+    Gibibyte (GiB) is one of the standard units used in the field of data processing and data transmission (along with mebibyte (MiB), kibibyte (KiB), etc.). Gibibyte, mebibyte, and kibibyte are defined as powers of 2. 1 GiB equals 2 bytes or 1,073,741,824 bytes. Gibibyte is closely related to gigabyte (GB), which can be a synonym of gibibyte or can refer to 10 bytes or 1,000,000,000 bytes in accordance with International System of Units (SI).
+
+20. SRAM vs DRAM
+    Static Random Access Memory
+    Dynamic Random Access Memory
+
+    SRAM: 
+        - retains data bits in its memory as long as power is being supplied
+        - does not need to be periodically refreshed
+        - faster
+        - more expensive than DRAM
+        - used in CPU cache
+
+    DRAM:
+        - stores each bit of data in a separate capacitor within an integrated circuit
+        - The capacitor can be either charged or discharged; these two states are taken to represent the two values of a bit, conventionally called 0 and 1. 
+        - A DRAM storage cell is dynamic in that it needs to be refreshed or given a new electronic charge every few milliseconds
+
+21. Spurious Wakeups
+http://tutorials.jenkov.com/java-concurrency/thread-signaling.html#spurious-wakeups
+    For inexplicable reasons it is possible for threads to wake up even if notify() and notifyAll() has not been called. This is known as spurious wakeups. Wakeups without any reason.
+
+    To guard against spurious wakeups the signal member variable is checked inside a while loop instead of inside an if-statement. Such a while loop is also called a spin lock. The thread awakened spins around until the condition in the spin lock (while loop) becomes false.
+
+    public class MyWaitNotify3{
+
+      MonitorObject myMonitorObject = new MonitorObject();
+      boolean wasSignalled = false;
+
+      public void doWait(){
+        synchronized(myMonitorObject){
+          while(!wasSignalled){
+            try{
+              myMonitorObject.wait();
+             } catch(InterruptedException e){...}
+          }
+          //clear signal and continue running.
+          wasSignalled = false;
+        }
+      }
+
+  public void doNotify(){
+    synchronized(myMonitorObject){
+      wasSignalled = true;
+      myMonitorObject.notify();
+    }
+  }
+}
 ---------------------------------------------------------------------------------------------
 NETWORKS:
 0. 
@@ -2159,6 +2413,27 @@ http://stackoverflow.com/questions/1694144/can-two-applications-listen-to-the-sa
     But... there are ways around it:
         As Jed noted, you could write a 'master' process, which would be the only one that really listens on the port and notifies others, using any logic it wants to separate client requests.
 
+1e. Do browsers listen to port 80?
+    They don't listen on port 80 they talk to port 80, or 443 if you're using SSL
+
+    The browser will make the request from a random high-numbered port so more than browser can be active at the same time.
+
+    In TCP/IP, a "session" must be unique and the session is defined as the 5-tuple (protocol, sourceIP, sourcePort, destinationIP, destinationPort). This allows the packets to be routed correctly on the internet.
+
+    Typically when a client attempts to contact a server, it specifies 0 as its source port which means that the operating system assigns it an unused one. That means that the client will actually listen on that port rather than port 80.
+
+    So you may get a session with the properties (TCP, mybox.com, 1101, www.microsoft.com, 80) when your browser goes out to access Microsoft's web pages.
+
+    If you find you cannot bind your server to port 80, it will most likely because you already have a server running on that port, or your program doesn't have the required privileges to bind to that port (ports less than 1024 are generally considered privileged ports).
+
+    Running netstat -a (on Linux or Windows) will tell you whether a server is bound to port 80. Look for a listener on port 80 (or http if it's resolving ports to service names), something like:
+    tcp  0  0  localhost:http  *:*  LISTEN
+
+1f. Do web browsers use different outgoing ports for different tabs?
+https://serverfault.com/questions/296603/understanding-ports-how-do-multiple-browser-tabs-communicate-at-the-same-time
+https://superuser.com/questions/1055281/do-web-browsers-use-different-outgoing-ports-for-different-tabs
+    Yes, they do
+
 2.
 Why is MAC address required    
     Why do we need the MAC address if all Ethernet connections are done via IP address?
@@ -2373,6 +2648,28 @@ http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/
         - browser decodes response (e.g. if it's gzipped)
         - browser determines what to do with response (e.g. is it a HTML page, is it an image, is it a sound clip?)
         - browser renders response, or offers a download dialog for unrecognized types
+
+Have you ever thought about what happens when you surf the web? It¿s not as simple as it seems:
+    You type an URL into address bar in your preferred browser.
+    The browser parses the URL to find the protocol, host, port, and path.
+    It forms a HTTP request (that was most likely the protocol)
+    To reach the host, it first needs to translate the human readable host into an IP number, and it does this by doing a DNS lookup on the host
+    Then a socket needs to be opened from the user¿s computer to that IP number, on the port specified (most often port 80)
+    When a connection is open, the HTTP request is sent to the host
+    The host forwards the request to the server software (most often Apache) configured to listen on the specified port
+    The server inspects the request (most often only the path), and launches the server plugin needed to handle the request (corresponding to the server language you use, PHP, Java, .NET, Python?)
+    The plugin gets access to the full request, and starts to prepare a HTTP response.
+    To construct the response a database is (most likely) accessed. A database search is made, based on parameters in the path (or data) of the request
+    Data from the database, together with other information the plugin decides to add, is combined into a long string of text (probably HTML).
+    The plugin combines that data with some meta data (in the form of HTTP headers), and sends the HTTP response back to the browser.
+    The browser receives the response, and parses the HTML (which with 95% probability is broken) in the response
+    A DOM tree is built out of the broken HTML
+    New requests are made to the server for each new resource that is found in the HTML source (typically images, style sheets, and JavaScript files). Go back to step 3 and repeat for each resource.
+    Stylesheets are parsed, and the rendering information in each gets attached to the matching node in the DOM tree
+    Javascript is parsed and executed, and DOM nodes are moved and style information is updated accordingly
+    The browser renders the page on the screen according to the DOM tree and the style information for each node
+    You see the page on the screen
+    You get annoyed the whole process was too slow.
 
 8.
 What is DHCP and how it works
@@ -2727,7 +3024,14 @@ https://en.wikipedia.org/wiki/ACID
         Once a group of SQL statements execute, the results need to be stored permanently (even if the database crashes immediately thereafter).
         To defend against power loss, transactions (or their effects) must be recorded in a non-volatile memory.
 
-5.
+5. BASE Properties
+    A BASE system gives up on consistency.
+
+    Basically available indicates that the system does guarantee availability, in terms of the CAP theorem.
+    Soft state indicates that the state of the system may change over time, even without input. This is because of the eventual consistency model.
+    Eventual consistency indicates that the system will become consistent over time, given that the system doesn't receive input during that time.
+
+6.
 Tabs vs Spaces as Coding Style
 http://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-what-is-the-proper-indentation-character-for-everything-in-e
 
@@ -2742,4 +3046,74 @@ http://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-wha
     TABS:
         - Plus a lot of programmers spend a significant amount of time writing html, css, etc, were the fact that a file with 4 spaces instead of tabs is 5-15% larger is actually significant.
         - Example: this page you are on right now loaded at least 10% slower than it should have because the SE team used spaces.
+--------------------------------------------------------------------------------
+DISTRIBUTED SYSTEMS:
+1. Docker and Kubernetes
+https://blog.containership.io/k8svsdocker
+    At their core, containers are a way of packaging software. What makes them special is that when you run a container, you know exactly how it will run - it¿s predictable, repeatable and immutable. There are no unexpected errors when you move it to a new machine, or between environments. All of your application¿s code, libraries, and dependencies are packed together in the container as an immutable artifact. You can think of running a container like running a virtual machine, without the overhead of spinning up an entire operating system. For this reason, bundling your application in a container vs. a virtual machine will improve startup time significantly.
+
+    Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing. If you want to run multiple containers across multiple machines - which you¿ll need to do if you¿re using microservices - there is still a lot of work to do.
+
+    You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare. Luckily, that¿s where Kubernetes comes in.
+
+    Kubernetes is an open source container orchestration platform, allowing large numbers of containers to work together in harmony, reducing operational burden. It helps with things like:
+
+    Running containers across many different machines
+    Scaling up or down by adding or removing containers when demand changes
+    Keeping storage consistent with multiple instances of an application
+    Distributing load between the containers
+    Launching new containers on different machines if something fails 
+
+    When used together, both Docker and Kubernetes are great tools for developing a modern cloud architecture, but they are fundamentally different at their core. It is important to understand the high-level differences between the technologies when building your stack.
+
+2. Memcache, Redis
+https://stackoverflow.com/questions/10558465/memcached-vs-redis
+    Redis is more powerful, more popular, and better supported than memcached. Memcached can only do a small fraction of the things Redis can do. Redis is better even where their features overlap.
+
+    For anything new, use Redis.
+
+    Both tools are powerful, fast, in-memory data stores that are useful as a cache. Both can help speed up your application by caching database results, HTML fragments, or anything else that might be expensive to generate.
+
+    Redis is what is called a key-value store, often referred to as a NoSQL database
+    In-memory key-value store, originally intended for caching
+    In-memory data structure store, used as database, cache and message broker
+
+3. Hadoop
+    Hadoop is an open-source software framework for storing data and running applications on clusters of commodity hardware.
+
+    Hadoop makes it possible to run applications on systems with thousands of commodity hardware nodes, and to handle thousands of terabytes of data. Its distributed file system facilitates rapid data transfer rates among nodes and allows the system to continue operating in case of a node failure. This approach lowers the risk of catastrophic system failure and unexpected data loss, even if a significant number of nodes become inoperative. Consequently, Hadoop quickly emerged as a foundation for big data processing tasks, such as scientific analytics, business and sales planning, and processing enormous volumes of sensor data, including from internet of things sensors.
+
+4. Apache Spark
+    Apache Spark is a fast, in-memory data processing engine with elegant and expressive development APIs to allow data workers to efficiently execute streaming, machine learning or SQL workloads that require fast iterative access to datasets
+
+4b. Spark vs MapReduce
+https://stackoverflow.com/questions/32572529/why-is-spark-faster-than-hadoop-map-reduce
+
+    Spark uses "lazy evaluation" to form a directed acyclic graph (DAG) of consecutive computation stages. In this way, the execution plan can be optimized, e.g. to minimize shuffling data around. In contrast, this should be done manually in MapReduce by tuning each MR step. (It would be easier to understand this point if you are familiar with the execution plan optimization in RDBMS or the DAG-style execution of Apache Tez)
+    Spark ecosystem has established a versatile stack of components to handle SQL, ML, Streaming, Graph Mining tasks. But in the hadoop ecosystem you have to install other packages to do these individual things.
+
+    One of the main limitations of MapReduce is that it persists the full dataset to HDFS after running each job. This is very expensive, because it incurs both three times (for replication) the size of the dataset in disk I/O and a similar amount of network I/O. Spark takes a more holistic view of a pipeline of operations. When the output of an operation needs to be fed into another operation, Spark passes the data directly without writing to persistent storage. This is an innovation over MapReduce that came from Microsoft's Dryad paper, and is not original to Spark.
+
+    The main innovation of Spark was to introduce an in-memory caching abstraction. This makes Spark ideal for workloads where multiple operations access the same input data. Users can instruct Spark to cache input data sets in memory, so they don't need to be read from disk for each operation.
+
+    What about Spark jobs that would boil down to a single MapReduce job? In many cases also these run faster on Spark than on MapReduce. The primary advantage Spark has here is that it can launch tasks much faster. MapReduce starts a new JVM for each task, which can take seconds with loading JARs, JITing, parsing configuration XML, etc. Spark keeps an executor JVM running on each node, so launching a task is simply a matter of making an RPC to it and passing a Runnable to a thread pool, which takes in the single digits of milliseconds.
+
+    Lastly, a common misconception probably worth mentioning is that Spark somehow runs entirely in memory while MapReduce does not. This is simply not the case. Spark's shuffle implementation works very similarly to MapReduce's: each record is serialized and written out to disk on the map side and then fetched and deserialized on the reduce side.
+
+5. Hive
+
+6. AWS
+6a. Amazon EC2 - Elastic Compute Cloud
+    Can create virtual servers
+    We can tell how powerful these servers should be
+    Can choose the region where you want the virtual server to be
+
+7. Kafta
+
+8. RabbitMQ
+
+9. Zookeeper
+
+
+
 

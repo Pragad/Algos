@@ -50,12 +50,27 @@
 39. How many traversals need to be known to construct a BST
 40. Trie vs Ternary Search Tree
 41. Find number of possible perfect squares between two numbers
+42. Check if an Intger is a perfect square
+43. How will you implement your own malloc
+44. How will you implement your own memcpy
+45. If you are given two traversal sequences, can you construct the binary tree
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
 http://stackoverflow.com/questions/5222730/why-is-merge-sort-preferred-over-quick-sort-for-sorting-linked-lists?rq=1
 http://www.geeksforgeeks.org/why-quick-sort-preferred-for-arrays-and-merge-sort-for-linked-lists/
 http://stackoverflow.com/questions/2467751/quicksort-vs-heapsort
+
+    - "Merge sort is very efficient for immutable datastructures like linked lists"
+    - "Quick sort is typically faster than merge sort when the data is stored in memory.
+    MERGE SORT PROS
+    - ACCESSES DATA SEQUENTIALLY
+    - Quicksort is also more complicated than mergesort, especially if you want to write a really solid implementation
+    - Can easily insert elements in the middle
+    - So MERGE doesnot need any extra overhead
+    - However, when the data set is huge and is stored on external devices such as a hard drive, merge sort is the clear winner in terms of speed.
+    - It minimizes the expensive reads of the external drive" "when operating on linked lists
+    - Merge sort only requires a small constant amount of auxiliary storage"
 
     QUICK SORT PROS
     - ACCESSES DATA RANDOMLY
@@ -66,7 +81,7 @@ http://stackoverflow.com/questions/2467751/quicksort-vs-heapsort
     - Best when able to index into an array or similar structure.
       You would want to access elements at random positions
       When that's possible, it's hard to beat Quicksort.
-    - Quicksort is fast when the data fits into memory and can be addressed directly.
+    - Quicksort is fast when the data fits into memory and can be addressed directly
 
     - Practically, Quicksort runs fast, much faster than Heap and Merge algorithms.
     - The secret of Quicksort is: It almost doesn't do unnecessary element swaps.
@@ -76,19 +91,6 @@ http://stackoverflow.com/questions/2467751/quicksort-vs-heapsort
     - With HEAPSORT, even if all of your data is already ordered, you are going to swap 100% of elements to order the array.
     - With MERGESORT, it's even worse. You are going to write 100% of elements in another array and write it back in the original one, even if data is already ordered.
     - With QUICKSORT you don't swap what is already ordered. If your data is completely ordered, you swap almost nothing
-
-    MERGE SORT PROS
-    - ACCESSES DATA SEQUENTIALLY
-    - Quicksort is also more complicated than mergesort, especially if you want to write a really solid implementation
-    - Can easily insert elements in the middle
-    - So MERGE doesnot need any extra overhead
-    - "Merge sort is very efficient for immutable datastructures like linked lists"
-
-    - "Quick sort is typically faster than merge sort when the data is stored in memory.
-    - However, when the data set is huge and is stored on external devices such as a hard
-      drive, merge sort is the clear winner in terms of speed.
-    - It minimizes the expensive reads of the external drive" "when operating on linked lists
-    - Merge sort only requires a small constant amount of auxiliary storage"
 
      IMP:
      - Array of equal elements.
@@ -445,6 +447,18 @@ http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-n
 Find leftmost set bit in a number
 http://stackoverflow.com/questions/53161/find-the-highest-order-bit-in-c
 
+1 -> 1
+2 -> 2
+3 -> 2
+4 -> 4
+5 -> 4
+6 -> 4
+7 -> 4
+8 -> 8
+9 -> 8
+...
+63 -> 32
+
     1 << ( int) log2( x)
 
     int hibit(unsigned int n)
@@ -762,7 +776,6 @@ http://stackoverflow.com/questions/14001676/balancing-a-bst
     1. Using tree rotations, convert the tree into a degenerate linked list.
     2. By applying selective rotations to the linked list, convert the list back into a completely balanced tree.
 
-
     The solution is simple - build an "empty" complete binary tree, and iterate the new tree and the input tree (simultaneously) in inorder-traversal to fill the complete tree.
     When you are done, you have the most balanced tree you can get, and time complexity of this approach is O(n)
 
@@ -780,12 +793,49 @@ http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
         or x (on right side)           
                         y                               x
                        / \     Right Rotation          /  \
-                      x   T3   – – – – – – – >        T1   y 
+                      x   T3   -------------->        T1   y 
                      / \       < - - - - - - -            / \
                     T1  T2     Left Rotation            T2  T3
         Keys in both of the above trees follow the following order 
               keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
         So BST property is not violated anywhere.
+
+    a) Left Left Case
+    T1, T2, T3 and T4 are subtrees.
+             z                                      y 
+            / \                                   /   \
+           y   T4      Right Rotate (z)          x      z
+          / \          - - - - - - - - ->      /  \    /  \ 
+         x   T3                               T1  T2  T3  T4
+        / \
+      T1   T2
+
+    b) Left Right Case
+         z                               z                           x
+        / \                            /   \                        /  \ 
+       y   T4  Left Rotate (y)        x    T4  Right Rotate(z)    y      z
+      / \      - - - - - - - - ->    /  \      - - - - - - - ->  / \    / \
+    T1   x                          y    T3                    T1  T2 T3  T4
+        / \                        / \
+      T2   T3                    T1   T2
+
+    c) Right Right Case
+      z                                y
+     /  \                            /   \ 
+    T1   y     Left Rotate(z)       z      x
+        /  \   - - - - - - - ->    / \    / \
+       T2   x                     T1  T2 T3  T4
+           / \
+         T3  T4
+
+    d) Right Left Case
+       z                            z                            x
+      / \                          / \                          /  \ 
+    T1   y   Right Rotate (y)    T1   x      Left Rotate(z)   z      y
+        / \  - - - - - - - - ->     /  \   - - - - - - - ->  / \    / \
+       x   T4                      T2   y                  T1  T2  T3  T4
+      / \                              /  \
+    T2   T3                           T3   T4
 
 24c.
 B+ Tree vs Red Black Trees vs AVL trees
@@ -796,7 +846,7 @@ http://stackoverflow.com/questions/1589556/when-to-choose-rb-tree-b-tree-or-avl-
     - RB tree when you're doing fairly frequent inserts, deletes and retrievals on the tree.
     - AVL tree when your inserts and deletes are infrequent relative to your retrievals.
 
-    1. What's the main aim we are chossing Red black tree instead of Avl tree?
+        1. What's the main aim we are chossing Red black tree instead of Avl tree?
         Both red-black trees and AVL trees are the most commonly used balanced binary search trees and they support insertion, deletion and look-up in guaranteed O(logN) time.
         However, there are following points of comparison between the two:
 
@@ -1019,6 +1069,8 @@ Search a Word in a 2D Grid of characters
 
 36.
 If you're given a list of countries and its corresponding population, write a function that will return a random country but the higher the population of the country, the more likely it is to be picked at random.
+https://softwareengineering.stackexchange.com/questions/150616/return-random-list-item-by-its-weight
+https://www.careercup.com/question?id=14582824
 
     Approach 1:
     - Check Color Picker Logic
@@ -1138,3 +1190,62 @@ https://www.geeksforgeeks.org/find-number-perfect-squares-two-given-numbers/
         }
         return false;
     }
+
+43. How will you implement your own malloc
+https://stackoverflow.com/questions/13764711/making-your-own-malloc-function-in-c
+
+    This is a very simple approach, which may get you past your 2 mallocs:
+        static unsigned char our_memory[1024 * 1024]; //reserve 1 MB for malloc
+        static size_t next_index = 0;
+
+        void *malloc(size_t sz)
+        {
+            void *mem;
+
+            if(sizeof our_memory - next_index < sz)
+                return NULL;
+
+            mem = &our_memory[next_index];
+            next_index += sz;
+            return mem;
+        }
+
+        void free(void *mem)
+        {
+           //we cheat, and don't free anything.
+        }
+
+44. Can anyone explain how malloc() works internally?
+https://stackoverflow.com/questions/3479330/how-is-malloc-implemented-internally
+
+Read below link
+https://stackoverflow.com/questions/1119134/how-do-malloc-and-free-work
+    One implementation of malloc/free does the following:
+        - Get a block of memory from the OS through sbrk() (Unix call).
+        - Create a header and a footer around that block of memory with some information such as size, permissions, and where the next and previous block are.
+        - When a call to malloc comes in, a list is referenced which points to blocks of the appropriate size.
+        - This block is then returned and headers and footers are updated accordingly.
+
+45. If you are given two traversal sequences, can you construct the binary tree
+https://www.geeksforgeeks.org/if-you-are-given-two-traversal-sequences-can-you-construct-the-binary-tree/
+
+    Following combination can uniquely identify a tree.
+
+        Inorder and Preorder.
+        Inorder and Postorder.
+        Inorder and Level-order.
+
+    And following do not.
+        Postorder and Preorder.
+        Preorder and Level-order.
+        Postorder and Level-order.
+
+    For example, Preorder, Level-order and Postorder traversals are same for the trees given in above diagram.
+        A       A
+      /          \
+     B            B
+    Preorder Traversal = AB
+    Postorder Traversal = BA
+    Level-Order Traversal = AB
+
+    So, even if three of them (Pre, Post and Level) are given, the tree can not be constructed.
