@@ -1,5 +1,4 @@
 /*
-void printPhoneNumPermuteIterative(string number)
 void printVectorString(vector<string> vecString)
 void printPhoneNumberPermutations(int number[], uint32_t len)
 void printPhonePermuteRecursive(int number[], uint32_t currentDigit, char result[], uint32_t length)

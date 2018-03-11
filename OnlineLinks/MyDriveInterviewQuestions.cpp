@@ -2057,7 +2057,7 @@ int kthSmalledInUnsorted(int arr[], uint32_t num, uint32_t k)
     }
 
     // Default sorting is in descending order
-    priority_queue<int> kSmallNos(k);
+    priority_queue<int> kSmallNos;
 
     // Now the heap will contain the first k numbers
     // Complexity O(K log K)
