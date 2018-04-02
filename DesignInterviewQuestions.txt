@@ -2,7 +2,15 @@ Distributed Systems - Key Concepts
 0. Things to read about
 1. 4 Building Blocks of Architecting Systems for Scale
 2. CAP Theorem
-
+3. SQL vs NoSQL
+4. ActiveMQ or RabbitMQ or ZeroMQ
+5. Running Java in Container
+6. Protocol Buffers
+7. Docker and Kubernetes
+8. Dockers and Containerization:
+--------------------------------------------------------------------------------
+ZeroMQ, Protocol Buffers
+1. Get zeromq message data into std::vector<char>
 --------------------------------------------------------------------------------
 System Design Interview Questions
 1. How to Design Twitter
@@ -108,6 +116,224 @@ http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-
         Store many TB (or PB) of data
         Very data intensive workload
         Very high throughput for IOPS
+
+4. ActiveMQ or RabbitMQ or ZeroMQ
+    https://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
+
+    These 3 messaging technologies have different approaches on building distributed systems :
+
+    RabbitMQ is one of the leading implementation of the AMQP protocol (along with Apache Qpid). Therefore, it implements a broker architecture, meaning that messages are queued on a central node before being sent to clients. This approach makes RabbitMQ very easy to use and deploy, because advanced scenarios like routing, load balancing or persistent message queuing are supported in just a few lines of code. However, it also makes it less scalable and ¿slower¿ because the central node adds latency and message envelopes are quite big.
+
+    ZeroMq is a very lightweight messaging system specially designed for high throughput/low latency scenarios like the one you can find in the financial world. Zmq supports many advanced messaging scenarios but contrary to RabbitMQ, you¿ll have to implement most of them yourself by combining various pieces of the framework (e.g : sockets and devices). Zmq is very flexible but you¿ll have to study the 80 pages or so of the guide (which I recommend reading for anybody writing distributed system, even if you don¿t use Zmq) before being able to do anything more complicated than sending messages between 2 peers.
+
+    ActiveMQ is in the middle ground. Like Zmq, it can be deployed with both broker and P2P topologies. Like RabbitMQ, it¿s easier to implement advanced scenarios but usually at the cost of raw performance. It¿s the Swiss army knife of messaging :-).
+
+    Finally, all 3 products:
+        have client apis for the most common languages (C++, Java, .Net, Python, Php, Ruby, ¿)
+        have strong documentation
+        are actively supported
+
+5. Running Java in Container
+https://mesosphere.com/blog/java-container/
+
+6. Protocol Buffers
+https://developers.google.com/protocol-buffers/docs/javatutorial
+http://www.baeldung.com/google-protocol-buffer
+
+7. Docker and Kubernetes
+Steps to setup Docker and Kubernetes:
+https://store.docker.com/editions/community/docker-ce-desktop-mac
+    Install docker edge (This installs Kubernetes too. So you don¿t need miniKube or docker-machine (This is previously needed for Mac))
+    After installing docker, open preferences to install and Start Kubernetes
+
+    As kubernetes got installed, we don¿t need to install the below two kubernetes stuff
+        brew install kubernetes-cli
+        brew install kubernetes-helm
+
+Docker and Kubernetes commands:
+    $ docker
+    $ docker info
+    $ kubectl
+    $ kubectl version
+    $ kubectl config get-contexts
+    $ kubectl get nodes
+    $ kubectl get pods
+    $ kubectl get pods --namespace kube-system
+    $ kubectl describe pod pod_name
+
+    Update config file in ~/.kube/config
+
+    This gives all the deployments in the cluster
+        $ kubectl get deployments
+
+    The following command should now show updated kubernetes contexts
+        $ kubectl config get-contexts
+
+    To switch context:
+        $ kubectl config use-context monolith
+        $ kubectl get nodes
+        $ kubectl get pods
+        $ kubectl describe pod pod_name
+
+    ~ $docker run hello-world
+        Unable to find image 'hello-world:latest' locally
+        latest: Pulling from library/hello-world
+        ca4f61b1923c: Pull complete
+        Digest: sha256:97ce6fa4b6cdc0790cda65fe7290b74cfebd9fa0c9b8c38e979330d547d22ce1
+        Status: Downloaded newer image for hello-world:latest
+
+        Hello from Docker!
+        This message shows that your installation appears to be working correctly.
+
+        To generate this message, Docker took the following steps:
+         1. The Docker client contacted the Docker daemon.
+         2. The Docker daemon pulled the "hello-world" image from the Docker Hub.  
+            (amd64)
+         3. The Docker daemon created a new container from that image which runs the executable that produces the output you are currently reading.
+         4. The Docker daemon streamed that output to the Docker client, which sent it to your terminal.
+
+    To try something more ambitious, you can run an Ubuntu container with:
+     $ docker run -it ubuntu bash
+
+8. Dockers and Containerization:
+
+https://www.cio.com/article/2924995/software/what-are-containers-and-why-do-you-need-them.html
+
+
+Containers are a solution to the problem of how to get software to run reliably when moved from one computing environment to another. 
+
+
+"You're going to test using Python 2.7, and then it's going to run on Python 3 in production and something weird will happen. Or you'll rely on the behavior of a certain version of an SSL library and another one will be installed. You'll run your tests on Debian and production is on Red Hat and all sorts of weird things happen."
+
+And it's not just different software that can cause problems, he added. "The network topology might be different, or the security policies and storage might be different but the software has to run on it."
+
+
+How do containers solve this problem?
+
+Put simply, a container consists of an entire runtime environment: an application, plus all its dependencies, libraries and other binaries, and configuration files needed to run it, bundled into one package. By containerizing the application platform and its dependencies, differences in OS distributions and underlying infrastructure are abstracted away
+
+
+What's the difference between containers and virtualization?
+
+With virtualization technology, the package that can be passed around is a virtual machine, and it includes an entire operating system as well as the application. A physical server running three virtual machines would have a hypervisor and three separate operating systems running on top of it.
+
+
+By contrast a server running three containerized applications with Docker runs a single operating system, and each container shares the operating system kernel with the other containers.
+
+
+What other benefits do containers offer?
+
+A container may be only tens of megabytes in size, whereas a virtual machine with its own entire operating system may be several gigabytes in size. Because of this, a single server can host far more containers than virtual machines.
+
+Another major benefit is that virtual machines may take several minutes to boot up their operating systems and begin running the applications they host, while containerized applications can be started almost instantly. That means containers can be instantiated in a "just in time" fashion when they are needed and can disappear when they are no longer required, freeing up resources on their hosts.
+
+A third benefit is that containerization allows for greater modularity. Rather than run an entire complex application inside a single container, the application can be split in to modules (such as the database, the application front end, and so on). This is the so-called microservices approach.  Applications built in this way are easier to manage because each module is relatively simple, and changes can be made to modules without having to rebuild the entire application. Because containers are so lightweight, individual modules (or microservices) can be instantiated only when they are needed and are available almost immediately.
+
+
+https://techcrunch.com/2016/10/16/wtf-is-a-container/
+
+Containers work very differently. Because they only contain the application and the libraries, frameworks, etc. they depend on, you can put lots of them on a single host operating system. The only operating system on the server is that one host operating system and the containers talk directly to it. That keeps the containers small and the overhead extremely low.
+
+Virtual machines use so-called ¿hypervisors¿ as the emulation layer between the guest and host operating system. For containers, the rough equivalent is the container engine, with the Docker Engine being the most popular one right now.
+
+
+Containers simply make it easier for developers to know that their software will run, no matter where it is deployed. They also enable what¿s often called ¿microservices.¿ Instead of having one large monolithic application, microservices break down applications into multiple small parts that can talk to each other. This means different teams can more easily work on different parts of an application and, as long as they make no major changes to how those applications interact, they can work independently of each other. That makes developing software faster and testing it for possible errors easier.
+
+
+To manage all of these containers, you need another set of specialized software like Kubernetes (which Google originally developed) that helps you push those containers out to different machines, makes sure that they run and lets you spin up a few more containers with a specific application when demand increases. And if you want containers to know about each other, you also still need some way of setting up a virtual network, too, that can assign IP addresses to every container.
+
+
+https://cloud.google.com/containers/
+
+Why Containers?
+
+Instead of virtualizing the hardware stack as with the virtual machines approach, containers virtualize at the operating system level, with multiple containers running atop the OS kernel directly. This means that containers are far more lightweight: they share the OS kernel, start much faster, and use a fraction of the memory compared to booting an entire OS.
+
+
+https://docs.docker.com/engine/docker-overview/#docker-engine
+
+Docker Engine is a client-server application with these major components:
+
+
+A server which is a type of long-running program called a daemon process (the dockerd command).
+
+
+A REST API which specifies interfaces that programs can use to talk to the daemon and instruct it what to do.
+
+
+A command line interface (CLI) client (the docker command).
+
+
+The Docker daemon
+
+The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
+
+The Docker client
+
+The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API. The Docker client can communicate with more than one daemon.
+
+Docker registries
+
+A Docker registry stores Docker images. Docker Hub and Docker Cloud are public registries that anyone can use, and Docker is configured to look for images on Docker Hub by default. You can even run your own private registry. If you use Docker Datacenter (DDC), it includes Docker Trusted Registry (DTR).
+
+When you use the docker pull or docker run commands, the required images are pulled from your configured registry. When you use the docker push command, your image is pushed to your configured registry.
+
+Docker store allows you to buy and sell Docker images or distribute them for free. For instance, you can buy a Docker image containing an application or service from a software vendor and use the image to deploy the application into your testing, staging, and production environments. You can upgrade the application by pulling the new version of the image and redeploying the containers.
+
+Docker objects
+
+When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. This section is a brief overview of some of those objects.
+
+IMAGES
+
+An image is a read-only template with instructions for creating a Docker container. Often, an image is based onanother image, with some additional customization. For example, you may build an image which is based on the ubuntu image, but installs the Apache web server and your application, as well as the configuration details needed to make your application run.
+
+You might create your own images or you might only use those created by others and published in a registry. To build your own image, you create a Dockerfile with a simple syntax for defining the steps needed to create the image and run it. Each instruction in a Dockerfile creates a layer in the image. When you change the Dockerfile and rebuild the image, only those layers which have changed are rebuilt. This is part of what makes images so lightweight, small, and fast, when compared to other virtualization technologies.
+
+CONTAINERS
+
+A container is a runnable instance of an image. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
+
+By default, a container is relatively well isolated from other containers and its host machine. You can control how isolated a container¿s network, storage, or other underlying subsystems are from other containers or from the host machine.
+
+A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear.
+
+Example docker run command
+
+The following command runs an ubuntu container, attaches interactively to your local command-line session, and runs /bin/bash.
+
+$ docker run -i -t ubuntu /bin/bash
+
+When you run this command, the following happens (assuming you are using the default registry configuration):
+
+    If you do not have the ubuntu image locally, Docker pulls it from your configured registry, as though you had run docker pull ubuntu manually.
+    Docker creates a new container, as though you had run a docker container create command manually.
+    Docker allocates a read-write filesystem to the container, as its final layer. This allows a running container to create or modify files and directories in its local filesystem.
+    Docker creates a network interface to connect the container to the default network, since you did not specify any networking options. This includes assigning an IP address to the container. By default, containers can connect to external networks using the host machine¿s network connection.
+    Docker starts the container and executes /bin/bash. Because the container is run interactively and attached to your terminal (due to the -i and -t) flags, you can provide input using your keyboard and output is logged to your terminal.
+    When you type exit to terminate the /bin/bash command, the container stops but is not removed. You can start it again or remove it.
+
+SERVICES
+
+Services allow you to scale containers across multiple Docker daemons, which all work together as a swarm with multiple managers and workers. Each member of a swarm is a Docker daemon, and the daemons all communicate using the Docker API. A service allows you to define the desired state, such as the number of replicas of the service that must be available at any given time. By default, the service is load-balanced across all worker nodes. To the consumer, the Docker service appears to be a single application.
+
+
+
+--------------------------------------------------------------------------------
+ZeroMQ, Protocol Buffers
+1. Get zeromq message data into std::vector<char>
+https://stackoverflow.com/questions/26820715/get-zeromq-message-data-into-stdvectorchar
+
+    You can do something like below.
+        zmq::message_t request;
+        socket.recv (&request);
+        std::string msg_str(static_cast<char*>(request.data()), request.size());
+
+    and then store strings in vector. It would be much easier for processing...
+        std::vector<std::string> strVec;
+        strVec.push_back(msg_str);
+
+
 --------------------------------------------------------------------------------
 System Design Interview Questions
 1. How to Design Twitter
