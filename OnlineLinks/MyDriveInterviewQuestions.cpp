@@ -4078,9 +4078,29 @@ int main()
 
     // Problem 17. Minimum number of conference rooms
     {
+        // 1, 2; [1, 4]
+        // 1, 4; [1, 2]
+        // 1, 10; [2, 5]
+        // [1, 3], [5, 20], [6, 10], [11, 13], [11, 13], [21, 50], [22, 50]
+        //
+        // [1, 3], [5, 20], [6, 10], [11, 13], [11, 23], [21, 50], [22, 50]
+        // [1, 3], [5, 20], [6, 10], [11, 13], [11, 23], [21, 50], [22, 50]
+        //
+        // [1, 2], [3, 6], [4, 7], [7, 10], [8, 9]
+        // {1, 2}, {3, 6}, {4, 10}, {7, 8}, {9, 10}
         cout << endl << "Problem 17" << endl;
-        vector<struct MeetingTime> meetings = {{9, 10}, {14, 16}, {8, 12},  {12, 16},  {10, 12}};
-        cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings) << endl;
+        vector<struct MeetingTime> meetings1 = {{9, 10}, {14, 16}, {8, 12},  {12, 16},  {10, 12}};
+
+        // 2 rooms
+        // Room 1: rest
+        // Room 2: {4, 7}, {7, 10}
+        vector<struct MeetingTime> meetings2 = {{1, 2}, {3, 6}, {4, 7},  {7, 10},  {8, 9}};
+
+        // 2 rooms
+        vector<struct MeetingTime> meetings3 = {{1, 3}, {5, 20}, {6, 10},  {11, 13},  {21, 50}, {}};
+        cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings1) << endl;
+        cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings2) << endl;
+        cout << "Min Meetings Rooms: " << minConfRoomRequired(meetings3) << endl;
     }
 
     // Problem 18. Median of two equal size sorted arrays

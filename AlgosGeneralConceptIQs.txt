@@ -567,6 +567,15 @@ GCD of two numbers:
     NICE IMP Proof:
         https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 
+    https://www.geeksforgeeks.org/c-program-find-gcd-hcf-two-numbers/
+    // Recursive function to return gcd of a and b 
+    static int gcd(int a, int b) 
+    { 
+      if (b == 0) 
+        return a; 
+      return gcd(b, a % b);  
+    } 
+
 10.
 STOCK PROBLEMS:
 
