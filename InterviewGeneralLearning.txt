@@ -2264,7 +2264,7 @@ http://superuser.com/questions/902831/which-layer-of-network-stack-does-access-p
         - Access points belong to the data-link layer (layer 2) devices.
 
         - An access point cannot create a new network.
-        - It only broadcasts whatever packet it receives...just like switches. A router is a good example of a device that can create a new network
+        - It only broadcasts whatever packet it receives...just like switches. A   r is a good example of a device that can create a new network
 
         PROBLEMs:
 
@@ -2730,6 +2730,7 @@ http://computer.howstuffworks.com/wireless-network.htm
 
 10.
 DNS and how it works
+https://howdns.works/
 http://dyn.com/blog/dns-why-its-important-how-it-works/
 
     - A directory of domain names and translate them to Internet Protocol (IP) addresses.
