@@ -39,6 +39,9 @@ System Design Primer - FB Github page
 5. Reverse Proxy vs Forward Proxy
 6. Load balancer vs reverse proxy
 --------------------------------------------------------------------------------
+Key References:
+https://roadtoarchitect.com/2018/09/04/useful-technology-and-company-architecture/ - Contains architecture of various companies
+https://roadtoarchitect.com/category/system-design/
 --------------------------------------------------------------------------------
 Distributed Systems - Key Concepts
 
