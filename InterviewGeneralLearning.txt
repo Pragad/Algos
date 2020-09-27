@@ -1883,7 +1883,7 @@ http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
     - Bash spawns a child process to execute the "ls" program
 
 5c. How is data stored? Direct referencing, Double indirect and triple indirect
-https://digital-forensics.sans.org/blog/2008/12/24/understanding-indirect-blocks-in-unix-file-systems
+https://www.sans.org/blog/understanding-indirect-blocks-in-unix-file-systems/
 
     There are pointers in the inode that link to the data blocks.
     The contents of the file are stored in a collection of data blocks
@@ -1945,20 +1945,21 @@ https://www.quora.com/Why-cant-RAM-be-replaced-by-Cache-memory
 9.
 How to avoid deadlocks
 http://stackoverflow.com/questions/1057054/how-to-avoid-deadlocks
+https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/7_Deadlocks.html
 
-    One way is to use a hierarchy of critical sections.
-    If you ensure that a parent critical section is never entered within one of its children, deadlocks cannot happen.
-    The difficulty is to enforce this hierarchy.
+There are four conditions that are necessary to achieve deadlock:
+    - Mutual Exclusion - At least one resource must be held in a non-sharable mode; If any other process requests this resource, then that process must wait for the resource to be released.
+    - Hold and Wait - A process must be simultaneously holding at least one resource and waiting for at least one resource that is currently being held by some other process.
+    - No preemption - Once a process is holding a resource ( i.e. once its request has been granted ), then that resource cannot be taken away from that process until the process voluntarily releases it.
+    - Circular Wait - A set of processes { P0, P1, P2, . . ., PN } must exist such that every P[ i ] is waiting for P[ ( i + 1 ) % ( N + 1 ) ]. ( Note that this condition implies the hold-and-wait condition, but it is easier to deal with the conditions if the four are considered separately. )
 
-    1. Mutual exclusion condition: a resource that cannot be used by more than one process at a time
-        A limited number of a particular resource. In the case of a monitor in C# (what you use when you employ the lock keyword), this limited number is one, since a monitor is a mutual-exclusion lock (meaning only one thread can own a monitor at a time). 
+    Deadlocks can be prevented by preventing at least one of the four required conditions:
+    - Mutual Exclusion
+        Shared resources such as read-only files do not lead to deadlocks.
+    Unfortunately some resources, such as printers and tape drives, require exclusive access by a single process.
 
-    2. Hold and wait condition: processes already holding resources may request new resources
-
-    3. No preemption condition: No resource can be forcibly removed from a process holding it, resources can be released only by the explicit action of the process
-         this means that one thread can't force another thread to release a lock. 
-
-    4. Circular wait condition: two or more processes form a circular chain where each process waits for a resource that the next process in the chain holds
+- Deadlock prevention or avoidance - Do not allow the system to get into a deadlocked state.
+- Deadlock detection and recovery - Abort a process or preempt some resources when deadlocks are detected.
 
 10.
 Latency vs Throughput
@@ -2185,6 +2186,25 @@ http://tutorials.jenkov.com/java-concurrency/thread-signaling.html#spurious-wake
     }
   }
 }
+
+22. Memory Layout of a Program
+https://cs-fundamentals.com/c-programming/memory-layout-of-c-program-code-data-segments
+https://www.geeksforgeeks.org/memory-layout-of-c-program/
+
+    Code / Text Segment - Read Only
+    Data Segment - Non Read Only
+
+    Code/Text Segment: 
+        Code segment, also known as text segment contains machine code of the compiled program. The text segment of an executable object file is often read-only segment that prevents a program from being accidentally modified.
+
+    Data Segment:
+        Data segment stores program data. This data could be in form of initialized or uninitialized variables, and it could be local or global. Data segment is further divided into four sub-data segments (initialized data segment, uninitialized or .bss data segment, stack, and heap) 
+
+        Initialized Data or Data Segment
+            Initialized data or simply data segment stores all global, static, constant, and external variables (declared with extern keyword) that are initialized beforehand.
+
+        Uninitialized Data or .bss Segment
+            Data in this segment is initialized by the kernel to arithmetic 0 before the program starts executing uninitialized data starts at the end of the data segment and contains all global variables and static variables that are initialized to zero or do not have explicit initialization in source code.
 ---------------------------------------------------------------------------------------------
 NETWORKS:
 1. What is SSL Termination
