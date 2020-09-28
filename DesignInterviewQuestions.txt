@@ -29,6 +29,9 @@ System Design Interview Questions
 13. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
 14. How to count number of requests in last second, minute and hour
 15. Consistent Hashing
+16. Design a Chess Game
+17. Design Tic Tac Toe
+18. Design Parking Lot
 --------------------------------------------------------------------------------
 System Design Primer - FB Github page
 0. Conversion Guide
@@ -929,6 +932,21 @@ https://www.adayinthelifeof.nl/2011/02/06/memcache-internals/
 
     On this continuum, we place a (relative) large amount of ¿dots¿  for each server. These are placed randomly so we have a clock with a lot of dots.
 
+16. Design a Chess Game
+https://www.geeksforgeeks.org/design-a-chess-game/
+https://codereview.stackexchange.com/questions/71790/design-a-chess-game-using-object-oriented-principles
+https://medium.com/system-designing-interviews/design-a-chess-game-dddd7ba11bc0
+https://stackoverflow.com/questions/4168002/object-oriented-design-for-a-chess-game
+
+17. Design Tic Tac Toe
+https://codereview.stackexchange.com/questions/31769/tic-tac-toe-design
+https://medium.com/system-designing-interviews/design-tic-tac-toe-game-1b912bba64cf
+https://leetcode.com/problems/design-tic-tac-toe/
+
+18. Design Parking Lot
+https://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
+https://www.geeksforgeeks.org/design-parking-lot-using-object-oriented-principles/
+https://leetcode.com/discuss/interview-question/124739/Parking-Lot-Design-Using-OO-Design
 --------------------------------------------------------------------------------
 HighScalability:
 1. Netflix:
