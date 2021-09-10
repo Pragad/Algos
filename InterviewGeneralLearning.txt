@@ -20,7 +20,7 @@
 1. Catch and Throw exception where necessary
     - queue.remove(), queue.add() etc
 2. Class design, First come up with design
------------------------------------------------
+-----------------------------------------------------
 Genral Programming / OOPS Concepts
 0. What is Abstraction:
 1. What is Encapsulation:
