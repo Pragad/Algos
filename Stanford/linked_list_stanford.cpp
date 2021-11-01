@@ -58,7 +58,7 @@
  * bool isListPalindrome(node*& head)
  *
  * PROBLEM 19. Add two numbers represented as LinkedList
- *
+ * node* addTwoNumbers(node* l1, node* l2)
  */
 
 #include <iostream>

@@ -8,6 +8,9 @@ Distributed Systems - Key Concepts
 6. Protocol Buffers
 7. Docker and Kubernetes
 8. Dockers and Containerization:
+9. Pairing Master and Slave DB to make Webapps faster
+10. Caching Strategies and How to Choose the Right One
+Open Questions:
 --------------------------------------------------------------------------------
 ZeroMQ, Protocol Buffers
 1. Get zeromq message data into std::vector<char>
@@ -45,6 +48,12 @@ System Design Primer - FB Github page
 Key References:
 https://roadtoarchitect.com/2018/09/04/useful-technology-and-company-architecture/ - Contains architecture of various companies
 https://roadtoarchitect.com/category/system-design/
+
+https://github.com/prasadgujar/low-level-design-primer/blob/master/solutions.md
+https://igotanoffer.com/blogs/tech/system-design-interviews
+https://www.algoexpert.io/systems/questions
+https://www.educative.io/courses/grokking-the-system-design-interview
+https://www.interviewbit.com/courses/system-design/
 --------------------------------------------------------------------------------
 Distributed Systems - Key Concepts
 
@@ -91,6 +100,7 @@ http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-
         This makes it easier to add new resources, reuse infrastructure between projects, and scale a growing organization. 
 
 2. CAP Theorem
+http://ksat.me/a-plain-english-introduction-to-cap-theorem
     [C] Consistency - All nodes see the same data at the same time.
 
     Simply put, performing a read operation will return the value of the most recent write operation causing all nodes to return the same data.
@@ -323,8 +333,58 @@ SERVICES
 
 Services allow you to scale containers across multiple Docker daemons, which all work together as a swarm with multiple managers and workers. Each member of a swarm is a Docker daemon, and the daemons all communicate using the Docker API. A service allows you to define the desired state, such as the number of replicas of the service that must be available at any given time. By default, the service is load-balanced across all worker nodes. To the consumer, the Docker service appears to be a single application.
 
+9. Pairing Master and Slave DB to make Webapps faster
+https://www.quora.com/What-are-Master-and-Slave-databases-and-how-does-pairing-them-make-web-apps-faster
+    
+    Master databases receive and store data from applications. Slave databases get copies of that data from the masters. Slaves are therefore read-only from the application's point of view while masters are read-write.
 
+Writes to a database are more "expensive" than reads. Checking for data integrity and writing updates to physical disks, for example, consume system resources. Most web applications require a much higher ratio of reads to writes. For example a person may write an article once and then it’s read thousands of times. So setting up master-slave replication in the right scenario lets an application distribute its queries efficiently. While one database is busy storing information the others can be busy serving it without impacting each other.
 
+Most often each master and slave database are run on separate servers or virtual environments. Each is then tailored and optimized for their needs. Master database servers may be optimized for writing to permanent storage. Slave database servers may have more RAM for query caching. Tuning the environments and database settings makes each more optimized for reading or writing, improving the overall efficiency of the application.
+
+10. Caching Strategies and How to Choose the Right One
+https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/
+
+    1. Cache-Aside
+        The cache sits on the side and the application directly talks to both the cache and the database.
+        Pros:
+            - For read-heavy workloads. 
+            - Another benefit is that the data model in cache can be different than the data model in database.
+            - Systems using cache-aside are resilient to cache failures
+        Cons: 
+            - When cache-aside is used, the most common write strategy is to write data to the database directly. When this happens, cache may become inconsistent with the database. 
+            - To deal with above, developers generally use time to live (TTL) and continue serving stale data until TTL expires.
+    
+    2. Read-Through Cache
+        Read-through cache sits in-line with the database. When there is a cache miss, it loads missing data from database, populates the cache and returns it to the application.
+
+        - first time, it always results in cache miss and incurs the extra penalty of loading data to the cache. 
+        - Developers deal with this by ‘warming’ or ‘pre-heating’ the cache by issuing queries manually. 
+        
+        Pros: 
+            - 
+        Cons: 
+            - the data model in read-through cache cannot be different than that of the database.
+
+    Cache-Aside :: Read-Through
+        - In cache-aside, the application is responsible for fetching data from the database and populating the cache. In read-through, this logic is usually supported by the library or stand-alone cache provider.
+        - Unlike cache-aside, the data model in read-through cache cannot be different than that of the database.
+
+    3. Write-Through Cache
+        - data is first written to the cache and then to the database. 
+        - The cache sits in-line with the database and writes always go through the cache to the main database.
+
+        Pros:
+            - But when paired with read-through caches, we get all the benefits of read-through and we also get data consistency guarantee, freeing us from using cache invalidation techniques.
+        Cons:
+            - extra write latency because data is written to the cache first and then to the main database.  
+
+Open Questions:
+    1. How do you pair Read-through and Write Through Cache
+    2. Why is state india of a session stored in NoSql 1.14
+    3. Sharding:
+        a. How to solve celebrity problem 
+        b. Denormalize the db so that queues can be performed in a single table
 --------------------------------------------------------------------------------
 ZeroMQ, Protocol Buffers
 1. Get zeromq message data into std::vector<char>

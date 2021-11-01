@@ -1766,6 +1766,7 @@ int countLeafNodes(tree* root)
 
 // -----------------------------------------------------------------------------
 // Problem 35. Flatten a binary tree to linkedlist
+// https://leetcode.com/problems/flatten-binary-tree-to-linked-list/discuss/36977/My-short-post-order-traversal-Java-solution-for-share
 // -----------------------------------------------------------------------------
 void flatten(tree* root, tree*& prev) {
     if (root == NULL)
