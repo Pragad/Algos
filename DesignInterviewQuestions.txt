@@ -213,134 +213,134 @@ Docker and Kubernetes commands:
 
 8. Dockers and Containerization:
 
-https://www.cio.com/article/2924995/software/what-are-containers-and-why-do-you-need-them.html
+    https://www.cio.com/article/2924995/software/what-are-containers-and-why-do-you-need-them.html
 
 
-Containers are a solution to the problem of how to get software to run reliably when moved from one computing environment to another. 
+    Containers are a solution to the problem of how to get software to run reliably when moved from one computing environment to another. 
 
 
-"You're going to test using Python 2.7, and then it's going to run on Python 3 in production and something weird will happen. Or you'll rely on the behavior of a certain version of an SSL library and another one will be installed. You'll run your tests on Debian and production is on Red Hat and all sorts of weird things happen."
+    "You're going to test using Python 2.7, and then it's going to run on Python 3 in production and something weird will happen. Or you'll rely on the behavior of a certain version of an SSL library and another one will be installed. You'll run your tests on Debian and production is on Red Hat and all sorts of weird things happen."
 
-And it's not just different software that can cause problems, he added. "The network topology might be different, or the security policies and storage might be different but the software has to run on it."
+    And it's not just different software that can cause problems, he added. "The network topology might be different, or the security policies and storage might be different but the software has to run on it."
 
 
-How do containers solve this problem?
+    How do containers solve this problem?
 
-Put simply, a container consists of an entire runtime environment: an application, plus all its dependencies, libraries and other binaries, and configuration files needed to run it, bundled into one package. By containerizing the application platform and its dependencies, differences in OS distributions and underlying infrastructure are abstracted away
+    Put simply, a container consists of an entire runtime environment: an application, plus all its dependencies, libraries and other binaries, and configuration files needed to run it, bundled into one package. By containerizing the application platform and its dependencies, differences in OS distributions and underlying infrastructure are abstracted away
 
 
-What's the difference between containers and virtualization?
+    What's the difference between containers and virtualization?
 
-With virtualization technology, the package that can be passed around is a virtual machine, and it includes an entire operating system as well as the application. A physical server running three virtual machines would have a hypervisor and three separate operating systems running on top of it.
+    With virtualization technology, the package that can be passed around is a virtual machine, and it includes an entire operating system as well as the application. A physical server running three virtual machines would have a hypervisor and three separate operating systems running on top of it.
 
 
-By contrast a server running three containerized applications with Docker runs a single operating system, and each container shares the operating system kernel with the other containers.
+    By contrast a server running three containerized applications with Docker runs a single operating system, and each container shares the operating system kernel with the other containers.
 
 
-What other benefits do containers offer?
+    What other benefits do containers offer?
 
-A container may be only tens of megabytes in size, whereas a virtual machine with its own entire operating system may be several gigabytes in size. Because of this, a single server can host far more containers than virtual machines.
+    A container may be only tens of megabytes in size, whereas a virtual machine with its own entire operating system may be several gigabytes in size. Because of this, a single server can host far more containers than virtual machines.
 
-Another major benefit is that virtual machines may take several minutes to boot up their operating systems and begin running the applications they host, while containerized applications can be started almost instantly. That means containers can be instantiated in a "just in time" fashion when they are needed and can disappear when they are no longer required, freeing up resources on their hosts.
+    Another major benefit is that virtual machines may take several minutes to boot up their operating systems and begin running the applications they host, while containerized applications can be started almost instantly. That means containers can be instantiated in a "just in time" fashion when they are needed and can disappear when they are no longer required, freeing up resources on their hosts.
 
-A third benefit is that containerization allows for greater modularity. Rather than run an entire complex application inside a single container, the application can be split in to modules (such as the database, the application front end, and so on). This is the so-called microservices approach.  Applications built in this way are easier to manage because each module is relatively simple, and changes can be made to modules without having to rebuild the entire application. Because containers are so lightweight, individual modules (or microservices) can be instantiated only when they are needed and are available almost immediately.
+    A third benefit is that containerization allows for greater modularity. Rather than run an entire complex application inside a single container, the application can be split in to modules (such as the database, the application front end, and so on). This is the so-called microservices approach.  Applications built in this way are easier to manage because each module is relatively simple, and changes can be made to modules without having to rebuild the entire application. Because containers are so lightweight, individual modules (or microservices) can be instantiated only when they are needed and are available almost immediately.
 
 
-https://techcrunch.com/2016/10/16/wtf-is-a-container/
+    https://techcrunch.com/2016/10/16/wtf-is-a-container/
 
-Containers work very differently. Because they only contain the application and the libraries, frameworks, etc. they depend on, you can put lots of them on a single host operating system. The only operating system on the server is that one host operating system and the containers talk directly to it. That keeps the containers small and the overhead extremely low.
+    Containers work very differently. Because they only contain the application and the libraries, frameworks, etc. they depend on, you can put lots of them on a single host operating system. The only operating system on the server is that one host operating system and the containers talk directly to it. That keeps the containers small and the overhead extremely low.
 
-Virtual machines use so-called ¿hypervisors¿ as the emulation layer between the guest and host operating system. For containers, the rough equivalent is the container engine, with the Docker Engine being the most popular one right now.
+    Virtual machines use so-called ¿hypervisors¿ as the emulation layer between the guest and host operating system. For containers, the rough equivalent is the container engine, with the Docker Engine being the most popular one right now.
 
 
-Containers simply make it easier for developers to know that their software will run, no matter where it is deployed. They also enable what¿s often called ¿microservices.¿ Instead of having one large monolithic application, microservices break down applications into multiple small parts that can talk to each other. This means different teams can more easily work on different parts of an application and, as long as they make no major changes to how those applications interact, they can work independently of each other. That makes developing software faster and testing it for possible errors easier.
+    Containers simply make it easier for developers to know that their software will run, no matter where it is deployed. They also enable what¿s often called ¿microservices.¿ Instead of having one large monolithic application, microservices break down applications into multiple small parts that can talk to each other. This means different teams can more easily work on different parts of an application and, as long as they make no major changes to how those applications interact, they can work independently of each other. That makes developing software faster and testing it for possible errors easier.
 
 
-To manage all of these containers, you need another set of specialized software like Kubernetes (which Google originally developed) that helps you push those containers out to different machines, makes sure that they run and lets you spin up a few more containers with a specific application when demand increases. And if you want containers to know about each other, you also still need some way of setting up a virtual network, too, that can assign IP addresses to every container.
+    To manage all of these containers, you need another set of specialized software like Kubernetes (which Google originally developed) that helps you push those containers out to different machines, makes sure that they run and lets you spin up a few more containers with a specific application when demand increases. And if you want containers to know about each other, you also still need some way of setting up a virtual network, too, that can assign IP addresses to every container.
 
 
-https://cloud.google.com/containers/
+    https://cloud.google.com/containers/
 
-Why Containers?
+    Why Containers?
 
-Instead of virtualizing the hardware stack as with the virtual machines approach, containers virtualize at the operating system level, with multiple containers running atop the OS kernel directly. This means that containers are far more lightweight: they share the OS kernel, start much faster, and use a fraction of the memory compared to booting an entire OS.
+    Instead of virtualizing the hardware stack as with the virtual machines approach, containers virtualize at the operating system level, with multiple containers running atop the OS kernel directly. This means that containers are far more lightweight: they share the OS kernel, start much faster, and use a fraction of the memory compared to booting an entire OS.
 
 
-https://docs.docker.com/engine/docker-overview/#docker-engine
+    https://docs.docker.com/engine/docker-overview/#docker-engine
 
-Docker Engine is a client-server application with these major components:
+    Docker Engine is a client-server application with these major components:
 
 
-A server which is a type of long-running program called a daemon process (the dockerd command).
+    A server which is a type of long-running program called a daemon process (the dockerd command).
 
 
-A REST API which specifies interfaces that programs can use to talk to the daemon and instruct it what to do.
+    A REST API which specifies interfaces that programs can use to talk to the daemon and instruct it what to do.
 
 
-A command line interface (CLI) client (the docker command).
+    A command line interface (CLI) client (the docker command).
 
 
-The Docker daemon
+    The Docker daemon
 
-The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
+    The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
 
-The Docker client
+    The Docker client
 
-The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API. The Docker client can communicate with more than one daemon.
+    The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API. The Docker client can communicate with more than one daemon.
 
-Docker registries
+    Docker registries
 
-A Docker registry stores Docker images. Docker Hub and Docker Cloud are public registries that anyone can use, and Docker is configured to look for images on Docker Hub by default. You can even run your own private registry. If you use Docker Datacenter (DDC), it includes Docker Trusted Registry (DTR).
+    A Docker registry stores Docker images. Docker Hub and Docker Cloud are public registries that anyone can use, and Docker is configured to look for images on Docker Hub by default. You can even run your own private registry. If you use Docker Datacenter (DDC), it includes Docker Trusted Registry (DTR).
 
-When you use the docker pull or docker run commands, the required images are pulled from your configured registry. When you use the docker push command, your image is pushed to your configured registry.
+    When you use the docker pull or docker run commands, the required images are pulled from your configured registry. When you use the docker push command, your image is pushed to your configured registry.
 
-Docker store allows you to buy and sell Docker images or distribute them for free. For instance, you can buy a Docker image containing an application or service from a software vendor and use the image to deploy the application into your testing, staging, and production environments. You can upgrade the application by pulling the new version of the image and redeploying the containers.
+    Docker store allows you to buy and sell Docker images or distribute them for free. For instance, you can buy a Docker image containing an application or service from a software vendor and use the image to deploy the application into your testing, staging, and production environments. You can upgrade the application by pulling the new version of the image and redeploying the containers.
 
-Docker objects
+    Docker objects
 
-When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. This section is a brief overview of some of those objects.
+    When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. This section is a brief overview of some of those objects.
 
-IMAGES
+    IMAGES
 
-An image is a read-only template with instructions for creating a Docker container. Often, an image is based onanother image, with some additional customization. For example, you may build an image which is based on the ubuntu image, but installs the Apache web server and your application, as well as the configuration details needed to make your application run.
+    An image is a read-only template with instructions for creating a Docker container. Often, an image is based onanother image, with some additional customization. For example, you may build an image which is based on the ubuntu image, but installs the Apache web server and your application, as well as the configuration details needed to make your application run.
 
-You might create your own images or you might only use those created by others and published in a registry. To build your own image, you create a Dockerfile with a simple syntax for defining the steps needed to create the image and run it. Each instruction in a Dockerfile creates a layer in the image. When you change the Dockerfile and rebuild the image, only those layers which have changed are rebuilt. This is part of what makes images so lightweight, small, and fast, when compared to other virtualization technologies.
+    You might create your own images or you might only use those created by others and published in a registry. To build your own image, you create a Dockerfile with a simple syntax for defining the steps needed to create the image and run it. Each instruction in a Dockerfile creates a layer in the image. When you change the Dockerfile and rebuild the image, only those layers which have changed are rebuilt. This is part of what makes images so lightweight, small, and fast, when compared to other virtualization technologies.
 
-CONTAINERS
+    CONTAINERS
 
-A container is a runnable instance of an image. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
+    A container is a runnable instance of an image. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
 
-By default, a container is relatively well isolated from other containers and its host machine. You can control how isolated a container¿s network, storage, or other underlying subsystems are from other containers or from the host machine.
+    By default, a container is relatively well isolated from other containers and its host machine. You can control how isolated a container¿s network, storage, or other underlying subsystems are from other containers or from the host machine.
 
-A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear.
+    A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear.
 
-Example docker run command
+    Example docker run command
 
-The following command runs an ubuntu container, attaches interactively to your local command-line session, and runs /bin/bash.
+    The following command runs an ubuntu container, attaches interactively to your local command-line session, and runs /bin/bash.
 
-$ docker run -i -t ubuntu /bin/bash
+    $ docker run -i -t ubuntu /bin/bash
 
-When you run this command, the following happens (assuming you are using the default registry configuration):
+    When you run this command, the following happens (assuming you are using the default registry configuration):
 
-    If you do not have the ubuntu image locally, Docker pulls it from your configured registry, as though you had run docker pull ubuntu manually.
-    Docker creates a new container, as though you had run a docker container create command manually.
-    Docker allocates a read-write filesystem to the container, as its final layer. This allows a running container to create or modify files and directories in its local filesystem.
-    Docker creates a network interface to connect the container to the default network, since you did not specify any networking options. This includes assigning an IP address to the container. By default, containers can connect to external networks using the host machine¿s network connection.
-    Docker starts the container and executes /bin/bash. Because the container is run interactively and attached to your terminal (due to the -i and -t) flags, you can provide input using your keyboard and output is logged to your terminal.
-    When you type exit to terminate the /bin/bash command, the container stops but is not removed. You can start it again or remove it.
+        If you do not have the ubuntu image locally, Docker pulls it from your configured registry, as though you had run docker pull ubuntu manually.
+        Docker creates a new container, as though you had run a docker container create command manually.
+        Docker allocates a read-write filesystem to the container, as its final layer. This allows a running container to create or modify files and directories in its local filesystem.
+        Docker creates a network interface to connect the container to the default network, since you did not specify any networking options. This includes assigning an IP address to the container. By default, containers can connect to external networks using the host machine¿s network connection.
+        Docker starts the container and executes /bin/bash. Because the container is run interactively and attached to your terminal (due to the -i and -t) flags, you can provide input using your keyboard and output is logged to your terminal.
+        When you type exit to terminate the /bin/bash command, the container stops but is not removed. You can start it again or remove it.
 
-SERVICES
+    SERVICES
 
-Services allow you to scale containers across multiple Docker daemons, which all work together as a swarm with multiple managers and workers. Each member of a swarm is a Docker daemon, and the daemons all communicate using the Docker API. A service allows you to define the desired state, such as the number of replicas of the service that must be available at any given time. By default, the service is load-balanced across all worker nodes. To the consumer, the Docker service appears to be a single application.
+    Services allow you to scale containers across multiple Docker daemons, which all work together as a swarm with multiple managers and workers. Each member of a swarm is a Docker daemon, and the daemons all communicate using the Docker API. A service allows you to define the desired state, such as the number of replicas of the service that must be available at any given time. By default, the service is load-balanced across all worker nodes. To the consumer, the Docker service appears to be a single application.
 
 9. Pairing Master and Slave DB to make Webapps faster
-https://www.quora.com/What-are-Master-and-Slave-databases-and-how-does-pairing-them-make-web-apps-faster
-    
-    Master databases receive and store data from applications. Slave databases get copies of that data from the masters. Slaves are therefore read-only from the application's point of view while masters are read-write.
+    https://www.quora.com/What-are-Master-and-Slave-databases-and-how-does-pairing-them-make-web-apps-faster
+        
+        Master databases receive and store data from applications. Slave databases get copies of that data from the masters. Slaves are therefore read-only from the application's point of view while masters are read-write.
 
-Writes to a database are more "expensive" than reads. Checking for data integrity and writing updates to physical disks, for example, consume system resources. Most web applications require a much higher ratio of reads to writes. For example a person may write an article once and then it’s read thousands of times. So setting up master-slave replication in the right scenario lets an application distribute its queries efficiently. While one database is busy storing information the others can be busy serving it without impacting each other.
+    Writes to a database are more "expensive" than reads. Checking for data integrity and writing updates to physical disks, for example, consume system resources. Most web applications require a much higher ratio of reads to writes. For example a person may write an article once and then it’s read thousands of times. So setting up master-slave replication in the right scenario lets an application distribute its queries efficiently. While one database is busy storing information the others can be busy serving it without impacting each other.
 
-Most often each master and slave database are run on separate servers or virtual environments. Each is then tailored and optimized for their needs. Master database servers may be optimized for writing to permanent storage. Slave database servers may have more RAM for query caching. Tuning the environments and database settings makes each more optimized for reading or writing, improving the overall efficiency of the application.
+    Most often each master and slave database are run on separate servers or virtual environments. Each is then tailored and optimized for their needs. Master database servers may be optimized for writing to permanent storage. Slave database servers may have more RAM for query caching. Tuning the environments and database settings makes each more optimized for reading or writing, improving the overall efficiency of the application.
 
 10. Caching Strategies and How to Choose the Right One
 https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/

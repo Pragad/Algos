@@ -248,11 +248,37 @@ VERY IMP:
 http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
 http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction-a-real-time-example-bid-wvGh8f5F89208310.html
 
+
         Encapsulation puts some things in a box and gives you a peephole; this keeps you from mucking with the gears.
 
         Abstraction is the process of generalization: taking a concrete implementation and making it applicable to different, albeit somewhat related, types of data. The classical example of abstraction is C's qsort function which sorts data.
 
-        The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
+
+        Encapsulation:-- Information hiding.
+        Abstraction:-- Implementation hiding.
+
+            Example:
+
+            class foo{
+                private:
+                    int a, b;
+                public:
+                    foo(int x=0, int y=0): a(x), b(y) {}
+
+                    int add(){    
+                        return a+b;   
+                    } 
+            }  
+        Internal representation of any object of foo class is hidden outside the class. --> Encapsulation.
+        Any accessible member (data/function) of an object of foo is restricted and can only be accessed by that object only.
+
+            foo foo_obj(3, 4);
+            int sum = foo_obj.add();
+        Implementation of method add is hidden. --> Abstraction.
+
+
+        Abstraction:
+            The thing about qsort is that it doesn't care about the data it sorts – in fact, it doesn't know what data it sorts. Rather, its input type is a typeless pointer (void*) which is just C's way of saying “I don't care about the type of data” (this is also called type erasure). The important point is that the implementation of qsort always stays the same, regardless of data type. The only thing that has to change is the compare function, which differs from data type to data type. qsort therefore expects the user to provide said compare function as a function argument.
 
 
     Abstraction is achieved by making class abstract having one or more methods abstract.
@@ -1254,7 +1280,9 @@ https://stackoverflow.com/questions/1054022/best-way-to-store-password-in-databa
     Storing plain text passwords in the database is a sin.
 
 
-    One might also think that if not plain text then we must encrypt the password and then store. It is also a terrible idea. Encryption functions provide one-one mapping between input and output and they are always reversible. If the hacker gets the key, he will be able to decrypt the passwords. The better way would be to use a one way cryptographic hash function. Hash function provides a many-one mapping between input and output and it is practically impossible to reverse a output. A good cryptographic hash function has lesser number of Collisions (i.e for different input values to the function it is difficult to get the same output). Collisions cannot be completely avoided because of pigeonhole principle. For hashing passwords we can assume that the hash function will generate unique output i.e for no two different passwords we will get a same hash value.
+    One might also think that if not plain text then we must encrypt the password and then store. It is also a terrible idea.   
+        - Encryption functions provide one-one mapping between input and output and they are always reversible. If the hacker gets the key, he will be able to decrypt the passwords. 
+        - The better way would be to use a one way cryptographic hash function. Hash function provides a many-one mapping between input and output and it is practically impossible to reverse a output. A good cryptographic hash function has lesser number of Collisions (i.e for different input values to the function it is difficult to get the same output). Collisions cannot be completely avoided because of pigeonhole principle. For hashing passwords we can assume that the hash function will generate unique output i.e for no two different passwords we will get a same hash value.
 
     Some of the popular cryptographic hash functions are MD5 and SHA1. Instead of storing plain text password in the database one way is to store the hash of the password. You might be thinking that if we cannot get the actual password back from the hash then how are we going to verify the credentials that the user entered? It¿s simple, apply the same hash function on the password which user entered and then compare it with the hash stored in the database. If both hashes match then the user is authenticated (since hash of same input will give same output). Now if the attacker is able to get database access, he will be only able to view the hashed output and not the actual password.
 
@@ -3164,17 +3192,21 @@ DISTRIBUTED SYSTEMS:
 https://blog.containership.io/k8svsdocker
     At their core, containers are a way of packaging software. What makes them special is that when you run a container, you know exactly how it will run - it¿s predictable, repeatable and immutable. There are no unexpected errors when you move it to a new machine, or between environments. All of your application¿s code, libraries, and dependencies are packed together in the container as an immutable artifact. You can think of running a container like running a virtual machine, without the overhead of spinning up an entire operating system. For this reason, bundling your application in a container vs. a virtual machine will improve startup time significantly.
 
-    Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing. If you want to run multiple containers across multiple machines - which you¿ll need to do if you¿re using microservices - there is still a lot of work to do.
+    Docker:
+        Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing. 
+        If you want to run multiple containers across multiple machines - which you¿ll need to do if you¿re using microservices - there is still a lot of work to do.
 
-    You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare. Luckily, that¿s where Kubernetes comes in.
+        You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare. 
+        Luckily, that¿s where Kubernetes comes in.
 
-    Kubernetes is an open source container orchestration platform, allowing large numbers of containers to work together in harmony, reducing operational burden. It helps with things like:
+    Kubernetes:
+        Kubernetes is an open source container orchestration platform, allowing large numbers of containers to work together in harmony, reducing operational burden. It helps with things like:
 
-    Running containers across many different machines
-    Scaling up or down by adding or removing containers when demand changes
-    Keeping storage consistent with multiple instances of an application
-    Distributing load between the containers
-    Launching new containers on different machines if something fails 
+            Running containers across many different machines
+            Scaling up or down by adding or removing containers when demand changes
+            Keeping storage consistent with multiple instances of an application
+            Distributing load between the containers
+            Launching new containers on different machines if something fails 
 
     When used together, both Docker and Kubernetes are great tools for developing a modern cloud architecture, but they are fundamentally different at their core. It is important to understand the high-level differences between the technologies when building your stack.
 
@@ -3220,11 +3252,13 @@ https://stackoverflow.com/questions/32572529/why-is-spark-faster-than-hadoop-map
     We can tell how powerful these servers should be
     Can choose the region where you want the virtual server to be
 
-7. Kafta
-
+7. Kafka
+    Distributed Event Steaming Message PubSub system
+    
 8. RabbitMQ
 
 9. Zookeeper
+    Distributed Configuration Management system
 
 
 
