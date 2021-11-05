@@ -379,6 +379,12 @@ https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-o
         Cons:
             - extra write latency because data is written to the cache first and then to the main database.  
 
+    4. Write-Around
+    5. Write-Back
+        Pros:
+            - Write back caches improve the write performance and are good for write-heavy workloads. 
+            - When combined with read-through, it works good for mixed workloads, where the most recently updated and accessed data is always available in cache.
+            
 Open Questions:
     1. How do you pair Read-through and Write Through Cache
     2. Why is state india of a session stored in NoSql 1.14
