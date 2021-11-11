@@ -36,6 +36,35 @@ JARGONS
     Fault Tolerant
     Metrics, Dashboards, Monitors and Alarms
 --------------------------------------------------------------------------------
+1. How to Approach Design Interview Questions
+    1. First ask clarifying questions
+        a. Functional Questions
+        b. Scalability Questions
+            i. TPS
+            ii. Amount of data that needs to be stored
+    2. Try to add TODO for,
+        a. Consitency vs Avaiability
+        b. Read / Write Heavy System
+    3. Main Part
+    3a. Things I should take care of
+        a. A basic flow of a non-scalable System
+        b. How APIs would be
+        c. How entries would be stored in DB
+    3b. Data Structures that will be involved 
+    4. Things to consider for Scalability
+        a. Fault Tolerance
+        b. Load Balancers to handle load
+        c. Cache where necessary
+        d. Handle Race considtions
+        e. Handly Synchronization stuffs
+    5. Failure Handling
+        a. API failure, 
+        b. DB failure, 
+        c. Node failure etc
+    6. Monitoring
+        a. Metrics and Dashboards
+        b. Alarms, Monitors
+--------------------------------------------------------------------------------
 Distributed Systems - Key Concepts
 0. Things to read about
 1. 4 Building Blocks of Architecting Systems for Scale
