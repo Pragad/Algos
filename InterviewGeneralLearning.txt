@@ -68,6 +68,7 @@ Genral Programming / OOPS Concepts
 37. Abstract Class vs Interface - When to use each
 -----------------------------------------------
 UML / DESIGN Questions
+0. Associations
 1. Parking lot  
 2. Coffee Maker
 3. Deck of Cards
@@ -76,6 +77,8 @@ UML / DESIGN Questions
 6. UML Diagrams
 7. Factory Pattern vs Singleton Pattern
 8. MVC PAttern
+9. Elevator
+10. Bike Shop
 -----------------------------------------------
 OS NOTES
 -1. Every program assumes it has its own memory space
@@ -1314,7 +1317,37 @@ When we talk about an interface and define capabilities that we promise to provi
 
 ---------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
+0. Associations
+    B --------<>        A  - Aggregation - Car and Engine; A "has an" instance of B; B can exist without A; 
+    B --------<> Shaded A  - Composition - Visitor Center and Lobby; A "has an" instance of B; B can not exist without A; 
+    B ---------|>       A  - Extends     - Animal and Cat,Goat etc
+
+    Class Diagram has
+        - Name
+        - Attributes
+        - Methods
+
+    Abstract Class is represented using <<Animal>> or Italic
+
+     ---------------
+    |Employee       |
+     ---------------
+    |- Name : String|
+    |- Id : Int     |
+     ---------------
+    |+ updateName   |
+     ---------------
+
+    + : Public
+    - : Private
+    # : Protected
+    ~ : Default
+
+    Interace : A is capable of B; Animal is capable of Moving
+    Abstract Class: A is a B; Cat is an Animal
+
 1. Parking lot  
+https://www.educative.io/courses/grokking-the-object-oriented-design-interview/gxM3gRxmr8Z
 http://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
 
 2. Coffee Maker
@@ -1325,6 +1358,14 @@ http://latentcontent.net/2010/03/27/anatomy-of-an-interview-question-design-a-de
 http://programmers.stackexchange.com/questions/284113/i-need-a-data-structure-for-a-card-game
 
 4. What is Cardinality
+    https://www.youtube.com/watch?v=QpdhBUYk7Kk&t=344s
+    --------|- One
+    --------<- Many
+    -------||- One and only one     - An Order can have only one customer
+    ------0-|- Zero or One
+    ------|-<- One or Many          - An Order should have one or many products
+    ------0-<- Zero or Many         - A customer can have Zero or Many Order
+
     3a. In Data Modelling:
         - the relationship that one table can have with another table. These relationships include: many-to-many, many-to-one/one-to-many, or one-to-one
 
@@ -1411,6 +1452,15 @@ http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
     Because the box does not know about the camera or the photographer, it is completely independent. This separation allows the photographer to walk around the box and point the camera at any angle to get the shot/view that he wants.
 
     Non-MVC architectures tend to be tightly integrated together. If the box, the controller and the camera were one-and-the-same-object then, we would have to pull apart and then re-build both the box and the camera each time we wanted to get a new view. Also, taking the photo would always be like trying to take a selfie - and that's not always very easy.
+
+
+9. Elevator
+    https://stackoverflow.com/questions/19712592/aggregation-in-class-diagram-and-class-properties
+    https://massivetechinterview.blogspot.com/2015/07/thought-works-object-oriented-design.html
+    https://www.cs.cmu.edu/~luluo/Courses/18540PhDreport.pdf
+    See Diagrams
+
+10. Bike Shop
 
 ---------------------------------------------------------------------------------------------
 OS NOTES:
