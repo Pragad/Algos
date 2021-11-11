@@ -1,3 +1,41 @@
+Requirements Gathering
+    Functional Requirements MVP
+    P1 Requirements
+Load and Storage Estimation
+    Cost Analysis
+First build a system that will work
+Keep Customer Interactions and Customer focused
+API Design
+    REST/RPC
+Backend Design
+    Datastructures Needed
+    PUSH vs PULL model
+    Transactions where needed for Consistency
+Database
+    Is the system READ HEAVY or WRITE HEAVY
+    DB choice
+    DB Schema
+    Sharding
+    Replication
+Then talk about Scaling the System
+    Message Queues and Pub-Sub
+    Background Jobs and Pre-computation
+    Asynchornous where needed
+    Load Balancing
+    Cache Layer
+    Server vs Serverless Architecture
+    Zookeeper for Configuration management
+Encryption / Hashing where needed for critical info
+HTTP Error Codes
+Retry Mechanism
+Privacy when storing customer data
+JARGONS
+    Reliable, 
+    Scalable, 
+    Maintainable
+    Fault Tolerant
+    Metrics, Dashboards, Monitors and Alarms
+--------------------------------------------------------------------------------
 Distributed Systems - Key Concepts
 0. Things to read about
 1. 4 Building Blocks of Architecting Systems for Scale

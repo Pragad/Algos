@@ -15,6 +15,7 @@
 3. Clarify all statements
 4. Debugging
 5. How you approach the solution
+6. Keep constraints in mind and validate it after coding
 
 2018:
 1. Catch and Throw exception where necessary
