@@ -70,7 +70,7 @@ Genral Programming / OOPS Concepts
 -----------------------------------------------
 UML / DESIGN Questions
 0. Associations
-1. Parking lot  
+1. Parking lot
 2. Coffee Maker
 3. Deck of Cards
 4. What is Cardinality
@@ -128,7 +128,7 @@ NETWORKS
 1d. Can two applications listen to the same port
 1e. Do browsers listen to port 80?
 1f. Do web browsers use different outgoing ports for different tabs?
-2. Why is MAC address required    
+2. Why is MAC address required
 3. Switch vs Hub vs Router
 4. How NTLM Authentication Works
 5. How Kerberos Authentication Works
@@ -166,6 +166,7 @@ MISC
 4. ACID Properties in DB
 5. BASE Properties
 6. Tabs vs Spaces as Coding Style
+7. JSON vs JSON-LD
 -----------------------------------------------
 DISTRIBUTED SYSTEMS:
 1. Docker and Kubernetes
@@ -195,7 +196,7 @@ BEHAVIORAL QUESTIONS
             - We were able to deliver the product with high quality and on time
             - If we had rushed through in two weeks, we might not have done a thorough
               testing. Might also went with a quicker way to do things instead of going with a scalable way of doing things
-    
+
     Developing Abstract Notification Adapter
         - Situation
             - First make few API calls to Storage subsystem to create a new FPolicy config
@@ -269,10 +270,10 @@ http://blogs.siliconindia.com/deepvijay/Technology/Encapsulation-and-Abstraction
                 public:
                     foo(int x=0, int y=0): a(x), b(y) {}
 
-                    int add(){    
-                        return a+b;   
-                    } 
-            }  
+                    int add(){
+                        return a+b;
+                    }
+            }
         Internal representation of any object of foo class is hidden outside the class. --> Encapsulation.
         Any accessible member (data/function) of an object of foo is restricted and can only be accessed by that object only.
 
@@ -334,7 +335,7 @@ INFORMATION HIDING, ENCAPSULATION and ABSTRACTION:
         int d = distance(x, y);
 
         Here, distance encapsulates the calculation of the (euclidean) distance between two points in a plane: it hides implementation details. This is encapsulation, pure and simple.
- 
+
 3a.
 How are Abstraction and Encapsulation related
 http://stackoverflow.com/questions/12072980/encapsulation-vs-abstraction-real-world-example
@@ -420,7 +421,7 @@ Is-A vs Has-A
     A House has a Room (composition);
     A House has an occupant (aggregation).
     http://stackoverflow.com/questions/49002/prefer-composition-over-inheritance
-        
+
         Does TypeB want to expose the complete interface (all public methods no less) of TypeA such that TypeB can be used where TypeA is expected? Indicates Inheritance.
         e.g. A Cessna biplane will expose the complete interface of an airplane, if not more. So that makes it fit to derive from Airplane.
 
@@ -458,7 +459,7 @@ Is-A vs Has-A
     http://www.tutorialspoint.com/cplusplus/cpp_inheritance.htm
 
     // Base class
-    class Shape 
+    class Shape
     {
        public:
           void setWidth(int w)
@@ -479,15 +480,15 @@ Is-A vs Has-A
     {
        public:
           int getArea()
-          { 
-             return (width * height); 
+          {
+             return (width * height);
           }
     };
 
     int main(void)
     {
        Rectangle Rect;
-     
+
        Rect.setWidth(5);
        Rect.setHeight(7);
 
@@ -509,7 +510,7 @@ http://stackoverflow.com/questions/4921150/when-to-use-static-member-function?lq
         PRotected static function.
         Good uses of static member functions:
             Meta-programming: writing code that writes code; Metaprogramming refers to a variety of ways a program has knowledge of itself or can manipulate itself.
-                
+
             Real-world example is template std::char_traits. All member functions are static
             Making it a static member function gives it access to private members of the class, although a friend would suffice here too
             A protected static member function thus is accessible only to the class and classes derived from it.
@@ -793,14 +794,14 @@ http://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap?l
 18.
 Boxing and Unboxing
 http://stackoverflow.com/questions/2111857/why-do-we-need-boxing-and-unboxing-in-c
-    
+
     Language C#:
         double e = 2.718281828459045;
         object o = e; // box
         int ee = (int)(double)o; //unbox
 
     First we have to explicitly unbox the double ((double)o) and then cast that to an int
-    
+
 19.
 Shadowing and Overriding
 http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overriding-in-c
@@ -831,7 +832,7 @@ http://stackoverflow.com/questions/392721/difference-between-shadowing-and-overr
 20.
 Agile Model
 http://istqbexamcertification.com/what-is-agile-model-advantages-disadvantages-and-when-to-use-it/
-   - Software is developed in incremental, rapid cycles. results in small incremental releases with each release building on previous functionality 
+   - Software is developed in incremental, rapid cycles. results in small incremental releases with each release building on previous functionality
    - DIS ADV: In case of some software deliverables, especially the large ones, it is difficult to assess the effort required at the beginning of the software development life cycle.
 
 21.
@@ -920,7 +921,7 @@ http://stackoverflow.com/questions/3996651/what-is-compiler-linker-loader
                 |     Linker      |
                 +=================+
                          |
-                         |--->  Executable (.Exe/a.out) (com:cc <file.name> ) 
+                         |--->  Executable (.Exe/a.out) (com:cc <file.name> )
                          |
                          V
                 Executable file(a.out)
@@ -960,7 +961,7 @@ Not tail recursive example:
     unsigned int fact(unsigned int n)
     {
         if (n == 0) return 1;
-     
+
         return n*fact(n-1);
     }
 
@@ -969,10 +970,10 @@ Tail Recursive example:
     unsigned factTR(unsigned int n, unsigned int a)
     {
         if (n == 0)  return a;
-     
+
         return factTR(n-1, n*a);
     }
-     
+
     // A wrapper over factTR
     unsigned int fact(unsigned int n)
     {
@@ -1152,7 +1153,7 @@ How to resolve Hash Collisions
        - If element present, then traverse linearly to find next empty bucket
 
     2b. Double Hashing:
-       - If element present, use a second hash function. 
+       - If element present, use a second hash function.
        - Say first hash function gave (5) and element is present. Second hash function gave 8
          Next go to 13, 21, 29 etc to find the first free spot
 
@@ -1188,7 +1189,7 @@ http://stackoverflow.com/questions/1036754/difference-between-wait-and-sleep
         Object mon = ...;
         synchronized (mon) {
             mon.wait();
-        } 
+        }
 
     At this point the currently executing thread waits and releases the monitor.
     Another thread may do
@@ -1209,7 +1210,7 @@ http://stackoverflow.com/questions/1036754/difference-between-wait-and-sleep
 29.
 What is Amdhal's law
 
-    In computer programming, Amdahl's law is that, in a program with parallel processing , a relatively few instruction s that have to be performed in sequence will have a limiting factor on program speedup such that adding more processor s may not make the program run faster. 
+    In computer programming, Amdahl's law is that, in a program with parallel processing , a relatively few instruction s that have to be performed in sequence will have a limiting factor on program speedup such that adding more processor s may not make the program run faster.
 
 30.
 UCS-2 vs UTF-8/16/32
@@ -1284,8 +1285,8 @@ https://stackoverflow.com/questions/1054022/best-way-to-store-password-in-databa
     Storing plain text passwords in the database is a sin.
 
 
-    One might also think that if not plain text then we must encrypt the password and then store. It is also a terrible idea.   
-        - Encryption functions provide one-one mapping between input and output and they are always reversible. If the hacker gets the key, he will be able to decrypt the passwords. 
+    One might also think that if not plain text then we must encrypt the password and then store. It is also a terrible idea.
+        - Encryption functions provide one-one mapping between input and output and they are always reversible. If the hacker gets the key, he will be able to decrypt the passwords.
         - The better way would be to use a one way cryptographic hash function. Hash function provides a many-one mapping between input and output and it is practically impossible to reverse a output. A good cryptographic hash function has lesser number of Collisions (i.e for different input values to the function it is difficult to get the same output). Collisions cannot be completely avoided because of pigeonhole principle. For hashing passwords we can assume that the hash function will generate unique output i.e for no two different passwords we will get a same hash value.
 
     Some of the popular cryptographic hash functions are MD5 and SHA1. Instead of storing plain text password in the database one way is to store the hash of the password. You might be thinking that if we cannot get the actual password back from the hash then how are we going to verify the credentials that the user entered? It¿s simple, apply the same hash function on the password which user entered and then compare it with the hash stored in the database. If both hashes match then the user is authenticated (since hash of same input will give same output). Now if the attacker is able to get database access, he will be only able to view the hashed output and not the actual password.
@@ -1319,8 +1320,8 @@ When we talk about an interface and define capabilities that we promise to provi
 ---------------------------------------------------------------------------------------------
 UML / DESIGN Questions:
 0. Associations
-    B --------<>        A  - Aggregation - Car and Engine; A "has an" instance of B; B can exist without A; 
-    B --------<> Shaded A  - Composition - Visitor Center and Lobby; A "has an" instance of B; B can not exist without A; 
+    B --------<>        A  - Aggregation - Car and Engine; A "has an" instance of B; B can exist without A;
+    B --------<> Shaded A  - Composition - Visitor Center and Lobby; A "has an" instance of B; B can not exist without A;
     B ---------|>       A  - Extends     - Animal and Cat,Goat etc
 
     Class Diagram has
@@ -1347,7 +1348,7 @@ UML / DESIGN Questions:
     Interace : A is capable of B; Animal is capable of Moving
     Abstract Class: A is a B; Cat is an Animal
 
-1. Parking lot  
+1. Parking lot
 https://www.educative.io/courses/grokking-the-object-oriented-design-interview/gxM3gRxmr8Z
 http://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
 
@@ -1390,7 +1391,7 @@ http://stackoverflow.com/questions/3622455/what-is-the-purpose-of-mock-objects
     5.1 Use Case Diagram:
         - Has Actors, Scenarios and Use cases
 
-        - It is used to get the overview of the system; 
+        - It is used to get the overview of the system;
           i.e The functionality of the system
         - It gives a basic understanding of WHO uses the SYSTEM and how the system is USED
         - It does not say anything about HOW the SYSTEM WILL BE DESIGNED
@@ -1413,7 +1414,7 @@ http://stackoverflow.com/questions/3622455/what-is-the-purpose-of-mock-objects
         - This helps in better understanding how the system should be implemented.
         - IT shows how message flows from One object to another.
 
-        Async Messages: 
+        Async Messages:
             Thin Overhead
 
         Sync MEssages:
@@ -1557,7 +1558,7 @@ IMP:
     - What does that mean? Well, for example, when you double-click the Microsoft Word icon, you start a process that runs Word.
     - A thread is a path of execution within a process.
     - Also, a process can contain multiple threads.
-    - When you start Word, the operating system creates a process and begins executing the primary thread of that process. 
+    - When you start Word, the operating system creates a process and begins executing the primary thread of that process.
 
     Both processes and threads are independent sequences of execution.
 
@@ -1692,7 +1693,7 @@ http://www.programmerinterview.com/index.php/operating-systems/monitors-vs-semap
         - Much more heavy-weight than a Monitor
         - Unlike monitors, however, a mutex can be used to synchronize threads across processes.
 
-3b. 
+3b.
 Spin Lock in a Uniprocessor System
 http://stackoverflow.com/questions/1025859/is-spin-lock-useful-in-a-single-processor-uni-core-architecture
 
@@ -1704,7 +1705,7 @@ http://stackoverflow.com/questions/1025859/is-spin-lock-useful-in-a-single-proce
 
     For single processor systems, the kernel will ignore the spin count value, and treat it as zero - essentially making a spinlock a no-op.
 
-    Yes, spin locks can be useful, and improve efficiency of some operations. However, generally you should start with a mutex, and if profiling show it to be a bottleneck, you may want to consider a spinlock. 
+    Yes, spin locks can be useful, and improve efficiency of some operations. However, generally you should start with a mutex, and if profiling show it to be a bottleneck, you may want to consider a spinlock.
 
 3c.
 Lock Monitor Mutex and Semaphore
@@ -1743,7 +1744,7 @@ http://stackoverflow.com/questions/301160/what-are-the-differences-between-vario
 3d.
 Monitor vs Semaphore
 http://stackoverflow.com/questions/7335950/semaphore-vs-monitors-whats-the-difference
-    
+
     A Monitor is an object designed to be accessed from multiple threads.
     The member functions or methods of a monitor object will enforce mutual exclusion, so only one thread may be performing any action on the object at a given time.
     If one thread is currently executing a member function of the object then any other thread that tries to call a member function of that object will have to wait until the first has finished.
@@ -1830,7 +1831,7 @@ http://stackoverflow.com/questions/266168/simple-example-of-threading-in-c
     As you can see, the constructor's arguments are the function the thread will execute, followed by the function's parameters.
 
     Finally, join it to your main thread of execution like so:
-        t1.join(); 
+        t1.join();
 
     (Joining means that the thread who invoked the new thread will wait for the new thread to finish execution, before it will continue it's own execution).
     The Code
@@ -1914,7 +1915,7 @@ Hard Link vs Soft Link
         $ mv blah2 blah2-new
         $ ls blah2-soft
         blah2-soft
-        $ cat blah2-soft  
+        $ cat blah2-soft
         cat: blah2-soft: No such file or directory
 
     The contents of the file could not be found because the soft link points to the name, that was changed, and not to the contents.
@@ -1959,7 +1960,7 @@ Why doesn't iNode have the File name
 
 Filesytem Basics
     - In unix everything is a file
-      Even non-file devices such as terminals, printers, and disks themselves are abstracted and accessed via names in the file system. 
+      Even non-file devices such as terminals, printers, and disks themselves are abstracted and accessed via names in the file system.
 
 How "ls" command works:
 http://sysadvent.blogspot.com/2010/12/day-15-down-ls-rabbit-hole.html
@@ -2229,7 +2230,7 @@ https://stackoverflow.com/questions/1119278/why-does-a-32-bit-os-support-4-gb-of
     Static Random Access Memory
     Dynamic Random Access Memory
 
-    SRAM: 
+    SRAM:
         - retains data bits in its memory as long as power is being supplied
         - does not need to be periodically refreshed
         - faster
@@ -2238,7 +2239,7 @@ https://stackoverflow.com/questions/1119278/why-does-a-32-bit-os-support-4-gb-of
 
     DRAM:
         - stores each bit of data in a separate capacitor within an integrated circuit
-        - The capacitor can be either charged or discharged; these two states are taken to represent the two values of a bit, conventionally called 0 and 1. 
+        - The capacitor can be either charged or discharged; these two states are taken to represent the two values of a bit, conventionally called 0 and 1.
         - A DRAM storage cell is dynamic in that it needs to be refreshed or given a new electronic charge every few milliseconds
 
 21. Spurious Wakeups
@@ -2279,11 +2280,11 @@ https://www.geeksforgeeks.org/memory-layout-of-c-program/
     Code / Text Segment - Read Only
     Data Segment - Non Read Only
 
-    Code/Text Segment: 
+    Code/Text Segment:
         Code segment, also known as text segment contains machine code of the compiled program. The text segment of an executable object file is often read-only segment that prevents a program from being accidentally modified.
 
     Data Segment:
-        Data segment stores program data. This data could be in form of initialized or uninitialized variables, and it could be local or global. Data segment is further divided into four sub-data segments (initialized data segment, uninitialized or .bss data segment, stack, and heap) 
+        Data segment stores program data. This data could be in form of initialized or uninitialized variables, and it could be local or global. Data segment is further divided into four sub-data segments (initialized data segment, uninitialized or .bss data segment, stack, and heap)
 
         Initialized Data or Data Segment
             Initialized data or simply data segment stores all global, static, constant, and external variables (declared with extern keyword) that are initialized beforehand.
@@ -2294,7 +2295,7 @@ https://www.geeksforgeeks.org/memory-layout-of-c-program/
 NETWORKS:
 1. What is SSL Termination
 2. Asymmetric and Symmetric Encryption
-0. 
+0.
 How TCP Works:
     7 Logical Layers
         Application
@@ -2328,9 +2329,9 @@ OSI Model:
         - Layer that deals creating a Session between two computers
         - So if we are going to a website, our computer should create a session with the
           web server from which we want the information
-        - Everytime a computer has to talk to another computer, a session should be 
+        - Everytime a computer has to talk to another computer, a session should be
           created between the two computers
-    
+
         PROBLEMs:
         - Someone might have prohibited you from accessing the website
 
@@ -2394,11 +2395,11 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
                       |
                       |
            TCP/UDP  Data
-           Header 
+           Header
                 |
                 |
     IP     TCP/UDP  Data
-  Header   Header 
+  Header   Header
                 |
                 |
 
@@ -2437,7 +2438,7 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
         - Responsible for routing of packets.
             Example: tracert www.google.com
         - This also deals with fragmentation.
-            Each ROUTER can have a limit on the size of the packet. 
+            Each ROUTER can have a limit on the size of the packet.
             So Internet layer fragments when sending the data.
 
     4. Network Access Layer:
@@ -2454,7 +2455,7 @@ Nice Link: http://www.hardwaresecrets.com/how-tcp-ip-protocol-works-part-1/
 
         c. Physical
             - Switches come in this layer.
-        
+
 1b.
 How Internet Works
 http://www.theshulers.com/whitepapers/internet_whitepaper/index.html
@@ -2558,14 +2559,14 @@ https://superuser.com/questions/1055281/do-web-browsers-use-different-outgoing-p
     Yes, they do
 
 2.
-Why is MAC address required    
+Why is MAC address required
     Why do we need the MAC address if all Ethernet connections are done via IP address?
     - The MAC address is the hardware address, i.e. it is hard coded in the NIC of the machine.
       So it cannot be changed. Though all Ethernet communication happens via IP address, lower layers do not understand IP but they do understand MAC address.
       At the same time, there are instances when you use protocols other than IP, like IPX or AppleTalk.
       In such cases there has to be a mechanism which lets you work without changing hardware.
       So MAC addresses form the basic identifier of the hardware.
-      MAC addresses are difficult to remember so we use IP addresses, which are more friendly, but not as friendly as names. 
+      MAC addresses are difficult to remember so we use IP addresses, which are more friendly, but not as friendly as names.
 
 3.
 Switch vs Hub vs Router:
@@ -2594,7 +2595,7 @@ How NTLM Authentication Works
 https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-works/
 
     1. User uses a Username and Password to login to Client Machine
-        - Client computes a HASH of the password 
+        - Client computes a HASH of the password
         - Client discards the actual password
     2. Clients sends Username to Server
     3. Server computes a Random 16-byte Nounce (CHALLENGE) and sends it to client
@@ -2613,7 +2614,7 @@ https://blogs.msdn.microsoft.com/chiranth/2013/09/20/ntlm-want-to-know-how-it-wo
 5.
 How Kerberos Authentication Works
 https://www.youtube.com/watch?v=kp5d8Yv3-0c
-    
+
     3 PARTIES are Involved.
     1. Client
     2. Server
@@ -2621,7 +2622,7 @@ https://www.youtube.com/watch?v=kp5d8Yv3-0c
 
     In Kerberos NO communication between SERVER and KDC
     1. Client attempts to logon into the network.
-        a. Client creates an AUTHENTICATOR with client's info. 
+        a. Client creates an AUTHENTICATOR with client's info.
            It is valid for a short time
            IMP: This prevents from someone get hold of the AUTHENTICATOR and using it
         b. A portion of AUTHENTICATOR is unencrypted.
@@ -2639,7 +2640,7 @@ https://www.youtube.com/watch?v=kp5d8Yv3-0c
 
     7. NOW CLIENTS wants to talk to Server
     8. Client will send TGC to KDC and ask for a TICKET for that server.
-    9. KDC will use the TGC to get Client's info 
+    9. KDC will use the TGC to get Client's info
     10. KDC use the Server's KEY and generates a TICKET
         Only the SERVER can decrypt this TICKET as no one else is aware of the Server's key
     11. Client will store the TICKET and previously got TGC in the Kerberos Tray
@@ -2688,7 +2689,7 @@ https://www.youtube.com/watch?v=kp5d8Yv3-0c
         - KDC can directly use its SPECIAL key to authenticate it.
 
     4. Now for Client to Communicate with the Server
-        - Client will send TGT to KDC. 
+        - Client will send TGT to KDC.
         - Client will ask for a Ticket in order to TALK to Client
 
     5. KDC will know the PAssword of the File Server as even that is a member of the DC
@@ -2731,7 +2732,7 @@ http://sharepoint.stackexchange.com/questions/13400/ntlm-vs-kerberos
     Kerberos uses a two-way handshake using a ticket granting service (key distribution center).
     In Kerberos the client must have access to a domain controller (which issues the tickets) whereas in
     NTLM the client contacts the server which contacts the domain controller.
-    NTLM: Slower authentication because of pass-through authentication 
+    NTLM: Slower authentication because of pass-through authentication
     Kerberos: Faster authentication because of unique ticketing system
 
 6.
@@ -2840,7 +2841,7 @@ http://dyn.com/blog/dns-why-its-important-how-it-works/
 
     - A directory of domain names and translate them to Internet Protocol (IP) addresses.
     - Information from all the domain name servers across the Internet are gathered together and housed at the Central Registry.
-    - Host companies and Internet Service Providers interact with the Central Registry on a regular schedule to get updated DNS information. 
+    - Host companies and Internet Service Providers interact with the Central Registry on a regular schedule to get updated DNS information.
 
     When you visit a domain such as dyn.com, your computer follows a series of steps to turn the human-readable web address into a machine-readable IP address.
     This happens every time you use a domain name, whether you are viewing websites, sending email or listening to Internet radio stations like Pandora.
@@ -2848,7 +2849,7 @@ http://dyn.com/blog/dns-why-its-important-how-it-works/
     Step 1: Request information
         - The process begins when you ask your computer to resolve a hostname, such as visiting http://dyn.com.
         - The first place your computer looks is its local DNS cache, which stores information that your computer has recently retrieved.
-- 
+-
         If your computer doesn’t already know the answer, it needs to perform a DNS query to find out.
 
     Step 2: Ask the recursive DNS servers
@@ -2949,7 +2950,7 @@ http://stackoverflow.com/questions/239385/what-is-ldap-used-for
         Without LDAP, every time users click a page, even for static page viewing, you will probably need to interact with your database to validate the user ID and its digital signature for this login session.
         Obviously, the query to your database for user-validation will become your bottleneck.
         By using LDAP, you can easily offload the user validation and gain significant performance improvement.
-        Essentially, in this example, LDAP is another optimization layer outside your database to enhance performance, not replacing any database functions. 
+        Essentially, in this example, LDAP is another optimization layer outside your database to enhance performance, not replacing any database functions.
 
 16.
 What is Samba
@@ -2962,7 +2963,7 @@ https://www.samba.org/samba/what_is_samba.html
 What is SMB
 https://www.samba.org/cifs/docs/what-is-smb.html
 
-    SMB is a protocol for sharing files, printers, serial ports, and communications abstractions such as named pipes and mail slots between computers. 
+    SMB is a protocol for sharing files, printers, serial ports, and communications abstractions such as named pipes and mail slots between computers.
 
     Clients connect to servers using TCP/IP (actually NetBIOS over TCP/IP as specified in RFC1001 and RFC1002), NetBEUI or IPX/SPX. Once they have established a connection, clients can then send commands (SMBs) to the server that allow them to access shares, open files, read and write files, and generally do all the sort of things that you want to do with a file system.
 
@@ -2985,7 +2986,7 @@ AN EXAMPLE SMB EXCHANGE
         - Once the client has logged on (and in older protocols-Core and CorePlus-you cannot logon), the client can proceed to connect to a tree.
         - The client sends a tcon or tconX SMB specifying the network name of the share that they wish to connect to, and if all is kosher, the server responds with a TID that the client will use in all future SMBs relating to that share.
 
-     Having connected to a tree, the client can now open a file with an open SMB, followed by reading it with read SMBs, writing it with write SMBs, and closing it with close SMBs. 
+     Having connected to a tree, the client can now open a file with an open SMB, followed by reading it with read SMBs, writing it with write SMBs, and closing it with close SMBs.
 
 18.
 Ports vs Socket
@@ -2993,7 +2994,7 @@ http://stackoverflow.com/questions/152457/what-is-the-difference-between-a-port-
 
     Think of your machine as an apartment building:
         A port is an apartment number.
-        A socket is the door of an apartment. 
+        A socket is the door of an apartment.
 
     A socket represents a single connection between two network applications.
     A socket is one end-point of a two-way communication link between two programs running on the network
@@ -3048,7 +3049,7 @@ Symmetric Encryption
     How can the key be shared securely??
 
     Fast and less overload on the CPU
-    
+
 Asymmetric
     RSA Algorithm
     Everyone can know the Public Key
@@ -3237,6 +3238,11 @@ http://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-wha
     TABS:
         - Plus a lot of programmers spend a significant amount of time writing html, css, etc, were the fact that a file with 4 spaces instead of tabs is 5-15% larger is actually significant.
         - Example: this page you are on right now loaded at least 10% slower than it should have because the SE team used spaces.
+
+7. JSON vs JSON-LD
+https://dashjoin.medium.com/json-schema-schema-org-json-ld-whats-the-difference-e30d7315686a
+
+
 --------------------------------------------------------------------------------
 DISTRIBUTED SYSTEMS:
 1. Docker and Kubernetes
@@ -3244,10 +3250,10 @@ https://blog.containership.io/k8svsdocker
     At their core, containers are a way of packaging software. What makes them special is that when you run a container, you know exactly how it will run - it¿s predictable, repeatable and immutable. There are no unexpected errors when you move it to a new machine, or between environments. All of your application¿s code, libraries, and dependencies are packed together in the container as an immutable artifact. You can think of running a container like running a virtual machine, without the overhead of spinning up an entire operating system. For this reason, bundling your application in a container vs. a virtual machine will improve startup time significantly.
 
     Docker:
-        Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing. 
+        Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing.
         If you want to run multiple containers across multiple machines - which you¿ll need to do if you¿re using microservices - there is still a lot of work to do.
 
-        You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare. 
+        You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare.
         Luckily, that¿s where Kubernetes comes in.
 
     Kubernetes:
@@ -3257,7 +3263,7 @@ https://blog.containership.io/k8svsdocker
             Scaling up or down by adding or removing containers when demand changes
             Keeping storage consistent with multiple instances of an application
             Distributing load between the containers
-            Launching new containers on different machines if something fails 
+            Launching new containers on different machines if something fails
 
     When used together, both Docker and Kubernetes are great tools for developing a modern cloud architecture, but they are fundamentally different at their core. It is important to understand the high-level differences between the technologies when building your stack.
 
@@ -3305,7 +3311,7 @@ https://stackoverflow.com/questions/32572529/why-is-spark-faster-than-hadoop-map
 
 7. Kafka
     Distributed Event Steaming Message PubSub system
-    
+
 8. RabbitMQ
 
 9. Zookeeper

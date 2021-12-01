@@ -38,7 +38,7 @@
 27. n way merge
 28. B Tree vs B+ Tree
 29. Heap vs Binary Search Tree
-30. Smallest range that includes at least one number from each of the k lists 
+30. Smallest range that includes at least one number from each of the k lists
 31. Select a random number from stream, with O(1) space
 32. Design a data structure that supports insert, delete, search and getRandom in constant time
 33. Check if a given array contains duplicate elements within k distance from each other
@@ -55,6 +55,7 @@
 44. How will you implement your own memcpy
 45. If you are given two traversal sequences, can you construct the binary tree
 46. Unique (non-repeating) random numbers in O(1)?
+47. Persistent Data Structures (Fully Persistent and Partially Persistent)
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -132,7 +133,7 @@ Bubble Sort vs Selection Sort vs Insertion Sort
             If array is almost sorted OR once we have the array sorted, we can STOP there.
 
         Bubble sort has many of the same properties as insertion sort, but has slightly higher overhead.
-        In the case of nearly sorted data, bubble sort takes O(n) time, but requires at least 2 passes through the data (whereas insertion sort requires something more like 1 pass). 
+        In the case of nearly sorted data, bubble sort takes O(n) time, but requires at least 2 passes through the data (whereas insertion sort requires something more like 1 pass).
 
     Insertion Sort:
         - What we have at any given time is sorted.
@@ -144,7 +145,7 @@ Bubble Sort vs Selection Sort vs Insertion Sort
         insertion sort is the algorithm of choice either when the data is nearly sorted (because it is adaptive) or when the problem size is small (because it has low overhead).
 
         For these reasons, and because it is also stable, insertion sort is often used as the recursive base case
-        (when the problem size is small) for higher overhead divide-and-conquer sorting algorithms, such as merge sort or quick sort. 
+        (when the problem size is small) for higher overhead divide-and-conquer sorting algorithms, such as merge sort or quick sort.
 
     BUBBLE SORT vs INSERTION SORT
         In insertion sort elements are bubbled into the sorted section, while in bubble sort the maximums are bubbled out of the unsorted section.
@@ -224,7 +225,7 @@ http://stackoverflow.com/questions/1933759/when-is-each-sorting-algorithm-used
     Bucket sort:
         When you can guarantee that your input is approximately uniformly distributed
 
-2c. 
+2c.
 Stable Sort vs Unstable Sort
 http://stackoverflow.com/questions/8311090/why-not-use-heap-sort-always
 
@@ -259,7 +260,7 @@ http://stackoverflow.com/questions/8311090/why-not-use-heap-sort-always
     Not all Quicksort implementations are stable.
     It depends on how you implement the partitioning.
 
-2d. 
+2d.
 What is Intro Sort
 
     Introsort or introspective sort is a hybrid sorting algorithm that provides both fast average performance and (asymptotically) optimal worst-case performance.
@@ -270,7 +271,7 @@ Median of Medians:
 http://stackoverflow.com/questions/12545795/explanation-of-the-median-of-medians-algorithm
 http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm?rq=1
 
-        Think of the following set of numbers: 
+        Think of the following set of numbers:
         5 2 6 3 1
 
         The median of these numbers is 3. Now if you have a number n, if n > 3, then it is bigger than at least half of the numbers above. If n < 3, then it is smaller than at least half of the numbers above.
@@ -283,7 +284,7 @@ http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algor
 
         Similar logic for the number of elements m is bigger than.
 
-http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm 
+http://stackoverflow.com/questions/9489061/understanding-median-of-medians-algorithm
         // L is the array on which median of medians needs to be found.
         // k is the expected median position. E.g. first select call might look like:
         // select (array, N/2), where 'array' is an array of numbers of length N
@@ -343,7 +344,7 @@ http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in
         // Count the number of bits set in FOUR bits at a time. Like Bits 1,2,3,4; 5,6,7,8 etc
         i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
 
-        // Count the number of bits set in EIGHT bits 
+        // Count the number of bits set in EIGHT bits
         // (i + (i >> 4)) & 0x0f0f0f0f
         // since 0x01010101 = (1 << 24) + (1 << 16) + (1 << 8) + 1, we have:
         // k * 0x01010101 = (k << 24) + (k << 16) + (k << 8) + k
@@ -425,7 +426,7 @@ http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-n
         for (i = 0; i < NO_OF_BITS; i++)
         {
             if((num & (1 << i)))
-               reverse_num |= 1 << ((NO_OF_BITS - 1) - i);  
+               reverse_num |= 1 << ((NO_OF_BITS - 1) - i);
        }
         return reverse_num;
     }
@@ -437,7 +438,7 @@ http://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-n
         v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
         // swap consecutive pairs
         v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
-        // swap nibbles ... 
+        // swap nibbles ...
         v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
         // swap bytes
         v = ((v >> 8) & 0x00FF00FF) | ((v & 0x00FF00FF) << 8);
@@ -498,7 +499,7 @@ http://www.geeksforgeeks.org/position-of-rightmost-set-bit/
     {
        return log2(n&-n)+1;
     }
-    
+
     x & ~(x-1)
 
 To Clear rightmost set bit just do
@@ -508,8 +509,8 @@ To Clear rightmost set bit just do
 Compute the minimum (min) or maximum (max) of two integers without branching
 
     int x;  // we want to find the minimum of x and y
-    int y;   
-    int r;  // the result goes here 
+    int y;
+    int r;  // the result goes here
 
     r = y ^ ((x ^ y) & -(x < y)); // min(x, y)
     r = x ^ ((x ^ y) & -(x < y)); // max(x, y)
@@ -521,13 +522,13 @@ Compute the minimum (min) or maximum (max) of two integers without branching
 Compute the sign of an integer
 
     int v;      // we want to find the sign of v
-    int sign;   // the result goes here 
+    int sign;   // the result goes here
 
     // CHAR_BIT is the number of bits per byte (normally 8).
     sign = -(v < 0);  // if v < 0 then -1, else 0.
 
     // or, for one less instruction (but not portable):
-    sign = v >> (sizeof(int) * CHAR_BIT - 1); 
+    sign = v >> (sizeof(int) * CHAR_BIT - 1);
 
 5.
 String Search:
@@ -569,13 +570,13 @@ GCD of two numbers:
         https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 
     https://www.geeksforgeeks.org/c-program-find-gcd-hcf-two-numbers/
-    // Recursive function to return gcd of a and b 
-    static int gcd(int a, int b) 
-    { 
-      if (b == 0) 
-        return a; 
-      return gcd(b, a % b);  
-    } 
+    // Recursive function to return gcd of a and b
+    static int gcd(int a, int b)
+    {
+      if (b == 0)
+        return a;
+      return gcd(b, a % b);
+    }
 
 10.
 STOCK PROBLEMS:
@@ -616,7 +617,7 @@ http://stackoverflow.com/questions/28888068/time-complexity-of-russian-peasant-m
         10^(log10(A) + log10(B))
         i.e. pow(10, log10(A) + log10(B)
 
-    Use bit shifting AKA 
+    Use bit shifting AKA
     https://en.wikipedia.org/wiki/Multiplication_algorithm#Peasant_or_binary_multiplication
 
     Decimal:     Binary:
@@ -799,30 +800,30 @@ http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
         1) Left Rotation
         2) Right Rotation
 
-        T1, T2 and T3 are subtrees of the tree rooted with y (on left side) 
-        or x (on right side)           
+        T1, T2 and T3 are subtrees of the tree rooted with y (on left side)
+        or x (on right side)
                         y                               x
                        / \     Right Rotation          /  \
-                      x   T3   -------------->        T1   y 
+                      x   T3   -------------->        T1   y
                      / \       < - - - - - - -            / \
                     T1  T2     Left Rotation            T2  T3
-        Keys in both of the above trees follow the following order 
+        Keys in both of the above trees follow the following order
               keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
         So BST property is not violated anywhere.
 
     a) Left Left Case
     T1, T2, T3 and T4 are subtrees.
-             z                                      y 
+             z                                      y
             / \                                   /   \
            y   T4      Right Rotate (z)          x      z
-          / \          - - - - - - - - ->      /  \    /  \ 
+          / \          - - - - - - - - ->      /  \    /  \
          x   T3                               T1  T2  T3  T4
         / \
       T1   T2
 
     b) Left Right Case
          z                               z                           x
-        / \                            /   \                        /  \ 
+        / \                            /   \                        /  \
        y   T4  Left Rotate (y)        x    T4  Right Rotate(z)    y      z
       / \      - - - - - - - - ->    /  \      - - - - - - - ->  / \    / \
     T1   x                          y    T3                    T1  T2 T3  T4
@@ -831,7 +832,7 @@ http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
 
     c) Right Right Case
       z                                y
-     /  \                            /   \ 
+     /  \                            /   \
     T1   y     Left Rotate(z)       z      x
         /  \   - - - - - - - ->    / \    / \
        T2   x                     T1  T2 T3  T4
@@ -840,7 +841,7 @@ http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
 
     d) Right Left Case
        z                            z                            x
-      / \                          / \                          /  \ 
+      / \                          / \                          /  \
     T1   y   Right Rotate (y)    T1   x      Left Rotate(z)   z      y
         / \  - - - - - - - - ->     /  \   - - - - - - - ->  / \    / \
        x   T4                      T2   y                  T1  T2  T3  T4
@@ -939,15 +940,15 @@ https://www.youtube.com/watch?v=MiyLo8adrWw&feature=youtu.be
     Also, the siftDown version of heapify has O(n) time complexity, while the siftUp version given below has O(n log n) time complexity due to its equivalence with inserting each element, one at a time, into an empty heap
 
     SIFTUP:
-        - Insertion of a new element into a heap is done in two steps. 
-        - First the element is inserted in the only place with room for it,- At the bottom of the tree, - And next it is shifted up the tree until the heap property holds. 
-        - The insertion is trivial, but the siftup deserves extra attention because of its importance for the performance. 
+        - Insertion of a new element into a heap is done in two steps.
+        - First the element is inserted in the only place with room for it,- At the bottom of the tree, - And next it is shifted up the tree until the heap property holds.
+        - The insertion is trivial, but the siftup deserves extra attention because of its importance for the performance.
 
     SIFTDOWN:
         - Deletion of the maximum element from the heap must find an element to replace the maximum element (in the root).
         - As for insertion this is done in to steps.
         - First the maximum element (the root) is replaced with the last element of the heap, and next the new root is shifted down the tree along the path of the largest children.
-    
+
     The number of operations required for each operation is proportional to the distance the node may have to move.
     For siftDown, it is the distance from the bottom of the tree, so siftDown is expensive for nodes at the top of the tree.
     With siftUp, the work is proportional to the distance from the top of the tree, so siftUp is expensive for nodes at the bottom of the tree.
@@ -1025,15 +1026,15 @@ http://stackoverflow.com/questions/6147242/heap-vs-binary-search-tree-bst
         - Lookup Max multiple times could be made O(1) by doing some optimization
 
 30.
-Smallest range that includes at least one number from each of the k lists 
+Smallest range that includes at least one number from each of the k lists
 http://stackoverflow.com/questions/21134720/smallest-range-that-includes-at-least-one-number-from-each-of-the-k-lists
 
     You have k lists of sorted integers. Find the smallest range that includes at least one number from each of the k lists.
 
     For example,
-        List 1: [4, 10, 13, 14] 
-        List 2: [0, 9, 15, 18] 
-        List 3: [5, 18, 22, 30] 
+        List 1: [4, 10, 13, 14]
+        List 2: [0, 9, 15, 18]
+        List 3: [5, 18, 22, 30]
     The smallest range here would be [14, 18] as it contains 14 from list 1, 15 from list 2, and 18 from list 3.
 
     MY approach is:
@@ -1129,7 +1130,7 @@ https://stackoverflow.com/questions/12880718/how-many-traversals-need-to-be-know
 
     So, the information that the tree is a BST, along with the elements in it (even unordered) are equivalent to an in-order traversal.
 
-    Bonus: why is one traversal not enough for a general tree, (without the information it is a BST)? 
+    Bonus: why is one traversal not enough for a general tree, (without the information it is a BST)?
     Answer: Let's assume we have n distinct elements. There are n! possible lists to these n elements, however - the possible number of trees is much larger (2 * n! possible trees for the n elements are all decayed trees, such that node.right = null in every node, thus the tree is actually a list to the right. There are n! such trees, and another n! trees where always node.left = null ) Thus, from pigeon hole principle - there is at least one list that generates 2 trees, thus we cannot reconstruct the tree from a single traversal. (QED)
 
 
@@ -1139,18 +1140,18 @@ https://stackoverflow.com/questions/33062228/why-it-is-impossible-to-construct-b
 
     TREE 1:
 
-    root=a;  
-    root->left=b;  
-    root->left->right=c;  
+    root=a;
+    root->left=b;
+    root->left->right=c;
     Tree 2:
 
-    root=a;  
-    root->right=b;  
-    root->right->left=c;  
+    root=a;
+    root->right=b;
+    root->right->left=c;
     Both the trees are different, but have same pre-order and post-order sequence.
 
-    pre-order - a b c  
-    post-order - c b a  
+    pre-order - a b c
+    post-order - c b a
     This is so because we cannot separate the left sub-tree and right sub-tree using the pre-order or post-order traversal alone.
 
     Pre-order, as its name, always visits root first and then left and right sub-trees. That is to say, walking through a pre-order list, each node we hit would be a "root" of a sub-tree.
@@ -1271,4 +1272,9 @@ https://stackoverflow.com/questions/196017/unique-non-repeating-random-numbers-i
    Initialize an array of 1001 integers with the values 0-1000 and set a variable, max, to the current max index of the array (starting with 1000).
    Pick a random number, r, between 0 and max, swap the number at the position r with the number at position max and return the number now at position max.
    Decrement max by 1 and continue.
-   When max is 0, set max back to the size of the array - 1 and start again without the need to reinitialize the array. 
+   When max is 0, set max back to the size of the array - 1 and start again without the need to reinitialize the array.
+
+47. Persistent Data Structures (Fully Persistent and Partially Persistent)
+https://www.geeksforgeeks.org/persistent-data-structures/
+https://levelup.gitconnected.com/persistent-data-structures-for-gophers-persistent-stack-70aa012d3bfa
+    A data structure is partially persistent if all versions can be accessed but only the newest version can be modified. The data structure is fully persistent if every version can be both accessed and modified. If there is also a meld or merge operation that can create a new version from two previous versions, the data structure is called confluently persistent. Structures that are not persistent are called ephemeral.

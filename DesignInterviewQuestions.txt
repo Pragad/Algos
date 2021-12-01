@@ -1,69 +1,69 @@
-Requirements Gathering
-    Functional Requirements MVP
-    P1 Requirements
-Load and Storage Estimation
-    Cost Analysis
-First build a system that will work
-Keep Customer Interactions and Customer focused
-API Design
-    REST/RPC
-Backend Design
-    Datastructures Needed
-    PUSH vs PULL model
-    Transactions where needed for Consistency
-Database
-    Is the system READ HEAVY or WRITE HEAVY
-    DB choice
-    DB Schema
-    Sharding
-    Replication
-Then talk about Scaling the System
-    Message Queues and Pub-Sub
-    Background Jobs and Pre-computation
-    Asynchornous where needed
-    Load Balancing
-    Cache Layer
-    Server vs Serverless Architecture
-    Zookeeper for Configuration management
-Encryption / Hashing where needed for critical info
-HTTP Error Codes
-Retry Mechanism
-Privacy when storing customer data
-JARGONS
-    Reliable, 
-    Scalable, 
-    Maintainable
-    Fault Tolerant
-    Metrics, Dashboards, Monitors and Alarms
 --------------------------------------------------------------------------------
-1. How to Approach Design Interview Questions
+How to Approach Design Interview Questions
     1. First ask clarifying questions
         a. Functional Questions
+            i. MVP
+            ii. P1 Requirements / Features
         b. Scalability Questions
             i. TPS
             ii. Amount of data that needs to be stored
+        c. Load and Storage Estimation
+            i. Cost Analysis
     2. Try to add TODO for,
         a. Consitency vs Avaiability
-        b. Read / Write Heavy System
+        b. Read Heavy
+        c. Write Heavy System
     3. Main Part
-    3a. Things I should take care of
+    3a. Things I should take care of / First build a system that will work
         a. A basic flow of a non-scalable System
         b. How APIs would be
         c. How entries would be stored in DB
-    3b. Data Structures that will be involved 
+    3b. API Design
+        a. REST/RPC
+        b. GraphQL etc
+        c. Websockets if needed
+    3c. BackendDesign
+        a. Data Structures that will be involved
+        b. PUSH vs PULL model
+        c. Transactions where needed for Consistency
+    3d. Database
+        a. Is the system READ HEAVY or WRITE HEAVY
+        b. DB choice
+        c. DB Schema
+        d. Sharding
+        e. Replication
     4. Things to consider for Scalability
+        AVOID SINGLE POINT OF FAILURE
         a. Fault Tolerance
         b. Load Balancers to handle load
         c. Cache where necessary
         d. Handle Race considtions
         e. Handly Synchronization stuffs
+        f. Push vs Pull based model
+        g. Server vs Serverless Architecture
+        h. Zookeeper for Configuration management
+        i. Message Queues and Pub-Sub
+        j. Background Jobs and Pre-computation
+        k. Asynchornous where needed
+        l. CDN
+            1. Cache static content
     5. Failure Handling
-        a. API failure, 
-        b. DB failure, 
+        a. API failure,
+        b. DB failure,
         c. Node failure etc
     6. Monitoring
         a. Metrics and Dashboards
         b. Alarms, Monitors
+    7. Retry Mechanism
+    8. HTTP Error Codes
+    9. Encryption / Hashing where needed for critical info
+    10 Privacy when storing customer data
+    11. JARGONS
+        Reliable,
+        Scalable,
+        Maintainable
+        Fault Tolerant
+        Metrics, Dashboards, Monitors and Alarms
 --------------------------------------------------------------------------------
 Distributed Systems - Key Concepts
 0. Things to read about
@@ -102,6 +102,11 @@ System Design Interview Questions
 16. Design a Chess Game
 17. Design Tic Tac Toe
 18. Design Parking Lot
+19. Design Log Storage System
+20. Design Mint
+21. Design Tinder
+22. Design Tiktok
+23. Design Instagram
 --------------------------------------------------------------------------------
 System Design Primer - FB Github page
 0. Conversion Guide
@@ -125,7 +130,7 @@ https://www.interviewbit.com/courses/system-design/
 Distributed Systems - Key Concepts
 
 0. Things to read about
-- Frangipani: A Scalable Distributed File System 
+- Frangipani: A Scalable Distributed File System
 - https://dancres.github.io/Pages/
 
 1. 4 Building Blocks of Architecting Systems for Scale
@@ -133,7 +138,7 @@ http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-
 
     1. Load Balancing: Scalability and Redundancy
         - Horizontal scalability and redundancy are usually achieved via load balancing,
-          the spreading of requests across multiple resources. 
+          the spreading of requests across multiple resources.
 
         1. Smart Clients.
            The client has a list of hosts and load balances across that list of hosts.
@@ -148,23 +153,23 @@ http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-
            The recommended approach, it's  software that handles load balancing, health checks, etc
 
     2. Caching.
-        Make better use of resources you already have. Precalculate results for later use. 
+        Make better use of resources you already have. Precalculate results for later use.
 
         Application Versus Database Caching. Databases caching is simple because the programmer doesn't have to do it. Application caching requires explicit integration into the application code.
         In Memory Caches. Performs best but you usually have more disk than RAM.
         Content Distribution Networks. Moves the burden of serving static resources from your application and moves into a specialized distributed caching service.
-        Cache Invalidation. Caching is great but the problem is you have to practice safe cache invalidation. 
+        Cache Invalidation. Caching is great but the problem is you have to practice safe cache invalidation.
 
     3. Off-Line Processing.
-        Processing that doesn't happen in-line with a web requests. Reduces latency and/or handles batch processing. 
+        Processing that doesn't happen in-line with a web requests. Reduces latency and/or handles batch processing.
 
         Message Queues. Work is queued to a cluster of agents to be processed in parallel.
-        Scheduling Periodic Tasks. Triggers daily, hourly, or other regular system tasks. 
+        Scheduling Periodic Tasks. Triggers daily, hourly, or other regular system tasks.
         Map-Reduce. When your system becomes too large for ad hoc queries then move to using a specialized data processing infrastructure.
 
     4. Platform Layer.
         Disconnect application code from web servers, load balancers, and databases using a service level API.
-        This makes it easier to add new resources, reuse infrastructure between projects, and scale a growing organization. 
+        This makes it easier to add new resources, reuse infrastructure between projects, and scale a growing organization.
 
 2. CAP Theorem
 http://ksat.me/a-plain-english-introduction-to-cap-theorem
@@ -270,7 +275,7 @@ Docker and Kubernetes commands:
 
         To generate this message, Docker took the following steps:
          1. The Docker client contacted the Docker daemon.
-         2. The Docker daemon pulled the "hello-world" image from the Docker Hub.  
+         2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
             (amd64)
          3. The Docker daemon created a new container from that image which runs the executable that produces the output you are currently reading.
          4. The Docker daemon streamed that output to the Docker client, which sent it to your terminal.
@@ -283,7 +288,7 @@ Docker and Kubernetes commands:
     https://www.cio.com/article/2924995/software/what-are-containers-and-why-do-you-need-them.html
 
 
-    Containers are a solution to the problem of how to get software to run reliably when moved from one computing environment to another. 
+    Containers are a solution to the problem of how to get software to run reliably when moved from one computing environment to another.
 
 
     "You're going to test using Python 2.7, and then it's going to run on Python 3 in production and something weird will happen. Or you'll rely on the behavior of a certain version of an SSL library and another one will be installed. You'll run your tests on Debian and production is on Red Hat and all sorts of weird things happen."
@@ -402,7 +407,7 @@ Docker and Kubernetes commands:
 
 9. Pairing Master and Slave DB to make Webapps faster
     https://www.quora.com/What-are-Master-and-Slave-databases-and-how-does-pairing-them-make-web-apps-faster
-        
+
         Master databases receive and store data from applications. Slave databases get copies of that data from the masters. Slaves are therefore read-only from the application's point of view while masters are read-write.
 
     Writes to a database are more "expensive" than reads. Checking for data integrity and writing updates to physical disks, for example, consume system resources. Most web applications require a much higher ratio of reads to writes. For example a person may write an article once and then it’s read thousands of times. So setting up master-slave replication in the right scenario lets an application distribute its queries efficiently. While one database is busy storing information the others can be busy serving it without impacting each other.
@@ -415,22 +420,22 @@ https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-o
     1. Cache-Aside
         The cache sits on the side and the application directly talks to both the cache and the database.
         Pros:
-            - For read-heavy workloads. 
+            - For read-heavy workloads.
             - Another benefit is that the data model in cache can be different than the data model in database.
             - Systems using cache-aside are resilient to cache failures
-        Cons: 
-            - When cache-aside is used, the most common write strategy is to write data to the database directly. When this happens, cache may become inconsistent with the database. 
+        Cons:
+            - When cache-aside is used, the most common write strategy is to write data to the database directly. When this happens, cache may become inconsistent with the database.
             - To deal with above, developers generally use time to live (TTL) and continue serving stale data until TTL expires.
-    
+
     2. Read-Through Cache
         Read-through cache sits in-line with the database. When there is a cache miss, it loads missing data from database, populates the cache and returns it to the application.
 
-        - first time, it always results in cache miss and incurs the extra penalty of loading data to the cache. 
-        - Developers deal with this by ‘warming’ or ‘pre-heating’ the cache by issuing queries manually. 
-        
-        Pros: 
-            - 
-        Cons: 
+        - first time, it always results in cache miss and incurs the extra penalty of loading data to the cache.
+        - Developers deal with this by ‘warming’ or ‘pre-heating’ the cache by issuing queries manually.
+
+        Pros:
+            -
+        Cons:
             - the data model in read-through cache cannot be different than that of the database.
 
     Cache-Aside :: Read-Through
@@ -438,25 +443,25 @@ https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-o
         - Unlike cache-aside, the data model in read-through cache cannot be different than that of the database.
 
     3. Write-Through Cache
-        - data is first written to the cache and then to the database. 
+        - data is first written to the cache and then to the database.
         - The cache sits in-line with the database and writes always go through the cache to the main database.
 
         Pros:
             - But when paired with read-through caches, we get all the benefits of read-through and we also get data consistency guarantee, freeing us from using cache invalidation techniques.
         Cons:
-            - extra write latency because data is written to the cache first and then to the main database.  
+            - extra write latency because data is written to the cache first and then to the main database.
 
     4. Write-Around
     5. Write-Back
         Pros:
-            - Write back caches improve the write performance and are good for write-heavy workloads. 
+            - Write back caches improve the write performance and are good for write-heavy workloads.
             - When combined with read-through, it works good for mixed workloads, where the most recently updated and accessed data is always available in cache.
-            
+
 Open Questions:
     1. How do you pair Read-through and Write Through Cache
     2. Why is state india of a session stored in NoSql 1.14
     3. Sharding:
-        a. How to solve celebrity problem 
+        a. How to solve celebrity problem
         b. Denormalize the db so that queues can be performed in a single table
 --------------------------------------------------------------------------------
 ZeroMQ, Protocol Buffers
@@ -519,6 +524,7 @@ System Design Interview Questions
 ---------------------------------------------
 2. Create a TinyURL System
 http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/?utm_source=email&utm_medium=email&utm_campaign=email
+https://leetcode.com/discuss/interview-question/124658/Design-a-URL-Shortener-(-TinyURL-)-System/
 
 APPROACH:
 1. Questions to Interviewer:
@@ -552,7 +558,7 @@ https://stackoverflow.com/questions/742013/how-to-code-a-url-shortener
 https://stackoverflow.com/questions/11326598/how-do-url-shorteners-guarantee-unique-urls-when-they-dont-expire
     Others have answered how the redirects work but you should also know how they generate their tiny urls. You'll mistakenly hear that they create a hash of the URL in order to generate that unique code for the shortened URL. This is incorrect in most cases, they aren't using a hashing algorithm (where you could potentially have collisions).
 
-    Most of the popular URL shortening services simply take the ID in the database of the URL and then convert it to either Base 36 [a-z0-9] (case insensitive) or Base 62 (case sensitive). 
+    Most of the popular URL shortening services simply take the ID in the database of the URL and then convert it to either Base 36 [a-z0-9] (case insensitive) or Base 62 (case sensitive).
 
 a. Read Dynamo: Amazon’s Highly Available Key-value Store
 
@@ -561,7 +567,7 @@ a. Read Dynamo: Amazon’s Highly Available Key-value Store
         - Given a bigger URL you should convert it into a smaller URL
 
         - Hash bigger URL into a smaller URL of just few chars
-        - A-Z, a-z, 0-9 = 62chars. 
+        - A-Z, a-z, 0-9 = 62chars.
         - With size 7, 62^7 ~ 3500billion
 
     Solution:
@@ -587,7 +593,7 @@ a. Read Dynamo: Amazon’s Highly Available Key-value Store
 
         Solution 2:
             - Store entries in distributed key-value store
-            - Very similar to database sharding. 
+            - Very similar to database sharding.
             - A system in front to determine where each key, value pair will be stored.
             - Say keys that end with a particular number go to a shard
 
@@ -718,8 +724,8 @@ Redis uses by default asynchronous replication, which being high latency and hig
 
 
 MEMCACHE:
-Memcached servers do not communicate with each other and in fact, a Memcached server is completely blind to which objects are stored on it, not to mention other servers. This simple architecture enables Memcached to be very fast and effective, but comes with poor reliability, which is unacceptable by most web applications today. 
-There is no master node, all nodes are equal, there is no replication, and node selection is done by the client hashing algorithm. 
+Memcached servers do not communicate with each other and in fact, a Memcached server is completely blind to which objects are stored on it, not to mention other servers. This simple architecture enables Memcached to be very fast and effective, but comes with poor reliability, which is unacceptable by most web applications today.
+There is no master node, all nodes are equal, there is no replication, and node selection is done by the client hashing algorithm.
 Smarter clients use consistent hashing to avoid losing the entire data while scaling. So if you scale out (i.e. adding nodes) you lose "only" 1/(N+1) of the objects, where N is the number of nodes after you scaled-out.
 
 What memcache normally does is a simple, yet very effective loadbalance trick: for each key that gets stored or fetched, it will create a hash (you might see it as md5(key), but in fact, it¿s a more specialized - quicker - hash method). Now, the hashes we create are pretty much evenly distributed, so we can use a modulus function to find out which server to store the object to:
@@ -750,13 +756,13 @@ http://www.eecs.harvard.edu/~mema/courses/cs264/cs264.html
 
     For example, say in a three node ring the first node has keys 0-10, the second 11-20 and the third 21-30. If a fourth node comes along and inserts itself between nodes 3 and 0 (remember, they're in a ring), it can take responsibility for say half of 3's keyspace, so now it deals with 26-30 and node 3 deals with 21-25.
 
-    There are many other overlay structures such as this that use content-based routing to find the right node on which to store a key. Locating a key in a ring requires searching round the ring one node at a time (unless you keep a local look-up table, problematic in a DHT of thousands of nodes), which is O(n)-hop routing. Other structures - including augmented rings - guarantee O(log n)-hop routing, and some claim to O(1)-hop routing at the cost of more maintenance. 
+    There are many other overlay structures such as this that use content-based routing to find the right node on which to store a key. Locating a key in a ring requires searching round the ring one node at a time (unless you keep a local look-up table, problematic in a DHT of thousands of nodes), which is O(n)-hop routing. Other structures - including augmented rings - guarantee O(log n)-hop routing, and some claim to O(1)-hop routing at the cost of more maintenance.
 ---------------------------------------------
 6. Map Implementation
 
 ---------------------------------------------
 7. Random ID Generator
-http://blog.gainlo.co/index.php/2016/06/07/random-id-generator/?utm_source=email&utm_medium=email&utm_campaign=email 
+http://blog.gainlo.co/index.php/2016/06/07/random-id-generator/?utm_source=email&utm_medium=email&utm_campaign=email
 https://medium.com/@varuntayal/what-does-it-take-to-generate-cluster-wide-unique-ids-in-a-distributed-system-d505b9eaa46e
 
 a. See how Twitter's Snowflake works?
@@ -919,7 +925,7 @@ ANSWER:
 
         The O(n) time bound is optimal within a constant factor because we must examine each word at least once.
 
-        The O(n + k * lg(k)) time bound is also optimal because there is no comparison-based way to sort k elements in less than k * lg(k) time. 
+        The O(n + k * lg(k)) time bound is also optimal because there is no comparison-based way to sort k elements in less than k * lg(k) time.
 
 WHAT IF THE DICTIONARY CAN'T FIT IN MEMORY
     Solution 4:
@@ -981,7 +987,7 @@ WHAT IF THE DICTIONARY CAN'T FIT IN MEMORY
 ---------------------------------------------
 14. How to count number of requests in last second, minute and hour
 https://stackoverflow.com/questions/17562089/how-to-count-number-of-requests-in-last-second-minute-and-hour
-https://stackoverflow.com/questions/11701008/efficient-way-to-compute-number-of-hits-to-a-server-within-the-last-minute-in-r    
+https://stackoverflow.com/questions/11701008/efficient-way-to-compute-number-of-hits-to-a-server-within-the-last-minute-in-r
 
     Solution 1:
         If 100% accuracy is required:
@@ -1047,7 +1053,7 @@ https://stackoverflow.com/questions/11701008/efficient-way-to-compute-number-of-
         Why not just use a circular array? We have 3600 elements in that array.
 
         index = 0;
-        Array[index % 3600] = count_in_one_second. 
+        Array[index % 3600] = count_in_one_second.
         ++index;
 
         if you want last second, return the last element of this array. if you want last minute, return the sum of last 60 elements. if you want last hour, return the sum of the whole array (3600 elements).
@@ -1080,11 +1086,57 @@ https://leetcode.com/problems/design-tic-tac-toe/
 https://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
 https://www.geeksforgeeks.org/design-parking-lot-using-object-oriented-principles/
 https://leetcode.com/discuss/interview-question/124739/Parking-Lot-Design-Using-OO-Design
+
+19. Design Log Storage System
+http://highscalability.com/product-scribe-facebooks-scalable-logging-system
+https://bravenewgeek.com/building-a-distributed-log-from-scratch-part-1-storage-mechanics/
+https://blog.twitter.com/engineering/en_us/topics/infrastructure/2015/building-distributedlog-twitter-s-high-performance-replicated-log-servic
+https://hackernoon.com/part-1-building-a-centralized-logging-application-5a537033da0a
+https://www.learnsteps.com/logging-infrastructure-system-design/
+https://www.youtube.com/watch?v=dZ3swmtR1As - Naren L
+https://www.youtube.com/watch?v=JaCA_pVS_1Y\
+https://www.youtube.com/watch?v=DphnpWVYeG8
+
+    FB's Scribe
+
+    1. API for clients
+    2. Data Aggregator / Collection
+    3. Data Transport
+        - Scribe, NSQ, Kafka, Logstash, Flume, FluentId
+
+        Push logs somewhere and it should be processed there.
+        When you save the log objects in Kafka it is then consumed by the worker that processes it for metrics data, fixes the log object format and then either pushes it to the next Kafka queue for further processing or saves it somewhere like s3.
+
+    4. Data Storage
+        S3, AWS Glacier, HDFS, Cassandra, MongoDB, ElasticSearch
+    5. Data Usefullizer (Metrics, Dashboard etc)
+        Kibana, Hive, Pig, GreyLog2
+    6. Alerting
+        Sentry, HoneyBadger
+
+    Rate limiter for amount of message per second
+    See if client can temporarily store logs if server is not available for some reason
+    Different Log Levels, Tag Id, Unique App / Request Id
+        Custom structure for companies to pick from
+
+    The idea here is you need a distributed file system to handle the continual stream of log messages. And once you have all the data stored safely away you'll need to use map-reduce to do anything with such a large amount of data.
+
+
+20. Design Mint
+https://github.com/donnemartin/system-design-primer/tree/master/solutions/system_design/mint#design-mintcom
+
+21. Design Tinder
+
+
+22. Design Tiktok
+
+
+23. Design Instagram
 --------------------------------------------------------------------------------
 HighScalability:
 1. Netflix:
 http://highscalability.com/blog/2017/12/11/netflix-what-happens-when-you-press-play.html
-Netflix uses two different clouds: AWS and Open Connect. 
+Netflix uses two different clouds: AWS and Open Connect.
 
 The three parts of Netflix: client, backend, content delivery network (CDN).
 The client is the user interface on any device used to browse and play Netflix videos
@@ -1094,22 +1146,22 @@ Everything that happens before you hit play happens in the backend, which runs i
 Everything that happens after you hit play is handled by Open Connect. Open Connect is Netflix¿s custom global content delivery network (CDN). Open Connect stores Netflix video in different locations throughout the world. When you press play the video streams from Open Connect, into your device, and is displayed by the client
 
 DATA CENTERS:
-EC2 was just getting started in 2007, about the same time Netflix¿s streaming service started. There was no way Netflix could have launched using EC2. 
+EC2 was just getting started in 2007, about the same time Netflix¿s streaming service started. There was no way Netflix could have launched using EC2.
 
-Netflix built two datacenters, located right next to each other. They experienced all the problems we talked about in earlier chapters. 
+Netflix built two datacenters, located right next to each other. They experienced all the problems we talked about in earlier chapters.
 
 MOVE TO AWS
 For three days in August 2008, Netflix could not ship DVDs because of corruption in their database. This was unacceptable. Netflix had to do something.
 
 The experience of building datacenters had taught Netflix an important lesson¿they weren¿t good at building datacenters.
 
-AWS offered highly reliable databases, storage and redundant datacenters. Netflix wanted cloud computing, so it wouldn¿t have to build big unreliable monoliths anymore. 
+AWS offered highly reliable databases, storage and redundant datacenters. Netflix wanted cloud computing, so it wouldn¿t have to build big unreliable monoliths anymore.
 
 UNDIFFERENTIATED HEAVY LIFTING.
 Undifferentiated heavy lifting are those things that have to be done, but don¿t provide any advantage to the core business of providing a quality video watching experience. AWS does all the undifferentiated heavy lifting for Netflix. This lets Netflixians focus on providing business value.
 
 GLOBAL SERVICES MODEL
-Netflix calls this their global services model. Any customer can be served out of any region. This is amazing. And it doesn¿t happen automatically. AWS has no magic sauce for handling region failures or serving customers out of multiple regions. Netflix has done all this work on its own. Netflix is a pioneer in figuring out how to create reliable systems using multiple regions. 
+Netflix calls this their global services model. Any customer can be served out of any region. This is amazing. And it doesn¿t happen automatically. AWS has no magic sauce for handling region failures or serving customers out of multiple regions. Netflix has done all this work on its own. Netflix is a pioneer in figuring out how to create reliable systems using multiple regions.
 
 What happens if the entire Dublin region fails? Does that mean Netflix should stop working for you? Of course not!
 
@@ -1117,7 +1169,7 @@ Netflix, after detecting the failure, redirects you to Virginia. Your device wou
 
 How often does an AWS region fail? Once a month. Well, a region doesn¿t actually fail every month. Netflix runs monthly tests. Every month Netflix causes a region to fail on purpose just to make sure its system can handle region level failures. A region can be evacuated in six minutes.
 
-Netflix could add servers when it needed them and return them when it didn¿t. Rather than have a lot of extra computers hanging around doing nothing just to handle peak load, Netflix only had to pay for what was needed, when it was needed. 
+Netflix could add servers when it needed them and return them when it didn¿t. Rather than have a lot of extra computers hanging around doing nothing just to handle peak load, Netflix only had to pay for what was needed, when it was needed.
 
 WHAT HAPPENS IN AWS BEFORE YOU PRESS PLAY?
 Anything that doesn¿t involve serving video is handled in AWS.
@@ -1126,13 +1178,13 @@ This includes scalable computing, scalable storage, business logic, scalable dis
 
 Scalable computing and scalable storage.
 
-Scalable computing is EC2 and scalable storage is S3. Nothing new for us here. 
+Scalable computing is EC2 and scalable storage is S3. Nothing new for us here.
 
 Your Netflix device¿iPhone, TV, Xbox, Android phone, tablet, etc.¿talks to a Netflix service running in EC2.
 
-View a list of potential videos to watch? That¿s your Netflix device contacting a computer in EC2 to get the list. 
+View a list of potential videos to watch? That¿s your Netflix device contacting a computer in EC2 to get the list.
 
-Ask for more details about a video? That¿s your Netflix device contacting a computer in EC2 to get the details. 
+Ask for more details about a video? That¿s your Netflix device contacting a computer in EC2 to get the details.
 --------------------------------------------------------------------------------
 SYSTEM DESIGN PRIMER:
 https://github.com/donnemartin/system-design-primer
