@@ -15,7 +15,7 @@
 5. String Search:
 6. Given 2 sorted arrays of integers, find the nth largest number in sublinear time
 7. k'th smallest in Union of Two arrays:
-8. K�th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
+8. K’th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
 9. GCD of two numbers:
 10. STOCK PROBLEMS:
 11. Sorted Rotated Array:
@@ -56,6 +56,10 @@
 45. If you are given two traversal sequences, can you construct the binary tree
 46. Unique (non-repeating) random numbers in O(1)?
 47. Persistent Data Structures (Fully Persistent and Partially Persistent)
+48. Bellman Ford - Shortest Path
+49. Coin Arbitrage Algorithm
+50. Graph Algorigthms
+51. Examples of Data Structures in real life
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -557,7 +561,7 @@ k'th smallest in Union of Two arrays:
 http://articles.leetcode.com/2011/01/find-k-th-smallest-element-in-union-of.html
 
 8.
-K�th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
+K’th Smallest/Largest Element in Unsorted Array | Set 3 (Worst Case Linear Time)
 http://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array-set-3-worst-case-linear-time/
 http://www.programcreek.com/2014/05/leetcode-kth-largest-element-in-an-array-java/
 
@@ -985,7 +989,7 @@ https://www.geeksforgeeks.org/merge-k-sorted-arrays/
     Run a loop until the size of MinHeap is greater than zero.
     Remove the top element of the MinHeap and print the element.
     Now insert the next element from the same array in which the removed element belonged.
-    If the array doesn�t have any more elements, then replace root with infinite.After replacing the root, heapify the tree.
+    If the array doesn¿t have any more elements, then replace root with infinite.After replacing the root, heapify the tree.
 
 28.
 B Tree vs B+ Tree
@@ -1068,7 +1072,7 @@ Check if a given array contains duplicate elements within k distance from each o
 Reservoir Sampling
 
     Reservoir sampling is a family of randomized algorithms for randomly choosing k samples from a list of n items, where n is either a very large or unknown number.
-    Typically n is large enough that the list doesn�t fit into main memory.
+    Typically n is large enough that the list doesn’t fit into main memory.
     For example, a list of search queries in Google and Facebook.
 
     - A simple solution is to create an array reservoir[] of maximum size k.
@@ -1173,7 +1177,7 @@ https://www.geeksforgeeks.org/ternary-search-tree/
     Tries are suitable when there is a proper distribution of words over the alphabets so that spaces are utilized most efficiently. Otherwise ternary search trees are better. Ternary search trees are efficient to use(in terms of space) when the strings to be stored share a common prefix.
 
     Applications of ternary search trees:
-    1. Ternary search trees are efficient for queries like �Given a word, find the next word in dictionary(near-neighbor lookups)� or �Find all telephone numbers starting with 9342 or �typing few starting characters in a web browser displays all website names with this prefix�(Auto complete feature)�.
+    1. Ternary search trees are efficient for queries like ¿Given a word, find the next word in dictionary(near-neighbor lookups)¿ or ¿Find all telephone numbers starting with 9342 or ¿typing few starting characters in a web browser displays all website names with this prefix¿(Auto complete feature)¿.
 
     2. Used in spell checks: Ternary search trees can be used as a dictionary to store all the words. Once the word is typed in an editor, the word can be parallely searched in the ternary search tree to check for correct spelling.
 
@@ -1278,3 +1282,160 @@ https://stackoverflow.com/questions/196017/unique-non-repeating-random-numbers-i
 https://www.geeksforgeeks.org/persistent-data-structures/
 https://levelup.gitconnected.com/persistent-data-structures-for-gophers-persistent-stack-70aa012d3bfa
     A data structure is partially persistent if all versions can be accessed but only the newest version can be modified. The data structure is fully persistent if every version can be both accessed and modified. If there is also a meld or merge operation that can create a new version from two previous versions, the data structure is called confluently persistent. Structures that are not persistent are called ephemeral.
+
+48. Bellman Ford - Shortest Path
+https://www.youtube.com/watch?v=FtN3BYH2Zes&t=328s
+    - Shortest Path if there are negative edges
+        - Works by Relaxing the graph N-1 times where N is the number of vertices
+    - It doesn't work if there is a cycle whose total path weight is NEGATIVE
+                (2)
+            5       -10
+        (4)     3       (3)
+        (2), (4), (3) are vertex/nodes in graph
+        5, -10 and 3 are weights of the path; Total = -2
+
+49. Coin Arbitrage Algorithm
+https://anilpai.medium.com/currency-arbitrage-using-bellman-ford-algorithm-8938dcea56ea
+https://leetcode.com/discuss/interview-question/483660/google-phone-currency-conversion
+
+    Let’s say, 1 U.S. dollar bought 0.82 Euro, 1 Euro bought 129.7 Japanese Yen, 1 Japanese Yen bought 12 Turkish Lira, and 1 Turkish Lira bought 0.0008 U.S. dollars. Then, by converting currencies, a trader can start with 1 U.S. dollar and buy U.S. dollars, thus turning a 0.82*129.7*12*0.008 =1.02 US dollars, thus making a 2% profit.
+
+    Arbitrage opportunities arise when a cycle is determined such that the edge weights satisfy the following expression
+        w1 * w2 * w3 * … * wn > 1
+    The above constraint of finding the cycles is harder in graphs. Instead we must transform the edge weights of the graph such that the standard graph algorithms can be applied.
+
+    Let’s take the logarithm on both sides, such that
+        log(w1) + log(w2) + log(w3) + … + log(wn) > 0
+
+    Taking the negative log, this becomes
+        (-log(w1)) + (-log(w2)) + (-log(w3)) + … + (-log(wn)) < 0
+    Therefore we can conclude that if we can find a cycle of vertices such that the sum of their weights if negative, then we can conclude there exists an opportunity for currency arbitrage. Luckily, Bellman-Ford algorithm is a standard graph algorithm that can be used to easily detect negative weight cycles in O(|V*E|) time.
+
+50. Graph Algorigthms
+https://towardsdatascience.com/10-graph-algorithms-visually-explained-e57faa1336f3
+https://www.youtube.com/watch?v=tWVWeAqZ0WU - Graph Algorithms for Technical Interviews - Full Course
+    1. Shortest Path
+        a. Dijkstra’s shortest path algorithm
+        b. Bellman–Ford algorithm
+
+        Applicaitons
+            Used to find directions to travel from one location to another in mapping software like Google maps or Apple maps.
+            Used in networking to solve the min-delay path problem.
+            Used in abstract machines to determine the choices to reach a certain goal state via transitioning among different states (e.g., can be used to determine the minimum possible number of moves to win a game).
+    2. Cycle detection
+        a. Floyd cycle detection algorithm
+        b. Brent’s algorithm
+
+        Applications
+            Used in distributed message-based algorithms.
+            Used to process large-scale graphs using a distributed processing system on a cluster.
+            Used to detect deadlocks in concurrent systems.
+            Used in cryptographic applications to determine keys of a message that can map that message to the same encrypted value.
+
+    3. Minimum spanning tree
+        A minimum spanning tree is a subset of the edges of a graph that connects all the vertices with the minimum sum of edge weights and consists of no cycles.
+
+        Prim’s algorithm
+        Kruskal’s algorithm
+
+        Applications
+            Used to construct trees for broadcasting in computer networks.
+            Used in graph-based cluster analysis.
+            Used in image segmentation.
+            Used in regionalisation of socio-geographic areas, where regions are grouped into contiguous regions.
+
+    4. Strongly connected components
+        A graph is said to be strongly connected if every vertex in the graph is reachable from every other vertex.
+
+        Algorithms
+            Kosaraju’s algorithm
+            Tarjan’s strongly connected components algorithm
+        Applications
+            Used to compute the Dulmage–Mendelsohn decomposition, which is a classification of the edges of a bipartite graph.
+            Used in social networks to find a group of people who are strongly connected and make recommendations based on common interests.
+
+    5. Topological sorting
+        Topological sorting of a graph is a linear ordering of its vertices so that for each directed edge (u, v) in the ordering, vertex u comes before v.
+
+        Algorithms
+            Kahn’s algorithm
+            The algorithm based on depth-first search
+        Applications
+            Used in instruction scheduling.
+            Used in data serialisation.
+            Used to determine the order of compilation tasks to perform in makefiles.
+            Used to resolve symbol dependencies in linkers.
+
+    6. Graph colouring
+        Graph colouring assigns colours to elements of a graph while ensuring certain conditions. Vertex colouring is the most commonly used graph colouring technique. In vertex colouring, we try to colour the vertices of a graph using k colours and any two adjacent vertices should not have the same colour. Other colouring techniques include edge colouring and face colouring.
+
+        Algorithms
+            Algorithms using breadth-first search or depth-first search
+            Greedy colouring
+        Applications
+            Used to schedule timetable.
+            Used to assign mobile radio frequencies.
+            Used to model and solve games such as Sudoku.
+            Used to check if a graph is bipartite.
+            Used to colour geographical maps of countries or states where adjacent countries or states have different colours.
+
+    7. Maximum flow
+        We can model a graph as a flow network with edge weights as flow capacities. In the maximum flow problem, we have to find a flow path that can obtain the maximum possible flow rate.
+
+        Algorithms
+            Ford-Fulkerson algorithm
+            Edmonds–Karp algorithm
+            Dinic’s algorithm
+        Applications
+            Used in airline scheduling to schedule flight crews.
+            Used in image segmentation to find the background and the foreground in an image.
+            Used to eliminate baseball teams that cannot win enough games to catch up to the current leader in their division.
+
+    8. Matching
+        A matching in a graph is a set of edges that does not have common vertices (i.e., no two edges share a common vertex). A matching is called a maximum matching if it contains the largest possible number of edges matching as many vertices as possible.
+
+        Algorithms
+            Hopcroft-Karp algorithm
+            Hungarian algorithm
+            Blossom algorithm
+        Applications
+            Used in matchmaking to match brides and grooms (the stable marriage problem).
+            Used to determine the vertex cover.
+            Used in transportation theory to solve problems in resource allocation and optimization in travel.
+
+51. Examples of Data Structures in real life
+https://stackoverflow.com/questions/54466641/examples-of-data-structures-in-real-life
+
+    You have to store social network "feeds". You do not know the size, and things may need to be dynamically added.
+        Hash table (uniquely identifies each feed while allowing additional feeds to be added (assuming dynamic resizing))
+
+    You need to store undo/redo operations in a word processor.
+        Linked List (doubly-linked: from one node, you can go backwards/forwards one by one)
+
+    You need to evaluate an expression (i.e., parse).
+        Tree (integral to compilers/automata theory; rules determine when to branch and how many branches to have. look up parse trees)
+
+    You need to store the friendship information on a social networking site. I.e., who is friends with who.
+        Graph (each person is a point, and connections/friendships are an edge)
+
+    You need to store an image (1000 by 1000 pixels) as a bitmap.
+        Array (2-dimensional, 1000x1000, storing color values)
+
+    To implement printer spooler so that jobs can be printed in the order of their arrival.
+        Queue (like a queue/line of people waiting to get through a checkpoint)
+
+    To implement back functionality in the internet browser.
+        Stack (you can add to the stack with each site visited, and pop off as necessary to go back, as long as you don't care about going forward. If you care about forward, this is the same scenario as the word processor, so linked list)
+
+    To store the possible moves in a chess game.
+        Tree (can follow any game move by move, down from the root to the leaf. Note that this tree is HUGE)
+
+    To store a set of ﬁxed key words which are referenced very frequently.
+        Hash table (If you want to use the keywords as keys, and get all things related to them, I would suggest a hash table with linked lists as the keys' corresponding values. I might be misunderstanding this scenario, the description confuses me a little as to how they are intended to be used)
+
+    To store the customer order information in a drive-in burger place. (Customers keep on coming and they have to get their correct food at the payment/food collection window.)
+        Queue or Hash Table (if this is a drive thru, assuming people aren't cutting in front of one another, it's like the printer question. If customers are placing orders ahead of time, and can arrive in any order, a hash table would be much better, with an order number or customer name as the key and the order details as the value)
+
+    To store the genealogy information of biological species.
+        Tree (look up phylogenic tree)
+

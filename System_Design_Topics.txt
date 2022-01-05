@@ -1,0 +1,1530 @@
+System Design Topics
+-1. FOUR Building Blocks of Architecting Systems for Scale
+0. Conversion Guide
+1. Performance vs scalability
+2a. CAP Theorem
+2b. Consistency Patterns
+2c. Availability Patterns
+3. SQL vs NoSQL
+4. Caching
+4a. Best practices for Caching
+4b. Strategies and How to Choose the Right One
+5. CDN
+6. Load Balancer:
+6a. What can we do when load balancer becomes the bottleneck?
+6b. What are the various Load Balancing Methods
+6c. Types of Load Balancers: Classic/Network, HTTP Based (Application),
+7. Proxies and Sessions
+7a. Sticky Sessions:
+7b. Reverse Proxy vs Forward Proxy
+7c. Load balancer vs reverse proxy
+7d. Load Balancer vs API Gateway
+8. Asynchronism:
+9. Databases
+9a1. Normalization
+9a2. 1NF
+9a3. 2NF
+9a4. 3NF
+9a5. Database-design-bad-practices
+9a6. How Facebook scaled MySQL
+9a. Pairing Master and Slave DB to make Webapps faster
+9b. Polygot Persistence
+9c. Strategies for dealing with heavy writes to a DB
+9d. What is CQRS?
+10. Consistent Hashing
+11. REST API
+11a. GET, POST, PUT, DELETE
+11b. How to design REST API
+11c. API Query, Filter and Pagination
+11d. API Versioning and Techniques/Best Practices
+12. Designing Idempotent API (How to handle Retries)
+13. Distributed Locks
+14. Distributed Transactions
+15. Pessimistic and Optimitic Locks
+16. What are Websockets - C10K Challenge
+16a. HTTP vs Websocket
+17. PostgreSQL vs MySQL
+18. What is Event Driven Architecture / Event Sourcing
+19. What is Non-blocking or AsyncIO Asynchronous IO
+--------------------------------------------------------------------------------
+Technology Related Notes; Distributed Systems - Key Concepts
+0. Things to read about
+1. Comparing Popular Databases
+4. ActiveMQ or RabbitMQ or ZeroMQ
+5. Running Java in Container
+6. Protocol Buffers
+7. Docker and Kubernetes
+8. Dockers and Containerization:
+9. Docker and Kubernetes
+10. Memcache, Redis
+11. Hadoop
+12. Apache Spark
+12b. Spark vs MapReduce
+13. Hive
+14. AWS
+14a. Amazon EC2 - Elastic Compute Cloud
+15. Kafta
+16. RabbitMQ
+17. Zookeeper
+18. Get zeromq message data into std::vector<char>
+--------------------------------------------------------------------------------
+High Scalability
+1. Netflix
+--------------------------------------------------------------------------------
+Key References:
+https://roadtoarchitect.com/2018/09/04/useful-technology-and-company-architecture/ - Contains architecture of various companies
+https://roadtoarchitect.com/category/system-design/
+
+https://github.com/prasadgujar/low-level-design-primer/blob/master/solutions.md
+https://igotanoffer.com/blogs/tech/system-design-interviews
+https://www.algoexpert.io/systems/questions
+https://www.educative.io/courses/grokking-the-system-design-interview
+https://www.interviewbit.com/courses/system-design/
+--------------------------------------------------------------------------------
+Open Questions:
+    1. How do you pair Read-through and Write Through Cache
+    2. Why is state india of a session stored in NoSql 1.14
+    3. Sharding:
+        a. How to solve celebrity problem
+        b. Denormalize the db so that queues can be performed in a single table
+--------------------------------------------------------------------------------
+SYSTEM DESIGN PRIMER:
+https://github.com/donnemartin/system-design-primer
+
+Scalability Video
+https://www.youtube.com/watch?v=-W9F__D3oY4
+
+-1. FOUR Building Blocks of Architecting Systems for Scale
+http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-systems-for-scale.html
+
+    1. Load Balancing: Scalability and Redundancy
+        - Horizontal scalability and redundancy are usually achieved via load balancing,
+          the spreading of requests across multiple resources.
+
+        1. Smart Clients.
+           The client has a list of hosts and load balances across that list of hosts.
+           Upside is simple for programmers. Downside is it's hard to update and change.
+
+        2. Hardware Load Balancers.
+           Targeted at larger companies, this is dedicated load balancing hardware.
+           Upside is performance.
+           Downside is cost and complexity.
+
+        3. Software Load Balancers.
+           The recommended approach, it's  software that handles load balancing, health checks, etc
+
+    2. Caching.
+        Make better use of resources you already have. Precalculate results for later use.
+
+        Application Versus Database Caching. Databases caching is simple because the programmer doesn't have to do it. Application caching requires explicit integration into the application code.
+        In Memory Caches. Performs best but you usually have more disk than RAM.
+        Content Distribution Networks. Moves the burden of serving static resources from your application and moves into a specialized distributed caching service.
+        Cache Invalidation. Caching is great but the problem is you have to practice safe cache invalidation.
+
+    3. Off-Line Processing.
+        Processing that doesn't happen in-line with a web requests. Reduces latency and/or handles batch processing.
+
+        Message Queues. Work is queued to a cluster of agents to be processed in parallel.
+        Scheduling Periodic Tasks. Triggers daily, hourly, or other regular system tasks.
+        Map-Reduce. When your system becomes too large for ad hoc queries then move to using a specialized data processing infrastructure.
+
+    4. Platform Layer.
+        Disconnect application code from web servers, load balancers, and databases using a service level API.
+        This makes it easier to add new resources, reuse infrastructure between projects, and scale a growing organization.
+
+0. Conversion Guide
+    2.5 million seconds per month
+    1 request per second = 2.5 million requests per month
+    40 requests per second = 100 million requests per month
+    400 requests per second = 1 billion requests per month
+
+    Latency Comparison Numbers
+    --------------------------
+    L1 cache reference                           0.5 ns
+    Branch mispredict                            5   ns
+    L2 cache reference                           7   ns                      14x L1 cache
+    Mutex lock/unlock                          100   ns
+    Main memory reference                      100   ns                      20x L2 cache, 200x L1 cache
+    Compress 1K bytes with Zippy            10,000   ns       10 us
+    Send 1 KB bytes over 1 Gbps network     10,000   ns       10 us
+    Read 4 KB randomly from SSD*           150,000   ns      150 us          ~1GB/sec SSD
+    Read 1 MB sequentially from memory     250,000   ns      250 us
+    Round trip within same datacenter      500,000   ns      500 us
+    Read 1 MB sequentially from SSD*     1,000,000   ns    1,000 us    1 ms  ~1GB/sec SSD, 4X memory
+    Disk seek                           10,000,000   ns   10,000 us   10 ms  20x datacenter roundtrip
+    Read 1 MB sequentially from 1 Gbps  10,000,000   ns   10,000 us   10 ms  40x memory, 10X SSD
+    Read 1 MB sequentially from disk    30,000,000   ns   30,000 us   30 ms 120x memory, 30X SSD
+    Send packet CA->Netherlands->CA    150,000,000   ns  150,000 us  150 ms
+
+    Notes
+    -----
+    1 ns = 10^-9 seconds
+    1 us = 10^-6 seconds = 1,000 ns
+    1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns
+    Handy metrics based on numbers above:
+
+    Read sequentially from disk at 30 MB/s
+    Read sequentially from 1 Gbps Ethernet at 100 MB/s
+    Read sequentially from SSD at 1 GB/s
+    Read sequentially from main memory at 4 GB/s
+    6-7 world-wide round trips per second
+    2,000 round trips per second within a data center
+
+1. Performance vs scalability
+    A way to look at performance vs scalability:
+        - If you have a performance problem, your system is slow for a single user.
+        - If you have a scalability problem, your system is fast for a single user but slow under heavy load.
+
+2a. CAP Theorem
+http://ksat.me/a-plain-english-introduction-to-cap-theorem
+    [C] Consistency - All nodes see the same data at the same time.
+
+    Simply put, performing a read operation will return the value of the most recent write operation causing all nodes to return the same data.
+
+    [A] Availability - Every request gets a response on success/failure.
+
+    Achieving availability in a distributed system requires that the system remains operational 100% of the time. Every client gets a response, regardless of the state of any individual node in the system.
+
+    [P] Partition Tolerance - System continues to work despite message loss or partial failure.
+
+    Most people think of their data store as a single node in the network. ¿This is our production SQL Server instance¿. Anyone who has run a production instance for more than four minutes, quickly realizes that this creates a single point of failure. A system that is partition-tolerant can sustain any amount of network failure that doesn¿t result in a failure of the entire network.
+
+
+2b. Consistency Patterns
+2c. Availability Patterns
+3. SQL vs NoSQL
+    Reasons for SQL:
+        Structured data
+        Strict schema
+        Relational data
+        Need for complex joins
+        Transactions
+        Clear patterns for scaling
+        More established: developers, community, code, tools, etc
+        Lookups by index are very fast
+
+    Reasons for NoSQL:
+        Semi-structured data
+        Dynamic or flexible schema
+        Non-relational data
+        No need for complex joins
+        Store many TB (or PB) of data
+        Very data intensive workload
+        Very high throughput for IOPS
+
+4. Caching
+4a. Best practices for Caching
+https://docs.microsoft.com/en-us/azure/architecture/best-practices/caching --> GREAT READ
+
+    1. Caching in distributed applications
+        Distributed applications typically implement either or both of the following strategies when caching data:
+            - Using a private cache, where data is held locally on the computer that's running an instance of an application or service.
+            - Using a shared cache, serving as a common source that can be accessed by multiple processes and machines.
+
+            a. Private Cache
+                - If you have multiple instances of an application that uses this model running concurrently, each application instance has its own independent cache holding its own copy of the data.
+
+            b. Shared Cache
+                - Shared caching ensures that different application instances see the same view of cached data. It does this by locating the cache in a separate location, typically hosted as part of a separate service
+
+    2. Decide when to cache data
+        - Read frequently but modified infrequently
+            - Caching typically works well with data that is immutable or that changes infrequently
+        - Don't use cache to store critical information
+        - Caching is less useful for dynamic data
+
+        Example:
+            For example, if a data item represents a multivalued object such as a bank customer with a name, address, and account balance, some of these elements might remain static (such as the name and address), while others (such as the account balance) might be more dynamic. In these situations, it can be useful to cache the static portions of the data and retrieve (or calculate) only the remaining information when it is required.
+
+    3. Cache highly dynamic data
+        - Consider the benefits of storing the dynamic information directly in the cache instead of in the persistent data store.
+            If the data is noncritical and does not require auditing, then it doesn't matter if the occasional change is lost.
+
+    4. Managing concurrency in a cache
+        Depending on the nature of the data and the likelihood of collisions, you can adopt one of two approaches to concurrency:
+        1. Optimistic
+            - Immediately prior to updating the data, the application checks to see whether the data in the cache has changed since it was retrieved. If the data is still the same, the change can be made. Otherwise, the application has to decide whether to update it.
+            - This approach is suitable for situations where updates are infrequent, or where collisions are unlikely to occur.
+
+        2. Pessimistic
+            - the application locks it in the cache to prevent another instance from changing it.
+            - This approach might be appropriate for situations where collisions are more likely, especially if an application updates multiple items in the cache and must ensure that these changes are applied consistently.
+4b. Strategies and How to Choose the Right One; Cache Policies
+https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/
+https://hazelcast.com/blog/a-hitchhikers-guide-to-caching-patterns/
+
+    1. Cache-Aside
+        The cache sits on the side and the application directly talks to both the cache and the database.
+        Pros:
+            - For read-heavy workloads.
+            - Another benefit is that the data model in cache can be different than the data model in database.
+            - Systems using cache-aside are resilient to cache failures
+        Cons:
+            - When cache-aside is used, the most common write strategy is to write data to the database directly. When this happens, cache may become inconsistent with the database.
+            - To deal with above, developers generally use time to live (TTL) and continue serving stale data until TTL expires.
+
+    2. Read-Through Cache
+        Read-through cache sits in-line with the database. When there is a cache miss, it loads missing data from database, populates the cache and returns it to the application.
+
+        - first time, it always results in cache miss and incurs the extra penalty of loading data to the cache.
+        - Developers deal with this by ‘warming’ or ‘pre-heating’ the cache by issuing queries manually.
+
+        Pros:
+            -
+        Cons:
+            - the data model in read-through cache cannot be different than that of the database.
+
+    Cache-Aside :: Read-Through
+        - In cache-aside, the application is responsible for fetching data from the database and populating the cache. In read-through, this logic is usually supported by the library or stand-alone cache provider.
+        - Unlike cache-aside, the data model in read-through cache cannot be different than that of the database.
+
+https://www.baeldung.com/cs/cache-write-policy
+    3. Write-Through Cache
+        - data is first written to the cache and then to the database.
+            - ONly after both, response is returned to the caller
+        - The cache sits in-line with the database and writes always go through the cache to the main database.
+
+        Pros:
+            - But when paired with read-through caches, we get all the benefits of read-through and we also get data consistency guarantee, freeing us from using cache invalidation techniques.
+            - best consistency,
+        Cons:
+            - extra write latency because data is written to the cache first and then to the main database.
+
+    4. Write-Around
+        - data is written directly to permanent storage, bypassing the cache. 
+        - This can reduce the cache being flooded with write operations that will not subsequently be re-read, 
+        but has the disadvantage that a read request for recently written data will create a "cache miss" and must be read from slower back-end storage and experience higher latency.
+
+    5. Write-Back
+        - data is written to cache alone and completion is immediately confirmed to the client.
+        - the backing store update happens asynchronously in a separate sequence
+        Pros:
+            - Write back caches improve the write performance and are good for write-heavy workloads.
+            - When combined with read-through, it works good for mixed workloads, where the most recently updated and accessed data is always available in cache.
+
+5. CDN
+https://medium.com/@lee5187415/concepts-you-should-know-about-large-system-design-c0a823c33a96
+
+    - Content Delivery Network: global network servers storing static files (image, videos, code files).
+    - CDN closer to the user has acquired the data from the remote server
+
+    Push Based
+    Pull Based
+
+6. Load Balancer:
+    - Typically comes in pairs
+    - Could be implemented as Active - Active or Active Passive mode
+      Active - Active:
+    - Load balancer can partition for various requests
+        - Frequent heart beat happens. So that if ones dies another will automatically be responsible
+
+    Advantages of Load Balancers:
+        1. SSL Termination
+            Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations.
+            Removes the need to install X.509 certificates on each server
+        2. Session Persistence
+            Issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions
+
+    Load balancers can route traffic based on various metrics, including:
+        Random
+        Least loaded
+        Sticky Session/cookies
+        Round robin or weighted round robin
+        Layer 4 :
+            Layer 4 load balancers look at info at the transport layer to decide how to distribute requests. Generally, this involves the source, destination IP addresses, and ports in the header, but not the contents of the packet.
+        Layer 7 :
+            Layer 7 load balancers look at the application layer to decide how to distribute requests. This can involve contents of the header, message, and cookies.
+
+6a. What can we do when load balancer becomes the bottleneck?
+https://stackoverflow.com/questions/55201050/what-can-we-do-when-load-balancer-becomes-the-bottleneck
+https://www.nginx.com/resources/glossary/dns-load-balancing/
+https://www.linux.com/learn/intro-to-linux/2018/3/simple-load-balancing-dns-linux
+
+    The usual approach is to publish the load balancer IP addresses under the same domain name.
+
+    This is called DNS load balancing. Clients will ask for the IP resolution for your load balancer's domain name and they will get different IP addresses on a round-robin fashion.
+
+    To configure DNS load balancing you have to add multiple A records for your load balancer's domain name to your DNS configuration.
+
+6b. What are the various Load Balancing Methods
+https://www.dnsstuff.com/what-is-server-load-balancing
+    1. Round Robin
+    2. Hash the IP
+    3. Node with least connections
+    4. Node with least response time
+    5. Node which will consume the least bandwidth
+
+6c. Types of Load Balancers: Classic/Network, HTTP Based (Application),
+https://www.f5.com/company/blog/top-five-scalability-patterns
+https://www.dnsstuff.com/what-is-server-load-balancing
+    HTTP(S) Load Balancing:
+        You can load balance requests based on anything HTTP – including the payload.
+            Most folks (smartly, in my opinion) restrict their load balancing rules to what can be found in the HTTP header.
+            That includes the host, the HTTP method, content-type, cookies, custom headers, and user-agent, among others.
+        This form of load balancing relies on layer 7, which means it operates in the application layer.
+        It allows you to form distribution decisions based on any information that comes with an HTTP address.
+
+    Network Load Balancing:
+        Network load balancing leverages network layer information to decide where to send network traffic.
+        This is accomplished through layer 4 load balancing, which is designed to handle all forms of TCP/UDP traffic.
+        Network load balancing is considered the fastest of all the load balancing solutions, but it tends to fall short when it comes to balancing the distribution of traffic across servers.
+
+7. Proxies and Sessions
+7a1. Sticky Sessions:
+https://stackoverflow.com/questions/10494431/sticky-and-non-sticky-sessions
+https://dev.to/gkoniaris/why-you-should-never-use-sticky-sessions-2pkj
+https://stackoverflow.com/questions/1553645/pros-and-cons-of-sticky-session-session-affinity-load-blancing-strategy
+        - Say you have two web servers, WWW1 and WWW2.
+        - You get a request from Alice and Load Balancer sends it to WWW1.
+        - Next time when you get a request from Alice you would like to send to same WWW1
+        - ANS:
+        - When WWW1 sends response, it can send a cookie object to the client. So next time when Alice sends a request it will use the cookie object
+        - The cookie objects identifies to send request to WWW1 instead of WWW2
+
+        Amazon ELB has built-in support to enable Sticky Sessions
+
+http://www.lecloud.net/post/9699762917/scalability-for-dummies-part-4-asynchronism
+
+7a2. Types of Sticky Session
+    1. Duration-based stickiness
+    2. Application-based stickiness
+        Application-based stickiness gives you the flexibility to set your own criteria for client-target stickiness.
+        When you enable application-based stickiness, the load balancer routes the first request to a target within the target group based on the chosen algorithm. The target is expected to set a custom application cookie that matches the cookie configured on the load balancer to enable stickiness. This custom cookie can include any of the cookie attributes required by the application.
+
+7a3. Drawback of storing sticky session on a node
+https://aws.amazon.com/caching/session-management/
+    A drawback for using storing sessions on an individual node is that in the event of a failure, you are likely to lose the sessions that were resident on the failed node. In addition, in the event the number of your web servers change, for example a scale-up scenario, it’s possible that the traffic may be unequally spread across the web servers as active sessions may exist on particular servers. If not mitigated properly, this can hinder the scalability of your applications.
+
+7a4. Session Replication and Sticky Session
+https://stackoverflow.com/questions/6367812/sticky-sessions-and-session-replication/11045462#11045462
+
+    Imagine you have only one user using your web app, and you have 3 tomcat instances.
+
+    1. If you're using session replication without sticky session :
+        Session requests will be sent randomly to a Tomcat instance
+
+    2. If you're using sticky session without replication :
+        Session requests will be sent to the same Tomcat instance (say A). Later if A goes down, new sessions will be sent to B or C.
+        But B or C won't have a copy of the user's session.
+        The user will lose his session and is disconnected from the web app although the web app is still running.
+
+    3. If you're using sticky session WITH session replication :
+        Session will be preserved even if an instance goes down
+
+7b. Reverse Proxy vs Forward Proxy
+https://stackoverflow.com/questions/224664/difference-between-proxy-server-and-reverse-proxy-server
+
+    First of all, the word "proxy" describes someone or something acting on behalf of someone else.
+
+    In the computer realm, we are talking about one server acting on the behalf of another computer.
+
+    FORWARD proxy
+    The proxy event in this case is that the "forward proxy" retrieves data from another web site on behalf of the original requestee.
+
+    A tale of 3 computers (part I)
+    For an example, I will list three computers connected to the internet.
+
+    X = your computer, or "client" computer on the internet
+    Y = the proxy web site, proxy.example.org
+    Z = the web site you want to visit, www.example.net
+    Normally, one would connect directly from X --> Z.
+
+    However, in some scenarios, it is better for Y --> Z on behalf of X, which chains as follows: X --> Y --> Z.
+
+    Reasons why X would want to use a forward proxy server:
+    Here is a (very) partial list of uses of a forward proxy server.
+
+    1) X is unable to access Z directly because
+
+    a) Someone with administration authority over X's internet connection has decided to block all access to site Z.
+
+    REVERSE proxy
+    A tale of 3 computers (part II)
+    For this example, I will list three computers connected to the internet.
+
+    X = your computer, or "client" computer on the internet
+    Y = the reverse proxy web site, proxy.example.com
+    Z = the web site you want to visit, www.example.net
+    Normally, one would connect directly from X --> Z.
+
+    However, in some scenarios, it is better for the administrator of Z to restrict or disallow direct access, and force visitors to go through Y first. So, as before, we have data being retrieved by Y --> Z on behalf of X, which chains as follows: X --> Y --> Z.
+
+    What is different this time compared to a "forward proxy," is that this time the user X does not know he is accessing Z, because the user X only sees he is communicating with Y. The server Z is invisible to clients and only the reverse proxy Y is visible externally. A reverse proxy requires no (proxy) configuration on the client side.
+
+    The client X thinks he is only communicating with Y (X --> Y), but the reality is that Y forwarding all communication (X --> Y --> Z again).
+
+    Reasons why Z would want to set up a reverse proxy server:
+    1) Z wants to force all traffic to its web site to pass through Y first.
+    a) Z has a large web site that millions of people want to see, but a single web server cannot handle all the traffic. So Z sets up many servers, and puts a reverse proxy on the internet that will send users to the server closest to them when they try to visit Z. This is part of how the Content Distribution Network (CDN) concept works.
+    2) The administrator of Z is worried about retaliation for content hosted on the server and does not want to expose the main server directly to the public.
+    a) Owners of Spam brands such as "Canadian Pharmacy" appear to have thousands of servers, while in reality having most websites hosted on far fewer servers. Additionally, abuse complaints about the spam will only shut down the public servers, not the main server.
+    In the above scenarios, Z has the ability to choose Y
+
+7c. Load balancer vs reverse proxy
+https://stackoverflow.com/questions/65174175/how-do-websocket-connections-work-through-a-load-balancer
+    Load Balancer
+        Main use case of the load balancer is to distribute the load among node in a group of the server to manage the resource utilisation of each node
+
+    Reverse Proxy
+        One of the use cases of a reverse proxy is to hide server meta information (ip,port etc..) from the client. It's some sort of security.
+
+    We can configure the reverse proxy with load balancer or we can configure the reverse proxy alone as well.
+
+    Configuring the load balancer for a single node doesn't make sense but we can configure the reverse proxy for a single node.
+
+    Deploying a load balancer is useful when you have multiple servers. Often, load balancers route traffic to a set of servers serving the same function.
+    Reverse proxies can be useful even with just one web server or application server, opening up the benefits described in the previous section.
+    Solutions such as NGINX and HAProxy can support both layer 7 reverse proxying and load balancing.
+
+    Disadvantage(s): reverse proxy
+        Introducing a reverse proxy results in increased complexity.
+        A single reverse proxy is a single point of failure, configuring multiple reverse proxies (ie a failover) further increases complexity.
+
+7d. Load balancer vs API Gateway
+https://stackoverflow.com/questions/61174839/load-balancer-and-api-gateway-confusion
+
+    Load Balancer ->
+        Its a software which works at protocol or socket level (eg. tcp, http, or port 3306 etc.) Its job is to balance the incoming traffic by distributing it to the destinations with various logics (eg. Round robin). I doesn't offer features such as authorisation checks, authentication of requests etc.
+
+    API Gateway ->
+        Its a managed service provided by various hosting companies to manage API operations to seamlessly scale the API infra. It takes cares of
+            access control,
+            Rate Limiting
+            Circuit Breakers
+            response caching,
+            response types,
+            authorisation,
+            authentication,
+            request throttling,
+            data handling,
+            identifying the right destinations based on custom rules, and seamless scaling the backend.
+
+        Generally Managed API gateways by default comes with scalable infra, so putting them behind load balancer might not make sense.
+
+        Q: Where are API gateways hosted? A DNS resolves domain name to a load balancer or api gateway?
+        A: About resolving the Domain, most likely always the DNS resolves to the load balancer, which in turn fetches the response from the API gateway service.
+
+            DNS -> Load Balancer -> API gateway -> Backend service
+
+8. Asynchronism:
+    - Pre-compute things ahead of time
+    - Callback mechanism
+
+9. Databases
+
+9a1. Normalization
+https://www.youtube.com/watch?v=xoTyrdT9SZI
+    Avoid / Removing redundant data from  a table to reduce
+        - Insertion Anomoly
+        - Update Anomoly
+        - Deletion Anomoly
+
+9a2. 1NF
+https://www.youtube.com/watch?v=mUtAPbb1ECM
+    Every table should at least follow 1NF ALWAYS
+    4 rules
+        1. Each column must have a single values; Should not have multiple values
+        2. All values in a column should be of same kind
+        3. Each column should have a unique name
+        4. Order in which the data is stored doesn't matter
+
+9a3. 2NF
+https://www.youtube.com/watch?v=R7UblSu4744
+    1. Table should be in 1NF
+    2. No partial dependencies in the table
+        - Dependency
+            - Eg: all fields are dependent on the Primary Key. this is a dependency
+            - A single column can uniquely identify a complete row or all the other columns in a row
+
+        - Partial Dependency
+            - In the below table primary key is a composite key : "student_id" + "subject_id"
+            - In the below example, "teacher" is dependent on "subject_id" not on both
+                - This is a partial dependency
+        - Many to Many Relationship
+            - Eg: Scores Table
+                student_id  subject_id    marks  teacher
+                    10          1           50      a
+                    10          2           60      b
+                    11          1           85      a
+                    11          2           75      b
+                    11          4           55      j
+            - In the table above, student_id + subject_id, forms a key
+            - We cannot get all the marks of Student Id "10"
+
+9a4. 3NF
+https://www.youtube.com/watch?v=aAx_JoEDXQA
+    1. Table should be in 2NF
+    2. No transitive dependencies in the table
+
+        Transitive Dependency
+            - When an attribute in a tables depends on some non-prime attribute and not on the prime attribute
+            - Eg: Scores Table
+                student_id  subject_id    marks  exam_name  total_marks
+                    10          1           50      a
+                    10          2           60      b
+                    11          1           85      a
+                    11          2           75      b
+                    11          4           55      j
+            - In the table above, student_id + subject_id, forms a key
+            - Total_marks depends on "Exam Name"
+                - This does not depend on any of the primary keys
+
+9a5. database-design-bad-practices
+https://www.toptal.com/database/database-design-bad-practices
+https://www.javatpoint.com/dbms-integrity-constraints
+
+    1. Poor Normalization
+        - At least 3NF
+    2. Redundancy
+        - Redundant fields and tables are a nightmare for developers
+    3. Bad Referential Integrity (Constraints)
+        - Referential integrity is one of the most valuable tools that database engines provide to keep data quality at its best.
+            - A referential integrity constraint is specified between two tables.
+            - In the Referential integrity constraints, if a foreign key in Table 1 refers to the Primary Key of Table 2, then every value of the Foreign Key in Table 1 must be null or be available in Table 2.
+    4. Not Taking Advantage of DB Engine Features
+        - Good use of Indexes
+        - Views that provide a quick and efficient way to look at your data
+        - Aggregate functions that help analyze information without programming
+        - Transactions or blocks of data-altering sentences that are all executed and committed or cancelled (rolled back)
+        - Locks that keep data safe and correct while transactions are being executed.
+    5. Composite Primary Keys
+        Beware, though, if your table with a composite primary key is expected to have millions of rows, the index controlling the composite key can grow up to a point where CRUD operation performance is very degraded. In that case, it is a lot better to use a simple integer ID primary key
+    6. Poor Indexing
+        - If the table is big enough, you will think, logically, to create an index on each column that you use to access this table only to find almost immediately that the performance of SELECTs improves but INSERTs, UPDATEs, and DELETEs drop. This, of course, is due to the fact that indexes have to be kept synchronized with the table, which means massive overhead for the DBE. This is a typical case of over indexing that you can solve in many ways; for instance, having only one index on all the columns different from the primary key that you use to query the table, ordering these columns from the most used to the least may offer better performance in all CRUD operations than one index per column.
+
+9a6. How Facebook scaled MySQL
+https://www.facebook.com/watch?v=695491248045
+https://gigaom.com/2011/12/06/facebook-shares-some-secrets-on-making-mysql-scale/
+
+    Database Monitoring
+        - Monitor Query performances
+
+    Online Schema Change: When a new Column is added
+        - Updates will be blocked for the entire duration
+        - All rows should be updated
+
+        So FB build a tool (called Online Schema Change)
+        - Create a new table,
+        - Copy data to the new table
+        - Set the new tabls as the target
+        - A SINGLE SELECT WON'T work
+            - Copy table in multiple steps
+            - Use ideas from Shlomi Noach
+
+    Adding an Edge to a graph
+        - This is limited by the rate at which Locks can be obtained on a row
+            start TRANSACTION
+            insert edge into the graph
+                update the "count" of edges coming out
+            Commit TRANSACTION
+        - Solution 1: Stored Procedure
+            - Same code written inside NySQL
+        - Soultion 2: Triggers
+
+        - With solution 1 or 2, rates at which we can add notes are doubled.
+
+        - Solution 3: No Stored Procuedure
+            - Use MySQL feature called Multi-Statement Query
+
+9a. Pairing Master and Slave DB to make Webapps faster
+    https://www.quora.com/What-are-Master-and-Slave-databases-and-how-does-pairing-them-make-web-apps-faster
+
+        Master databases receive and store data from applications. Slave databases get copies of that data from the masters. Slaves are therefore read-only from the application's point of view while masters are read-write.
+
+    Writes to a database are more "expensive" than reads. Checking for data integrity and writing updates to physical disks, for example, consume system resources. Most web applications require a much higher ratio of reads to writes. For example a person may write an article once and then it’s read thousands of times. So setting up master-slave replication in the right scenario lets an application distribute its queries efficiently. While one database is busy storing information the others can be busy serving it without impacting each other.
+
+    Most often each master and slave database are run on separate servers or virtual environments. Each is then tailored and optimized for their needs. Master database servers may be optimized for writing to permanent storage. Slave database servers may have more RAM for query caching. Tuning the environments and database settings makes each more optimized for reading or writing, improving the overall efficiency of the application.
+
+9b. Polygot Persistence
+    https://martinfowler.com/bliki/PolyglotPersistence.html
+
+    Using multiple DBs to solve the business requirement.
+
+9c. Strategies for dealing with heavy writes to a DB
+https://stackoverflow.com/questions/53037736/system-design-strategies-for-dealing-with-heavy-writes-to-a-db
+
+    Great Question:
+    Question:
+        what are some industry-standard strategies in dealing with a system that requires heavy writes to a particular table in a DB.
+
+        For simplicity sake, let's say the table is an inventory table for products, and has a column 'Product Name', and a column 'Count', and it simply increments by +1 each time a new Product is bought into the system. And there are millions of users buying different products every 2nd and we have to keep track of the latest count of each product, but it does not have to be strictly realtime, maybe a 5 min lag is acceptable.
+
+        My options are:
+
+        1) Master slave replication, where master DB handles all writes, and slaves handles reads. But this doesn't address the write-heavy problem
+
+        2) Sharding the DB based on product name range, or its hashed value. But what if there's a specific product (eg Apple) that receives large number of updates in a short time, it'll still hit the same DB.
+
+        3) Batched updates? Use some kind of caching and write to table every X number of seconds with a cumulative counts of whatever we've received in those X seconds? Is that a valid option, and what caching mechanism do I use? And what if there's a crash between the last read and next write? How do I recover the lost count?
+
+    Answer:
+        A solution to write thousands of records per second might be very different from incrementing a counter in the example you provided. More so, there could be no tables at all to handle such load. Consistency/availability requirements are also missing in your question and depending on them the entire architecture may be very different.
+
+        Anyway, back to your specific simplistic case and your options
+
+        Option 1 (Master slave replication)
+            The problem you’ll face here is database locking - every increment would require a record lock to avoid race conditions and you’ll quickly get your processes writing to your db waiting in a queue and your system down. Even under a moderate load )
+
+        Option 2 (Sharding the DB)
+            Your assumption is correct, not much different from p.1
+
+        Option 3 (Batched updates)
+            Very close. A caching layer provided by a light-weight storage providing concurrent atomic incremens/decrements with persistence not to lose your data. We’ve used redis for a similar purpose although any other key-value database would do as well - there are literally dozens of such databases around.
+
+            A key-value database, or key-value store, is a data storage paradigm designed for storing, retrieving, and managing associative arrays, a data structure more commonly known today as a dictionary or hash table
+
+        The solution would look as follows:
+            incoming requests → your backend server -> kv_storage (atomic increment(product_id))
+
+        And you'll have a "flushing" script running i.e. */5 that does the following (simplified):
+            1. for every product_id in kv_storage read its current value
+            2. update your db counter (+= value)
+            3. decrement the value in kv_storage
+
+        Further scaling
+            - if the script fails nothing bad would happen - the updates would arrive on next run
+            - if your backend boxes can't handle load - you can easily add more boxes
+            - if a single key-value db can't handle load - most of them support scaling over multiple boxes or a simple sharding strategy in your backend scripts would work fine
+            - if a single "flushing" script doesn't keep up with increments - you can scale them to multiple boxes and decide what key ranges are handled by each one
+
+9d. What is CQRS?
+https://garywoodfine.com/what-is-cqrs/
+https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs
+https://martinfowler.com/bliki/CQRS.html
+    
+    - Command Query Responsibility Segregation (CQRS)
+    - Developers use different models for Read and Update processes. Command and Query which are two operations for reads and writes respectively.
+    - The main use of CQRS pattern using it in high-performance applications to scale read and write operations. 
+        - CQRS allows you to separate the load from reads and writes allowing you to scale each independently.
+    - Thus, every method should either be a Command or a Query that performs separate actions but not both simultaneously.
+
+    - CQRS is a natural fit with the following:
+        Task based UI systems
+            Event-based programming models
+            Event-Driven Microservices
+            Eventual Consistency
+            Domain Driven Design
+
+https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs
+    - In traditional architectures, the same data model is used to query and update a database.
+        - This makes things unwieldy
+        - For example, on the read side, the application may perform many different queries, returning data transfer objects (DTOs) with different shapes. Object mapping can become complicated. On the write side, the model may implement complex validation and business logic.
+    - CQRS separates reads and writes into different models, using commands to update data, and queries to read data.
+        - Commands should be task-based, rather than data centric. ("Book hotel room", not "set ReservationStatus to Reserved").
+    - For greater isolation, you can physically separate the read data from the write data. In that case, the read database can use its own data schema that is optimized for queries.
+        - If separate read and write databases are used, they must be kept in sync. Typically this is accomplished by having the write model publish an event whenever it updates the database. 
+    - Using multiple read-only replicas can increase query performance
+    - Separation of the read and write stores also allows each to be scaled appropriately to match the load.
+
+10. Consistent Hashing
+https://www.adayinthelifeof.nl/2011/02/06/memcache-internals/
+    Consistent hashing uses a counter that acts like a clock. Once it reaches the ¿12¿, it wraps around to ¿1¿ again. Suppose this counter is 16 bits. This means it ranges from 0 to 65535.  If we visualize this on a clock, the number 0 and 65535 would be on the ¿12¿, 32200 would be around 6¿o clock, 48000 on 9 o¿clock and so on. We call this clock the continuum.
+
+    On this continuum, we place a (relative) large amount of ¿dots¿  for each server. These are placed randomly so we have a clock with a lot of dots.
+
+11. REST API
+    Examples:
+    http://localhost:8080/myappstore/customer/1/orders?iterm=microwave
+    http://localhost:8080/myappstore/customer/1/orders?iterm=microwave&quantity=1
+    http://localhost:8080/myappstore/customers?name=john
+    http://localhost:8080/myappstore/customers?name=john&dobStart=1995-12-01T00:00:00&dateEnd=2020-12-31T23:59:59
+
+    http://localhost:8080/myappstore/customers?limit=20&offset=0
+
+
+11a. GET, POST, PUT, DELETE
+    GET = READ
+    POST = CREATE
+    PUT = UPDATE
+    DELETE = DELETE
+
+    Idempotent:
+        PUT
+        DELETE
+        GET
+
+    PUT Example
+        {
+            "name:":"John Doe",
+            "cit":"Seattle",
+            "age":31
+        }
+
+11b. How to design REST API
+https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/
+https://medium.com/hashmapinc/rest-good-practices-for-api-design-881439796dc9
+    1. Accept and Respond with JSON
+    2. Use "nouns" instead of "verbs" in endpoint paths
+        - This is because our HTTP request method already has the verb.
+    3. Group / Nest entities logically
+        - For example, if we want an endpoint to get the comments for a news article, we should append the /comments path to the end of the /articles path.
+        - /customer/orders
+
+        - For example, if a user has posts and we want to retrieve a specific post by user, API can be defined as 
+            GET /users/123/posts/1 which will retrieve Post with id 1 by user with id 123
+
+    4. Handle errors gracefully and return standard error codes
+        400 Bad Request – This means that client-side input fails validation.
+        401 Unauthorized – This means the user isn’t not authorized to access a resource. It usually returns when the user isn’t authenticated.
+        403 Forbidden – This means the user is authenticated, but it’s not allowed to access a resource.
+        404 Not Found – This indicates that a resource is not found.
+        500 Internal server error – This is a generic server error. It probably shouldn’t be thrown explicitly.
+        502 Bad Gateway – This indicates an invalid response from an upstream server.
+        503 Service Unavailable – This indicates that something unexpected happened on server side (It can be anything like server overload, some parts of the system failed, etc.).
+    5. Allow filtering, sorting, and pagination
+        http://example.com/articles?sort=+author,-datepublished
+        Where + means ascending and - means descending. So we sort by author’s name in alphabetical order and datepublished from most recent to least recent.
+    6. Maintain good security practices
+        - using SSL/TLS for security is a must.
+    7. Cache data to improve performance
+    8. Versioning our APIs
+        Two main ways
+        a. Header
+        b. URL
+    9. HATEOAS: Hypermedia As Transfer Engine Of Application State
+        - Instead of embedding everything in the response, link URLs for other resources.
+            {
+            “name”: “John Doe”,
+            “self”: “http://localhost:8080/users/123",
+            “posts”: “http://localhost:8080/users/123",
+            “address”: “http://localhost:8080/users/123/address"
+            }
+        - If resources contain several fields that the user may not want to go through, it’s a good idea to show navigation to sub-resources then implement HATEOAS.
+        - It provides ease of navigation through a resource and its available actions.
+
+        Differnce in Opinion:
+            - There are a lot of mixed opinions as to whether the API consumer should create links or whether links should be provided to the API.
+            - HATEOS is useful when browsing the web where we go to a website's front page and follow links based on what we see on the page).
+                - When browsing a website, decisions on what links will be clicked are made at run time.
+            - HATEOAS on APIs might not be that good.  
+                - With an API, decisions as to what requests will be sent are made when the API integration code is written, not at run time.
+                - Could the decisions be deferred to run time? Sure, however, there isn't much to gain going down that route as code would still not be able to handle significant API changes without breaking.
+
+    10. Swagger for documentation
+
+11c. API Query, Filter and Pagination
+    http://localhost:8080/myappstore/customer/1/orders?iterm=microwave
+    http://localhost:8080/myappstore/customer/1/orders?iterm=microwave&quantity=1
+    http://localhost:8080/myappstore/customer?name=john
+    http://localhost:8080/myappstore/customer?name=john&dobStart=1995-12-01T00:00:00&dateEnd=2020-12-31T23:59:59
+
+    Filter:
+        GET /users/123/posts?state=published
+
+    Searching
+        GET /users/123/posts?state=published&ta=scala
+
+    Pagination
+        http://localhost:8080/myappstore/customers?limit=20&offset=0
+
+    Sorting
+        http://example.com/articles?sort=+author,-datepublished
+            Where + means ascending and - means descending. So we sort by author’s name in alphabetical order and datepublished from most recent to least recent.
+
+11d. API Versioning and Techniques/Best Practices
+https://cloud.google.com/blog/products/api-management/api-design-which-version-of-versioning-is-right-for-you
+https://medium.com/swlh/api-versioning-7f6f713c6b14
+https://www.xmatters.com/blog/blog-four-rest-api-versioning-strategies/
+https://www.akana.com/blog/api-versioning
+https://stackoverflow.com/questions/389169/best-practices-for-api-versioning
+
+	One reason why many APIs never need versioning is that you can make many small enhancements to APIs in a backwards-compatible way, usually by adding new properties or new entities that older clients can safely ignore.
+	Your first thought should always be to try to find a backwards-compatible way of introducing an API change without versioning;
+
+	The more clients an API has, and the greater the independence of the clients from the API provider, the more careful the API provider has to be about API compatibility and versioning.
+
+	Providers of APIs sometimes make different choices if the consumers of the API are internal to the same company, or limited to a small number of partners. In that case they may be tempted to try to avoid versioning by coordinating with consumers of the API to introduce a breaking change. In our experience this approach has limited success; it typically causes disruption and a large coordination effort on both sides.
+		- It is usually much better for API providers to treat internal users and partners as if they were external consumers whose development process is independent.
+
+	Format Versioning VS Entity Versioning
+		1. Format Versioning
+			The important point in this example is that version 1 and version 2 of the API both allow access to the same bank accounts. The API change introduces no new entities; versions 1 and 2 simply provide two different "formats" [my word1] for manipulating the same bank accounts.
+
+			Further, any change made using the version 2 API changes the underlying account entity in ways that are visible to clients of the version 1 API. In other words, each new API version defines a new format for viewing a common set of entities. It’s in this sense that I use the phrase "format versioning" in the rest of this post.
+
+		2. Entity Versioning
+			Extending the bank example, imagine that the bank wants to introduce checking accounts based on blockchain technology, which requires the underlying data for the account to be organized quite differently. If the API that was previously exposed for accounts made assumptions that are simply not compatible with the new technology, it's not going to be possible to read and manipulate the blockchain accounts using the old API. The bank’s solution is the same as the car company’s: introduce "version 2" checking accounts. Each account is either a conventional account or a blockchain account, but not both at the same time. Each version has its own API that are the same where possible but different where necessary.
+
+			While "entity versioning" is attractive for its flexibility and simplicity, it also is not free; you still have to maintain the old versions for as long as people use them.
+
+	1. Embedding API version in the URI?
+			GET https://www.sampleresource.com/v1/foo
+		Lot of companies use this (FB, Twitter, Airbnb etc)
+
+		a. How will API Consumers be notified of the API Version Change
+			The new API version will be sent to consumers through a PATCH
+			- Major patch
+				- In this approach, your URI would denote the breaking changes to the API. A new major version requires creating a new API. The version number is what you use to route to the correct host via your URI.
+			- Minor patch
+				- You update change logs to inform API consumers of new functionality or bug fixes. Or, you could correlate minor to a lifecycle coordinator iteration, in which that minor introduces a non-breaking functionality.
+
+		Pros
+			This looks like the easiest way forward.
+
+		Cons
+			It violates one of the dictums of good API design - That every URI should contain unique resources.
+			URI versioning can cause issues with HTTP caching. An HTTP cache would have to store each version.
+			However, this would be against the HATEOAS constraint [Hypermedia As The Engine Of Application State].
+                This is because having a resource address/URI would change over time.
+                I would conclude that API versions should not be kept in resource URIs for a long time meaning that resource URIs that API users can depend on should be permalinks.
+            With API versions clearly visible in URI there's a caveat: one might also object this approach since API history becomes visible/aparent in the URI design and therefore is prone to changes over tim
+			Adding a version number to the API would mean that the client is making an assumption of how an API would behave and would thus mean that the API is no longer opaque.
+			If we go by the book, clients should be dynamic and only rely on the API responses [see. web browsers].
+			It might also mean that incrementing the API version would translate into branching the entire API resource.
+
+	2. Through content negotiation
+			GET /foo
+			Accept: application/ion+json;v2.0
+
+			curl -H “Accept: application/vnd.xm.device+json; version=1” http://www.example.com/api/products
+
+		This approach allows us to version a single resource representation instead of versioning the entire API which gives us a more granular control over versioning. It also creates a smaller footprint in the code base as we don’t have to fork the entire application when creating a new version. Another advantage of this approach is that it doesn’t require implementing URI routing rules introduced by versioning through the URI path.
+
+		Pros:
+			- Allows us to version a single resource representation instead of versioning the entire API
+			- More granular control over versioning
+			- Creates a smaller footprint
+			- Doesn’t require implementing URI routing rules.
+
+		Cons:
+			- Requiring HTTP headers with media types makes it more difficult to test and explore the API using a browser
+			- More often than not, content negotiation needs to be implemented from scratch as there are few libraries that offer that out of the box.
+
+
+	3. Query Parameters
+			www.sampleresource.com/api/foo?version=1
+		 Include the version number as a query parameter.
+
+		Pros:
+			This approach is very straightforward
+			Easy to set defaults to the latest version in case of missing query parameters.
+		Cons:
+			Query parameters are more difficult to use for routing requests to the proper API version
+
+	4. Custom Headers
+			curl -H “accepts-version: 1.0”
+			www.sampleresource.com/api/foo
+		REST APIs can also be versioned by providing custom headers with the version number included as an attribute.
+
+		Pros:
+			The main difference between this approach and the two previous ones is that it doesn’t clutter the URI with versioning information.
+		Cons:
+			It requires custom headers
+
+12. Designing Idempotent API (How to handle Retries)
+https://stripe.com/blog/idempotency
+https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/
+https://8thlight.com/blog/colin-jones/2018/09/18/microservices-arent-magic-handling-timeouts.html
+https://ieftimov.com/post/understand-how-why-add-idempotent-requests-api/
+https://medium.com/@saurav200892/how-to-achieve-idempotency-in-post-method-d88d7b08fcdd
+
+    List of idempotent Rest methods:
+        HTTP Method
+        OPTIONS
+        GET
+        HEAD
+        PUT
+        DELETE
+    List of non-idempotent methods:
+        HTTP Method
+        POST
+        PATCH
+
+    Timeout Error
+        - Clients can Retry. But retry may not solve.
+        - Good clients to Exponentially Backoff
+            - But we should avoid https://en.wikipedia.org/wiki/Thundering_herd_problem by introducing a random JITTER
+
+    Options at hand in case of a timeout (You got a timeout from a remote API)
+        1. When you hit a timeout, assume it succeeded and move on.
+            - Never do this
+        2. For read requests, use a cached or default value.
+            - If your request is a read request and isn’t intended to have any effects on the remote end, this could be a good bet.
+        3. Assume the remote operation failed, and try again automatically.
+            - Without the idempotent property, you could create duplicate data
+        4. Check and see if the request succeeded, and try again if it’s safe.
+            - This approach clearly requires the existence of an endpoint that can give us the information we want.
+
+    - Use Idempotent Keys (A unique ID) in the request
+        - but this Key should be stored so that on a new request, the backend can check if the Idempotent Key was processed earlier
+            - Response and Previous Status will also be stored so that it can be immediately returned to the client
+        - TTL for keys to expire after some time
+        - DON'T USE DB for the Keys
+        - keeping all of these keys can be expensive, especially if you do it in an nonoptimal way like by using the database.
+            - Whenever you are in doubt if data like this should be stored in a database, always think about how crucial to your business this data is.
+            - For the scope of our example, this data is not business critical, therefore we could offload it to a different type of storage.
+        - Use REDIS. It has TTL as well and superfast to fetch something
+
+13. Distributed Locks
+    Requirements:
+        - Mutal Exclusion; Two or more processes shouldn't acquire the same lock
+        - Deadlock free
+        - Fault tolerant
+
+    Step 1:
+        A ----------> Lock Manager ----------> Cache
+            - A requests a lock
+            - Lock Manager records the entry in cache and provides a lock to A
+        B ---------->
+
+        Happy Path Flow:
+            1. A acquires a lock;
+            2. A releases the lock
+            3. B acquires the lock
+        Problem
+            1. What is A holds the lock for a long time?
+
+    Step 2:
+        Add TTL in the Cache for each lock awarded
+
+        Problem:
+            1. There is no ownership info stored in the Cache. So A can release B's lock
+
+    Step 3:
+        - Add Unique Id for each Thread
+            - Use Zookeeper or some coordination service to provide the Unique ID.
+        - Alternatively can use Timestamp
+            - There should be a "tolerance" for the Timestamp as all machines won't have the same time.
+
+        Problem
+           - SPOF Single Point of Failure
+
+    Step 4:
+        - Have multiple Lock Managers.
+        - How will Lock be obtained?
+            - A should get Lock from all instances
+            - A has to acquire lock from 5 instances and release from 5 instances
+
+        Problem:
+            - What if an instance goes down
+
+    Step 5:
+        - Instead take locks from N/2 + 1 machines
+
+
+14. Distributed Transactions
+    - WAL Write Ahead Lock is the common method to enforce Transactions
+        - Acquire Lock on the rows that will be affected
+
+
+15. Pessimistic and Optimitic Locks
+    - Wikipedia updates are optimistic locks
+    - Timeouts saves from anyone holding a lock for a long time
+
+    Optimistic Locks
+        - Store version of an entity
+        - Use version to compare if an entity is updated
+
+        - Take when there are FEWER CONFLICTS
+
+    Pessimistic Locks
+        - Take when there are MORE CONFLICTS
+
+16. What are Websockets
+    A WebSocket is a persistent bi-directional communication channel between a client (e.g. a browser) and a backend service. In contrast with HTTP request/response connections, websockets can transport any number of protocols and provide server-to-client message delivery without polling.
+
+    Useful for Chat applications
+
+16a. HTTP vs Websocket
+    HTTP:
+        Client          Server
+              Request
+           -------------->
+
+              Response
+           <--------------
+
+        Connection Terminated
+           ...............
+
+        A request is needed to respond; you to constantly ask the server if there are new messages in order to receive them.
+
+    Websocket:
+        Client          Server
+              Request
+           -------------->
+
+              Handshake
+           <--------------
+
+             Web Socket
+           <------------->
+
+        They allow bidirectional data flow so you just have to listen for any data. You can just listen to the server and it will send you a message when it’s available.
+
+16b. Scaling Websockets - C10K
+http://goroutines.com/10m - Concurrent 10 million Problem - C10K chanllenge
+https://stackoverflow.com/questions/47268038/websockets-and-scalability
+https://stackoverflow.com/questions/4852702/do-html-websockets-maintain-an-open-connection-for-each-client-does-this-scale
+
+http://phoenixframework.org/blog/the-road-to-2-million-websocket-connections
+https://blog.jayway.com/2015/04/13/600k-concurrent-websocket-connections-on-aws-using-node-js/
+
+    1) Single server instance and single client ==> How many websockets will be created and how many connections to websockets?
+        If your client creates one webSocket connection, then that's what there will be one webSocket connection on the client and one on the server. It's the client that creates webSocket connections to the server so it is the client that determines how many there will be. If it creates 3, then there will be 3. If it creates 1, then there will be 1. Usually, the client would just create 1.
+
+    2) Single server instance and 10 clients ==> How many websockets will be created and how many connections to websockets?
+        As described above, it depends upon what the client does. If each client creates 1 webSocket connection and there are 10 clients connected to the server, then the server will see a total of 10 webSocket connections.
+
+17. PostgreSQL vs MySQL
+https://www.keboola.com/blog/postgresql-vs-mysql
+
+https://blog.panoply.io/postgresql-vs.-mysql
+    - MySQL: Airbnb, Uber, Twitter, Facebook, Youtube
+    - Postgres: Netflix, Instagram, Groupon, Instacart, Reddit, Spotify
+
+    - Before
+        - MySQL has had a reputation as an extremely fast database for read-heavy workloads,
+        - In the past, Postgres performance was more balanced - reads were generally slower than MySQL, but it was capable of writing large amounts of data more efficiently,
+            - and it handled concurrency better.
+
+    - Now
+        - Both MySQL and Postgres are similar in performance
+
+    How to pick MySQL vs Postgres
+        - Your cloud platform provider might offer benefits when it comes to running one database over the other, or the application framework you use might be better suited for one, or your fellow developers may have opinions. MySQL is more widely used than PostgreSQL, which means more developers and DBAs are familiar with it, and more third-party tools are available for it.
+
+        PostgreSQL:
+            Pros:
+                - Postgres boasts a wider range of indexes, such as partial indexes (used for filtering data), bitmap indexes (efficient when working with categorical data), and expression indexes (indexes as a function of other columns). 
+                - Heavy Analytic workloads
+                    - Postgres has developed more advanced features for analytics
+                    - Window functions - aggregate computations across rows, such as moving averages and cumulative sums.
+                    - Date and time functions, which shorten date and time computations from multiple code lines to single function calls.
+                    - Generate series, allowing you to create sets of objects, such as a date range or all integers. Extremely useful when analyzing data sources with missing data.
+                - NoSQL features
+                    - not only allow you to store JSON objects as a column but also to index that column for massively improved performance
+                    - MySQL has some XML support, but Postgres implements XML data structures as a native data type, widening the possibilities of XML manipulations and transformations
+                    - Has native UUID data type for smoother handling of ID fields
+                - Time and Date functionality
+                    - MySQL will always convert the timestamp to the local time on the server in UTC before storing the value. On the other hand, Postgres offers the same functionality but also has the option to save timestamps with timezone as a native data type.
+                - ACID compliance
+                    - Postgres is fully ACID standards-compliant, while MySQL is only compliant when running on the InnoDB storage engine.
+            Cons:
+
+        MySQL
+            Pros:
+                - Popularity: More popular and broader support
+                - Support: Has paid customer support
+                - Both Postgres and MySQL support the storage of JSON objects
+                - slightly faster and scoring high on “ease of use”, it offers great value for low technical investment.
+            Cons:
+
+18. What is Event Driven Architecture / Event Sourcing
+https://www.youtube.com/watch?v=rJHTK2TfZ1I
+https://aws.amazon.com/event-driven-architecture/
+    Event-driven architectures have three key components: event producers, event routers, and event consumers.
+    Able to recreate state using the old events
+
+19. What is Non-blocking or AsyncIO Asynchronous IO
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Technology Related Notes; Distributed Systems - Key Concepts
+
+0. Things to read about
+- Frangipani: A Scalable Distributed File System
+- https://dancres.github.io/Pages/
+
+1. Comparing Popular Databases
+https://blog.nahurst.com/visual-guide-to-nosql-systems
+
+    - Relational systems are the databases we've been using for a while now. RDBMSs and systems that support ACIDity and joins are considered relational.
+    - Key-value systems basically support get, put, and delete operations based on a primary key.
+    - Column-oriented systems still use tables but have no joins (joins must be handled within your application). Obviously, they store data by column as opposed to traditional row-oriented databases. This makes aggregations much easier.
+    - Document-oriented systems store structured "documents" such as JSON or XML but have no joins (joins must be handled within your application). It's very easy to map data from object-oriented software to these systems.
+
+    Consistent, Available (CA) Systems have trouble with partitions and typically deal with it with replication. Examples of CA systems include:
+        Traditional RDBMSs like Postgres, MySQL, etc (relational)
+        Vertica (column-oriented)
+        Aster Data (relational)
+        Greenplum (relational)
+
+    Consistent, Partition-Tolerant (CP) Systems have trouble with availability while keeping data consistent across partitioned nodes. Examples of CP systems include:
+        BigTable (column-oriented/tabular)
+        Hypertable (column-oriented/tabular)
+        HBase (column-oriented/tabular)
+        MongoDB (document-oriented)
+        Terrastore (document-oriented)
+        Redis (key-value)
+        Scalaris (key-value)
+        MemcacheDB (key-value)
+        Berkeley DB (key-value)
+
+    Available, Partition-Tolerant (AP) Systems achieve "eventual consistency" through replication and verification. Examples of AP systems include:
+        Dynamo (key-value)
+        Voldemort (key-value)
+        Tokyo Cabinet (key-value)
+        KAI (key-value)
+        Cassandra (column-oriented/tabular)
+        CouchDB (document-oriented)
+        SimpleDB (document-oriented)
+        Riak (document-oriented)
+
+https://s3.amazonaws.com/daily-builds/RavenDBMythology-11.pdf
+    DocumentDB:
+        A document database is, at its core, a key/value store where the value is in a known format.
+        A document db requires that the data will be stored in a format that the database can understand.
+        The format can be XML, JSON (JavaScript Object Notation), Binary JSON (BSON), or just about anything, as long as the database can understand the document internal structure.
+        In practice, most document databases uses JSON (or BSON) or XML.
+        Why is this such a big thing? Because when the database can understand the format of the data that you send it, it can now do server side operations on that data.
+        In most document databases, that means that we can now allow queries on the document data.
+        The known format also means that it is much easier to write tooling for the database, since it is possible to show, display and edit the data
+
+        The major benefit of using a document database comes from the fact that while it has all the benefits of a key/value store, you aren’t limited to just querying by key.
+        By storing information in a form that the database can understand, we can ask the server to do things for us, such as querying.
+
+
+    Column DB:
+        The are very similar on the surface to relational database, but they are actually quite different beast. Some of the difference is storing data by rows (relational) vs. storing data by columns (column family databases).
+
+4. ActiveMQ or RabbitMQ or ZeroMQ
+Sparrow, Starling, Kestrel, Amazon SQS, Beanstalkd, Kafka, IronMQ
+http://kuntalganguly.blogspot.com/2014/08/message-queue-comparision.html
+https://stackoverflow.com/questions/42151544/when-to-use-rabbitmq-over-kafka
+https://stackoverflow.com/questions/731233/activemq-or-rabbitmq-or-zeromq-or
+
+    These 3 messaging technologies have different approaches on building distributed systems :
+
+    RabbitMQ is one of the leading implementation of the AMQP protocol (along with Apache Qpid). Therefore, it implements a broker architecture, meaning that messages are queued on a central node before being sent to clients. This approach makes RabbitMQ very easy to use and deploy, because advanced scenarios like routing, load balancing or persistent message queuing are supported in just a few lines of code.
+        Problem:
+            - However, it also makes it less scalable and ¿slower¿ because the central node adds latency and message envelopes are quite big.
+
+    ZeroMq is a very lightweight messaging system specially designed for high throughput/low latency scenarios like the one you can find in the financial world. Zmq supports many advanced messaging scenarios. Zmq is very flexible but you¿ll have to study the 80 pages or so of the guide (which I recommend reading for anybody writing distributed system, even if you don¿t use Zmq) before being able to do anything more complicated than sending messages between 2 peers.
+        Problem:
+            - Contrary to RabbitMQ, you¿ll have to implement most of them yourself by combining various pieces of the framework (e.g : sockets and devices).
+
+    ActiveMQ is in the middle ground. Like Zmq, it can be deployed with both broker and P2P topologies. Like RabbitMQ, it¿s easier to implement advanced scenarios but usually at the cost of raw performance. It¿s the Swiss army knife of messaging :-).
+
+    Finally, all 3 products:
+        have client apis for the most common languages (C++, Java, .Net, Python, Php, Ruby, ¿)
+        have strong documentation
+        are actively supported
+
+    Kafka
+        - Apache Kafka is used as streaming platform (messaging + distributed storage + processing of data).
+            - ActiveMQ (like IBM MQ or JMS in general) is used for traditional messaging
+        Kafka does work on the push - pull basic and capable of handling large scale real time streams.It also provide ordered message delivery.Kafka's performance is effectively constant with respect to data size so retaining lots of data will not be a problem.Kafka is ideal if you are looking for reliable distributed messaging system with good throughput.Kafka is used at LinkedIn and it handles over 10
+billion message writes per day with a sustained load that averages 172,000 messages per second.
+
+4b. RabbitMQ vs Kafka
+https://stackoverflow.com/questions/42151544/when-to-use-rabbitmq-over-kafka
+    - RabbitMQ is a solid, general-purpose message broker that supports several protocols such as AMQP, MQTT, STOMP, etc. It can handle high throughput. A common use case for RabbitMQ is to handle background jobs or long-running task, such as file scanning, image scaling or PDF conversion.
+    - Kafka is a message bus optimized for high-throughput ingestion data streams and replay. Use Kafka when you have the need to move a large amount of data, process data in real-time or analyze data over a time period. In other words, where data need to be collected, stored, and handled.
+
+5. Running Java in Container
+https://mesosphere.com/blog/java-container/
+
+6. Protocol Buffers
+https://developers.google.com/protocol-buffers/docs/javatutorial
+http://www.baeldung.com/google-protocol-buffer
+
+7. Docker and Kubernetes
+Steps to setup Docker and Kubernetes:
+https://store.docker.com/editions/community/docker-ce-desktop-mac
+    Install docker edge (This installs Kubernetes too. So you don¿t need miniKube or docker-machine (This is previously needed for Mac))
+    After installing docker, open preferences to install and Start Kubernetes
+
+    As kubernetes got installed, we don¿t need to install the below two kubernetes stuff
+        brew install kubernetes-cli
+        brew install kubernetes-helm
+
+Docker and Kubernetes commands:
+    $ docker
+    $ docker info
+    $ kubectl
+    $ kubectl version
+    $ kubectl config get-contexts
+    $ kubectl get nodes
+    $ kubectl get pods
+    $ kubectl get pods --namespace kube-system
+    $ kubectl describe pod pod_name
+
+    Update config file in ~/.kube/config
+
+    This gives all the deployments in the cluster
+        $ kubectl get deployments
+
+    The following command should now show updated kubernetes contexts
+        $ kubectl config get-contexts
+
+    To switch context:
+        $ kubectl config use-context monolith
+        $ kubectl get nodes
+        $ kubectl get pods
+        $ kubectl describe pod pod_name
+
+    ~ $docker run hello-world
+        Unable to find image 'hello-world:latest' locally
+        latest: Pulling from library/hello-world
+        ca4f61b1923c: Pull complete
+        Digest: sha256:97ce6fa4b6cdc0790cda65fe7290b74cfebd9fa0c9b8c38e979330d547d22ce1
+        Status: Downloaded newer image for hello-world:latest
+
+        Hello from Docker!
+        This message shows that your installation appears to be working correctly.
+
+        To generate this message, Docker took the following steps:
+         1. The Docker client contacted the Docker daemon.
+         2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+            (amd64)
+         3. The Docker daemon created a new container from that image which runs the executable that produces the output you are currently reading.
+         4. The Docker daemon streamed that output to the Docker client, which sent it to your terminal.
+
+    To try something more ambitious, you can run an Ubuntu container with:
+     $ docker run -it ubuntu bash
+
+8. Dockers and Containerization:
+
+    https://www.cio.com/article/2924995/software/what-are-containers-and-why-do-you-need-them.html
+
+
+    Containers are a solution to the problem of how to get software to run reliably when moved from one computing environment to another.
+
+
+    "You're going to test using Python 2.7, and then it's going to run on Python 3 in production and something weird will happen. Or you'll rely on the behavior of a certain version of an SSL library and another one will be installed. You'll run your tests on Debian and production is on Red Hat and all sorts of weird things happen."
+
+    And it's not just different software that can cause problems, he added. "The network topology might be different, or the security policies and storage might be different but the software has to run on it."
+
+
+    How do containers solve this problem?
+
+    Put simply, a container consists of an entire runtime environment: an application, plus all its dependencies, libraries and other binaries, and configuration files needed to run it, bundled into one package. By containerizing the application platform and its dependencies, differences in OS distributions and underlying infrastructure are abstracted away
+
+
+    What's the difference between containers and virtualization?
+
+    With virtualization technology, the package that can be passed around is a virtual machine, and it includes an entire operating system as well as the application. A physical server running three virtual machines would have a hypervisor and three separate operating systems running on top of it.
+
+
+    By contrast a server running three containerized applications with Docker runs a single operating system, and each container shares the operating system kernel with the other containers.
+
+
+    What other benefits do containers offer?
+
+    A container may be only tens of megabytes in size, whereas a virtual machine with its own entire operating system may be several gigabytes in size. Because of this, a single server can host far more containers than virtual machines.
+
+    Another major benefit is that virtual machines may take several minutes to boot up their operating systems and begin running the applications they host, while containerized applications can be started almost instantly. That means containers can be instantiated in a "just in time" fashion when they are needed and can disappear when they are no longer required, freeing up resources on their hosts.
+
+    A third benefit is that containerization allows for greater modularity. Rather than run an entire complex application inside a single container, the application can be split in to modules (such as the database, the application front end, and so on). This is the so-called microservices approach.  Applications built in this way are easier to manage because each module is relatively simple, and changes can be made to modules without having to rebuild the entire application. Because containers are so lightweight, individual modules (or microservices) can be instantiated only when they are needed and are available almost immediately.
+
+
+    https://techcrunch.com/2016/10/16/wtf-is-a-container/
+
+    Containers work very differently. Because they only contain the application and the libraries, frameworks, etc. they depend on, you can put lots of them on a single host operating system. The only operating system on the server is that one host operating system and the containers talk directly to it. That keeps the containers small and the overhead extremely low.
+
+    Virtual machines use so-called ¿hypervisors¿ as the emulation layer between the guest and host operating system. For containers, the rough equivalent is the container engine, with the Docker Engine being the most popular one right now.
+
+
+    Containers simply make it easier for developers to know that their software will run, no matter where it is deployed. They also enable what¿s often called ¿microservices.¿ Instead of having one large monolithic application, microservices break down applications into multiple small parts that can talk to each other. This means different teams can more easily work on different parts of an application and, as long as they make no major changes to how those applications interact, they can work independently of each other. That makes developing software faster and testing it for possible errors easier.
+
+
+    To manage all of these containers, you need another set of specialized software like Kubernetes (which Google originally developed) that helps you push those containers out to different machines, makes sure that they run and lets you spin up a few more containers with a specific application when demand increases. And if you want containers to know about each other, you also still need some way of setting up a virtual network, too, that can assign IP addresses to every container.
+
+
+    https://cloud.google.com/containers/
+
+    Why Containers?
+
+    Instead of virtualizing the hardware stack as with the virtual machines approach, containers virtualize at the operating system level, with multiple containers running atop the OS kernel directly. This means that containers are far more lightweight: they share the OS kernel, start much faster, and use a fraction of the memory compared to booting an entire OS.
+
+
+    https://docs.docker.com/engine/docker-overview/#docker-engine
+
+    Docker Engine is a client-server application with these major components:
+
+
+    A server which is a type of long-running program called a daemon process (the dockerd command).
+
+
+    A REST API which specifies interfaces that programs can use to talk to the daemon and instruct it what to do.
+
+
+    A command line interface (CLI) client (the docker command).
+
+
+    The Docker daemon
+
+    The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
+
+    The Docker client
+
+    The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API. The Docker client can communicate with more than one daemon.
+
+    Docker registries
+
+    A Docker registry stores Docker images. Docker Hub and Docker Cloud are public registries that anyone can use, and Docker is configured to look for images on Docker Hub by default. You can even run your own private registry. If you use Docker Datacenter (DDC), it includes Docker Trusted Registry (DTR).
+
+    When you use the docker pull or docker run commands, the required images are pulled from your configured registry. When you use the docker push command, your image is pushed to your configured registry.
+
+    Docker store allows you to buy and sell Docker images or distribute them for free. For instance, you can buy a Docker image containing an application or service from a software vendor and use the image to deploy the application into your testing, staging, and production environments. You can upgrade the application by pulling the new version of the image and redeploying the containers.
+
+    Docker objects
+
+    When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. This section is a brief overview of some of those objects.
+
+    IMAGES
+
+    An image is a read-only template with instructions for creating a Docker container. Often, an image is based onanother image, with some additional customization. For example, you may build an image which is based on the ubuntu image, but installs the Apache web server and your application, as well as the configuration details needed to make your application run.
+
+    You might create your own images or you might only use those created by others and published in a registry. To build your own image, you create a Dockerfile with a simple syntax for defining the steps needed to create the image and run it. Each instruction in a Dockerfile creates a layer in the image. When you change the Dockerfile and rebuild the image, only those layers which have changed are rebuilt. This is part of what makes images so lightweight, small, and fast, when compared to other virtualization technologies.
+
+    CONTAINERS
+
+    A container is a runnable instance of an image. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
+
+    By default, a container is relatively well isolated from other containers and its host machine. You can control how isolated a container¿s network, storage, or other underlying subsystems are from other containers or from the host machine.
+
+    A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear.
+
+    Example docker run command
+
+    The following command runs an ubuntu container, attaches interactively to your local command-line session, and runs /bin/bash.
+
+    $ docker run -i -t ubuntu /bin/bash
+
+    When you run this command, the following happens (assuming you are using the default registry configuration):
+
+        If you do not have the ubuntu image locally, Docker pulls it from your configured registry, as though you had run docker pull ubuntu manually.
+        Docker creates a new container, as though you had run a docker container create command manually.
+        Docker allocates a read-write filesystem to the container, as its final layer. This allows a running container to create or modify files and directories in its local filesystem.
+        Docker creates a network interface to connect the container to the default network, since you did not specify any networking options. This includes assigning an IP address to the container. By default, containers can connect to external networks using the host machine¿s network connection.
+        Docker starts the container and executes /bin/bash. Because the container is run interactively and attached to your terminal (due to the -i and -t) flags, you can provide input using your keyboard and output is logged to your terminal.
+        When you type exit to terminate the /bin/bash command, the container stops but is not removed. You can start it again or remove it.
+
+    SERVICES
+
+    Services allow you to scale containers across multiple Docker daemons, which all work together as a swarm with multiple managers and workers. Each member of a swarm is a Docker daemon, and the daemons all communicate using the Docker API. A service allows you to define the desired state, such as the number of replicas of the service that must be available at any given time. By default, the service is load-balanced across all worker nodes. To the consumer, the Docker service appears to be a single application.
+
+9. Docker and Kubernetes
+https://blog.containership.io/k8svsdocker
+    At their core, containers are a way of packaging software. What makes them special is that when you run a container, you know exactly how it will run - it¿s predictable, repeatable and immutable. There are no unexpected errors when you move it to a new machine, or between environments. All of your application¿s code, libraries, and dependencies are packed together in the container as an immutable artifact. You can think of running a container like running a virtual machine, without the overhead of spinning up an entire operating system. For this reason, bundling your application in a container vs. a virtual machine will improve startup time significantly.
+
+    Docker:
+        Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing.
+        If you want to run multiple containers across multiple machines - which you¿ll need to do if you¿re using microservices - there is still a lot of work to do.
+
+        You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare.
+        Luckily, that¿s where Kubernetes comes in.
+
+    Kubernetes:
+        Kubernetes is an open source container orchestration platform, allowing large numbers of containers to work together in harmony, reducing operational burden. It helps with things like:
+
+            Running containers across many different machines
+            Scaling up or down by adding or removing containers when demand changes
+            Keeping storage consistent with multiple instances of an application
+            Distributing load between the containers
+            Launching new containers on different machines if something fails
+
+    When used together, both Docker and Kubernetes are great tools for developing a modern cloud architecture, but they are fundamentally different at their core. It is important to understand the high-level differences between the technologies when building your stack.
+
+10. Memcache, Redis
+https://stackoverflow.com/questions/10558465/memcached-vs-redis
+    Redis is more powerful, more popular, and better supported than memcached. Memcached can only do a small fraction of the things Redis can do. Redis is better even where their features overlap.
+
+    For anything new, use Redis.
+
+    Both tools are powerful, fast, in-memory data stores that are useful as a cache. Both can help speed up your application by caching database results, HTML fragments, or anything else that might be expensive to generate.
+
+    Redis is what is called a key-value store, often referred to as a NoSQL database
+    In-memory key-value store, originally intended for caching
+    In-memory data structure store, used as database, cache and message broker
+
+11. Hadoop
+    Hadoop is an open-source software framework for storing data and running applications on clusters of commodity hardware.
+
+    Hadoop makes it possible to run applications on systems with thousands of commodity hardware nodes, and to handle thousands of terabytes of data. Its distributed file system facilitates rapid data transfer rates among nodes and allows the system to continue operating in case of a node failure. This approach lowers the risk of catastrophic system failure and unexpected data loss, even if a significant number of nodes become inoperative. Consequently, Hadoop quickly emerged as a foundation for big data processing tasks, such as scientific analytics, business and sales planning, and processing enormous volumes of sensor data, including from internet of things sensors.
+
+12. Apache Spark
+    Apache Spark is a fast, in-memory data processing engine with elegant and expressive development APIs to allow data workers to efficiently execute streaming, machine learning or SQL workloads that require fast iterative access to datasets
+
+12b. Spark vs MapReduce
+https://stackoverflow.com/questions/32572529/why-is-spark-faster-than-hadoop-map-reduce
+
+    Spark uses "lazy evaluation" to form a directed acyclic graph (DAG) of consecutive computation stages. In this way, the execution plan can be optimized, e.g. to minimize shuffling data around. In contrast, this should be done manually in MapReduce by tuning each MR step. (It would be easier to understand this point if you are familiar with the execution plan optimization in RDBMS or the DAG-style execution of Apache Tez)
+    Spark ecosystem has established a versatile stack of components to handle SQL, ML, Streaming, Graph Mining tasks. But in the hadoop ecosystem you have to install other packages to do these individual things.
+
+    One of the main limitations of MapReduce is that it persists the full dataset to HDFS after running each job. This is very expensive, because it incurs both three times (for replication) the size of the dataset in disk I/O and a similar amount of network I/O. Spark takes a more holistic view of a pipeline of operations. When the output of an operation needs to be fed into another operation, Spark passes the data directly without writing to persistent storage. This is an innovation over MapReduce that came from Microsoft's Dryad paper, and is not original to Spark.
+
+    The main innovation of Spark was to introduce an in-memory caching abstraction. This makes Spark ideal for workloads where multiple operations access the same input data. Users can instruct Spark to cache input data sets in memory, so they don't need to be read from disk for each operation.
+
+    What about Spark jobs that would boil down to a single MapReduce job? In many cases also these run faster on Spark than on MapReduce. The primary advantage Spark has here is that it can launch tasks much faster. MapReduce starts a new JVM for each task, which can take seconds with loading JARs, JITing, parsing configuration XML, etc. Spark keeps an executor JVM running on each node, so launching a task is simply a matter of making an RPC to it and passing a Runnable to a thread pool, which takes in the single digits of milliseconds.
+
+    Lastly, a common misconception probably worth mentioning is that Spark somehow runs entirely in memory while MapReduce does not. This is simply not the case. Spark's shuffle implementation works very similarly to MapReduce's: each record is serialized and written out to disk on the map side and then fetched and deserialized on the reduce side.
+
+13. Hive
+
+14. AWS
+14a. Amazon EC2 - Elastic Compute Cloud
+    Can create virtual servers
+    We can tell how powerful these servers should be
+    Can choose the region where you want the virtual server to be
+
+17. Zookeeper
+    Distributed Configuration Management system
+
+18. Get zeromq message data into std::vector<char>
+https://stackoverflow.com/questions/26820715/get-zeromq-message-data-into-stdvectorchar
+
+    You can do something like below.
+        zmq::message_t request;
+        socket.recv (&request);
+        std::string msg_str(static_cast<char*>(request.data()), request.size());
+
+    and then store strings in vector. It would be much easier for processing...
+        std::vector<std::string> strVec;
+        strVec.push_back(msg_str);
+--------------------------------------------------------------------------------
+HighScalability:
+1. Netflix:
+http://highscalability.com/blog/2017/12/11/netflix-what-happens-when-you-press-play.html
+Netflix uses two different clouds: AWS and Open Connect.
+
+The three parts of Netflix: client, backend, content delivery network (CDN).
+The client is the user interface on any device used to browse and play Netflix videos
+
+Everything that happens before you hit play happens in the backend, which runs in AWS. That includes things like preparing all new incoming video and handling requests from all apps, websites, TVs, and other devices.
+
+Everything that happens after you hit play is handled by Open Connect. Open Connect is Netflix¿s custom global content delivery network (CDN). Open Connect stores Netflix video in different locations throughout the world. When you press play the video streams from Open Connect, into your device, and is displayed by the client
+
+DATA CENTERS:
+EC2 was just getting started in 2007, about the same time Netflix¿s streaming service started. There was no way Netflix could have launched using EC2.
+
+Netflix built two datacenters, located right next to each other. They experienced all the problems we talked about in earlier chapters.
+
+MOVE TO AWS
+For three days in August 2008, Netflix could not ship DVDs because of corruption in their database. This was unacceptable. Netflix had to do something.
+
+The experience of building datacenters had taught Netflix an important lesson¿they weren¿t good at building datacenters.
+
+AWS offered highly reliable databases, storage and redundant datacenters. Netflix wanted cloud computing, so it wouldn¿t have to build big unreliable monoliths anymore.
+
+UNDIFFERENTIATED HEAVY LIFTING.
+Undifferentiated heavy lifting are those things that have to be done, but don¿t provide any advantage to the core business of providing a quality video watching experience. AWS does all the undifferentiated heavy lifting for Netflix. This lets Netflixians focus on providing business value.
+
+GLOBAL SERVICES MODEL
+Netflix calls this their global services model. Any customer can be served out of any region. This is amazing. And it doesn¿t happen automatically. AWS has no magic sauce for handling region failures or serving customers out of multiple regions. Netflix has done all this work on its own. Netflix is a pioneer in figuring out how to create reliable systems using multiple regions.
+
+What happens if the entire Dublin region fails? Does that mean Netflix should stop working for you? Of course not!
+
+Netflix, after detecting the failure, redirects you to Virginia. Your device would now talk to the Virginia region instead of Dublin. You might not even notice there was a failure.
+
+How often does an AWS region fail? Once a month. Well, a region doesn¿t actually fail every month. Netflix runs monthly tests. Every month Netflix causes a region to fail on purpose just to make sure its system can handle region level failures. A region can be evacuated in six minutes.
+
+Netflix could add servers when it needed them and return them when it didn¿t. Rather than have a lot of extra computers hanging around doing nothing just to handle peak load, Netflix only had to pay for what was needed, when it was needed.
+
+WHAT HAPPENS IN AWS BEFORE YOU PRESS PLAY?
+Anything that doesn¿t involve serving video is handled in AWS.
+
+This includes scalable computing, scalable storage, business logic, scalable distributed databases, big data processing and analytics, recommendations, transcoding, and hundreds of other functions.
+
+Scalable computing and scalable storage.
+
+Scalable computing is EC2 and scalable storage is S3. Nothing new for us here.
+
+Your Netflix device¿iPhone, TV, Xbox, Android phone, tablet, etc.¿talks to a Netflix service running in EC2.
+
+View a list of potential videos to watch? That¿s your Netflix device contacting a computer in EC2 to get the list.
+
+Ask for more details about a video? That¿s your Netflix device contacting a computer in EC2 to get the details.
+--------------------------------------------------------------------------------
+

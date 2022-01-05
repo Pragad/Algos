@@ -63,7 +63,7 @@ Genral Programming / OOPS Concepts
 31. When will you use ASCII instead of UTF-8?
 32. Number of characters in ASCII
 33. Unicode and Character Set
-34. How to read a file in reverse
+34. How to read a file in reverse / Implement Tail / Display last n lines in a file
 35. How to programmatically cause a core dump in C/C++
 36. How to store a password in database
 37. Abstract Class vs Interface - When to use each
@@ -77,6 +77,7 @@ UML / DESIGN Questions
 5. What are mock Objects
 6. UML Diagrams
 7. Factory Pattern vs Singleton Pattern
+7b. Abstract Factory vs Factory
 8. MVC PAttern
 9. Elevator
 10. Bike Shop
@@ -169,16 +170,7 @@ MISC
 7. JSON vs JSON-LD
 -----------------------------------------------
 DISTRIBUTED SYSTEMS:
-1. Docker and Kubernetes
-2. Memcache, Redis
-3. Hadoop
-4. Apache Spark
-4b. Spark vs MapReduce
-5. Hive
-6. AWS
-6a. Amazon EC2 - Elastic Compute Cloud
-7. Kafta
-8. RabbitMQ
+
 --------------------------------------------------------------------------------
 BEHAVIORAL QUESTIONS
 1. Disagree with Manager / Team Member
@@ -1266,8 +1258,13 @@ https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-de
 34.
 How to read a file in reverse
 http://stackoverflow.com/questions/8664705/how-to-read-file-from-end-to-start-in-reverse-order-in-java
+https://stackoverflow.com/questions/10164597/how-would-you-implement-tail-efficiently
 
     Apache Commons IO has the ReversedLinesFileReader
+
+    First use fseek to find the end-of-file then subtract 512 and fseek to that offset, then read forward from there to end. Count the number of line-breaks because if there are too few you will have to do the same with a subtracted offset of 1024 ... but in 99% of cases 512 will be enough.
+
+    This (1) avoids reading the whole file forward and (2) the reason why this is probably more efficient than reading backwards from the end is that reading forward is typically faster.
 
 35. How to programmatically cause a core dump in C/C++
 https://stackoverflow.com/questions/979141/how-to-programmatically-cause-a-core-dump-in-c-c
@@ -1437,6 +1434,16 @@ http://stackoverflow.com/questions/2094211/difference-between-singleton-and-fact
 SINGLETON:
     restricting the instantiation of a class to one object
 
+7b. Abstract Factory vs Factory
+https://stackoverflow.com/questions/5739611/what-are-the-differences-between-abstract-factory-and-factory-design-patterns
+https://www.youtube.com/watch?v=EcFVTgRHJLM
+https://www.youtube.com/watch?v=v-GiuMmsXj4
+
+    Factory Pattern
+        - 
+    Abstract Factory Pattern
+
+
 8. MVC PAttern
 http://programmers.stackexchange.com/questions/127624/what-is-mvc-really
 
@@ -1602,6 +1609,38 @@ http://stackoverflow.com/questions/34510/what-is-a-race-condition
         }
 
     Race conditions can be avoided by employing some sort of locking mechanism before the code that accesses the shared resource:
+
+2a. Lock, Mutex, Monitor, Semaphore
+2021/12/12
+https://stackoverflow.com/questions/2332765/what-is-the-difference-between-lock-mutex-and-semaphore
+https://abhijit-k-adhikari.me/2012/04/17/lock-monitor-mutex-semaphore/
+
+    Lock:
+        - A lock allows only one thread to enter the part that's locked and the lock is not shared with any other processes.
+
+    Mutex:
+        - A mutex is the same as a lock but it can be system wide (shared by multiple processes).
+        - Kernel object used for allowing the execution of just one active thread from many others, among different processes. The other non selected threads (@ acquiring this object) are put to sleep.
+            - Mutex supports thread ownership, thread termination notification, recursion (multiple 'acquire' calls from same thread) and 'priority inversion avoidance'.
+            - [Interprocess capability, very safe to use, a kind of 'high level' synchronization object].
+        - Much more heavy-weight than a Monitor
+        - Unlike monitors, however, a mutex can be used to synchronize threads across processes.
+
+    Semaphore:
+        - A semaphore does the same as a mutex but allows x number of threads to enter, this can be used for example to limit the number of cpu, io or ram intensive tasks running at the same time.
+        - Kernel object used for allowing the execution of a group of active threads from many others. The other non selected threads (@ acquiring this object) are put to sleep.
+            - [Interprocess capability however not very safe to use because it lacks following 'mutex' attributes: thread termination notification, recursion?, 'priority inversion avoidance'?, etc].
+
+        - A semaphore is like a nightclub: it has a certain capacity, enforced by a bouncer. Once it’s full, no more people can enter, and a queue builds up outside.
+            - Then, for each person that leaves, one person enters from the head of the queue.
+            - The constructor requires a minimum of two arguments: the number of places currently available in the nightclub and the club’s total capacity.
+
+    Monitor:
+        - Handles all the details of lock acquisition and release
+        - automatically acquire necessary locks
+        - It is LIMITED to the Current Application Domain
+            -     A Monitor is managed, and more lightweight - but is restricted to your AppDomain.
+        - Use a Monitor unless you need to synchronize across process boundaries.
 
 2. Mutex vs Semaphores:
     http://www.geeksforgeeks.org/mutex-vs-semaphore/
@@ -2047,8 +2086,7 @@ There are four conditions that are necessary to achieve deadlock:
 - Deadlock prevention or avoidance - Do not allow the system to get into a deadlocked state.
 - Deadlock detection and recovery - Abort a process or preempt some resources when deadlocks are detected.
 
-10.
-Latency vs Throughput
+10. Latency vs Throughput
 https://community.cadence.com/cadence_blogs_8/b/sd/archive/2010/09/13/understanding-latency-vs-throughput
 
     Latency is the time required to perform some action or to produce some result.
@@ -3242,81 +3280,4 @@ http://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-wha
 7. JSON vs JSON-LD
 https://dashjoin.medium.com/json-schema-schema-org-json-ld-whats-the-difference-e30d7315686a
 
-
 --------------------------------------------------------------------------------
-DISTRIBUTED SYSTEMS:
-1. Docker and Kubernetes
-https://blog.containership.io/k8svsdocker
-    At their core, containers are a way of packaging software. What makes them special is that when you run a container, you know exactly how it will run - it¿s predictable, repeatable and immutable. There are no unexpected errors when you move it to a new machine, or between environments. All of your application¿s code, libraries, and dependencies are packed together in the container as an immutable artifact. You can think of running a container like running a virtual machine, without the overhead of spinning up an entire operating system. For this reason, bundling your application in a container vs. a virtual machine will improve startup time significantly.
-
-    Docker:
-        Once you¿ve recovered from the excitement of spinning up your first few Docker containers, you¿ll realize that something is missing.
-        If you want to run multiple containers across multiple machines - which you¿ll need to do if you¿re using microservices - there is still a lot of work to do.
-
-        You need to start the right containers at the right time, figure out how they can talk to each other, handle storage considerations, and deal with failed containers or hardware. Doing all of this manually would be a nightmare.
-        Luckily, that¿s where Kubernetes comes in.
-
-    Kubernetes:
-        Kubernetes is an open source container orchestration platform, allowing large numbers of containers to work together in harmony, reducing operational burden. It helps with things like:
-
-            Running containers across many different machines
-            Scaling up or down by adding or removing containers when demand changes
-            Keeping storage consistent with multiple instances of an application
-            Distributing load between the containers
-            Launching new containers on different machines if something fails
-
-    When used together, both Docker and Kubernetes are great tools for developing a modern cloud architecture, but they are fundamentally different at their core. It is important to understand the high-level differences between the technologies when building your stack.
-
-2. Memcache, Redis
-https://stackoverflow.com/questions/10558465/memcached-vs-redis
-    Redis is more powerful, more popular, and better supported than memcached. Memcached can only do a small fraction of the things Redis can do. Redis is better even where their features overlap.
-
-    For anything new, use Redis.
-
-    Both tools are powerful, fast, in-memory data stores that are useful as a cache. Both can help speed up your application by caching database results, HTML fragments, or anything else that might be expensive to generate.
-
-    Redis is what is called a key-value store, often referred to as a NoSQL database
-    In-memory key-value store, originally intended for caching
-    In-memory data structure store, used as database, cache and message broker
-
-3. Hadoop
-    Hadoop is an open-source software framework for storing data and running applications on clusters of commodity hardware.
-
-    Hadoop makes it possible to run applications on systems with thousands of commodity hardware nodes, and to handle thousands of terabytes of data. Its distributed file system facilitates rapid data transfer rates among nodes and allows the system to continue operating in case of a node failure. This approach lowers the risk of catastrophic system failure and unexpected data loss, even if a significant number of nodes become inoperative. Consequently, Hadoop quickly emerged as a foundation for big data processing tasks, such as scientific analytics, business and sales planning, and processing enormous volumes of sensor data, including from internet of things sensors.
-
-4. Apache Spark
-    Apache Spark is a fast, in-memory data processing engine with elegant and expressive development APIs to allow data workers to efficiently execute streaming, machine learning or SQL workloads that require fast iterative access to datasets
-
-4b. Spark vs MapReduce
-https://stackoverflow.com/questions/32572529/why-is-spark-faster-than-hadoop-map-reduce
-
-    Spark uses "lazy evaluation" to form a directed acyclic graph (DAG) of consecutive computation stages. In this way, the execution plan can be optimized, e.g. to minimize shuffling data around. In contrast, this should be done manually in MapReduce by tuning each MR step. (It would be easier to understand this point if you are familiar with the execution plan optimization in RDBMS or the DAG-style execution of Apache Tez)
-    Spark ecosystem has established a versatile stack of components to handle SQL, ML, Streaming, Graph Mining tasks. But in the hadoop ecosystem you have to install other packages to do these individual things.
-
-    One of the main limitations of MapReduce is that it persists the full dataset to HDFS after running each job. This is very expensive, because it incurs both three times (for replication) the size of the dataset in disk I/O and a similar amount of network I/O. Spark takes a more holistic view of a pipeline of operations. When the output of an operation needs to be fed into another operation, Spark passes the data directly without writing to persistent storage. This is an innovation over MapReduce that came from Microsoft's Dryad paper, and is not original to Spark.
-
-    The main innovation of Spark was to introduce an in-memory caching abstraction. This makes Spark ideal for workloads where multiple operations access the same input data. Users can instruct Spark to cache input data sets in memory, so they don't need to be read from disk for each operation.
-
-    What about Spark jobs that would boil down to a single MapReduce job? In many cases also these run faster on Spark than on MapReduce. The primary advantage Spark has here is that it can launch tasks much faster. MapReduce starts a new JVM for each task, which can take seconds with loading JARs, JITing, parsing configuration XML, etc. Spark keeps an executor JVM running on each node, so launching a task is simply a matter of making an RPC to it and passing a Runnable to a thread pool, which takes in the single digits of milliseconds.
-
-    Lastly, a common misconception probably worth mentioning is that Spark somehow runs entirely in memory while MapReduce does not. This is simply not the case. Spark's shuffle implementation works very similarly to MapReduce's: each record is serialized and written out to disk on the map side and then fetched and deserialized on the reduce side.
-
-5. Hive
-
-6. AWS
-6a. Amazon EC2 - Elastic Compute Cloud
-    Can create virtual servers
-    We can tell how powerful these servers should be
-    Can choose the region where you want the virtual server to be
-
-7. Kafka
-    Distributed Event Steaming Message PubSub system
-
-8. RabbitMQ
-
-9. Zookeeper
-    Distributed Configuration Management system
-
-
-
-
