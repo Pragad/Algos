@@ -42,7 +42,7 @@ using namespace std;
  *
  * PROBLEM 5b. Find the max sub array product
  * int maxProduct(vector<int>& nums)
- * 
+ *
  * PROBLEM 5c. Find the SUB ARRAY that will give you a sum
  * bool subArrayWithSum(int arr[], uint32_t num, int sum)
  *
@@ -90,7 +90,7 @@ using namespace std;
  *
  * PROBLEM 16. 2 missing numbers
  * void findTwoMissing(vector<int> nums, uint32_t totalNums)
- 
+
  * PROBLEM 17. Find minimum number of conference room required
  * uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
  *
@@ -171,7 +171,7 @@ using namespace std;
  *
  * PROBLEM 31b. Given N points, find k points closest to a, b
  * vector<point> findKclosestPointsToXY(vector<point> pointsList, uint32_t k)
-* 
+*
  * PROBLEM 32. Move even numbers to front and odd numbers to back with Order preserved
  * void moveEvenNosOddNosWithOrder(vector<int> nums)
  *
@@ -190,7 +190,7 @@ using namespace std;
  * PROBLEM 36. A function with inclusion times and exclusion times
  * pair<uint32_t, uint32_t> findInclusiveExclusiveTimeOfFunction(const vector<functionDetails>& funcTimes, string funcName)
  *
- * PROBLEM 37. 
+ * PROBLEM 37.
  */
 
 // Structure to define a x-axis y-axis point
@@ -223,7 +223,7 @@ void printVector(const vector<T>& myData)
     cout << myData[0];
     for (uint32_t i = 1; i < myData.size(); i++)
     {
-        cout << ", " << myData[i]; 
+        cout << ", " << myData[i];
     }
 
     cout << endl;
@@ -273,7 +273,7 @@ bool findFirstNonMatchingChar(const string& s1, const string& s2, char& result)
                 {
                     break;
                 }
-            }    
+            }
 
             // Find first occurence of s1[i] in s2
             for (; y < shortLen; y++)
@@ -427,7 +427,7 @@ bool isValid(int** twoDmat, int row, int col, bool** visited, uint32_t maxRows, 
 void dfs(int** twoDmat, uint32_t row, uint32_t col, bool** visited, uint32_t maxRows, uint32_t maxCols)
 {
     visited[row][col] = true;
-    
+
     for (uint32_t i = 0; i < 8; i++)
     {
         int newRow = row + rowDirection[i];
@@ -634,7 +634,7 @@ void maxSumSubSequence(int arr[], int num)
         {
             curSum = arr[i] + curSum;
         }
-                
+
         if (maxSum < curSum)
         {
             stIdx2 = stIdx;
@@ -669,7 +669,7 @@ int maxProduct(vector<int> nums)
         // For each new number the max product till now can be either
         //      a. Max till now     * a[i] - If result gives a positive value
         //      b. Min Neg till now * a[i] - If current number is negative
-        //      c. a[i]                    - If 
+        //      c. a[i]                    - If
         maxPosProd = max(max(tmpMax * nums[i], tmpMin * nums[i]), nums[i]);
         minNegProd = min(min(tmpMax * nums[i], tmpMin * nums[i]), nums[i]);
         finalProd = max(maxPosProd, finalProd);
@@ -700,7 +700,7 @@ bool subArrayWithSum(int arr[], uint32_t num, int sum)
         curSum += arr[i];
 
         // Say Sum = 25, Arr = 5, 5, 5, 25.
-        // when i has 25, we have to remove all the previous entries. 
+        // when i has 25, we have to remove all the previous entries.
         while (curSum > sum && startIdx < i)
         {
             curSum -= arr[startIdx];
@@ -727,7 +727,7 @@ bool subArrayWithSum(int arr[], uint32_t num, int sum)
 // http://www.geeksforgeeks.org/find-the-largest-subarray-with-0-sum/
 //             IMP: This does not give the maximum length sub array.
 //             This just gives all the such sub array
-//             
+//
 //             VERY IMP: Should do curSum - Sum NOT sum-curSum
 //
 //             Returns false if no such array is present
@@ -737,11 +737,11 @@ bool subArrayWithSum(int arr[], uint32_t num, int sum)
 //             Map      : 4, 5,  2, 4, 10,  5
 // CUR - SUM   Map Find : 1, 2, -1, 1,  7,  2
 //             Check if each element in Map Find is present in the MAP.
-//             We can see that "2" is present in the map at index 2. 
+//             We can see that "2" is present in the map at index 2.
 //             Now we are at Index 5, with a Sum of 5. This denotes that after Index 2 where
 //             our Sum was 2. We have gotnumber in the middle which would contribute to a
 //             Sum of 3.
-//              
+//
 //             Sum      : 4
 //             Index    : 0, 1,  2, 3, 4,  5
 //             Arr      : 4, 1, -3, 2, 6 , -5
@@ -751,7 +751,7 @@ bool subArrayWithSum(int arr[], uint32_t num, int sum)
 //             Sum :    5
 //             Idx:     0, 1,  2, 3,  4,  5, 6, 7 ,  8, 9,10, 11
 //             Arr :    4, 1, -3, 2,  6, -5, 4, 1 , -3, 2, 6 , -5
-//             Map : 0, 4, 5,  2, 4, 10,  5, 9, 10,  7, 9, 15, 10 
+//             Map : 0, 4, 5,  2, 4, 10,  5, 9, 10,  7, 9, 15, 10
 //             Find: 0,-1, 0, -3,-1,  5,  0, 4,  5,  2, 4, 10,  5
 // ------------------------------------------------------------------------------------------------
 bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
@@ -762,7 +762,7 @@ bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
     bool isSubArrayPresent = false;
 
     // Add 0 to the map. This will help in finding if EXACT_SUM is present in the
-    // array. 
+    // array.
     // Let the Value of 0 be -1. If the first element is Sum, we can find it.
     sumMap[0] = vector<int> {-1};
 
@@ -784,7 +784,7 @@ bool allSubArraysWithSum(int arr[], uint32_t num, int sum)
 
         // Even if we have found, we should still go ahead and insert this sum to our Map
         auto itr2 = sumMap.find(curSum);
-        
+
         if (itr2 != sumMap.end())
         {
             itr2->second.push_back(i);
@@ -908,7 +908,7 @@ int maxLengthSubArraySum(vector<int> nums)
 
     for (uint32_t i = 1; i < nums.size(); i++)
     {
-        
+
         int tmpSum = nums[i] + maxExclusiveSum;
         maxExclusiveSum = max(maxExclusiveSum, maxInclusiveSum);
         maxInclusiveSum = tmpSum;
@@ -1374,7 +1374,7 @@ void printLargestSubArrayZeroOne(int arr[], uint32_t num)
 //             is sorted.
 // ------------------------------------------------------------------------------------------------
 // This returns unique three pairs without any duplicates
-vector<vector<int>> threeSum(vector<int>& nums) 
+vector<vector<int>> threeSum(vector<int>& nums)
 {
     sort(nums.begin(), nums.end());
     vector<vector<int>> result;
@@ -1521,13 +1521,13 @@ void findMissingAndDuplicate(vector<int> nums)
     {
         fullXor ^= n;
     }
-    
+
     // Find the right most set bit in fullXor
     rightSetBit = fullXor & ~(fullXor - 1);
 
     // Now divide the numbers into two sets. Set one will have rightSetBit ON and Set two
     // will have rightSetBit OFF
-    
+
     for (int n : nums)
     {
         if (rightSetBit & n)
@@ -1588,7 +1588,7 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
     {
         fullXor ^= n;
     }
-    
+
     // Find the right most set bit in fullXor
     // IMP: if fullXor = 010, then rightSetBit will be 0.
     if ((fullXor & (fullXor - 1)) != 0)
@@ -1602,7 +1602,7 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
 
     // Now divide the numbers into two sets. Set one will have rightSetBit ON and Set two
     // will have rightSetBit OFF
-    
+
     // 100 & 011 will result in 0. So we have use 100 itself
     for (int n : nums)
     {
@@ -1620,7 +1620,7 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
     // Right set bit is just used to Partition into two arrays
     // Eg 1, 2, 3, 5, 7, 8
     //    1, 2, 3, 5, 7, 8, 4, 6
-    //    
+    //
     //    XOR: 6 ^ 4 = 010
     //    Set1: 2, 3, 7 ; 2, 3, 7, 6- XOR will give 6
     //    Set2: 1, 5, 8 ; 1, 5, 8, 4- XOR will give 4
@@ -1658,7 +1658,7 @@ void findTwoMissing(vector<int> nums, uint32_t totalNums)
 //      3. Another vector stores Meeting time based on DESCENDING ORDER OF END TIMES
 //
 //      4. If Start time of new entry is LESS than Least end time of all entries
-//         i.e. New meeting starts at 4pm and 
+//         i.e. New meeting starts at 4pm and
 //              least end time of all current meetings is 5pm
 //         Then we should add new meeting to our list
 //
@@ -1752,7 +1752,7 @@ uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
             // Find first element with end time greater than current start time.
             // Come one step back and make sure the end time if before the current start time
             // Remove the entry and push the new entry
-            // 
+            //
             // Lineraly traverse END TIME VECTOR to find the first one which has end time
             // greater than current start time
             // Time Complexity: Should be able to find the meeting in log(N)
@@ -1785,10 +1785,10 @@ uint32_t minConfRoomRequired(vector<struct MeetingTime> meetingsList)
 // PROBLEM 18. Find median of two sorted arrays of same size
 // http://www.geeksforgeeks.org/median-of-two-sorted-arrays/
 //
-//             {1, 12, 15, 26, 38} 
+//             {1, 12, 15, 26, 38}
 //             {2, 13, 17, 30, 45}
 //
-//             Ans: 
+//             Ans:
 // ------------------------------------------------------------------------------------------------
 double medianTwoSortedSameSizeArrays(int arr1[], int arr2[], uint32_t num)
 {
@@ -1848,7 +1848,7 @@ double medianTwoSortedSameSizeArrays(int arr1[], int arr2[], uint32_t num)
 //             {900} and {5, 8, 10, 20}
 //             {1, 2, 4, 8, 9, 10} and { 3, 5, 6, 7 }
 //
-//             Ans: 
+//             Ans:
 // ------------------------------------------------------------------------------------------------
 double findMedian( int A[], int B[], int l, int r, int nA, int nB )
 {
@@ -1860,7 +1860,7 @@ double findMedian( int A[], int B[], int l, int r, int nA, int nB )
     int i = (l + r) / 2;
     int j = (nA+nB)/2 - i - 1;
 
-    if (j >= 0 && A[i] < B[j]) 
+    if (j >= 0 && A[i] < B[j])
     {
         return findMedian(A, B, i+1, r, nA, nB);
     }
@@ -1870,7 +1870,7 @@ double findMedian( int A[], int B[], int l, int r, int nA, int nB )
     }
     else
     {
-        if ((nA + nB) % 2 == 1) 
+        if ((nA + nB) % 2 == 1)
         {
             return A[i];
         }
@@ -1878,7 +1878,7 @@ double findMedian( int A[], int B[], int l, int r, int nA, int nB )
         {
             return (A[i]+max(B[j], A[i-1]))/2.0;
         }
-        else 
+        else
         {
             return (A[i]+B[j])/2.0;
         }
@@ -1972,7 +1972,7 @@ int kthSmallestElement(int arr1[], uint32_t num1, int arr2[], uint32_t num2, uin
 
     while (index1 + index2 < k - 1)
     {
-        step = (k - index1 - index2) / 2;    
+        step = (k - index1 - index2) / 2;
         uint32_t step1 = index1 + step;
         uint32_t step2 = index2 + step;
 
@@ -2250,7 +2250,7 @@ int kthSmallQuickSelect(vector<int>& nums, uint32_t k)
         }
     }
 
-    return nums[pivotPos];    
+    return nums[pivotPos];
 }
 
 // ----------------------------------------------------------------------------------------
@@ -2370,7 +2370,7 @@ string largeNumberMultiplicationString(string str1, string str2)
             result += (i + '0');
         }
     }
-    
+
     if (result.length() == 0)
     {
         return "0";
@@ -2474,7 +2474,7 @@ uint32_t minWindowContainingString(string str1, string str2)
     // If it is not present, then continue to the next character
     // If it is present, then
     //     Increase Count only when necessary
-    //     Check if Count has reached to Total Number of Characters 
+    //     Check if Count has reached to Total Number of Characters
     for (uint32_t i = 0; i < str1.length(); i++)
     {
         auto itrToFind = hasToFindMap.find(str1[i]);
@@ -2577,7 +2577,7 @@ uint32_t minWindowContainingCharsInSet(string str1, string str2)
     // If it is not present, then continue to the next character
     // If it is present, then
     //     Increase Count only when necessary
-    //     Check if Count has reached to Total Number of Characters 
+    //     Check if Count has reached to Total Number of Characters
     for (uint32_t i = 0; i < str1.length(); i++)
     {
         auto itrToFind = hasToFindMap.find(str1[i]);
@@ -2932,7 +2932,7 @@ int minInRotatedSortedWithDup(const vector<int>& nums)
             {
                 minNum = nums[startIdx];
             }
-            
+
             startIdx++;
             endIdx--;
             continue;
@@ -2965,10 +2965,10 @@ int minInRotatedSortedWithDup(const vector<int>& nums)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 26. Find Award Budget Cuts Problem
-//             
+//
 // 40,    50,      50,      100,       160,       200,       325,       500,       1075,        1500
 // 400,   490,     490,     840,       1200,      1400,      1900,      2425,      3575,        4000
-// 40*10, 40+50*9, 90+50*8, 140+100*7, 240+160*6, 400+200*5, 600+325*4, 925+500*3, 1425+1075*2, 2500+1500 
+// 40*10, 40+50*9, 90+50*8, 140+100*7, 240+160*6, 400+200*5, 600+325*4, 925+500*3, 1425+1075*2, 2500+1500
 // ------------------------------------------------------------------------------------------------
 double findGrantsCap(vector<uint32_t> grants, uint32_t budget)
 {
@@ -3010,7 +3010,7 @@ double findGrantsCapModified(vector<uint32_t> grants, uint32_t budget)
     uint32_t i = 0;
     double cap = budget / grants.size();
 
-    // Find the minimum Cap that can be given and start incrementing the cap if we have a 
+    // Find the minimum Cap that can be given and start incrementing the cap if we have a
     // grant that is less than the cap
     for (; i < grants.size(); i++)
     {
@@ -3064,7 +3064,7 @@ void sortZeroOneTwoDutchFlag(vector<int> &nums)
     int32_t x = 0;
     int32_t y = 0;
     int32_t z = nums.size() - 1;
-    
+
     while (y < z)
     {
         if (nums[y] == 0)
@@ -3174,7 +3174,7 @@ bool isMajorityElementPresent(vector<int> nums)
 
 // ------------------------------------------------------------------------------------------------
 // PROBLEM 30. Sorting almost sorted array misplaced by k elements
-//      
+//
 //      {2, 6, 3, 12, 56, 8}
 //
 // http://stackoverflow.com/questions/2726785/sorting-an-almost-sorted-array-elements-misplaced-by-no-more-than-k
@@ -3491,7 +3491,7 @@ void findSoftwareOrder(int numCourses, vector<pair<int, int>>& dependencyList)
         {
             allCoursesSet.insert(i);
         }
-        
+
         for (int i = 0; i < numCourses; i++)
         {
             auto itr = allCoursesSet.find(i);
@@ -3511,7 +3511,7 @@ void findSoftwareOrder(int numCourses, vector<pair<int, int>>& dependencyList)
 //
 //     http://www.geeksforgeeks.org/calculate-angle-hour-hand-minute-hand/
 //
-//     Hour hand makes 360deg in 12 hours. 
+//     Hour hand makes 360deg in 12 hours.
 //     i.e In 1 hour, 30 deg
 //     So  In 1 min, 0.5 deg
 //
@@ -3539,7 +3539,7 @@ void findPairsAddingToSum(const vector<int>& nums, int sum)
 {
     // Key: Array Element, Value: Index
     unordered_map<int, vector<int>> mapDiff;
-    
+
     for(int i = 0; i < nums.size(); i++)
     {
         auto itr = mapDiff.find(nums[i]);
@@ -3551,19 +3551,19 @@ void findPairsAddingToSum(const vector<int>& nums, int sum)
                 cout << itr->second[m] << " - " << i << "; " << nums[itr->second[m]] \
                      << " - " << nums[i] << endl;
             }
-            mapDiff[sum - nums[i]].push_back(i);     
+            mapDiff[sum - nums[i]].push_back(i);
         }
-        
+
         // Store the difference in the map and Value will be the index
         else
         {
-            mapDiff[sum - nums[i]].push_back(i);     
+            mapDiff[sum - nums[i]].push_back(i);
         }
     }
 }
 
 // ------------------------------------------------------------------------------------------------
-// PROBLEM 36. 
+// PROBLEM 36.
 //      Uber Phone Question
 //      A function with inclusion times and exclusion times
 //      ab()            de()        hi()
@@ -3590,7 +3590,7 @@ void findPairsAddingToSum(const vector<int>& nums, int sum)
 //      fg  end     19
 //      de  end     19  --> 19 - 15 = 4
 //
-//      hi  start   22 
+//      hi  start   22
 //      lo  start   27
 //      qw  start   31
 //      qw  end     37
@@ -3613,7 +3613,7 @@ pair<uint32_t, uint32_t> computeIncExcTime(const vector<functionDetails>& funcDe
     uint32_t funcOthersTime = 0;
     pair<uint32_t, uint32_t> result = {0, 0};
     uint32_t x = i + 1;
-    
+
     // Go on till the end of list or until you get the END of funcName
     // ASSUMPTION: All entries are valid. You don't get same funcName with another START
     // tag again
@@ -3716,7 +3716,7 @@ string zigzagconversion(string s, int numRows) {
     {
         strLines[0] += strLines[i];
     }
-    return strLines[0];   
+    return strLines[0];
 }
 
 // -------------------------------------------------------------------------
@@ -3728,7 +3728,7 @@ struct NumDetails
     int stIdx;
     int endIdx;
     int len;
-    
+
     NumDetails() : count(-1),
                    stIdx(-1),
                    endIdx(-1),
@@ -3776,7 +3776,7 @@ int minLengthMaxFrequencyNumbers(const vector<int>& arr) {
 
     // Copy map to a vector of pair of Key and Value and sort the vector
     vector<pair<int, NumDetails>> vecMap;
-    for (auto itr = hmap.begin(); itr != hmap.end(); ++itr) 
+    for (auto itr = hmap.begin(); itr != hmap.end(); ++itr)
     {
         vecMap.push_back(*itr);
     }
@@ -3918,7 +3918,7 @@ int main()
         printTwoDPtrToPtr(arrayTwoD, rows, cols);
         cout << "Num Islands: " << countConnectedIslands(arrayTwoD, rows, cols) << endl;
     }
-        
+
     // Problem 4. Median of Streams
     {
         cout << endl << "Problem 4" << endl;
@@ -4101,7 +4101,7 @@ int main()
         // {1, 2}, {3, 6}, {4, 10}, {7, 8}, {9, 10}
         //      [1, 2], [3, 6], [7, 8], [9, 10]
         //      [4, 10]
-        //      
+        //
         cout << endl << "Problem 17" << endl;
         vector<struct MeetingTime> meetings1 = {{9, 10}, {14, 16}, {8, 12},  {12, 16},  {10, 12}};
 
@@ -4130,7 +4130,7 @@ int main()
         cout << endl << "Problem 19" << endl;
         //int A[] = {900};
         //int B[] = {5, 8, 10, 20};
-	
+
         //int A[] = {1, 2, 4, 8, 9, 10};
         //int B[] = {3, 5, 6, 7};
         int A[] = {1, 2, 4, 8};
@@ -4403,7 +4403,7 @@ int main()
     {
         cout << endl << "PROBLEM 31" << endl;
         cout << "Given N points, find k points closest to Origin: " << endl;
-        vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
+        vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}};
         findKclosestPointsToOrigin(pointsList, 3);
     }
 
@@ -4412,7 +4412,7 @@ int main()
         /*
         cout << endl << "PROBLEM 31" << endl;
         cout << "Given N points, find k points closest to Origin: " << endl;
-        vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}}; 
+        vector<std::pair<int, int> > pointsList = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}};
         pair<int, int> myPos = {1, 1};
         findKclosestPointsToXY(pointsList, myPos, 3);
         */
@@ -4432,15 +4432,15 @@ int main()
     {
         cout << endl << "PROBLEM 33" << endl;
         cout << "Can Software be installed" << endl;
-        vector<std::pair<int, int> > softwareList1 = {{1, 0}}; 
-        vector<std::pair<int, int> > softwareList2 = {{1, 1}}; 
-        vector<std::pair<int, int> > softwareList3 = {{1, 0}, {0, 1}}; 
-        vector<std::pair<int, int> > softwareList4 = {{1, 0}, {2, 0}, {3, 1}, {3, 2}}; 
-        vector<std::pair<int, int> > softwareList5 = {{1, 0}, {2, 1}, {3, 1}, {3, 2}}; 
-        vector<std::pair<int, int> > softwareList6 = {{1, 2}, {2, 1}, {3, 1}, {3, 2}}; 
-        vector<std::pair<int, int> > softwareList7 = {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}}; 
-        vector<std::pair<int, int> > softwareList8 = {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}, {4, 3}}; 
-        vector<std::pair<int, int> > softwareList9 = {{3, 2}, {3, 4}, {4, 3}}; 
+        vector<std::pair<int, int> > softwareList1 = {{1, 0}};
+        vector<std::pair<int, int> > softwareList2 = {{1, 1}};
+        vector<std::pair<int, int> > softwareList3 = {{1, 0}, {0, 1}};
+        vector<std::pair<int, int> > softwareList4 = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};
+        vector<std::pair<int, int> > softwareList5 = {{1, 0}, {2, 1}, {3, 1}, {3, 2}};
+        vector<std::pair<int, int> > softwareList6 = {{1, 2}, {2, 1}, {3, 1}, {3, 2}};
+        vector<std::pair<int, int> > softwareList7 = {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}};
+        vector<std::pair<int, int> > softwareList8 = {{1, 5}, {2, 4}, {4, 5}, {1, 2}, {3, 2}, {3, 4}, {4, 3}};
+        vector<std::pair<int, int> > softwareList9 = {{3, 2}, {3, 4}, {4, 3}};
 
         assert(canSoftwareBeInstalled(softwareList1) == 1);
         assert(canSoftwareBeInstalled(softwareList2) == 0);
@@ -4479,7 +4479,7 @@ int main()
         vector<int> nums = {5, 3, -2, 4, 3, 6, 5, 5, -1, 3, 10, 2};
         findPairsAddingToSum(nums, 8);
     }
-            
+
 
     // PROBLEM 36. Find inclusive and exclusive times of a function
     {

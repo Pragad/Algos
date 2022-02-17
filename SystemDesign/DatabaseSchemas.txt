@@ -1,0 +1,42 @@
+IMDB Database
+	- Movies
+		- id
+		- title
+		- year
+	- Movie Genre
+		- id
+		- name
+	- Ratings
+		- start
+	- Reviewers
+	- Company
+		- id
+		- name
+	- Reviews
+
+	- User
+
+Ecommerce Databases and Tables
+	- Admins
+	- Product
+		- product id
+		- category id
+		- shop id
+		- country id
+		- name
+		- price
+		- discount
+		- quantity
+		- views
+		- likes
+		- photos etc
+	- Categories
+	- Tags
+	- Trasactions
+	- User sessions
+	- Shops
+		- id
+		- name
+		- address
+		- product id
+

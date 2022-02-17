@@ -60,6 +60,8 @@
 49. Coin Arbitrage Algorithm
 50. Graph Algorigthms
 51. Examples of Data Structures in real life
+52. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
+53. How to count number of requests in last second, minute and hour
 --------------------------------------------------------------------------------------------
 1.
 Merge Sort vs Quick Sort
@@ -1438,4 +1440,237 @@ https://stackoverflow.com/questions/54466641/examples-of-data-structures-in-real
 
     To store the genealogy information of biological species.
         Tree (look up phylogenic tree)
+------------------------------------------------------------------------------------------
+52. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
+https://stackoverflow.com/questions/185697/the-most-efficient-way-to-find-top-k-frequent-words-in-a-big-word-sequence
+https://stackoverflow.com/questions/21565880/find-the-n-most-repeating-words-strings-in-a-huge-file-that-does-not-fit-in-me
+https://stackoverflow.com/questions/17541983/find-the-10-most-frequently-used-words-in-a-large-book
+https://www.geeksforgeeks.org/find-the-k-most-frequent-words-from-a-file/
 
+MY SOLUTION:
+    Approach 1:
+        - First Hash all the words and compute a count of all the words. This can be done in O(n).
+        - One approach would be to sort the hash list by values and return the top k.
+          This will take O(n log n).
+
+    Approach 2:
+        - Instead we can traverse through the hash list and find the word with most frequency.
+          Apply bucket sort algorithm. Create buckets and insert the elements into respective buckets.
+          Then we can give all elements that have frequence over k.
+        - Problem with this approach is, creating buckets of a size. This would take unnecessary space.
+
+        - In case a new element get added to file, we can add it to hash table.
+        - If the word is already in the hash, go to the bucket, pick the word and add to the correct bucket
+
+    Approach 3:
+        - IS ORDERING of top k elements important?
+        - From the hash table, use quick sort partition algorithm to partition around k
+        - With this you will get elements more than k. This can be done in O(n)
+
+FROM ONLINE:
+    Input: A positive integer K and a big text. The text can actually be viewed as word sequence. So we don't have to worry about how to break down it into word sequence.
+    Output: The most frequent K words in the text.
+
+    My thinking is like this.
+
+        use a Hash table to record all words' frequency while traverse the whole word sequence. In this phase, the key is "word" and the value is "word-frequency". This takes O(n) time.
+
+        sort the (word, word-frequency) pair; and the key is "word-frequency". This takes O(n*lg(n)) time with normal sorting algorithm.
+
+        After sorting, we just take the first K words. This takes O(K) time.
+
+    To summarize, the total time is O(n+nlg(n)+K)¿ Since K is surely smaller than N, so it is actually O(nlg(n)).
+
+    We can improve this. Actually, we just want top K words. Other words' frequency is not concern for us. So, we can use "partial Heap sorting". For step 2) and 3), we don't just do sorting. Instead, we change it to be
+
+    2') build a heap of (word, word-frequency) pair with "word-frequency" as key. It takes O(n) time to build a heap;
+
+    3') extract top K words from the heap. Each extraction is O(lg(n)). So, total time is O(k*lg(n)).
+
+    To summarize, this solution cost time O(n+k*lg(n)).
+
+ANSWER:
+    Solution 1:
+        This can be done in O(n) time
+
+        Steps:
+
+            Count words and hash it, which will end up in the structure like this
+
+            var hash = {
+              "I" : 13,
+              "like" : 3,
+              "meow" : 3,
+              "geek" : 3,
+              "burger" : 2,
+              "cat" : 1,
+              "foo" : 100,
+              ...
+              ...
+
+            Traverse through the hash and find the most frequently used word (in this case "foo" 100), then create the array of that size
+
+            Then we can traverse the hash again and use the number of occurrences of words as array index, if there is nothing in the index, create an array else append it in the array. Then we end up with an array like:
+
+              0   1      2            3                100
+            [[ ],[ ],[burger],[like, meow, geek],[]...[foo]]
+
+            Then just traverse the array from the end, and collect the k words.
+
+    Solution 2:
+        You're not going to get generally better runtime than the solution you've described. You have to do at least O(n) work to evaluate all the words, and then O(k) extra work to find the top k terms.
+
+        If your problem set is really big, you can use a distributed solution such as map/reduce. Have n map workers count frequencies on 1/nth of the text each, and for each word, send it to one of m reducer workers calculated based on the hash of the word. The reducers then sum the counts. Merge sort over the reducers' outputs will give you the most popular words in order of popularity.
+
+    Solution 3:
+        After selecting the Kth smallest element, we partition the list around that element just as in quicksort. This is obviously also O(n). Anything on the "left" side of the pivot is in our group of K elements, so we're done (we can simply throw away everything else as we go along).
+
+        So this strategy is:
+
+            Go through each word and insert it into a hash table: O(n)
+            Select the Kth smallest element: O(n)
+            Partition around that element: O(n)
+
+        If you want to rank the K elements, simply sort them with any efficient comparison sort in O(k * lg(k)) time, yielding a total run time of O(n+k * lg(k)).
+
+        The O(n) time bound is optimal within a constant factor because we must examine each word at least once.
+
+        The O(n + k * lg(k)) time bound is also optimal because there is no comparison-based way to sort k elements in less than k * lg(k) time.
+
+WHAT IF THE DICTIONARY CAN'T FIT IN MEMORY
+    Solution 4:
+        Create an empty dictionary (hash map), keyed by word. The value is the count.
+        for each file
+            while not end of file
+                read word
+                if word in dictionary
+                    update count
+                else
+                    if dictionary full
+                        sort dictionary by word
+                        output dictionary to temporary file
+                        Clear dictionary
+                    Add word to dictionary, with count 1
+            end
+        end
+        if dictionary not empty
+            sort dictionary by word
+            output dictionary to temporary file
+
+        You now have some number of temporary files, each sorted by word and containing one word/count pair per line. Like:
+
+        aardvark,12
+        bozo,3
+        zebra,5
+
+        Create a min-heap that you will use to hold your n largest items. Call it largest_items.
+
+        Do a standard n-way merge of those temporary files. As you find each unique item (i.e. you merge all of the "aardvark" entries across the multiple files), you do this:
+
+        if (largest_items.count < n)
+            largest_items.add(word)
+        else if (word.count > largest_items.peek().count)
+        {
+            // the count for this word is more than the smallest count
+            // already on the heap. So remove the item with the
+            // smallest count, and add this one.
+            largest_items.remove_root()
+            largest_items.add(word)
+        }
+
+        Complexity:
+
+            Building the dictionaries is O(N), where N is the total number of individual words in the file.
+            Sorting each temporary dictionary is O(k log k), where 'k' is the number of words in the dictionary.
+            Writing each temporary dictionary is O(k)
+            The merge is O(M log x), where M is the combined number of entries across all the temporary files, and x is the number of temporary files.
+            Selecting the items is O(m log n), where m is the number of unique words, and n is the number of words you want to select.
+
+        If you look at worst case behavior (i.e. all the words are unique), the complexity works out to (n is the total number of words):
+
+            Building the dictionaries is O(n)
+            Sorting and writing the temporary files is (n/m) * (m log m), where m is the dictionary size.
+            The merge is n log (n/m).
+            Selection is O(m + (k log k)), where k is the number of words you want to select and m is the number of unique words. Because all words are unique they have the same count, so you'll only do k inserts into the heap. The m term dominates when k is much smaller than m (which is usually the case in these situations). So selection turns out to be O(m).
+
+        When you're working with data sets larger than memory, very often your bottleneck is file I/O. The algorithm I've outlined above tries to minimize the I/O. In the worst case (all words are unique), each word will be read twice and written once. But in the general case each word is read once and then each hash page is written once and read once. Plus, your sorts are on hash pages rather than raw words, and the total size of your temporary files will be much smaller than the original text.
+------------------------------------------------------------------------------------------
+53. How to count number of requests in last second, minute and hour
+https://stackoverflow.com/questions/17562089/how-to-count-number-of-requests-in-last-second-minute-and-hour
+https://stackoverflow.com/questions/11701008/efficient-way-to-compute-number-of-hits-to-a-server-within-the-last-minute-in-r
+
+    Solution 1:
+        If 100% accuracy is required:
+
+        Have a linked-list of all requests and 3 counts - for the last hour, the last minute and the last second.
+
+        You will have 2 pointers into the linked-list - for a minute ago and for a second ago.
+
+        An hour ago will be at the end of the list. Whenever the time of the last request is more than an hour before the current time, remove it from the list and decrement the hour count.
+
+        The minute and second pointers will point to the first request that occurred after a minute and a second ago respectively. Whenever the time of the request is more than a minute / second before the current time, shift up the pointer and decrement the minute / second count.
+
+        When a new request comes in, add it to all 3 counts and add it to the front of the linked-list.
+
+        Requests for the counts would simply involve returning the counts.
+
+        All of the above operations are amortised constant time.
+
+        If less than 100% accuracy is acceptable:
+
+        The space-complexity for the above could be a bit much, depending on how many requests per second you would typically get; you can reduce this by sacrificing slightly on accuracy as follows:
+
+        Have a linked-list as above, but only for the last second. Also have the 3 counts.
+
+        Then have a circular array of 60 elements indicating the counts of each of the last 60 seconds. Whenever a second passes, subtract the last (oldest) element of the array from the minute count and add the last second count to the array.
+
+        Have a similar circular array for the last 60 minutes.
+
+        Loss of accuracy: The minute count can be off by all the requests in a second and the hour count can be off by all the requests in a minute.
+
+        Obviously this won't really make sense if you only have one request per second or less. In this case you can keep the last minute in the linked-list and just have a circular array for the last 60 minutes.
+
+        There are also other variations on this - the accuracy to space used ratio can be adjusted as required.
+
+        A timer to remove old elements:
+
+        If you remove old elements only when new elements come in, it will be amortised constant time (some operations might take longer, but it will average out to constant time).
+
+        If you want true constant time, you can additionally have a timer running which removes old elements, and each invocation of this (and of course insertions and checking the counts) will only take constant time, since you're removing at most a number of elements inserted in the constant time since the last timer tick.
+
+    Solution 2:
+        To do this for time window of T seconds, have a queue data structure where you queue the timestamps of individual requests as they arrive. When you want to read the number of requests arrived during the most recent window of T seconds, first drop from the "old" end of the queue those timestamps that are older than T seconds, then read the size of the queue. You should also drop elements whenever you add a new request to the queue to keep its size bounded (assuming bounded rate for incoming requests).
+
+        This solution works up to arbitrary precision, e.g. millisecond accuracy. If you are content with returning approximate answers, you can e.g. for time window of T = 3600 (an hour), consolidate requests coming within same second into a single queue element, making queue size bounded by 3600. I think that would be more than fine, but theoretically loses accuracy. For T = 1, you can do consolidation on millisecond level if you want.
+
+        In pseudocode:
+        queue Q
+
+        proc requestReceived()
+          Q.insertAtFront(now())
+          collectGarbage()
+
+        proc collectGarbage()
+          limit = now() - T
+          while (! Q.empty() && Q.lastElement() < limit)
+            Q.popLast()
+
+        proc count()
+          collectGarbage()
+          return Q.size()
+
+    Solution 3:
+        Why not just use a circular array? We have 3600 elements in that array.
+
+        index = 0;
+        Array[index % 3600] = count_in_one_second.
+        ++index;
+
+        if you want last second, return the last element of this array. if you want last minute, return the sum of last 60 elements. if you want last hour, return the sum of the whole array (3600 elements).
+
+        Also How about using current time (e.g. System.currentTimeMillis()) instead of index?
+
+    Solution 4:
+        Use a circular buffer.
+
+        Whenever you have to keep some current statistics with a built-in obsolescence, a ring buffer is a good candidate. In your case, you can easily keep count of the requests in the last minute by inserting new packets at the front of the circular buffer and keeping a one-minute-before-now pointer in the buffer, or performing a binary search on request time.

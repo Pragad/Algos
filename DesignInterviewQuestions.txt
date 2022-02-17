@@ -28,6 +28,7 @@ How to Approach Design Interview Questions
         b. PUSH vs PULL model
         c. Transactions where needed for Consistency
     3d. Database
+        - Store Metadata where needed
         a. Is the system READ HEAVY or WRITE HEAVY
         b. DB choice
         c. DB Schema
@@ -65,35 +66,37 @@ How to Approach Design Interview Questions
         Maintainable
         Fault Tolerant
         Metrics, Dashboards, Monitors and Alarms
+        Sticky Session and Session Replication
+        CDN for static content
+        Heart Beat
+        Gossip
+        SPOF Single Point of Failure
 --------------------------------------------------------------------------------
 System Design Interview Questions
 1. How to Design Twitter
+1b. How to Design a Trending Algorithm for Twitter
 2. Create a TinyURL System
 3. Design a Distributed Cache System like Redis or Memcache
-4. Design a Recommendation System
-5. Design a Key-Value Store
-5b. Design a distributed hash table DHT
-6. Map Implementation
+4. Design a Key-Value Store
+4b. Design a distributed hash table DHT
+5. Design a Recommendation System
+6. Design a Chat messenger (Whatsapp, FB, Slack)
 7. Random ID Generator
 8. Design a Garbage Collection System
 9. Design Hit Counter
 10. Build a Web Crawler
-11. How to Design a Trending Algorithm for Twitter
 12. Design eCommerce Website
-13. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
-14. How to count number of requests in last second, minute and hour
-15. Consistent Hashing
-16. Design a Chess Game
-17. Design Tic Tac Toe
-18. Design Parking Lot
-19. Design Log Storage System
-20. Design Mint
-21. Design Tinder
-22. Design Tiktok
-23. Design Instagram
-24. Design Log Storage System
-25. Design a Stock Exchange / Trading System like Robinhood
-26. Design a Job Scheduler
+12b. Design Shopping Cart
+13. Design a Chess Game
+14. Design Tic Tac Toe
+15. Design Parking Lot
+16. Design Log Storage System
+17. Design Mint
+18. Design Tinder
+19. Design Tiktok
+20. Design Instagram
+21. Design a Stock Exchange / Trading System like Robinhood
+22. Design a Job Scheduler
 --------------------------------------------------------------------------------
 Key References:
 https://roadtoarchitect.com/2018/09/04/useful-technology-and-company-architecture/ - Contains architecture of various companies
@@ -147,6 +150,8 @@ System Design Interview Questions
         @feature:
             - Have a list of all followers who the user can tag.
             - Prefix tree data structure to get it
+---------------------------------------------
+1b. How to Design a Trending Algorithm for Twitter
 ---------------------------------------------
 2. Create a TinyURL System
 http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/?utm_source=email&utm_medium=email&utm_campaign=email
@@ -361,16 +366,13 @@ In php¿ish code, it would do something like this:
 $server_id = hashfunc($key) % $servercount;
 
 ---------------------------------------------
-4. Design a Recommendation System
-
----------------------------------------------
-5. Design a Key-Value Store
+4. Design a Key-Value Store
 http://blog.gainlo.co/index.php/2016/06/14/design-a-key-value-store-part-i/?utm_source=email&utm_medium=email&utm_campaign=email
 
     Consistency when you have replica for disaster recovery:
     1. Have a commit log
 ---------------------------------------------
-5b. Design a distributed hash table DHT
+4b. Design a distributed hash table DHT
 https://stackoverflow.com/questions/144360/simple-basic-explanation-of-a-distributed-hash-table-dht
 http://www.eecs.harvard.edu/~mema/courses/cs264/cs264.html
 
@@ -384,8 +386,90 @@ http://www.eecs.harvard.edu/~mema/courses/cs264/cs264.html
 
     There are many other overlay structures such as this that use content-based routing to find the right node on which to store a key. Locating a key in a ring requires searching round the ring one node at a time (unless you keep a local look-up table, problematic in a DHT of thousands of nodes), which is O(n)-hop routing. Other structures - including augmented rings - guarantee O(log n)-hop routing, and some claim to O(1)-hop routing at the cost of more maintenance.
 ---------------------------------------------
-6. Map Implementation
+5. Design a Recommendation System
+---------------------------------------------
+6. Design a Chat messenger (Whatsapp, FB, Slack)
+https://towardsdatascience.com/ace-the-system-interview-design-a-chat-application-3f34fd5b85d0
+https://medium.com/double-pointer/system-design-interview-facebook-messenger-whatsapp-slack-discord-or-a-similar-applications-47ecbf2f723d
 
+Features:
+    Direct messaging: two users can chat with each other
+    Group chat: users can participate in group conversations
+    Join/leave groups, (add/delete friends not important for Slack)
+    Typing indicator: when typing, the recipient gets notified
+    User status: whether you are online or offline
+    When the user is offline, try send notifications to the user’s mobile device if a new message arrives.
+
+Database Choice:
+    - No JOIN is needed between the tables
+
+Data Access Patterns
+    READ
+        - For two users (A, B) retrieve all recent messages
+        - Given group G, retrieve all messages after a certain timestamp
+        - Given group G, retrieve all messages after a certain timestamp
+        - Given group G, find all member ID
+
+    WRITE
+        - For two users (A, B) save the chat message
+        - Group Chat
+            - Save a new message by user A in group G
+
+        - User updates
+            - Add/delete user A to/from group G
+
+    Schema
+        Every single message will be stored as a separate entry
+        - Private Chat Table
+            User Id Src     User Id Dst     Message Id      Timestamp       Content
+
+            Partition Key: User Id Src, User Id Dst
+            Sort Key: Message Id
+
+        - Group Chat
+            Group Id    User Id Src     Message Id      Timestamp       Content
+
+            Partition Key: Group Id
+            Sort Key: Message Id
+
+        - User Members Table
+            User Id     Group Id
+
+        - Group Members Table
+            Group Id    List User Ids List
+
+        MESSAGE ID
+            - message ID is used to determine the ordering. The message Id is not globally unique, as its scope is determined by the partition key. The system will never retrieve an item by its message ID alone.
+
+        REASON for two tables of USER TABLE and GROUP TABLE
+            The Group Membership table is used for message broadcasting — we need to figure out who gets the message. The User Membership table is for listing all the groups a user has joined. We could use a single table with a secondary index, but the cardinality of group ID/user ID is too large for a secondary index. The two-table approach isn’t without problems either— if we mutate one, the other should be modified to maintain consistency, which requires distributed transactions.
+
+        - User Profile Table
+            - User Id   Status      Profile Pic     Name    List of Friends etc
+
+API Design
+    send_message(user_id, receiver_id, channel_type, message)
+    get_messages(user_id, user_id2, channel_type, earliest_message_id)
+    join_group(user_id, group_id)
+    leave_group(user_id, group_id)
+    get_all_group(user_id)
+
+How to order the messages
+    - To solve the ordering issue, we can annotate every message with a prevMsgID field. The recipient checks his local log and initiates history catch-ups when an inconsistency is found.
+
+Optimizations
+    - To reduce the number of messages exchanged between servers, we can implement some buffering algorithm on WebSocket servers — send accumulated messages, say, ~50 MS with randomized offsets (preventing everyone from sending messages at the same time).
+
+Group Messages Push vs Pull vs Hybrid
+    - Push
+        - The problem with pushing is that it converts one external request (one message) into many internal messages. This is called Write Amplification. If the group is large and active, pushing group messages will take up a tremendous amount of bandwidth.
+    - Pull
+        - The problem with pulling is that one message is read over and over again by different clients (Read Amplification). Going along with this approach will surely overwhelm the database.
+    - Hybrid
+        - My idea is that we can build a hybrid system with the above logic. For smaller groups or inactive groups, it is okay to do pushing since write amplification won’t stress out the servers. For very active and large groups, clients must query the HTTP server regularly for messages.
+
+DB Optimizations
+    - Use BATCH Writes
 ---------------------------------------------
 7. Random ID Generator
 http://blog.gainlo.co/index.php/2016/06/07/random-id-generator/?utm_source=email&utm_medium=email&utm_campaign=email
@@ -450,266 +534,97 @@ https://stackoverflow.com/questions/2671858/distributed-sequence-number-generati
 ---------------------------------------------
 10. Build a Web Crawler
 
+    Questions:
+        0. Purpose of crawler
+        1. Where to begin
+            a. Do we have seed URLs
+        2. Content Type
+
+    High Level Design
+        1. DFS vs BFS
+            a. DFS:
+                Go too deep
+            b. BFS
+                Can't give priority
+        2. Scalability
+            a. Message Queue per host
+            b. Distributed Crawl
+            c. Cache DNS
+            d. Localilty / Geographic for partitioning
+            e. Early timeout if servers fail to response
+
+    Deep Design:
+        1. Forward queue
+            - manage priority
+        2. Backward queue
+            - manage politeness
+
+    Things for Future:
+        1. URL Politeness
+            1 page at a time
+            Robots.txt
+        2. URL Freshness
+        3. URL Proritization
+
+        P1:
+            a. Spider Trap
+            b. Usefullness of a page
+            c. Duplicate content
+                                                                               DNS (can be cached)|                                              Content Storage DB
+                                                                                ||                                                                      |
+                                                                                |                                                                       |
+    Seed URLs -----> URL Feeder Service -----> URL Message Queue -----> Page Lookup Service (set of workers) -----> Web page crawler -----> Content Validator (Cheks duplicates) -----> Link Extractor
+                            |                                                                                                                                                                 |
+                            |                                                                                                                                                                 |
+                            |                                                                                                                                                              URL Filter
+                            |                                                                                                                                                                 |
+                            |                                                                                                                                                                 |
+                             ------------------------------------------------------------------------------------------------------------------------------------------------------------URL Validator
+                                                                                                                                                                                              |
+                                                                                                                                                                                              |
+                                                                                                                                                                                            URL DB
+
+    URL Feeder Service :
+        - Inserts into the queue
+        - Can determine the priority etc
+
+        IMP:
+            - Add delay for requeries
+            - Robots.txt
+
+    Page Lookup Service
+        - Do we need to store the entire web page data?
+        - Why not just extracted metadata
+
+    Content Validator
+        - Checksum, Fingerprint etc
 ---------------------------------------------
-11. How to Design a Trending Algorithm for Twitter
+
 
 ---------------------------------------------
 12. Design eCommerce Website
+---------------------------------------------
+12b. Design Shopping Cart
+
 
 ---------------------------------------------
-13. The Most Efficient Way To Find Top K Frequent Words In A Big Word Sequence
-https://stackoverflow.com/questions/185697/the-most-efficient-way-to-find-top-k-frequent-words-in-a-big-word-sequence
-https://stackoverflow.com/questions/21565880/find-the-n-most-repeating-words-strings-in-a-huge-file-that-does-not-fit-in-me
-https://stackoverflow.com/questions/17541983/find-the-10-most-frequently-used-words-in-a-large-book
-https://www.geeksforgeeks.org/find-the-k-most-frequent-words-from-a-file/
-
-MY SOLUTION:
-    Approach 1:
-        - First Hash all the words and compute a count of all the words. This can be done in O(n).
-        - One approach would be to sort the hash list by values and return the top k.
-          This will take O(n log n).
-
-    Approach 2:
-        - Instead we can traverse through the hash list and find the word with most frequency.
-          Apply bucket sort algorithm. Create buckets and insert the elements into respective buckets.
-          Then we can give all elements that have frequence over k.
-        - Problem with this approach is, creating buckets of a size. This would take unnecessary space.
-
-        - In case a new element get added to file, we can add it to hash table.
-        - If the word is already in the hash, go to the bucket, pick the word and add to the correct bucket
-
-    Approach 3:
-        - IS ORDERING of top k elements important?
-        - From the hash table, use quick sort partition algorithm to partition around k
-        - With this you will get elements more than k. This can be done in O(n)
-
-FROM ONLINE:
-    Input: A positive integer K and a big text. The text can actually be viewed as word sequence. So we don't have to worry about how to break down it into word sequence.
-    Output: The most frequent K words in the text.
-
-    My thinking is like this.
-
-        use a Hash table to record all words' frequency while traverse the whole word sequence. In this phase, the key is "word" and the value is "word-frequency". This takes O(n) time.
-
-        sort the (word, word-frequency) pair; and the key is "word-frequency". This takes O(n*lg(n)) time with normal sorting algorithm.
-
-        After sorting, we just take the first K words. This takes O(K) time.
-
-    To summarize, the total time is O(n+nlg(n)+K)¿ Since K is surely smaller than N, so it is actually O(nlg(n)).
-
-    We can improve this. Actually, we just want top K words. Other words' frequency is not concern for us. So, we can use "partial Heap sorting". For step 2) and 3), we don't just do sorting. Instead, we change it to be
-
-    2') build a heap of (word, word-frequency) pair with "word-frequency" as key. It takes O(n) time to build a heap;
-
-    3') extract top K words from the heap. Each extraction is O(lg(n)). So, total time is O(k*lg(n)).
-
-    To summarize, this solution cost time O(n+k*lg(n)).
-
-ANSWER:
-    Solution 1:
-        This can be done in O(n) time
-
-        Steps:
-
-            Count words and hash it, which will end up in the structure like this
-
-            var hash = {
-              "I" : 13,
-              "like" : 3,
-              "meow" : 3,
-              "geek" : 3,
-              "burger" : 2,
-              "cat" : 1,
-              "foo" : 100,
-              ...
-              ...
-
-            Traverse through the hash and find the most frequently used word (in this case "foo" 100), then create the array of that size
-
-            Then we can traverse the hash again and use the number of occurrences of words as array index, if there is nothing in the index, create an array else append it in the array. Then we end up with an array like:
-
-              0   1      2            3                100
-            [[ ],[ ],[burger],[like, meow, geek],[]...[foo]]
-
-            Then just traverse the array from the end, and collect the k words.
-
-    Solution 2:
-        You're not going to get generally better runtime than the solution you've described. You have to do at least O(n) work to evaluate all the words, and then O(k) extra work to find the top k terms.
-
-        If your problem set is really big, you can use a distributed solution such as map/reduce. Have n map workers count frequencies on 1/nth of the text each, and for each word, send it to one of m reducer workers calculated based on the hash of the word. The reducers then sum the counts. Merge sort over the reducers' outputs will give you the most popular words in order of popularity.
-
-    Solution 3:
-        After selecting the Kth smallest element, we partition the list around that element just as in quicksort. This is obviously also O(n). Anything on the "left" side of the pivot is in our group of K elements, so we're done (we can simply throw away everything else as we go along).
-
-        So this strategy is:
-
-            Go through each word and insert it into a hash table: O(n)
-            Select the Kth smallest element: O(n)
-            Partition around that element: O(n)
-
-        If you want to rank the K elements, simply sort them with any efficient comparison sort in O(k * lg(k)) time, yielding a total run time of O(n+k * lg(k)).
-
-        The O(n) time bound is optimal within a constant factor because we must examine each word at least once.
-
-        The O(n + k * lg(k)) time bound is also optimal because there is no comparison-based way to sort k elements in less than k * lg(k) time.
-
-WHAT IF THE DICTIONARY CAN'T FIT IN MEMORY
-    Solution 4:
-        Create an empty dictionary (hash map), keyed by word. The value is the count.
-        for each file
-            while not end of file
-                read word
-                if word in dictionary
-                    update count
-                else
-                    if dictionary full
-                        sort dictionary by word
-                        output dictionary to temporary file
-                        Clear dictionary
-                    Add word to dictionary, with count 1
-            end
-        end
-        if dictionary not empty
-            sort dictionary by word
-            output dictionary to temporary file
-
-        You now have some number of temporary files, each sorted by word and containing one word/count pair per line. Like:
-
-        aardvark,12
-        bozo,3
-        zebra,5
-
-        Create a min-heap that you will use to hold your n largest items. Call it largest_items.
-
-        Do a standard n-way merge of those temporary files. As you find each unique item (i.e. you merge all of the "aardvark" entries across the multiple files), you do this:
-
-        if (largest_items.count < n)
-            largest_items.add(word)
-        else if (word.count > largest_items.peek().count)
-        {
-            // the count for this word is more than the smallest count
-            // already on the heap. So remove the item with the
-            // smallest count, and add this one.
-            largest_items.remove_root()
-            largest_items.add(word)
-        }
-
-        Complexity:
-
-            Building the dictionaries is O(N), where N is the total number of individual words in the file.
-            Sorting each temporary dictionary is O(k log k), where 'k' is the number of words in the dictionary.
-            Writing each temporary dictionary is O(k)
-            The merge is O(M log x), where M is the combined number of entries across all the temporary files, and x is the number of temporary files.
-            Selecting the items is O(m log n), where m is the number of unique words, and n is the number of words you want to select.
-
-        If you look at worst case behavior (i.e. all the words are unique), the complexity works out to (n is the total number of words):
-
-            Building the dictionaries is O(n)
-            Sorting and writing the temporary files is (n/m) * (m log m), where m is the dictionary size.
-            The merge is n log (n/m).
-            Selection is O(m + (k log k)), where k is the number of words you want to select and m is the number of unique words. Because all words are unique they have the same count, so you'll only do k inserts into the heap. The m term dominates when k is much smaller than m (which is usually the case in these situations). So selection turns out to be O(m).
-
-        When you're working with data sets larger than memory, very often your bottleneck is file I/O. The algorithm I've outlined above tries to minimize the I/O. In the worst case (all words are unique), each word will be read twice and written once. But in the general case each word is read once and then each hash page is written once and read once. Plus, your sorts are on hash pages rather than raw words, and the total size of your temporary files will be much smaller than the original text.
----------------------------------------------
-14. How to count number of requests in last second, minute and hour
-https://stackoverflow.com/questions/17562089/how-to-count-number-of-requests-in-last-second-minute-and-hour
-https://stackoverflow.com/questions/11701008/efficient-way-to-compute-number-of-hits-to-a-server-within-the-last-minute-in-r
-
-    Solution 1:
-        If 100% accuracy is required:
-
-        Have a linked-list of all requests and 3 counts - for the last hour, the last minute and the last second.
-
-        You will have 2 pointers into the linked-list - for a minute ago and for a second ago.
-
-        An hour ago will be at the end of the list. Whenever the time of the last request is more than an hour before the current time, remove it from the list and decrement the hour count.
-
-        The minute and second pointers will point to the first request that occurred after a minute and a second ago respectively. Whenever the time of the request is more than a minute / second before the current time, shift up the pointer and decrement the minute / second count.
-
-        When a new request comes in, add it to all 3 counts and add it to the front of the linked-list.
-
-        Requests for the counts would simply involve returning the counts.
-
-        All of the above operations are amortised constant time.
-
-        If less than 100% accuracy is acceptable:
-
-        The space-complexity for the above could be a bit much, depending on how many requests per second you would typically get; you can reduce this by sacrificing slightly on accuracy as follows:
-
-        Have a linked-list as above, but only for the last second. Also have the 3 counts.
-
-        Then have a circular array of 60 elements indicating the counts of each of the last 60 seconds. Whenever a second passes, subtract the last (oldest) element of the array from the minute count and add the last second count to the array.
-
-        Have a similar circular array for the last 60 minutes.
-
-        Loss of accuracy: The minute count can be off by all the requests in a second and the hour count can be off by all the requests in a minute.
-
-        Obviously this won't really make sense if you only have one request per second or less. In this case you can keep the last minute in the linked-list and just have a circular array for the last 60 minutes.
-
-        There are also other variations on this - the accuracy to space used ratio can be adjusted as required.
-
-        A timer to remove old elements:
-
-        If you remove old elements only when new elements come in, it will be amortised constant time (some operations might take longer, but it will average out to constant time).
-
-        If you want true constant time, you can additionally have a timer running which removes old elements, and each invocation of this (and of course insertions and checking the counts) will only take constant time, since you're removing at most a number of elements inserted in the constant time since the last timer tick.
-
-    Solution 2:
-        To do this for time window of T seconds, have a queue data structure where you queue the timestamps of individual requests as they arrive. When you want to read the number of requests arrived during the most recent window of T seconds, first drop from the "old" end of the queue those timestamps that are older than T seconds, then read the size of the queue. You should also drop elements whenever you add a new request to the queue to keep its size bounded (assuming bounded rate for incoming requests).
-
-        This solution works up to arbitrary precision, e.g. millisecond accuracy. If you are content with returning approximate answers, you can e.g. for time window of T = 3600 (an hour), consolidate requests coming within same second into a single queue element, making queue size bounded by 3600. I think that would be more than fine, but theoretically loses accuracy. For T = 1, you can do consolidation on millisecond level if you want.
-
-        In pseudocode:
-        queue Q
-
-        proc requestReceived()
-          Q.insertAtFront(now())
-          collectGarbage()
-
-        proc collectGarbage()
-          limit = now() - T
-          while (! Q.empty() && Q.lastElement() < limit)
-            Q.popLast()
-
-        proc count()
-          collectGarbage()
-          return Q.size()
-
-    Solution 3:
-        Why not just use a circular array? We have 3600 elements in that array.
-
-        index = 0;
-        Array[index % 3600] = count_in_one_second.
-        ++index;
-
-        if you want last second, return the last element of this array. if you want last minute, return the sum of last 60 elements. if you want last hour, return the sum of the whole array (3600 elements).
-
-        Also How about using current time (e.g. System.currentTimeMillis()) instead of index?
-
-    Solution 4:
-        Use a circular buffer.
-
-        Whenever you have to keep some current statistics with a built-in obsolescence, a ring buffer is a good candidate. In your case, you can easily keep count of the requests in the last minute by inserting new packets at the front of the circular buffer and keeping a one-minute-before-now pointer in the buffer, or performing a binary search on request time.
-
-15. Consistent Hashing
-
-16. Design a Chess Game
+13. Design a Chess Game
 https://www.geeksforgeeks.org/design-a-chess-game/
 https://codereview.stackexchange.com/questions/71790/design-a-chess-game-using-object-oriented-principles
 https://medium.com/system-designing-interviews/design-a-chess-game-dddd7ba11bc0
 https://stackoverflow.com/questions/4168002/object-oriented-design-for-a-chess-game
-
-17. Design Tic Tac Toe
+---------------------------------------------
+14. Design Tic Tac Toe
 https://codereview.stackexchange.com/questions/31769/tic-tac-toe-design
 https://medium.com/system-designing-interviews/design-tic-tac-toe-game-1b912bba64cf
 https://leetcode.com/problems/design-tic-tac-toe/
-
-18. Design Parking Lot
+---------------------------------------------
+15. Design Parking Lot
 https://stackoverflow.com/questions/764933/amazon-interview-question-design-an-oo-parking-lot
 https://www.geeksforgeeks.org/design-parking-lot-using-object-oriented-principles/
 https://leetcode.com/discuss/interview-question/124739/Parking-Lot-Design-Using-OO-Design
-
-19. Design Log Storage System
+---------------------------------------------
+16. Design Log Storage System
 http://highscalability.com/product-scribe-facebooks-scalable-logging-system
 https://bravenewgeek.com/building-a-distributed-log-from-scratch-part-1-storage-mechanics/
 https://blog.twitter.com/engineering/en_us/topics/infrastructure/2015/building-distributedlog-twitter-s-high-performance-replicated-log-servic
@@ -719,43 +634,6 @@ https://www.youtube.com/watch?v=dZ3swmtR1As - Naren L
 https://www.youtube.com/watch?v=JaCA_pVS_1Y\
 https://www.youtube.com/watch?v=DphnpWVYeG8
 
-    FB's Scribe
-
-    1. API for clients
-    2. Data Aggregator / Collection
-    3. Data Transport
-        - Scribe, NSQ, Kafka, Logstash, Flume, FluentId
-
-        Push logs somewhere and it should be processed there.
-        When you save the log objects in Kafka it is then consumed by the worker that processes it for metrics data, fixes the log object format and then either pushes it to the next Kafka queue for further processing or saves it somewhere like s3.
-
-    4. Data Storage
-        S3, AWS Glacier, HDFS, Cassandra, MongoDB, ElasticSearch
-    5. Data Usefullizer (Metrics, Dashboard etc)
-        Kibana, Hive, Pig, GreyLog2
-    6. Alerting
-        Sentry, HoneyBadger
-
-    Rate limiter for amount of message per second
-    See if client can temporarily store logs if server is not available for some reason
-    Different Log Levels, Tag Id, Unique App / Request Id
-        Custom structure for companies to pick from
-
-    The idea here is you need a distributed file system to handle the continual stream of log messages. And once you have all the data stored safely away you'll need to use map-reduce to do anything with such a large amount of data.
-
-
-20. Design Mint
-https://github.com/donnemartin/system-design-primer/tree/master/solutions/system_design/mint#design-mintcom
-
-21. Design Tinder
-
-
-22. Design Tiktok
-
-
-23. Design Instagram
-
-24. Design Log Storage System
 https://www.elastic.co/blog/small-medium-or-large-scaling-elasticsearch-and-evolving-the-elastic-stack-to-fit
 https://leetcode.com/discuss/interview-question/system-design/622704/Design-a-system-to-store-and-retrieve-logs-for-all-of-eBay
 https://www.learnsteps.com/logging-infrastructure-system-design/
@@ -799,7 +677,43 @@ https://www.learnsteps.com/logging-infrastructure-system-design/
             a. Metrics, and Dashboard reporting from the logs
                 i. Use Kibana to visualize the data
 
-25. Design a Stock Exchange / Trading System like Robinhood
+    FB's Scribe
+
+    1. API for clients
+    2. Data Aggregator / Collection
+    3. Data Transport
+        - Scribe, NSQ, Kafka, Logstash, Flume, FluentId
+
+        Push logs somewhere and it should be processed there.
+        When you save the log objects in Kafka it is then consumed by the worker that processes it for metrics data, fixes the log object format and then either pushes it to the next Kafka queue for further processing or saves it somewhere like s3.
+
+    4. Data Storage
+        S3, AWS Glacier, HDFS, Cassandra, MongoDB, ElasticSearch
+    5. Data Usefullizer (Metrics, Dashboard etc)
+        Kibana, Hive, Pig, GreyLog2
+    6. Alerting
+        Sentry, HoneyBadger
+
+    Rate limiter for amount of message per second
+    See if client can temporarily store logs if server is not available for some reason
+    Different Log Levels, Tag Id, Unique App / Request Id
+        Custom structure for companies to pick from
+
+    The idea here is you need a distributed file system to handle the continual stream of log messages. And once you have all the data stored safely away you'll need to use map-reduce to do anything with such a large amount of data.
+
+---------------------------------------------
+17. Design Mint
+https://github.com/donnemartin/system-design-primer/tree/master/solutions/system_design/mint#design-mintcom
+---------------------------------------------
+18. Design Tinder
+---------------------------------------------
+
+19. Design Tiktok
+
+---------------------------------------------
+20. Design Instagram
+---------------------------------------------
+21. Design a Stock Exchange / Trading System like Robinhood
 https://github.com/tssovi/grokking-the-object-oriented-design-interview/blob/master/object-oriented-design-case-studies/design-an-online-stock-brokerage-system.md - Has Class Diagram, UML etc
 
     1. Requirements
@@ -836,8 +750,8 @@ https://github.com/tssovi/grokking-the-object-oriented-design-interview/blob/mas
             Buy Qty; Buy Price; Sell Price; Sell Qty
             500      5250.00    5252.00     1650
             750      5249.20    5252.10     50
-
-26. Design a Job Scheduler
+---------------------------------------------
+22. Design a Job Scheduler
 https://leetcode.com/discuss/general-discussion/1082786/System-Design%3A-Designing-a-distributed-Job-Scheduler-or-Many-interesting-concepts-to-learn
 https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
 https://www.youtube.com/watch?v=s3GfXTnzG_Y

@@ -8,7 +8,7 @@ System Design Topics
 3. SQL vs NoSQL
 4. Caching
 4a. Best practices for Caching
-4b. Strategies and How to Choose the Right One
+4b. Strategies and How to Choose the Right One; Cache Policies
 5. CDN
 6. Load Balancer:
 6a. What can we do when load balancer becomes the bottleneck?
@@ -31,6 +31,8 @@ System Design Topics
 9b. Polygot Persistence
 9c. Strategies for dealing with heavy writes to a DB
 9d. What is CQRS?
+9e. When would I use Amazon Redshift vs. Amazon RDS?
+9f. What is Amazon Athena
 10. Consistent Hashing
 11. REST API
 11a. GET, POST, PUT, DELETE
@@ -42,10 +44,15 @@ System Design Topics
 14. Distributed Transactions
 15. Pessimistic and Optimitic Locks
 16. What are Websockets - C10K Challenge
-16a. HTTP vs Websocket
+16a. Long Polling vs Web sockets
+16b. What is the overhead of using Websockets
+16c. HTTP vs Websocket
+16d. Scaling Websockets - C10K
 17. PostgreSQL vs MySQL
 18. What is Event Driven Architecture / Event Sourcing
 19. What is Non-blocking or AsyncIO Asynchronous IO
+20. InfoQ Videos - How Netflix sends Recommendation using Zuul Push
+22. Technologies to browse: Airflow, Redshift vs Snowflake, Segment and Fivetran, Apache Hive, Mosquito
 --------------------------------------------------------------------------------
 Technology Related Notes; Distributed Systems - Key Concepts
 0. Things to read about
@@ -67,9 +74,6 @@ Technology Related Notes; Distributed Systems - Key Concepts
 16. RabbitMQ
 17. Zookeeper
 18. Get zeromq message data into std::vector<char>
---------------------------------------------------------------------------------
-High Scalability
-1. Netflix
 --------------------------------------------------------------------------------
 Key References:
 https://roadtoarchitect.com/2018/09/04/useful-technology-and-company-architecture/ - Contains architecture of various companies
@@ -197,7 +201,7 @@ http://ksat.me/a-plain-english-introduction-to-cap-theorem
         Structured data
         Strict schema
         Relational data
-        Need for complex joins
+        Need for complex JOINS
         Transactions
         Clear patterns for scaling
         More established: developers, community, code, tools, etc
@@ -291,8 +295,8 @@ https://www.baeldung.com/cs/cache-write-policy
             - extra write latency because data is written to the cache first and then to the main database.
 
     4. Write-Around
-        - data is written directly to permanent storage, bypassing the cache. 
-        - This can reduce the cache being flooded with write operations that will not subsequently be re-read, 
+        - data is written directly to permanent storage, bypassing the cache.
+        - This can reduce the cache being flooded with write operations that will not subsequently be re-read,
         but has the disadvantage that a read request for recently written data will create a "cache miss" and must be read from slower back-end storage and experience higher latency.
 
     5. Write-Back
@@ -691,10 +695,10 @@ https://stackoverflow.com/questions/53037736/system-design-strategies-for-dealin
 https://garywoodfine.com/what-is-cqrs/
 https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs
 https://martinfowler.com/bliki/CQRS.html
-    
+
     - Command Query Responsibility Segregation (CQRS)
     - Developers use different models for Read and Update processes. Command and Query which are two operations for reads and writes respectively.
-    - The main use of CQRS pattern using it in high-performance applications to scale read and write operations. 
+    - The main use of CQRS pattern using it in high-performance applications to scale read and write operations.
         - CQRS allows you to separate the load from reads and writes allowing you to scale each independently.
     - Thus, every method should either be a Command or a Query that performs separate actions but not both simultaneously.
 
@@ -712,10 +716,18 @@ https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs
     - CQRS separates reads and writes into different models, using commands to update data, and queries to read data.
         - Commands should be task-based, rather than data centric. ("Book hotel room", not "set ReservationStatus to Reserved").
     - For greater isolation, you can physically separate the read data from the write data. In that case, the read database can use its own data schema that is optimized for queries.
-        - If separate read and write databases are used, they must be kept in sync. Typically this is accomplished by having the write model publish an event whenever it updates the database. 
+        - If separate read and write databases are used, they must be kept in sync. Typically this is accomplished by having the write model publish an event whenever it updates the database.
     - Using multiple read-only replicas can increase query performance
     - Separation of the read and write stores also allows each to be scaled appropriately to match the load.
 
+9e. When would I use Amazon Redshift vs. Amazon RDS?
+https://aws.amazon.com/redshift/faqs/
+
+    Both Amazon Redshift and Amazon Relational Database Service (RDS) let you run traditional relational databases in the cloud while off-loading database administration. Customers use Amazon RDS databases primarily for online-transaction processing (OLTP) workloads, while Amazon Redshift is used primarily for reporting and analytics. OLTP workloads require quickly querying specific information, and support for transactions such as insert, update, and delete are best handled by Amazon RDS. Amazon Redshift harnesses the scale and resources of multiple nodes and uses a variety of optimizations to provide order of magnitude improvements over traditional databases for analytic and reporting workloads against very large datasets. Amazon Redshift provides an excellent scale-out option as your data and query complexity grows if you want to prevent your reporting and analytic processing from interfering with the performance of your OLTP workload
+
+9f. What is Amazon Athena
+
+Amazon Athena is an interactive query service that makes it easy to analyze data in Amazon S3 using standard SQL. Athena is easy to use. Simply point to your data in S3, define the schema, and start querying using standard SQL.
 10. Consistent Hashing
 https://www.adayinthelifeof.nl/2011/02/06/memcache-internals/
     Consistent hashing uses a counter that acts like a clock. Once it reaches the ¿12¿, it wraps around to ¿1¿ again. Suppose this counter is 16 bits. This means it ranges from 0 to 65535.  If we visualize this on a clock, the number 0 and 65535 would be on the ¿12¿, 32200 would be around 6¿o clock, 48000 on 9 o¿clock and so on. We call this clock the continuum.
@@ -760,7 +772,7 @@ https://medium.com/hashmapinc/rest-good-practices-for-api-design-881439796dc9
         - For example, if we want an endpoint to get the comments for a news article, we should append the /comments path to the end of the /articles path.
         - /customer/orders
 
-        - For example, if a user has posts and we want to retrieve a specific post by user, API can be defined as 
+        - For example, if a user has posts and we want to retrieve a specific post by user, API can be defined as
             GET /users/123/posts/1 which will retrieve Post with id 1 by user with id 123
 
     4. Handle errors gracefully and return standard error codes
@@ -796,7 +808,7 @@ https://medium.com/hashmapinc/rest-good-practices-for-api-design-881439796dc9
             - There are a lot of mixed opinions as to whether the API consumer should create links or whether links should be provided to the API.
             - HATEOS is useful when browsing the web where we go to a website's front page and follow links based on what we see on the page).
                 - When browsing a website, decisions on what links will be clicked are made at run time.
-            - HATEOAS on APIs might not be that good.  
+            - HATEOAS on APIs might not be that good.
                 - With an API, decisions as to what requests will be sent are made when the API integration code is written, not at run time.
                 - Could the decisions be deferred to run time? Sure, however, there isn't much to gain going down that route as code would still not be able to handle significant API changes without breaking.
 
@@ -1021,11 +1033,39 @@ https://medium.com/@saurav200892/how-to-achieve-idempotency-in-post-method-d88d7
         - Take when there are MORE CONFLICTS
 
 16. What are Websockets
+https://medium.com/@nerdplusdog/websocket-simultaneous-bi-directional-client-server-communication-e7948203054b
     A WebSocket is a persistent bi-directional communication channel between a client (e.g. a browser) and a backend service. In contrast with HTTP request/response connections, websockets can transport any number of protocols and provide server-to-client message delivery without polling.
+
+    WebSocket allows a single TCP socket connection to be hijacked so that the client-server relationship can relay bi-directional, full-duplex (or sometimes also referred to as double-duplex) messages instantaneously. An example of a full-duplex communications system include your cell phone: both parties can speak and hear the other at the same time.
+
+    WebSocket is designed to run on HTTP ports 80 and 443, and supports HTTP proxies and intermediaries. By doing so, WebSocket is compatible with HTTP protocol. In order to achieve this compatibility, the WebSocket handshake uses the HTTP Upgrade header to switch from the HTTP protocol to the WebSocket Protocol.
 
     Useful for Chat applications
 
-16a. HTTP vs Websocket
+16a. Long Polling vs Web sockets
+https://stackoverflow.com/questions/31715179/differences-between-websockets-and-long-polling-for-turn-based-game-server
+https://medium.com/system-design-blog/long-polling-vs-websockets-vs-server-sent-events-c43ba96df7c1
+
+Polling
+    - Client intiates a requests i.e. A new request every few seconds to check if new data is available at the Server
+
+Long Polling
+    - Instead of a new connection every few seconds, Server will not disconnect and keep the connection open until
+        - A response is available
+        - A timeout has reached
+    - Once a response is sent back to the client, Client will repeat the same process
+
+    Cons:
+        - Client has to repeatedly multiple connections. The connections are not persistent
+
+Web Sockets
+    - Persistent and bidirectional
+
+16b. What is the overhead of using Websockets
+    WEB SOCKET AND OVERHEAD
+    - There is some server overhead to maintain an open socket to a client so if you were anticipating tens of thousands of these at once, you would have to make sure your server infrastructure was capable of that scale. The CPU load would only be proportional to how many sockets were busy at any given time as an idle socket doesn't take any CPU.
+
+16c. HTTP vs Websocket
     HTTP:
         Client          Server
               Request
@@ -1052,7 +1092,7 @@ https://medium.com/@saurav200892/how-to-achieve-idempotency-in-post-method-d88d7
 
         They allow bidirectional data flow so you just have to listen for any data. You can just listen to the server and it will send you a message when it’s available.
 
-16b. Scaling Websockets - C10K
+16d. Scaling Websockets - C10K
 http://goroutines.com/10m - Concurrent 10 million Problem - C10K chanllenge
 https://stackoverflow.com/questions/47268038/websockets-and-scalability
 https://stackoverflow.com/questions/4852702/do-html-websockets-maintain-an-open-connection-for-each-client-does-this-scale
@@ -1086,7 +1126,7 @@ https://blog.panoply.io/postgresql-vs.-mysql
 
         PostgreSQL:
             Pros:
-                - Postgres boasts a wider range of indexes, such as partial indexes (used for filtering data), bitmap indexes (efficient when working with categorical data), and expression indexes (indexes as a function of other columns). 
+                - Postgres boasts a wider range of indexes, such as partial indexes (used for filtering data), bitmap indexes (efficient when working with categorical data), and expression indexes (indexes as a function of other columns).
                 - Heavy Analytic workloads
                     - Postgres has developed more advanced features for analytics
                     - Window functions - aggregate computations across rows, such as moving averages and cumulative sums.
@@ -1117,6 +1157,90 @@ https://aws.amazon.com/event-driven-architecture/
     Able to recreate state using the old events
 
 19. What is Non-blocking or AsyncIO Asynchronous IO
+
+20. InfoQ Videos - How Netflix sends Recommendation using Zuul Push
+    Zuul Push:
+    AIM: How to quickly tell clients that a new Recommendation list is immediately available ASAP
+
+    Problem: Pull and Polling are expensive for servers to handle
+
+    - Same as push messages that we get on mobile. But work for wide variety of devices
+    - Client connects to a Zuul Push server using Web sockets or SSE (Server Sent Events)
+
+    - Push Registry keeps tracks of which server is connected to which client
+
+    - Zuul Push library provides a simple API for anyone push what they want to anyone
+
+    - Each Zuul push server can handle 10M concurrent websocket connections
+
+    - What is non-blocking Async IO (C10 challenge)
+      - Spawning a new thread for every incoming connection and letting the thread do blocking read write
+      - Problem: Maintaining Thread stack and Context Switch
+    - ASync IO - Uses OS provided multiplexing protocols like ePoll
+      - Registers all the Open connections on a single thread
+      - When any read or write is needed, the corresponding callback is invoked on the same thread
+      - TRADE off: More dev code to keep track of all state and all connections inside code because we can't rely on THREAD STACK
+      - Achieve this using State Machines
+      - Uses Netty for Async Non Blocking IO
+    - CHECK NETTY PROGRAMMING
+
+    Push Registry
+    - Netflix allows anyone to have their custom push registry
+    - Can be any data store that has Low Read Latency
+    - Write one read N times
+    - Data store to have a TTL. Needed when a client does not disconnect in a clean way.
+    - Redis, DynamoDB, Cassandra can serve the above
+
+    MESSAGE PROCESSING
+    - Use Kafka
+    - Fire and forget is the pattern used here
+    - Ack can be given using Subscription model if needed
+
+    - Rely on Kafka Message Queue Replication
+    - Using different Queue for different priority messages ensure PRIORITY INVERSION doesn't happen
+
+    HOW WILL YOU REPLACE A ZULL PUSH SERVER
+    What will happen to all the connections
+    - Thundering Herd Problem
+      - All clients trying to correct to the same service at the same time
+      - Too much for servers to handle
+    - ANS: All client connections will be AUTO CLOSED periodically. This way, when the client connects back, it can go to the newly deployed server
+    - RANDOMIZE connections as well from time to time
+      - Everyone shouldn't attempt reconnect at the same time.
+      - So RANDOMIZE the Timeouts by + or - 2 minutes
+      - Disperse / SPREAD OUT. Simple trick to tame the thundering herd
+
+    - OPTIMIZATIONS
+      - Instead off server trying to close the connection, server sends a message to client asking to close the connection
+      - This looks like a ROUND ABOUT way for the same
+      - But as per TCP protocol, the party that imitates connection close should be on a TIMED WAIT state (FILE DESCRIPTORS are consumed)
+      - Now this responsibility is handed off to the client
+      - What about BAD CLIENTS
+         - Server take care of closing it
+
+    MOST CONNECTIONS WERE IDLE MOST OF THE TIMES
+    - Carefully tuned each Ann mom Amzon EC2 and carefully timed instances and crammed it with as many connections as possible
+      - But what if the entire insurance goes down. THUNDERING HERD AGAIN
+      - So have to find a Balancing number
+    TAKEAWAY - Don't worry about number of EC2 servers, instead look at the load in each servers
+
+    AUTO SCALE
+    - Can't use RPS and CPU load as connections are idle
+    - Auto scale using Average number of connections
+    - AWS allows to use any metric for Auto Scale
+
+    ELB and WEBSOCKETS
+    - PROBLEM: Can't have a persistent web socket connection through ELB as ELB can't look into Websocket details
+     - Use ALB instead or RUN ELB as TCP LOAD BALANCERS instead of HTTP LOAD BALANCER
+
+    SUMMARY
+    - Recycle connections after sometime
+    - Add Randomizations to timeouts
+    - Many Smaller Instances than free Bigger ones
+    - Metric to Auto scale
+    - Websocket aware Load balancer or TCP load balancer
+
+22. Technologies to browse: Airflow, Redshift vs Snowflake, Segment and Fivetran, Apache Hive, Mosquito
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Technology Related Notes; Distributed Systems - Key Concepts
@@ -1208,8 +1332,45 @@ billion message writes per day with a sustained load that averages 172,000 messa
 
 4b. RabbitMQ vs Kafka
 https://stackoverflow.com/questions/42151544/when-to-use-rabbitmq-over-kafka
-    - RabbitMQ is a solid, general-purpose message broker that supports several protocols such as AMQP, MQTT, STOMP, etc. It can handle high throughput. A common use case for RabbitMQ is to handle background jobs or long-running task, such as file scanning, image scaling or PDF conversion.
-    - Kafka is a message bus optimized for high-throughput ingestion data streams and replay. Use Kafka when you have the need to move a large amount of data, process data in real-time or analyze data over a time period. In other words, where data need to be collected, stored, and handled.
+https://www.cloudamqp.com/blog/when-to-use-rabbitmq-or-apache-kafka.html
+    - RabbitMQ is a solid, general-purpose message broker that supports several protocols such as AMQP, MQTT, STOMP, etc. It can handle high throughput.
+        Push and pull based
+        Route Messages: RabbitMQ has better options if you need to route your messages in complex ways to your consumers
+            - Direct or regular expression-based routing allows messages to reach specific queues without additional code. RabbitMQ has four different routing options: direct, topic, fanout, and header exchanges
+
+        A common use case for RabbitMQ is to
+            - handle background jobs or long-running task, such as file scanning, image scaling or PDF conversion.
+        if you want a
+            - simple/traditional pub-sub message broker, the obvious choice is RabbitMQ
+
+    - Kafka is a message bus optimized for high-throughput ingestion data streams and replay.
+        Kafka uses a custom protocol, on top of TCP/IP for communication between applications and the cluster.
+        Kafka is pull based messaging system
+        Kafka has a very simple routing approach
+            - Kafka does not support routing; Kafka topics are divided into partitions which contain messages in an unchangeable sequence. You can make use of consumer groups and persistent topics as a substitute for the routing in RabbitMQ, where you send all messages to one topic, but let your consumer groups subscribe from different offsets.
+            - You can create dynamic routing yourself with help of Kafka streams
+        Use Kafka when you have the need to
+            - move a large amount of data,
+            - process data in real-time or analyze data over a time period.
+            In other words, where data need to be collected, stored, and handled.
+        Use Kafka if you need to support
+            - batch consumers that could be offline or consumers that want messages at low latency.
+
+        if you want a framework for
+            - storing, reading (re-reading), and analyzing streaming data, use Apache Kafka
+
+
+    RabbitMQ
+        - Message handling (message replay)
+            - In RabbitMQ, messages are stored until a receiving application connects and receives a message off the queue. The client can either ack (acknowledge) the message when it receives it or when the client has completely processed the message. In either situation, once the message is acked, it’s removed from the queue.
+        - Message Priority
+            - RabbitMQ supports something called priority queues, meaning that a queue can be set to have a range of priorities. The priority of each message can be set when it is published. Depending on the priority of the message it is placed in the appropriate priority queue.
+    Kafka
+        - Message handling (message replay)
+            - the message queue in Kafka is persistent.
+            - The data sent is stored until a specified retention period has passed, either a period of time or a size limit. The message stays in the queue until the retention period/size limit is exceeded, meaning the message is not removed once it’s consumed. Instead, it can be replayed or consumed multiple times, which is a setting that can be adjusted.
+        - Message Priority
+            - A message cannot be sent with a priority level, nor be delivered in priority order, in Kafka. All messages in Kafka are stored and delivered in the order in which they are received regardless of how busy the consumer side is
 
 5. Running Java in Container
 https://mesosphere.com/blog/java-container/
