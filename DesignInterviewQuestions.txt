@@ -438,6 +438,9 @@ Data Access Patterns
         - Group Members Table
             Group Id    List User Ids List
 
+        - User Online Status
+            User Id     Status      Last Active Timestamp
+
         MESSAGE ID
             - message ID is used to determine the ordering. The message Id is not globally unique, as its scope is determined by the partition key. The system will never retrieve an item by its message ID alone.
 
