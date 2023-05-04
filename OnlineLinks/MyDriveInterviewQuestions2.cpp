@@ -43,7 +43,7 @@ using namespace std;
  *
  * PROBLEM 6. Reverse words in a sentence
  * void reverseWords(string &s)
- * 
+ *
  * PROBLEM 7.   Find Minimum range that covers all the lists
  * pair<uint32_t, uint32_t> findMinRangeForAllLists(vector<vector<int>> lists)
  *
@@ -56,7 +56,7 @@ using namespace std;
  * PROBLEM 10. Sorted Array. Find first element smaller than given number
  * int findFirstSmallerElementIndex(vector<int> nums, int myNum)
  *
- * PROBLEM 11. Sorted Array. Find first element smaller than given number
+ * PROBLEM 11. Sorted Array. Find first element greater than given number
  * int findFirstGreaterElementIndex(vector<int> nums, int myNum)
  *
  * PROBLEM 12: Square root of a number
@@ -126,7 +126,7 @@ string intToRomanNumeralsRec(uint32_t num)
     {
         return "";
     }
-    
+
     if (num >= 1000)
     {
         return "M" + intToRomanNumeralsRec(num - 1000);
@@ -450,12 +450,12 @@ int evalRPN(const vector<string>& tokens)
 // -----------------------------------------------------------------------------------------
 // PROBLEM 5. myAtoi function
 // -----------------------------------------------------------------------------------------
-int myAtoi(string str) 
+int myAtoi(string str)
 {
     int numSign = 1;
     int stIdx = 0;
     int num = 0;
-    
+
     if (str.length() > log10(std::numeric_limits<int>::max()) + 1)
     {
         cout << "Max Int" << endl;
@@ -494,7 +494,7 @@ int myAtoi(string str)
 
 // -----------------------------------------------------------------------------------------
 // PROBLEM 6.   Reverse words in a string
-// IMP:    
+// IMP:
 //          1. reverseString should use TWO variable, i and j
 //          2. Make sure "int i" is done before for loop
 //          3. check for the last word i.e. stIdx < i
@@ -541,7 +541,7 @@ void reverseWords(string &s)
 
 // -----------------------------------------------------------------------------------------
 // PROBLEM 7.   Find Minimum range that covers all the lists
-// Logic:   
+// Logic:
 //      Take first number from all the lists and put them in a min-heap
 //      Store the maxNum and the minNum to find the range
 //
@@ -574,7 +574,7 @@ pair<int, int> findMinRangeForAllLists(vector<vector<int>> lists)
 {
     int maxNum = numeric_limits<int>::min();
 
-    // Store the difference between max and min numbers. 
+    // Store the difference between max and min numbers.
     // This is needed to check when we get the next set of numbers
     int minRangeDiff = numeric_limits<int>::max();
 
@@ -632,7 +632,7 @@ pair<int, int> findMinRangeForAllLists(vector<vector<int>> lists)
 // -----------------------------------------------------------------------------------------
 // PROBLEM 8. Reverse a Integer Number
 // -----------------------------------------------------------------------------------------
-int reverse(int x) 
+int reverse(int x)
 {
     int revNum = 0;
     int newX = x;
@@ -642,12 +642,12 @@ int reverse(int x)
         negNumMultiplier = -1;
         newX = x * (-1);
     }
-    
+
     if (newX == 0 || (log10(newX) + 1 == 1))
     {
         return x;
     }
-    
+
     while(newX != 0)
     {
         int rem = newX % 10;
@@ -662,7 +662,7 @@ int reverse(int x)
 
         revNum = (revNum * 10) + rem;
     }
-    
+
     return revNum * negNumMultiplier;
 }
 
@@ -930,7 +930,7 @@ double myPow(double x, int n)
     }
     */
 
-    // Main Loop 
+    // Main Loop
     while (newN > 0)
     {
         if (newN % 2 != 0)
@@ -962,7 +962,7 @@ double myPow(double x, int n)
 // -----------------------------------------------------------------------------------------
 // PROBLEM 14. Replace 0s with 5 in a given number
 //
-//      Eg : 1208 ; 1258 120096045 ; 125596545 
+//      Eg : 1208 ; 1258 120096045 ; 125596545
 // -----------------------------------------------------------------------------------------
 int replaceZerosWithFives(int num)
 {
@@ -993,7 +993,7 @@ int replaceZerosWithFives(int num)
 }
 
 // -----------------------------------------------------------------------------------------
-// PROBLEM 15. 
+// PROBLEM 15.
 // -----------------------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------------------
@@ -1210,7 +1210,7 @@ int main()
         cout << endl;
     }
 
-    // PROBLEM 15: 
+    // PROBLEM 15:
     {
         cout << endl << "PROBLEM 15: " << endl;
         cout << endl;

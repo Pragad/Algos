@@ -76,8 +76,9 @@ UML / DESIGN Questions
 4. What is Cardinality
 5. What are mock Objects
 6. UML Diagrams
-7. Factory Pattern vs Singleton Pattern
-7b. Abstract Factory vs Factory
+7a. Design Patters
+7b. Factory Pattern vs Singleton Pattern
+7c. Abstract Factory vs Factory
 8. MVC PAttern
 9. Elevator
 10. Bike Shop
@@ -155,11 +156,17 @@ SECURITY
 2. What is SSL Termination
 -----------------------------------------------
 MISC
-1. What is REST Servcie
+1. What is REST Service
 1b. GET vs POST
+1c. GET, POST, PUT, DELETE, PATCH
 1c. RPC vs REST
 1d. RESTful API is stateless
 1e. What exactly is RESTful programming?
+1j. REST API Critical data won't be passed in the URL
+1k. Can a GET request have a body
+1l. Types of REST API parameters
+1m. HTTP vs HTTPS
+
 1f. IIOP
 1g. RMI
 2. What is a Websocket
@@ -168,6 +175,13 @@ MISC
 5. BASE Properties
 6. Tabs vs Spaces as Coding Style
 7. JSON vs JSON-LD
+8. Springboot
+8a. Spring vs Springboot
+8b. What Is Spring Initializr?
+8c. What Basic Annotations Does Spring Boot Offer?
+8d. What is the difference between RequestMapping and GetMapping?
+9. Types of Dependency Injection
+10. TRUNCATE vs DROP in DB
 -----------------------------------------------
 DISTRIBUTED SYSTEMS:
 
@@ -1417,7 +1431,20 @@ http://stackoverflow.com/questions/3622455/what-is-the-purpose-of-mock-objects
         Sync MEssages:
             Dark Overhead
 
-7. Factory Pattern vs Singleton Pattern
+7a. Design Patters
+https://learningdaily.dev/the-7-most-important-software-design-patterns-d60e546afb0e
+    Singleton Pattern:
+        The singleton pattern is used to limit creation of a class to only one object.
+    Factory Pattern:
+        A normal factory produces goods; a software factory produces objects. And not just that — it does so without specifying the exact class of the object to be created. To accomplish this, objects are created by calling a factory method instead of calling a constructor.
+    Observer Pattern:
+        This pattern is a one-to-many dependency between objects so that when one object changes state, all its dependents are notified
+    Builder Pattern:
+        The exercise of creating complex types can be simplified by using the builder pattern. A composite or an aggregate object is what a builder generally builds.
+    Adapter Pattern:
+        This allows incompatible classes to work together by converting the interface of one class into another
+
+7b. Factory Pattern vs Singleton Pattern
 http://stackoverflow.com/questions/2094211/difference-between-singleton-and-factory-pattern
     A singleton pattern ensures that you always get back the same instance of whatever type you are retrieving, whereas the factory pattern generally gives you a different instance of each type
 
@@ -1434,7 +1461,7 @@ http://stackoverflow.com/questions/2094211/difference-between-singleton-and-fact
 SINGLETON:
     restricting the instantiation of a class to one object
 
-7b. Abstract Factory vs Factory
+7c. Abstract Factory vs Factory
 https://stackoverflow.com/questions/5739611/what-are-the-differences-between-abstract-factory-and-factory-design-patterns
 https://www.youtube.com/watch?v=EcFVTgRHJLM
 https://www.youtube.com/watch?v=v-GiuMmsXj4
@@ -3108,7 +3135,7 @@ https://security.stackexchange.com/questions/30403/should-ssl-be-terminated-at-a
 -----------------------------------------------
 MISC
 1.
-What is REST Servcie
+What is REST Service
 
 A REST API defines a set of functions which developers can perform requests and receive responses via HTTP protocol such as GET and POST.
 
@@ -3129,18 +3156,51 @@ http://stackoverflow.com/questions/11229206/difference-between-get-and-post-meth
 
     DELETE should be obvious.
 
-1c. RPC vs REST
+1c. GET, POST, PUT, DELETE, PATCH
+https://stackoverflow.com/questions/31089221/what-is-the-difference-between-put-post-and-patch
+    GET = READ
+    POST = CREATE
+    PUT = UPDATE
+    DELETE = DELETE
+
+    PATCH: Submits a partial modification to a resource. If you only need to update one field for the resource, you may want to use the PATCH method.
+
+    Idempotent:
+        PUT
+        DELETE
+        GET
+
+    PUT Example
+        {
+            "name:":"John Doe",
+            "city":"Seattle",
+            "age":31
+        }
+
+    PUT
+        If I had to change my first name then send PUT request for Update:
+
+        { "first": "Nazmul", "last": "hasan" }
+        So, here in order to update the first name we need to send all the parameters of the data again.
+
+    PATCH:
+        Patch request says that we would only send the data that we need to modify without modifying or effecting other parts of the data. 
+        Ex: if we need to update only the first name, we pass only the first name.
+
+
+
+1f. RPC vs REST
 https://stackoverflow.com/questions/26830431/web-service-differences-between-rest-and-rpc
 https://etherealbits.com/2012/12/debunking-the-myths-of-rpc-rest/
 
     Remote Procedure Call (RPC) is way to describe a mechanism that lets you call a procedure in another process and exchange data by message passing. It typically involves generating some method stubs on the client process that makes making the call appear local, but behind the stub is logic to marshall the request and send it to the server process. The server process then unmarshalls the request and invokes the desired method before repeating the process in reverse to get whatever the method returns back to the client. HTTP is sometimes used as the underlying protocol for message passing, but nothing about RPC is inherently bound to HTTP. Remote Method Invocation (RMI) is closely related to RPC, but it takes remote invocation a step further by making it object oriented and providing the capability to keep references to remote objects and invoke their methods.
 
-1d. RESTful API is stateless
+1g. RESTful API is stateless
 https://stackoverflow.com/questions/34130036/how-to-understand-restful-api-is-stateless
 
     each request from client to server must contain all of the information necessary to understand the request, and cannot take advantage of any stored context on the server. Session state is therefore kept entirely on the client
 
-1e. What exactly is RESTful programming?
+1h. What exactly is RESTful programming?
 https://stackoverflow.com/questions/671118/what-exactly-is-restful-programming
 
     An architectural style called REST (Representational State Transfer) advocates that web applications should use HTTP as it was originally envisioned. Lookups should use GET requests. PUT, POST, and DELETE requests should be used for mutation, creation, and deletion respectively.
@@ -3155,12 +3215,44 @@ https://stackoverflow.com/questions/671118/what-exactly-is-restful-programming
     Keep in mind that GET requests should never be used for updating information. For example, a GET request for adding an item to a cart
     http://myserver.com/addToCart?cart=314159&item=1729
 
-1f. IIOP
+1j. REST API Critical data won't be passed in the URL
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
+https://stackoverflow.com/questions/39568719/rest-api-get-with-sensitive-data
+https://support.google.com/adsense/answer/6156630?hl=en - Best practices to avoid sending Personally Identifiable Information (PII)
+https://www.googlecloudcommunity.com/gc/Apigee/What-are-alternatives-for-passing-sensitive-data-in-URLs/m-p/64948
+    - Options 1:
+        - Use a UUID instead of PII data
+    - Option 2:
+        - Use a POST request instead of a DELETE/GET
+    - Problem
+        - Delete/GET request urls are logged
+        - The data also gets cached
+
+    1. Avoid using sensitive data as primary identifiers, use alternate identifiers. This will alleviate some of the situations.
+    2. For GET operations as a convenience search on collections (with sensitive data as query params or path params), convert to a POST on the collection with a “search” path suffix and move the params to request body. Always returns an array if any.
+    3. For POST operations to create a resource on subresource collections (with sensitive data as path params) move the path param to the request body and use the subresource collection in the URL. Always returns a single resource if any.
+    4. For GET, PUT, DELETE operations on a resource (Assuming #1 is not acceptable), convert to POST operation on the collection with a corresponding “{verb}” path suffix (get, put, delete) and move the primary identifier and any parent resource path params to request body. Again, use the subresource as the collection in the URL. Always returns a single resource if any.
+
+1k. Can a GET request have a body
+https://stackoverflow.com/questions/978061/http-get-with-request-body
+    Yes, but it is not recommended as there can be a weird behavior
+
+1l. Types of REST API parameters
+https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
+    Path and Query parameters
+
+1m. HTTP vs HTTPS
+https://www.entrepreneur.com/leadership/http-vs-https-whats-the-difference-and-why-should-you/281633
+    HTTPS involves the use of an SSL certificate -- "SSL" stands for secure sockets layer -- which creates a secure encrypted connection between the web server and the web browser.
+
+    Without HTTPS, any data passed is insecure. This is especially important for sites where sensitive data is passed across the connection, such as ecommerce sites that accept online card payments, or login areas that require users to enter their credentials.
+
+1i. IIOP
 https://whatis.techtarget.com/definition/IIOP-Internet-Inter-ORB-Protocol
 
     IIOP (Internet Inter-ORB Protocol) is a protocol that makes it possible for distributed programs written in different programming languages to communicate over the Internet. IIOP is a critical part of a strategic industry standard, the Common Object Request Broker Architecture (CORBA). Using CORBA's IIOP and related protocols, a company can write programs that will be able to communicate with their own or other company's existing or future programs wherever they are located and without having to understand anything about the program other than its service and a name. CORBA and IIOP are competing with a similar strategy from Microsoft called the Distributed Component Object Model (DCOM).
 
-1g. RMI
+1j. RMI
     RMI uses a network-based registry to keep track of the distributed objects. The server object makes a method available for remote invocation by binding it to a name in the registry. The client object, in turn, can check for availability of an object by looking up its name in the registry . The registry acts as a limited central management point for RMI . The registry is simply a name repository . It does not address the problem of actually invoking the remote method
 
 2.
@@ -3280,4 +3372,93 @@ http://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-wha
 7. JSON vs JSON-LD
 https://dashjoin.medium.com/json-schema-schema-org-json-ld-whats-the-difference-e30d7315686a
 
+8. Springboot
+    Here are a few salient features:
+    - Starters – a set of dependency descriptors to include relevant dependencies at a go
+    - Auto-configuration – a way to automatically configure an application based on the dependencies present on the classpath
+    - Actuator – to get production-ready features such as monitoring
+    - Security
+    - Logging
+
+8a. Spring vs Springboot
+https://www.baeldung.com/spring-boot-interview-questions
+    Spring is unopinionated, Spring Boot takes an opinionated view of the platform and libraries, letting us get started quickly.
+
+    Here are two of the most important benefits Spring Boot brings in:
+        Auto-configure applications based on the artifacts it finds on the classpath
+        Provide non-functional features common to applications in production, such as security or health checks
+
+8b. What Is Spring Initializr?
+    Spring Initializr is a convenient way to create a Spring Boot project.
+
+8c. What Basic Annotations Does Spring Boot Offer?
+    Here are a couple of basic ones:
+    @EnableAutoConfiguration – 
+        to make Spring Boot look for auto-configuration beans on its classpath and automatically apply them
+    @SpringBootApplication –
+        to denote the main class of a Boot Application. This annotation combines @Configuration, @EnableAutoConfiguration and @ComponentScan annotations with their default attributes.
+    ComponentScan:
+        Spring Boot application scans all the beans and package declarations when the application initializes. You need to add the @ComponentScan annotation for your class file to scan your components added to your project.
+
+8d. What is the difference between RequestMapping and GetMapping?
+    
+    RequestMapping can be used with GET, POST, PUT, and many other request methods using the method attribute on the annotation. Whereas getMapping is only an extension of RequestMapping which helps you to improve on clarity on request.
+
+9. Types of Dependency Injection
+https://www.linkedin.com/pulse/3-types-dependency-injection-mohammad-ramezani/
+
+    Constructor Injection
+        Constructor injection is the process of using the constructor to pass in the dependencies of a class.
+    Property Injection (aka setter injection)
+        You should use property injection in case the dependency is truly optional
+        property injection is considered bad in 98% of all scenarios because it hides dependencies and there is no guarantee that the object will be injected when the class is created
+    Method Injection
+        Thus method injection is useful in two scenarios: 
+            when the implementation of dependency will vary, and 
+            when the dependency needs to be renewed after each use.
+
+10. TRUNCATE vs DROP in DB
+https://stackoverflow.com/questions/135653/difference-between-drop-table-and-truncate-table
+    DROP TABLE deletes the table.
+    TRUNCATE TABLE empties it, but leaves its structure for future data.
+
+    Truncate is normally ultra-fast, ideal for cleaning out data from a temporary table. It does preserve the structure of the table for future use.
+    If you actually want to remove the table definitions as well as the data, simply drop the tables.
+
+11. DDL vs DML vs DCL vs TCL
+https://stackoverflow.com/questions/2578194/what-are-ddl-and-dml
+    DDL
+        DDL is short name of Data Definition Language, which deals with database schemas and descriptions, of how the data should reside in the database.
+
+        CREATE – to create database and its objects like (table, index, views, store procedure, function and triggers).
+        ALTER – alters the structure of the existing database.
+        DROP – delete objects from the database.
+        TRUNCATE – remove all records from a table; also, all spaces allocated for the records are removed.
+        COMMENT – add comments to the data dictionary.
+        RENAME – rename an object.
+
+    DML
+        DML is short name of Data Manipulation Language which deals with data manipulation, and includes most common SQL statements such SELECT, INSERT, UPDATE, DELETE etc, and it is used to store, modify, retrieve, delete and update data in database.
+
+        SELECT – retrieve data from one or more tables.
+        INSERT – insert data into a table.
+        UPDATE – updates existing data within a table.
+        DELETE – delete all records from a table.
+        MERGE – UPSERT operation (insert or update)
+        CALL – call a PL/SQL or Java subprogram.
+        EXPLAIN PLAN – interpretation of the data access path.
+        LOCK TABLE – concurrency control.
+
+    DCL
+        DCL is short name of Data Control Language which includes commands such as GRANT, and mostly concerned with rights, permissions and other controls of the database system.
+
+        GRANT – allow users access privileges to database.
+        REVOKE – withdraw users access privileges given by using the GRANT command.
+    TCL
+        TCL is short name of Transaction Control Language which deals with transaction within a database.
+
+        COMMIT – commits a transaction.
+        ROLLBACK – rollback a transaction in case of any error occurs.
+        SAVEPOINT – a point inside a transaction that allows rollback state to what it was at the time of the savepoint.
+        SET TRANSACTION – specify characteristics for the transaction.
 --------------------------------------------------------------------------------

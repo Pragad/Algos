@@ -142,6 +142,26 @@ http://highscalability.com/blog/2012/9/19/the-4-building-blocks-of-architecting-
     40 requests per second = 100 million requests per month
     400 requests per second = 1 billion requests per month
 
+    SECONDS IN A DAY    = 86,400 
+    SECONDS IN A MONTH  = 2.5M
+    SECONDS IN A YEAR   = 32M
+
+    MINUTES in a DAY    = 1440      = 1.5k
+    MINUTES in a MONTH  = 43,200    = 50k
+    MINUTES in a YEAR   = 525,600   = 0.5M
+
+    RPS to DAY:     1 RPS   = 86400 Requests per day = 86k
+    RPS to MONTH:   1 RPS   = 2,592,000 Requests per month = 2.5 M
+    RPS to YEAR:    1 RPS   = 31,536,000 Requests per year = 32 M
+
+    Power of 2
+    Power       Value           Byte        Number of 0s
+    10          1 K              1 KB
+    20          1 Million        1 MB        6
+    30          1 Billion        1 GB        9
+    40          1 Trillion       1 TB        12
+    50          1 Quardillion    1 PB        15
+
     Latency Comparison Numbers
     --------------------------
     L1 cache reference                           0.5 ns
@@ -516,6 +536,16 @@ https://stackoverflow.com/questions/61174839/load-balancer-and-api-gateway-confu
 
 9. Databases
 
+9a0. Denormalization
+https://www.geeksforgeeks.org/denormalization-in-databases/
+
+    Denormalization is a database optimization technique in which we add redundant data to one or more tables. 
+    This can help us avoid costly joins in a relational database. 
+    Note that denormalization does not mean ‘reversing normalization’ or ‘not to normalize’. 
+    It is an optimization technique that is applied after normalization.
+
+    The process of taking a normalized schema and making it non-normalized is called denormalization, and designers use it to tune the performance of systems to support time-critical operations
+
 9a1. Normalization
 https://www.youtube.com/watch?v=xoTyrdT9SZI
     Avoid / Removing redundant data from  a table to reduce
@@ -744,24 +774,6 @@ https://www.adayinthelifeof.nl/2011/02/06/memcache-internals/
     http://localhost:8080/myappstore/customers?limit=20&offset=0
 
 
-11a. GET, POST, PUT, DELETE
-    GET = READ
-    POST = CREATE
-    PUT = UPDATE
-    DELETE = DELETE
-
-    Idempotent:
-        PUT
-        DELETE
-        GET
-
-    PUT Example
-        {
-            "name:":"John Doe",
-            "cit":"Seattle",
-            "age":31
-        }
-
 11b. How to design REST API
 https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/
 https://medium.com/hashmapinc/rest-good-practices-for-api-design-881439796dc9
@@ -815,8 +827,8 @@ https://medium.com/hashmapinc/rest-good-practices-for-api-design-881439796dc9
     10. Swagger for documentation
 
 11c. API Query, Filter and Pagination
-    http://localhost:8080/myappstore/customer/1/orders?iterm=microwave
-    http://localhost:8080/myappstore/customer/1/orders?iterm=microwave&quantity=1
+    http://localhost:8080/myappstore/customer/1/orders?item=microwave
+    http://localhost:8080/myappstore/customer/1/orders?item=microwave&quantity=1
     http://localhost:8080/myappstore/customer?name=john
     http://localhost:8080/myappstore/customer?name=john&dobStart=1995-12-01T00:00:00&dateEnd=2020-12-31T23:59:59
 

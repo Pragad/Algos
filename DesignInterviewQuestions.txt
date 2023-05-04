@@ -19,6 +19,7 @@ How to Approach Design Interview Questions
         b. How APIs would be
         c. How entries would be stored in DB
     3b. API Design
+        STATEFUL vs STATELESS
         a. REST/RPC
         b. GraphQL etc
         c. Websockets if needed
@@ -34,6 +35,7 @@ How to Approach Design Interview Questions
         c. DB Schema
         d. Sharding
         e. Replication
+        f. Master; Slave and Analytics DB
     4. Things to consider for Scalability
         AVOID SINGLE POINT OF FAILURE
         a. Fault Tolerance
@@ -49,6 +51,7 @@ How to Approach Design Interview Questions
         k. Asynchornous where needed
         l. CDN
             1. Cache static content
+        m. Rate limiting
     5. Failure Handling
         a. API failure,
         b. DB failure,
@@ -56,6 +59,7 @@ How to Approach Design Interview Questions
     6. Monitoring
         a. Metrics and Dashboards
         b. Alarms, Monitors
+        c. Monitor host health status and automatic spin-up of new hosts
     7. Retry Mechanism
     8. HTTP Error Codes
     9. Encryption / Hashing where needed for critical info
@@ -97,6 +101,7 @@ System Design Interview Questions
 20. Design Instagram
 21. Design a Stock Exchange / Trading System like Robinhood
 22. Design a Job Scheduler
+23. Design Google Doc / Shared whiteboarding tool
 --------------------------------------------------------------------------------
 Key References:
 https://roadtoarchitect.com/2018/09/04/useful-technology-and-company-architecture/ - Contains architecture of various companies
@@ -156,6 +161,7 @@ System Design Interview Questions
 2. Create a TinyURL System
 http://blog.gainlo.co/index.php/2016/03/08/system-design-interview-question-create-tinyurl-system/?utm_source=email&utm_medium=email&utm_campaign=email
 https://leetcode.com/discuss/interview-question/124658/Design-a-URL-Shortener-(-TinyURL-)-System/
+https://medium.com/@sandeep4.verma/system-design-scalable-url-shortener-service-like-tinyurl-106f30f23a82 - Good one
 
 APPROACH:
 1. Questions to Interviewer:
@@ -171,6 +177,28 @@ APPROACH:
 Thigs to Calcualte:
     0. Estimate the number of char for Tiny URL
     1. What will be the total DB size
+
+API:
+    POST https://tinyurl.com/shortenservice/api/tinyurl
+    Request Body: {url=long_url}
+
+
+    GET: /{short_url}
+    Return a http redirect response(302)
+
+Database:
+    User DB
+    - User Id
+        PK
+    - Name
+    - Email
+    - Account Creation Time
+
+    Tiny Url DB
+    - User Id
+        FK
+    - Short url (Index)
+    - Long url (Index)
 
 
 1. Open Questions:
@@ -391,6 +419,8 @@ http://www.eecs.harvard.edu/~mema/courses/cs264/cs264.html
 6. Design a Chat messenger (Whatsapp, FB, Slack)
 https://towardsdatascience.com/ace-the-system-interview-design-a-chat-application-3f34fd5b85d0
 https://medium.com/double-pointer/system-design-interview-facebook-messenger-whatsapp-slack-discord-or-a-similar-applications-47ecbf2f723d
+https://sookocheff.com/post/networking/how-do-websockets-work/
+https://stackoverflow.com/questions/12526265/loadbalancing-web-sockets
 
 Features:
     Direct messaging: two users can chat with each other
@@ -421,16 +451,20 @@ Data Access Patterns
     Schema
         Every single message will be stored as a separate entry
         - Private Chat Table
-            User Id Src     User Id Dst     Message Id      Timestamp       Content
+            User Id Src     User Id Dst     Message Id      Timestamp       Message Status
 
             Partition Key: User Id Src, User Id Dst
             Sort Key: Message Id
 
         - Group Chat
-            Group Id    User Id Src     Message Id      Timestamp       Content
+            Group Id    User Id Src     Message Id      Timestamp       Message Status
 
             Partition Key: Group Id
             Sort Key: Message Id
+        - Message DB
+            Message Id  Message
+
+            Partition Key: Group Id
 
         - User Members Table
             User Id     Group Id
@@ -806,3 +840,46 @@ https://stackoverflow.com/questions/26094969/design-a-generic-job-scheduler
         Suspension - some systems allow jobs to be check-pointed and suspended and the resumed later.
 
 --------------------------------------------------------------------------------
+23. Design Google Doc / Shared whiteboarding tool
+
+    IMP:
+    - We always want JUST ONE VERSION of the doc which is the source of truth across all users
+
+    - Concurrency: Multiple users trying to access the same thing
+    - Latency: Should be super low latency across geographic regions as docs will be shared globally
+    - Can use Locks
+
+    Need a Lock free architecture
+    Optimistic Locks
+        - Store version of an entity
+        - Use version to compare if an entity is updated
+
+        - Take when there are FEWER CONFLICTS
+
+    How to sync:
+        - Event based syncing
+            - Character by character or
+                - Even Font change etc
+                - Take every bits and pieces
+            - Line by line
+            - Diff syncing / Differential sync
+                - Like Git diff, take the copy and keep sending it back and forth
+
+
+    Operational Transformation (OT):
+        - Optimistic concurrency control mechanism
+        - Allows two editors to modify the same section of a document at the same time without conflict
+        - Or rather, provides a way for SANELY resolving the conflicts so that neither user intervention nor locking become necessary
+
+        Every changes to the doc is captured as an event
+            - Insert
+            - Delete
+            - Update
+            - Retain
+
+    Differential Synchronization (DS):
+        - Client
+        - Client Copy
+        - Server
+        - Server Copy
+    Conflict-free replicated data type (CRDT)
